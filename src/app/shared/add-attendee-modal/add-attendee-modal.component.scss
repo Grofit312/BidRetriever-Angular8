@@ -1,0 +1,56 @@
+.modal-container {
+  visibility: 'visible';
+  background-color: transparent;
+
+  .modal-box {
+    padding: 20px;
+  }
+
+  .add-attendee-modal {
+    width: 500px;
+    height: 560px;
+
+    .modal-title {
+      font-size: 1.5rem;
+    }
+
+    form {
+      margin-top: 20px;
+
+      .attendee-form {
+        display: flex;
+        justify-content: space-between;
+
+        .attendee-form-half {
+          display: flex;
+          flex-direction: column;
+
+          .buttons button {
+            height: 30px;
+            font-size: .75rem;
+          }
+
+          .form-check {
+            display: flex;
+            align-items: center;
+
+            input {
+              width: unset;
+            }
+
+            label {
+              margin-top: 8px;
+              margin-left: 5px;
+            }
+          }
+        }
+      }
+
+      .button-group {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 30px;
+      }
+    }
+  }
+}

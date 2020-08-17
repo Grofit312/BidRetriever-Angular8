@@ -1,0 +1,71 @@
+<div class='internal-info-list'>
+  <div class='internal-info-half-list'>
+    <div class='internal-info mb-3'>
+      <span class='font-weight-bold'>User_GUID:</span>
+      <span>{{ dataStore.currentUser && dataStore.currentUser['user_id'] }}</span>
+    </div>
+    <div class='internal-info mb-3'>
+      <span class='font-weight-bold'>Customer_GUID:</span>
+      <span>{{ dataStore.currentUser && dataStore.currentUser['customer_id'] }}</span>
+    </div>
+    <div class='internal-info mb-3'>
+      <span class='font-weight-bold'>Project_GUID:</span>
+      <span>{{ dataStore.currentProject && dataStore.currentProject['project_id'] }}</span>
+    </div>
+    <div class='internal-info mb-3'>
+      <span class='font-weight-bold'>Submission_GUID(s):</span>
+      <span>{{ projectSubmissionIds }}</span>
+    </div>
+    <div class='internal-info mb-3'>
+      <span class='font-weight-bold'>Destination_id:</span>
+      <span>{{ destinationId }}</span>
+    </div>
+  </div>
+
+  <div class='internal-info-half-list'>
+    <div class='internal-info mb-3'>
+      <span class='font-weight-bold'>Source system url:</span>
+      <input [(ngModel)]="dataStore.currentProject && dataStore.currentProject['source_url']" name='source_url'/>
+      <button class='btn btn-primary' (click)='onUpdateSourceSystemUrl()'>Update</button>
+    </div>
+    <div class='internal-info mb-3'>
+      <span class='font-weight-bold'>Source system type:</span>
+      <select [(ngModel)]="dataStore.currentProject && dataStore.currentProject['source_sys_type_id']">
+        <option *ngFor='let sourceSystemType of sourceSystemTypes' [ngValue]='sourceSystemType.source_sys_type_id'>{{ sourceSystemType.source_type_name }}</option>
+      </select>
+      <button class='btn btn-primary' (click)='onUpdateSourceSystemType()'>Update</button>
+    </div>
+    <div class='internal-info mb-3'>
+      <span class='font-weight-bold'>Source system type ID:</span>
+      <span>{{ dataStore.currentProject && dataStore.currentProject['source_sys_type_id'] }}</span>
+    </div>
+  </div>
+
+</div>
+
+<div class='uncompleted-records'>
+  <div class='table-header'>
+    <div class='font-weight-bold'>Non-Completed Records:</div>
+    <div class='buttons'>
+      <button class='btn btn-danger' (click)='onResubmitRecord()'>Resubmit</button>
+      <button class='btn btn-light' (click)='onViewRecordLog()'>View Log</button>
+      <button class='btn btn-light' (click)='onRefresh()'>Refresh</button>
+    </div>
+  </div>
+  <div class='uncompleted-records-table'>
+    <ag-grid-angular
+      #grid
+      style="width: 100%; height: 100%;"
+      class="ag-theme-balham"
+      [rowData]="rowData"
+      [columnDefs]="columnDefs"
+      rowSelection="multiple"
+      rowDragManaged=true
+      (gridReady)="onGridReady($event)"
+    >
+    </ag-grid-angular>
+  </div>
+</div>
+
+<!-- Transaction logs modal -->
+<transaction-logs-modal #transactionLogsModal></transaction-logs-modal>

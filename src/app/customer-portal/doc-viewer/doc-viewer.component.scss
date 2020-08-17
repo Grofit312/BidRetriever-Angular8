@@ -1,0 +1,83 @@
+.doc-viewer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 1;
+  background-color: white;
+}
+
+.menubar-info-section {
+  position: absolute;
+  top: 0;
+  right: 0;
+  line-height: 28px;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 20px;
+  width: calc(100% - 200px);
+  font-size: .9rem;
+}
+
+.doc-detail-section {
+  padding: 0 10px 10px;
+  font-size: .9rem;
+
+  .doc-detail {
+    margin-top: 1rem;
+  }
+
+  .current {
+    font-weight: 700;
+  }
+
+  .clickable {
+    margin-left: 1rem;
+    white-space: nowrap;
+  }
+}
+
+.doc-list-section {
+  width: 100%;
+  overflow-x: auto;
+
+  .list-item {
+    cursor: pointer;
+    font-size: .7rem;
+    margin-bottom: 5px;
+    white-space: nowrap;
+
+    &.selected {
+      font-weight: 700;
+      color: blue;
+    }
+  }
+}
+
+.doc-revisions-section {
+  .dropdown-toggle {
+    width: 180px;
+    font-size: .75rem;
+    background-color: white;
+    border: 1px solid rgb(238, 238, 238);
+    border-radius: unset;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .dropdown-item {
+    font-size: .75em;
+    cursor: pointer;
+
+    &.selected {
+      font-weight: 700;
+    }
+  }
+}
+
+.doc-filter {
+  text-transform: uppercase;
+}

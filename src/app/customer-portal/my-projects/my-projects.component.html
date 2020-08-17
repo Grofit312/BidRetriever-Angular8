@@ -1,0 +1,188 @@
+<div class="my-projects">
+  <dx-toolbar class="header" #projectToolbar>
+    <dxi-item location="before">
+      <div *dxTemplate>
+        <dx-select-box #projectToolbarViewType [width]="toolbarConfig.projectViewType.width"
+          [dataSource]="toolbarConfig.projectViewType.dataSource"
+          [showClearButton]="toolbarConfig.projectViewType.showClearButton" [value]="projectViewTypeSelected"
+          [valueExpr]="toolbarConfig.projectViewType.valueExpr"
+          [displayExpr]="toolbarConfig.projectViewType.displayExpr"
+          (onValueChanged)="toolbarConfig.projectViewType.onValueChanged($event)">
+          <div *dxTemplate="let data of 'item'">
+            <div class="project-toolbar-view-type-item" *ngIf="data.view_id !== 'manage_project_views'">
+              {{ data.view_name }}</div>
+            <div class="project-toolbar-view-type-item manage-project-view"
+              *ngIf="data.view_id === 'manage_project_views'">{{ data.view_name }}</div>
+          </div>
+        </dx-select-box>
+      </div>
+    </dxi-item>
+    <dxi-item location="before" widget="dxLookup" [options]="toolbarConfig.users"></dxi-item>
+
+    <dxi-item location="center" widget="dxTextBox" [options]="toolbarConfig.search"></dxi-item>
+
+    <dxi-item location="after" widget="dxButton" [options]="toolbarConfig.viewProject"></dxi-item>
+    <dxi-item location="after" widget="dxButton" [options]="toolbarConfig.addProject"></dxi-item>
+
+    <dxi-item locateInMenu="always" widget="dxButton" [options]="toolbarConfig.others.viewProject"></dxi-item>
+    <dxi-item locateInMenu="always" widget="dxButton" [options]="toolbarConfig.others.addProject"></dxi-item>
+    <dxi-item locateInMenu="always" title="">
+      <div *dxTemplate>
+        <div class="separator"></div>
+      </div>
+    </dxi-item>
+     <dxi-item locateInMenu="always" widget="dxButton" [options]="toolbarConfig.others.editProject"></dxi-item>
+      <dxi-item locateInMenu="always" widget="dxButton" [options]="toolbarConfig.others.addDocumentsToProject"></dxi-item>
+      <dxi-item locateInMenu="always" widget="dxButton" [options]="toolbarConfig.others.deleteProject"></dxi-item>
+       <dxi-item locateInMenu="always" widget="dxButton" [options]="toolbarConfig.others.archiveProject"></dxi-item>
+   
+   
+   
+    <dxi-item title="" locateInMenu="always">
+      <div *dxTemplate>
+        <div class="separator"></div>
+      </div>
+    </dxi-item>
+    <dxi-item locateInMenu="always" widget="dxButton" [options]="toolbarConfig.others.viewProjectDocuments"></dxi-item>
+   
+    <dxi-item locateInMenu="always" widget="dxButton" [options]="toolbarConfig.others.viewSourceProject"></dxi-item>
+   
+    <dxi-item locateInMenu="always" widget="dxButton" [options]="toolbarConfig.others.viewPublishedProject"></dxi-item>
+    <dxi-item title="" locateInMenu="always">
+      <div *dxTemplate>
+        <div class="separator"></div>
+      </div>
+    </dxi-item>
+    <dxi-item locateInMenu="always" widget="dxButton" [options]="toolbarConfig.others.printProjectList"></dxi-item>
+    <dxi-item locateInMenu="always" widget="dxButton" [options]="toolbarConfig.others.exportProjectListToCsv">
+    </dxi-item>
+    <dxi-item locateInMenu="always" title="">
+      <div *dxTemplate>
+        <div class="separator"></div>
+      </div>
+    </dxi-item>
+    <dxi-item locateInMenu="always" widget="dxButton" [options]="toolbarConfig.others.viewTransactionLog"></dxi-item>
+    <dxi-item locateInMenu="always" widget="dxButton" [options]="toolbarConfig.others.refreshGrid"></dxi-item>
+    <dxi-item locateInMenu="always" widget="dxButton" [options]="toolbarConfig.others.help"></dxi-item>
+  </dx-toolbar>
+
+  <div class="content" #projectContent>
+    <dx-data-grid #projectGrid id="projectGrid" [allowColumnReordering]="true" [allowColumnResizing]="true"
+      columnResizingMode="widget" [columns]="projectGridColumns" [dataSource]="projectGridDataSource"
+      (onEditingStart)="gridProjectEditingStartAction($event)" [showColumnLines]="true" [showRowLines]="true"
+      [showBorders]="true" [rowAlternationEnabled]="true" [columnAutoWidth]="true" [remoteOperations]="true"
+      width="100%" (onContextMenuPreparing)='addProjectGridMenuItems($event)' (onRowDblClick)='toolbarViewProjectAction()' >
+      <dxo-editing mode="cell" [allowDeleting]="false" [allowUpdating]="true" refreshMode="reshape"></dxo-editing>
+      <dxo-column-fixing [enabled]="true"></dxo-column-fixing>
+      <dxo-header-filter [visible]="false"></dxo-header-filter>
+      <dxo-paging [enabled]="false"></dxo-paging>
+      <dxo-scrolling mode="vertical"></dxo-scrolling>
+      <dxo-selection mode="multiple"></dxo-selection>
+      <dxo-sorting mode="multiple"></dxo-sorting>
+
+      <div *dxTemplate="let cell of 'dateCell'">
+        {{ cell.value | moment: 'YYYY-MM-DD hh:mm a z' }}
+      </div>
+
+      <div *dxTemplate="let cell of 'dateTimeEditor'">
+        <app-custom-datetime [value]="cell.value" (onValueChanged)="cell.setValue($event)" [showClearButton]="true">
+        </app-custom-datetime>
+      </div>
+
+      <div *dxTemplate="let cell of 'projectAdminUserEmailCell'">
+        {{ findMatchedProjectAdminUserDisplayName(cell.value) }}
+      </div>
+      <div *dxTemplate="let cell of 'projectAdminUserEmailEditor'">
+        <dx-select-box [items]="projectGridEditorTemplateSource.adminUserEmail" [value]="cell.value"
+          displayExpr="user_displayname" valueExpr="user_email" (onValueChanged)="cell.setValue($event.value)"
+          (onContentReady)="projectAdminUserEmailEditorContentReady($event)">
+          <div *dxTemplate="let data of 'item'">
+            {{ data.user_displayname }} ({{ data.user_email }})
+          </div>
+        </dx-select-box>
+      </div>
+
+      <div *dxTemplate="let cell of 'statusEditor'">
+        <dx-select-box [items]="projectGridEditorTemplateSource.status" [value]="cell.value" displayExpr="name"
+          valueExpr="id" (onValueChanged)="cell.setValue($event.value)"></dx-select-box>
+      </div>
+
+      <div *dxTemplate="let cell of 'autoUpdateStatusEditor'">
+        <dx-select-box [items]="projectGridEditorTemplateSource.autoUpdateStatus" [value]="cell.value"
+          displayExpr="name" valueExpr="id" (onValueChanged)="cell.setValue($event.value)"></dx-select-box>
+      </div>
+
+      <div *dxTemplate="let cell of 'projectStageEditor'">
+        <dx-select-box [items]="projectGridEditorTemplateSource.stage" [value]="cell.value" displayExpr="name"
+          valueExpr="id" (onValueChanged)="cell.setValue($event.value)"></dx-select-box>
+      </div>
+
+      <div *dxTemplate="let cell of 'projectTimezoneEditor'">
+        <dx-select-box [items]="projectGridEditorTemplateSource.timezone" [value]="cell.value" displayExpr="name"
+          valueExpr="id" (onValueChanged)="cell.setValue($event.value)"></dx-select-box>
+      </div>
+
+      <div *dxTemplate="let cell of 'projectContractTypeEditor'">
+        <dx-select-box [items]="projectGridEditorTemplateSource.contractType" [value]="cell.value" displayExpr="name"
+          valueExpr="id" (onValueChanged)="cell.setValue($event.value)"></dx-select-box>
+      </div>
+
+      <div *dxTemplate="let cell of 'projectSegmentEditor'">
+        <dx-select-box [items]="projectGridEditorTemplateSource.segment" [value]="cell.value" displayExpr="name"
+          valueExpr="id" (onValueChanged)="cell.setValue($event.value)"></dx-select-box>
+      </div>
+
+      <div *dxTemplate="let cell of 'projectBuildingTypeEditor'">
+        <dx-select-box [items]="projectGridEditorTemplateSource.buildingType" [value]="cell.value" displayExpr="name"
+          valueExpr="id" (onValueChanged)="cell.setValue($event.value)"></dx-select-box>
+      </div>
+
+      <div *dxTemplate="let cell of 'projectLaborRequirementEditor'">
+        <dx-select-box [items]="projectGridEditorTemplateSource.laborRequirement" [value]="cell.value"
+          displayExpr="name" valueExpr="id" (onValueChanged)="cell.setValue($event.value)"></dx-select-box>
+      </div>
+
+      <div *dxTemplate="let cell of 'projectConstructionTypeEditor'">
+        <dx-select-box [items]="projectGridEditorTemplateSource.constructionType" [value]="cell.value"
+          displayExpr="name" valueExpr="id" (onValueChanged)="cell.setValue($event.value)"></dx-select-box>
+      </div>
+
+      <div *dxTemplate="let cell of 'projectAwardStatusEditor'">
+        <dx-select-box [items]="projectGridEditorTemplateSource.awardStatus" [value]="cell.value" displayExpr="name"
+          valueExpr="id" (onValueChanged)="cell.setValue($event.value)"></dx-select-box>
+      </div>
+
+      <div *dxTemplate="let cell of 'projectAssignedOfficeNameEditor'">
+        <dx-select-box [items]="projectGridEditorTemplateSource.assignedOfficeName" [value]="cell.value"
+          displayExpr="company_office_name" valueExpr="company_office_name"
+          (onValueChanged)="cell.setValue($event.value)"></dx-select-box>
+      </div>
+    </dx-data-grid>
+  
+  </div>
+
+  <div class="total-number-of-rows">Total: {{projectGridContent.length}} rows</div>
+</div>
+
+<!-- Add Submission Modal -->
+<add-submission-modal #addSubmissionModal></add-submission-modal>
+
+<!-- Add Project Modal -->
+<add-project-modal #addProjectModal></add-project-modal>
+
+<!-- Edit Project Modal -->
+<edit-project-modal #editProjectModal></edit-project-modal>
+
+<!-- Remove Project Modal (Archive/Delete) -->
+<remove-project-modal #removeProjectModal></remove-project-modal>
+
+<!-- Transaction Logs Modal -->
+<transaction-logs-modal #transactionLogsModal></transaction-logs-modal>
+
+<!-- Project Data View Modal -->
+<dx-popup [closeOnOutsideClick]="true" [dragEnabled]="false" (onHiding)="popupDataViewHidingAction($event)"
+  [(visible)]="isProjectDataViewModalShown" [showTitle]="true" title="Manage Views" width="80vw" height="80vh">
+  <div *dxTemplate="let data of 'content'">
+    <app-project-data-view-modal></app-project-data-view-modal>
+  </div>
+</dx-popup>

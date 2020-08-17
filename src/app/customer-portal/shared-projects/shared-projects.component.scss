@@ -1,0 +1,38 @@
+.shared-projects-content {
+  padding: 30px 50px;
+  height: calc(100% - 80px);
+  display: flex;
+  flex-direction: column;
+
+  .shared-projects-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+
+    .shared-projects-view-mode, .shared-projects-search {
+      width: 200px;
+      height: 40px;
+      margin-right: 10px;
+    }
+
+    .shared-projects-search {
+      text-align: center;
+    }
+
+    .buttons-group {
+      margin-bottom: unset;
+
+      .btn {
+        width: 180px;
+      }
+    }
+  }
+
+  .shared-projects-table {
+    margin-top: 20px;
+    flex-grow: 1;
+    display: flex;
+    overflow: scroll;
+  }
+}

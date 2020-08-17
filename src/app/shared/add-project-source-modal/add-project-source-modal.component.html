@@ -1,0 +1,29 @@
+<dx-data-grid #otherProjectsGrid
+              id="otherProjectsGrid"
+              [allowColumnResizing]="true"
+              [dataSource]="otherProjectSource"
+              [showColumnLines]="true"
+              [showRowLines]="true"
+              [showBorders]="true"
+              [rowAlternationEnabled]="true"
+              width="100%"
+              height="calc(100% - 35px)"
+              [columnAutoWidth]="true"
+              [remoteOperations]="true">
+  <dxo-paging [enabled]="false"></dxo-paging>
+  <dxo-scrolling mode="vertical"></dxo-scrolling>
+  <dxo-search-panel [visible]="true"></dxo-search-panel>
+  <dxo-selection selectAllMode="allPages" showCheckBoxesMode="onClick" mode="multiple"></dxo-selection>
+
+  <dxi-column dataField="project_id" caption="Project Id" [visible]="false" [allowSearch]="false"></dxi-column>
+  <dxi-column dataField="project_name" caption="Project Name"></dxi-column>
+  <dxi-column dataField="project_admin_user_fullname" caption="Project Admin"></dxi-column>
+  <dxi-column dataField="source_sys_type_name" caption="Source System"></dxi-column>
+  <dxi-column dataField="source_company_name" caption="Source Company"></dxi-column>
+  <dxi-column dataField="project_bid_datetime" caption="Bid Date Time"></dxi-column>
+</dx-data-grid>
+
+<div class="footer">
+  <dx-button type="normal" class="btn-cancel" text="Cancel" (click)="onCancelAction()"></dx-button>
+  <dx-button type="normal" class="btn-apply" text="Apply" (click)="onApplyAction()"></dx-button>
+</div>

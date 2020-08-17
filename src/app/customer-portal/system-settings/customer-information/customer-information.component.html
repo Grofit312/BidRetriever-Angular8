@@ -1,0 +1,66 @@
+<div class='customer-information-container'>
+  <div class='user-setting'>
+    <div class='user-setting-input'>
+      <div>Company Name</div>
+      <input type='text' [(ngModel)]='companyName' (change)='onChangeInput()'/>
+    </div>
+    <div class='user-setting-description'>
+      The name of the company that will be publishing projects.
+    </div>
+  </div>
+
+  <div class='user-setting'>
+    <div class='user-setting-input'>
+      <div>Company Address</div>
+      <textarea type='text' [(ngModel)]='companyAddress' (change)='onChangeInput()'></textarea>
+    </div>
+    <div class='user-setting-description'>
+      The address of the headquarters for the company.
+    </div>
+  </div>
+
+  <div class='user-setting'>
+    <div class='user-setting-input'>
+      <div>Company Phone</div>
+      <input type='phone' [(ngModel)]='companyPhone' (change)='onChangeInput()'/>
+    </div>
+    <div class='user-setting-description'>
+      The main phone number for the company
+    </div>
+  </div>
+
+  <div class='user-setting'>
+    <div class='user-setting-input'>
+      <div>Company Website</div>
+      <input type='url' [(ngModel)]='companyWebsite' (change)='onChangeInput()'/>
+    </div>
+    <div class='user-setting-description'>
+      The company main website url.
+    </div>
+  </div>
+
+  <div class='user-setting'>
+    <div class='user-setting-input'>
+      <div>Company Email</div>
+      <input type='email' [(ngModel)]='companyEmail' (change)='onChangeInput()'/>
+    </div>
+    <div class='user-setting-description'>
+      The main email address used by the company for receiving invitations to Bid.
+    </div>
+  </div>
+
+  <div class='user-setting'>
+    <div class='user-setting-input'>
+      <div>Timezone</div>
+      <select name='timezone' [(ngModel)]='companyTimezone' (change)='onChangeInput()'>
+        <option value="eastern">Eastern</option>
+        <option value="central">Central</option>
+        <option value="mountain">Mountain</option>
+        <option value="pacific">Pacific</option>
+      </select>
+    </div>
+    <div class='user-setting-description'>
+      The timezone for all projects for this company. This setting defines what time will be used when creating files and projects.
+    </div>
+  </div>
+</div>

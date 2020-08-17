@@ -1,0 +1,82 @@
+<div class='destination-system-settings-container'>
+  <div class='destination-system-setting'>
+    <div class='destination-system-setting-selector'>
+      <div>Destination Name</div>
+      <input type='text' [(ngModel)]='destinationSystemName' (change)='onChangeInput()'/>
+    </div>
+    <div class='destination-system-setting-description'>
+      The name of the destination where you would like your project files to be published.
+    </div>
+  </div>
+
+  <div class='destination-system-setting'>
+    <div class='destination-system-setting-selector'>
+      <div>Destination System Type</div>
+      <select name='destination_sys_type' [(ngModel)]='destinationSystemType' (change)='onChangeInput()'>
+        <option *ngFor="let type of destinationTypes" [value]="type.destination_type_id">{{ type.destination_type_name }}</option>
+      </select>
+    </div>
+    <div class='destination-system-setting-description'>
+      The default destination type defines where you would like files processed by Bid Retriever to be published. Usually this is a file sharing service such as Dropbox, Box.net, Google Drive, etc.
+    </div>
+  </div>
+
+  <div class='destination-system-setting'>
+    <div class='destination-system-setting-selector'>
+      <div>Destination Root Path</div>
+      <input type='text' [(ngModel)]='destinationSystemPathPrefix' (change)='onChangeInput()'/>
+    </div>
+    <div class='destination-system-setting-description'>
+      The destination system path prefix defines the folder structure that will be used as a prefix to each project folder when projects are published to the destination system.
+    </div>
+  </div>
+
+  <div class='destination-system-setting'>
+    <div class='destination-system-setting-selector'>
+      <div>Destination System Username</div>
+      <input type='text' [(ngModel)]='destinationSystemUsername' (change)='onChangeInput()'/>
+    </div>
+    <div class='destination-system-setting-description'>
+      The user name used to authenticate with the destination system.
+    </div>
+  </div>
+
+  <div class='destination-system-setting'>
+    <div class='destination-system-setting-selector'>
+      <div>Destination System Password</div>
+      <input type='text' [(ngModel)]='destinationSystemPassword' (change)='onChangeInput()'/>
+    </div>
+    <div class='destination-system-setting-description'>
+      The password, used to authenticate the user.
+    </div>
+  </div>
+
+  <div class='destination-system-setting'>
+    <div class='destination-system-setting-selector'>
+      <div>Destination System Token</div>
+      <div><input type='text' [(ngModel)]='destinationSystemToken' (change)='onChangeInput()'/></div>
+      <div>
+        <button class="btn btn-primary" (click)='onDropboxLogin()'>Login With Dropbox</button>
+        <button class="btn btn-info" (click)='onVerifyToken()'>Verify</button>
+      </div>
+    </div>
+    <div class='destination-system-setting-description'>
+      The token string required by some systems in order to publish files to the system.
+    </div>
+  </div>
+</div>
+
+<!-- Dropbox Login Confirmation Modal -->
+<div #dropboxConfirmModal class='modal-container'>
+  <div class='modal-box'>
+    <div class='dropbox-confirm-modal'>
+      <div class='modal-title'>
+        {{ connectedDropboxAccount }} has been successfully connected. If this is the wrong account, press Select New Account otherwise press OK. 
+      </div>
+      <div class='button-group'>
+        <button class='btn btn-info' (click)='onSelectNewDropboxAccount()'>Select New Account</button>
+        <button class='btn btn-primary' (click)='onConfirmDropboxAccount()'>OK</button>
+      </div>
+    </div>
+  </div>
+</div>

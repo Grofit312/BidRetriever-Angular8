@@ -1,0 +1,90 @@
+<div class='my-calendar-content'>
+  <div class='my-calendar-header'>
+    <div>
+      <select class='my-calendar-view-mode' [(ngModel)]='calendarViewMode' (change)='onChangeCalendarViewMode()'>
+        <option value="my-active">My Events</option>
+        <option value="my-inactive">My Inactive Events</option>
+        <option *ngIf='currentOffice' value="office-active">{{ currentOffice.company_office_name }} Events</option>
+        <option *ngIf='currentOffice' value="office-inactive">{{ currentOffice.company_office_name }} Inactive Events</option>
+        <option value="all-active">All Events</option>
+        <option value="all-inactive">All Inactive Events</option>
+      </select>
+    </div>
+
+    <div class='buttons-group'>
+      <button class="btn btn-light" (click)='onViewProject()'>View Project</button>
+      <button class='btn btn-light' (click)='onAddEvent($event)'>Add Event</button>
+      <div class="btn-group">
+        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Other Actions
+        </button>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" (click)='onViewProject()'>View project</a>
+          <a class="dropdown-item" (click)='onAddEvent($event)'>Add Event</a>
+          <div class="dropdown-divider orange"></div>
+          <a class="dropdown-item" (click)='onViewProjectDocuments()'>View project documents</a>
+          <a class="dropdown-item" (click)='onEditProject()'>Edit Project</a>
+          <a class="dropdown-item" (click)='onArchiveProject'>Archive Project</a>
+          <a class="dropdown-item" (click)='onEditEvent($event)'>Edit Event</a>
+          <a class="dropdown-item" (click)='onDeleteEvent()'>Delete Event</a>
+          <div class="dropdown-divider orange"></div>
+          <a class="dropdown-item" (click)='onRefresh()'>Refresh Calendar</a>
+          <a class="dropdown-item orange" (click)='onHelp()'>Help</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class='my-calendar'>
+    <vertical-split-pane
+      primary-component-minsize='200'
+      local-storage-key='split-pane'
+      primary-component-initialratio='0.2'
+      (on-change)='onChangeSplit()'
+    >
+      <div class='split-pane-content-primary'>
+        <div class='side-overview' *ngIf='showOverview'>
+          <div class='data' *ngFor='let data of overviewData'>
+            <div class='name'>{{ data.name }}</div>
+            <div class='value'>{{ data.value }}</div>
+          </div>
+        </div>
+      </div>
+      <div class='split-pane-content-secondary'>
+        <div class='calendar'>
+          <dx-scheduler
+            #targetScheduler
+            [dataSource]="events"
+            [views]='["agenda", "day", "week", "month"]'
+            currentView="month"
+            [currentDate]="currentDate"
+            (onCellClick)="onCellClick($event)"
+            (onAppointmentDblClick)="onAppointmentDblClick($event)"
+            (onAppointmentClick)="onAppointmentClick($event)"
+            (onOptionChanged)="onOptionChanged($event)"
+          >
+          <dxo-editing #editingOptions
+            [allowAdding]="false"
+            [allowUpdating]="false"
+            [allowDeleting]="false"
+            [allowResizing]="false"
+            [allowDragging]="false"
+          ></dxo-editing>
+          </dx-scheduler>
+        </div>
+      </div>
+    </vertical-split-pane>
+  </div>
+</div>
+
+<!-- Add Event Modal -->
+<add-event-modal #addEventModal></add-event-modal>
+
+<!-- Edit Event Modal -->
+<edit-event-modal #editEventModal></edit-event-modal>
+
+<!-- Remove Event Modal -->
+<remove-event-modal #removeEventModal></remove-event-modal>
+
+<!-- Edit Project Modal -->
+<edit-project-modal #editProjectModal></edit-project-modal>

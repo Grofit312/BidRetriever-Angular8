@@ -1,0 +1,151 @@
+<div class='document-settings-container'>
+  <div class='document-setting'>
+    <div class='document-setting-selector'>
+      <div>{{ REVISIONING_TYPE_NAME }}</div>
+      <select name='revisioning_type' [(ngModel)]='revisioningType' (change)='onChangeRevisioningTypeSetting()'>
+        <option value="Submission Date">Submission Date</option>
+        <option value="Submission Counter">Submission Counter</option>
+      </select>
+    </div>
+    <div class='document-setting-description'>
+      {{ REVISIONING_TYPE_DESCRIPTION }}
+    </div>
+  </div>
+
+  <div class='document-setting'>
+    <div class='document-setting-selector'>
+      <div>{{ PLAN_FILE_NAMING_NAME }}</div>
+      <select name='plan_file_naming' [(ngModel)]='planFileNaming' (change)='onChangePlanFileNamingSetting()'>
+        <option *ngFor='let option of planFileNamingOptions' [ngValue]='option.value'>{{ option.name }}</option>
+      </select>
+    </div>
+    <div class='document-setting-description'>
+      {{ PLAN_FILE_NAMING_DESCRIPTION }}
+    </div>
+  </div>
+
+  <div class='document-setting'>
+    <div class='document-setting-selector'>
+      <div>{{ SOURCE_FILE_SUBMISSION_FOLDER_NAME }}</div>
+      <select name='source_file_submission_folder' [(ngModel)]='sourceFileSubmissionFolder' (change)='onChangeSourceFileSubmissionFolderSetting()'>
+        <option value="enabled">Enabled</option>
+        <option value="disabled">Disabled</option>
+      </select>
+    </div>
+    <div class='document-setting-description'>
+      {{ SOURCE_FILE_SUBMISSION_FOLDER_DESCRIPTION }}
+    </div>
+  </div>
+
+  <div class='document-setting'>
+    <div class='document-setting-selector'>
+      <div>{{ CURRENT_PLANS_FOLDER_NAME }}</div>
+      <select name='current_plans_folder' [(ngModel)]='currentPlansFolder' (change)='onChangeCurrentPlansFolderSetting()'>
+        <option value="enabled">Enabled</option>
+        <option value="disabled">Disabled</option>
+      </select>
+    </div>
+    <div class='document-setting-description'>
+      {{ CURRENT_PLANS_FOLDER_DESCRIPTION }}
+    </div>
+  </div>
+
+  <div class='document-setting'>
+    <div class='document-setting-selector'>
+      <div>{{ ALL_PLANS_FOLDER_NAME }}</div>
+      <select name='all_plans_folder' [(ngModel)]='allPlansFolder' (change)='onChangeAllPlansFolderSetting()'>
+        <option value="enabled">Enabled</option>
+        <option value="disabled">Disabled</option>
+      </select>
+    </div>
+    <div class='document-setting-description'>
+      {{ ALL_PLANS_FOLDER_DESCRIPTION }}
+    </div>
+  </div>
+
+  <div class='document-setting'>
+    <div class='document-setting-selector'>
+      <div>{{ ALL_PLANS_SUBMISSION_FOLDER_NAME }}</div>
+      <select name='all_plans_submission_folder' [(ngModel)]='allPlansSubmissionFolder' (change)='onChangeAllPlansSubmissionFolderSetting()'>
+        <option value="enabled">Enabled</option>
+        <option value="disabled">Disabled</option>
+      </select>
+    </div>
+    <div class='document-setting-description'>
+      {{ ALL_PLANS_SUBMISSION_FOLDER_DESCRIPTION }}
+    </div>
+  </div>
+
+  <div class='document-setting'>
+    <div class='document-setting-selector'>
+      <div>{{ COMPARISON_PLAN_FOLDER_NAME }}</div>
+      <select name='comparison_plan_folder' [(ngModel)]='comparisonPlanFolder' (change)='onChangeComparisonPlanFolderSetting()'>
+        <option value="separate_submission_folder">Separate Comparison Folder</option>
+        <option value="embedded_submission_files">Embedded In Submission Folders</option>
+        <option value="embedded_submission_folder">Comparison Folder Under All Plans</option>
+      </select>
+    </div>
+    <div class='document-setting-description'>
+      {{ COMPARISON_PLAN_FOLDER_DESCRIPTION }}
+    </div>
+  </div>
+
+  <div class='document-setting'>
+    <div class='document-setting-selector'>
+      <div>{{ DISCIPLINE_PLAN_FOLDER_NAME }}</div>
+      <select name='discipline_plan_folder' [(ngModel)]='disciplinePlanFolder' (change)='onChangeDisciplinePlanFolderSetting()'>
+        <option value="disabled">Disabled</option>
+        <option value="enabled_all_plans">Enabled All Plans</option>
+        <option value="enabled_current_plans">Enabled Current Plans</option>
+        <option value="enabled_all_and_current_plans">Enabled All And Current Plans</option>
+      </select>
+    </div>
+    <div class='document-setting-description'>
+      {{ DISCIPLINE_PLAN_FOLDER_DESCRIPTION }}
+    </div>
+  </div>
+
+  <div class='document-setting'>
+    <div class='document-setting-selector'>
+      <div>{{ RASTER_PLAN_FOLDER_NAME }}</div>
+      <select name='raster_plan_folder' [(ngModel)]='rasterPlanFolder' (change)='onChangeRasterPlanFolderSetting()'>
+        <option value="disabled">Disabled</option>
+        <option value="separate_raster_folder">Separate Raster Plans Folder</option>
+        <option value="embedded_raster_folder">Embedded Raster Plans Folder</option>
+        <option value="embedded_raster_files">Embedded Raster Plan Files</option>
+      </select>
+    </div>
+    <div class='document-setting-description'>
+      {{ RASTER_PLAN_FOLDER_DESCRIPTION }}
+    </div>
+  </div>
+
+  <div class='document-setting'>
+    <div class='document-setting-selector'>
+      <div>{{ RASTER_PLAN_TYPE_NAME }}</div>
+      <select name='raster_plan_type' [(ngModel)]='rasterPlanType' (change)='onChangeRasterPlanTypeSetting()'>
+        <option value="disabled">Disabled</option>
+        <option value="enabled_tiff">TIFF</option>
+        <option value="enabled_jpeg">JPEG</option>
+        <option value="enabled_png">PNG</option>
+      </select>
+    </div>
+    <div class='document-setting-description'>
+      {{ RASTER_PLAN_TYPE_DESCRIPTION }}
+    </div>
+  </div>
+</div>
+
+<div #alertModal class='modal-container'>
+  <div class='modal-box'>
+    <div class='alert-modal'>
+      <div class='modal-title'>
+        Disabling "All Plans Folders" also disables the sub-folder setting "All Plans Submission Folders".
+      </div>
+      <div class='alert-modal-buttons'>
+        <button class='btn btn-light' type='button' (click)='onCancelDisablingAllPlansFolders()'>Cancel</button>
+        <button class='btn btn-primary' type='button' (click)='onAgreeDisablingAllPlansFolders()'>OK</button>
+      </div>
+    </div>
+  </div>
+</div>

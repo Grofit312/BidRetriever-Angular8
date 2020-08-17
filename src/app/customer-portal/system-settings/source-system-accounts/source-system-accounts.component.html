@@ -1,0 +1,103 @@
+<div class='buttons-group'>
+  <button class='btn btn-light' (click)='onRemove()'>Remove System</button>
+  <button class='btn btn-light' (click)='onEdit()'>Edit System</button>
+  <button class='btn btn-primary' (click)='onAdd()'>Add System</button>
+</div>
+<ng2-smart-table #table [settings]="settings" [source]="data" (userRowSelect)="onUserRowSelected($event)"></ng2-smart-table>
+
+<div #editModal class='modal-container'>
+  <div class='modal-box'>
+    <div class='system-accounts-edit-modal'>
+      <div class='modal-title'>
+        {{editModalTitle}}
+      </div>
+      <div class='system-accounts-edit-form'>
+        <form (ngSubmit)='onSave()'>
+          <div class='system-accounts-edit-form-body'>
+            <div class='system-accounts-setting'>
+              <div class='system-accounts-setting-input'>
+                <div>Source System Name</div>
+                <input type='text' name='sourceSystemName' [(ngModel)]='editSourceSystemName' required/>
+              </div>
+              <div class='system-accounts-setting-description'>
+                Provide a name that will help you recognize the system where a project was retrieved.
+              </div>
+            </div>
+
+            <div class='system-accounts-setting'>
+              <div class='system-accounts-setting-input'>
+                <div>Source System Type</div>
+                <select name='type' [(ngModel)]='editSourceSystemType'>
+                  <option *ngFor="let sourceSystemType of sourceSystemTypes" [ngValue]="sourceSystemType.source_type_name">
+                    {{ sourceSystemType.source_type_name }}
+                  </option>
+                </select>
+              </div>
+              <div class='system-accounts-setting-description'>
+                Select the type of system
+              </div>
+            </div>
+
+            <div class="system-accounts-setting" *ngIf="editSourceSystemType === 'googledrive'">
+              <div class="system-accounts-setting-input">
+                <div>"Other" Source System URL</div>
+                <input type="text" name="otherSourceSystemUrl" [(ngModel)]="editOtherSourceSystemUrl" />
+              </div>
+              <div class="system-accounts-setting-description">
+                Select the type of system
+              </div>
+            </div>
+
+            <div class='system-accounts-setting'>
+              <div class='system-accounts-setting-input'>
+                <div>Username</div>
+                <input type='text' name='username' [(ngModel)]='editUsername' required/>
+              </div>
+              <div class='system-accounts-setting-description'>
+                Provide the username used to access the system
+              </div>
+            </div>
+
+            <div class='system-accounts-setting'>
+              <div class='system-accounts-setting-input'>
+                <div>Password</div>
+                <input type='text' name='password' [(ngModel)]='editPassword'/>
+              </div>
+              <div class='system-accounts-setting-description'>
+                Provide the password necessary to access this system.
+              </div>
+            </div>
+
+            <div class='system-accounts-setting'>
+              <div class='system-accounts-setting-input'>
+                <div>Token</div>
+                <input type='text' name='token' [(ngModel)]='editToken'/>
+              </div>
+              <div class='system-accounts-setting-description'>
+                Provide an access token if needed.
+              </div>
+            </div>
+          </div>
+          <div class='system-accounts-edit-form-buttons'>
+            <button class='btn btn-light' type='button' (click)='onCloseEditModal()'>Cancel</button>
+            <button class='btn btn-primary' type='submit'>OK</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div #removeModal class='modal-container'>
+  <div class='modal-box'>
+    <div class='system-accounts-remove-modal'>
+      <div class='modal-title'>
+        {{removeDescriptionText}}
+      </div>
+      <div class='system-accounts-remove-modal-buttons'>
+        <button class='btn btn-light' type='button' (click)='onCloseRemoveModal()'>Cancel</button>
+        <button class='btn btn-primary' type='submit' (click)='onConfirmRemove()'>Yes</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,52 @@
+app-project-data-view-modal {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.project-data-view-modal {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  .header {
+    margin-bottom: 20px;
+
+    .dx-toolbar-menu-container .dx-dropdownmenu-button {
+      background-color: #007BFF;
+      border-color: #007BFF;
+
+      .dx-icon {
+        color: #FFFFFF;
+      }
+    }
+
+    .toolbar-notification {
+      color: grey;
+      font-size: 16px;
+    }
+  }
+
+  .content {
+    flex: 1 1 auto;
+    overflow: hidden;
+
+    #dataViewGrid {
+      max-height: 100%;
+    }
+  }
+}
+
+.dx-dropdownmenu-popup {
+  .dx-template-wrapper.dx-list-item-content {
+    height: fit-content;
+    padding: 5px 0;
+    font-size: 0;
+  }
+
+  .separator {
+    height: 1px;
+    background: #808080;
+  }
+}

@@ -1,0 +1,38 @@
+<div class="view-project">
+  <div class="view-project-header">
+    <div class='project-name'>{{ projectName }}</div>
+    <div class='project-info-group'>
+      <div class='project-info'>
+        <span class='text-muted'>RATING</span>
+        <div>
+          <span class='fa fa-star' [ngClass]="{'checked': (projectRating > 0)}"></span>
+          <span class='fa fa-star' [ngClass]="{'checked': (projectRating > 1)}"></span>
+          <span class='fa fa-star' [ngClass]="{'checked': (projectRating > 2)}"></span>
+          <span class='fa fa-star' [ngClass]="{'checked': (projectRating > 3)}"></span>
+          <span class='fa fa-star' [ngClass]="{'checked': (projectRating > 4)}"></span>
+        </div>
+      </div>
+
+      <div class='project-info'>
+        <span class='text-muted'>DUE DATE</span>
+        <span class='text-danger'>{{ projectDueDate | moment: 'YYYY-MM-DD hh:mm a z' }}</span>
+      </div>
+
+      <div class='project-info'>
+        <span class='text-muted'>STATUS</span>
+        <span>{{ projectStatus }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="view-project-content">
+    <view-project-tabs></view-project-tabs>
+    <div class="view-project-router">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+
+  <div class="view-project-footer">
+    <dx-button class="action-close" type="danger" text="Close" (click)="btnCloseAction()"></dx-button>
+  </div>
+</div>

@@ -1,0 +1,405 @@
+<!-- Create Project Modal -->
+<div #addProjectModal class='modal-container'>
+  <div class='modal-box'>
+    <div class='add-project-modal'>
+      <div class='modal-title'>
+        Project Creation
+      </div>
+
+      <ul class="nav nav-tabs" id="add_project_tabs" role="tablist">
+        <li class="nav-item">
+          <a (click)="onClickTab($event, 1)" class="nav-link" [ngClass]="{'active': viewMode === 'basic'}" id="add-project-basic-info" data-toggle="tab" href="#" role="tab" aria-controls="home" aria-selected="true">Basic Info</a>
+        </li>
+        <li class="nav-item">
+          <a (click)="onClickTab($event, 2)" class="nav-link" [ngClass]="{'active': viewMode === 'date'}" id="add-project-dates" data-toggle="tab" href="#" role="tab" aria-controls="home" aria-selected="false">Dates</a>
+        </li>
+        <li class="nav-item">
+          <a (click)="onClickTab($event, 3)" class="nav-link" [ngClass]="{'active': viewMode === 'detail'}" id="add-project-details" data-toggle="tab" href="#" role="tab" aria-controls="profile" aria-selected="false">Details</a>
+        </li>
+        <li class="nav-item">
+          <a (click)="onClickTab($event, 4)" class="nav-link" [ngClass]="{'active': viewMode === 'source'}" id="add-project-source" data-toggle="tab" href="#" role="tab" aria-controls="profile" aria-selected="false">Source</a>
+        </li>
+      </ul>
+
+      <form (ngSubmit)='onSaveProject()'>
+        <div class='project-form-wrapper'>
+          <div class='project-form' [ngClass]="{'active': viewMode === 'basic'}">
+            <div class="project-form-half dx-fieldset">
+              <div class="dx-field">
+                <div class="dx-field-label">Project Name</div>
+                <div class="dx-field-value">
+                  <dx-text-box name="projectName" [(value)]="projectName" [showClearButton]="true">
+                    <dx-validator>
+                      <dxi-validation-rule type="required"></dxi-validation-rule>
+                    </dx-validator>
+                  </dx-text-box>
+                </div>
+              </div>
+              <div class="dx-field">
+                <div class="dx-field-label">Project Description</div>
+                <div class="dx-field-value">
+                  <dx-text-box name="projectDescription" [(value)]="projectDescription" [showClearButton]="true"></dx-text-box>
+                </div>
+              </div>
+              <div class="dx-field">
+                <div class="dx-field-label">Project Bid DateTime</div>
+                <div class="dx-field-value">
+                  <app-custom-datetime name="projectBidDateTime"
+                                       [value]="projectBidDateTime"
+                                       type="datetime"
+                                       (onValueChanged)="projectBidDateTime = $event"
+                                       [showClearButton]="true"
+                  ></app-custom-datetime>
+                </div>
+              </div>
+              <div class="dx-field">
+                <div class="dx-field-label">Timezone</div>
+                <div class="dx-field-value">
+                  <select name='timezone' [(ngModel)]='projectTimezone'>
+                    <option value="eastern">Eastern</option>
+                    <option value="central">Central</option>
+                    <option value="mountain">Mountain</option>
+                    <option value="pacific">Pacific</option>
+                  </select>
+                </div>
+              </div>
+              <div class="dx-field">
+                <div class="dx-field-label">Office</div>
+                <div class="dx-field-value">
+                  <select name='office' [(ngModel)]='projectOfficeId'>
+                    <option *ngFor="let office of offices" [value]="office.company_office_id">{{ office.company_office_name }}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="dx-field">
+                <div class="dx-field-label">Project Admin User</div>
+                <div class="dx-field-value">
+                  <select name='projectAdmin' [(ngModel)]='projectAdminUserId'>
+                    <option *ngFor="let user of companyUsers" [value]="user.user_id">{{ user.user_email }}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="dx-field">
+                <div class="dx-field-label">Submitter Email</div>
+                <div class="dx-field-value">
+                  <dx-text-box name="submitterEmail" [readOnly]="true" [(value)]="submitterEmail" [showClearButton]="true">
+                    <dx-validator>
+                      <dxi-validation-rule type="required"></dxi-validation-rule>
+                      <dxi-validation-rule type="email" message="Email is invalid"></dxi-validation-rule>
+                    </dx-validator>
+                  </dx-text-box>
+                </div>
+              </div>
+              <div class="dx-field">
+                <div class="dx-field-label">Source System URL</div>
+                <div class="dx-field-value">
+                  <dx-text-box name="source" [(value)]="source" [showClearButton]="true"></dx-text-box>
+                </div>
+              </div>
+              <div class="dx-field">
+                <div class="dx-field-label">Status</div>
+                <div class="dx-field-value">
+                  <select [(ngModel)]='status' name='status'>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                    <option value="archived">Archived</option>
+                    <option value="deleted">Deleted</option>
+                  </select>
+                </div>
+              </div>
+              <div class='checkbox'>
+                <input type='checkbox' name='auto-update-status' [(ngModel)]='autoUpdateStatus' />
+                <span>Check For Updates Nightly</span>
+              </div>
+              <div class="dx-field">
+                <div class="dx-field-label">Project Address</div>
+                <div class="dx-field-value field-value-address">
+                  <dx-text-box name="projectAddress1" [(value)]="projectAddress1" placeholder="Project Address 1" [showClearButton]="true"></dx-text-box>
+                  <dx-text-box name="projectAddress1" [(value)]="projectAddress2" placeholder="Project Address 2" [showClearButton]="true"></dx-text-box>
+                  <div class="triple-form">
+                    <dx-text-box name="projectCity" [(value)]="projectCity" placeholder="City" [showClearButton]="true"></dx-text-box>
+                    <dx-text-box name="projectState" [(value)]="projectState" placeholder="State" [showClearButton]="true"></dx-text-box>
+                    <dx-text-box name="projectZip" [(value)]="projectZip" placeholder="Zip" [showClearButton]="true"></dx-text-box>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class='project-form-half drop-zone'>
+              <span>Project Folders / Files</span>
+              <div #dropZone id='drop_zone' (drop)='onDropFiles($event)' (dragover)='onDragOverDropZone($event)'>
+                Drag and Drop Folders and Files Here
+              </div>
+              <div #treeZone id='tree_zone' (drop)='onDropFiles($event)' (dragover)='onDragOverDropZone($event)'>
+                <tree [tree]="fileTree"></tree>
+              </div>
+            </div>
+          </div>
+
+          <div class='project-form form-date' [ngClass]="{'active': viewMode === 'date'}">
+            <div class="dx-field-set">
+              <div class="dx-field">
+                <div class="dx-field-label">Pre Bid Meeting Date/Time</div>
+                <div class="dx-field-value">
+                  <app-custom-datetime name="preBidDateTime"
+                                       [value]="preBidDateTime"
+                                       (onValueChanged)="preBidDateTime = $event"
+                                       type="datetime"
+                                       [showClearButton]="true"
+                  ></app-custom-datetime>
+                </div>
+              </div>
+              <div class="dx-field">
+                <div class="dx-field-label">Project Start Date</div>
+                <div class="dx-field-value">
+                  <dx-date-box name="projectStartDateTime" [(value)]="projectStartDateTime" type="date" [showClearButton]="true"></dx-date-box>
+                </div>
+              </div>
+              <div class="dx-field">
+                <div class="dx-field-label">Project Finish Date</div>
+                <div class="dx-field-value">
+                  <dx-date-box name="projectFinishDateTime" [(value)]="projectFinishDateTime" type="date" [showClearButton]="true"></dx-date-box>
+                </div>
+              </div>
+              <div class="dx-field">
+                <div class="dx-field-label">Work Start Date</div>
+                <div class="dx-field-value">
+                  <dx-date-box name="workStartDateTime" [(value)]="workStartDateTime" type="date" [showClearButton]="true"></dx-date-box>
+                </div>
+              </div>
+              <div class="dx-field">
+                <div class="dx-field-label">Work Finish Date</div>
+                <div class="dx-field-value">
+                  <dx-date-box name="workFinishDateTime" [(value)]="workFinishDateTime" type="date" [showClearButton]="true"></dx-date-box>
+                </div>
+              </div>
+              <div class="dx-field">
+                <div class="dx-field-label">Expected Award Date</div>
+                <div class="dx-field-value">
+                  <dx-date-box name="expectedAwardDateTime" [(value)]="expectedAwardDateTime" type="date" [showClearButton]="true"></dx-date-box>
+                </div>
+              </div>
+              <div class="dx-field">
+                <div class="dx-field-label">Award Date</div>
+                <div class="dx-field-value">
+                  <dx-date-box name="awardDateTime" [(value)]="awardDateTime" type="date" [showClearButton]="true"></dx-date-box>
+                </div>
+              </div>
+              <div class="dx-field">
+                <div class="dx-field-label">Expected Contract Date</div>
+                <div class="dx-field-value">
+                  <dx-date-box name="expectedContractDateTime" [(value)]="expectedContractDateTime" type="date" [showClearButton]="true"></dx-date-box>
+                </div>
+              </div>
+              <div class="dx-field">
+                <div class="dx-field-label">Contract Date</div>
+                <div class="dx-field-value">
+                  <dx-date-box name="contractDateTime" [(value)]="contractDateTime" type="date" [showClearButton]="true"></dx-date-box>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class='project-form form-detail' [ngClass]="{'active': viewMode === 'detail'}">
+            <div class="dx-fieldset">
+              <div class="dx-field">
+                <div class="dx-field-label">Project Number</div>
+                <div class="dx-field-value">
+                  <dx-text-box name="projectNumber" [(value)]="projectNumber" [showClearButton]="true"></dx-text-box>
+                </div>
+              </div>
+              <div class="dx-field">
+                <div class="dx-field-label">Contract Type</div>
+                <div class="dx-field-value">
+                  <select [(ngModel)]='contractType' name='contractType'>
+                    <option value="GMP Bid">GMP Bid</option>
+                    <option value="Negotiated">Negotiated</option>
+                    <option value="Design Build">Design Build</option>
+                    <option value="Time and Materials">Time and Materials</option>
+                  </select>
+                </div>
+              </div>
+              <div class="dx-field">
+                <div class="dx-field-label">Project Stage</div>
+                <div class="dx-field-value">
+                  <select [(ngModel)]='projectStage' name='projectStage'>
+                    <option value="Unassigned">Unassigned</option>
+                    <option value="Prospect">Prospect</option>
+                    <option value="Lead">Lead</option>
+                    <option value="Opportunity">Opportunity</option>
+                    <option value="Proposal">Proposal</option>
+                    <option value="Bidding">Bidding</option>
+                    <option value="Awarded">Awarded</option>
+                    <option value="Contract">Contract</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Not Interested">Not Interested</option>
+                    <option value="Lost">Lost</option>
+                  </select>
+                </div>
+              </div>
+              <div class="dx-field">
+                <div class="dx-field-label">Project Segment</div>
+                <div class="dx-field-value">
+                  <select [(ngModel)]='projectSegment' name='projectSegment'>
+                    <option value="Commercial">Commercial</option>
+                    <option value="Industrial">Industrial</option>
+                    <option value="Heavy Highway">Heavy Highway</option>
+                    <option value="Residential">Residential</option>
+                  </select>
+                </div>
+              </div>
+              <div class="dx-field">
+                <div class="dx-field-label">Building Type</div>
+                <div class="dx-field-value">
+                  <select [(ngModel)]='buildingType' name='buildingType'>
+                    <option value="Healthcare">Healthcare</option>
+                    <option value="Government">Government</option>
+                    <option value="Retail">Retail</option>
+                    <option value="Residential">Residential</option>
+                  </select>
+                </div>
+              </div>
+              <div class="dx-field">
+                <div class="dx-field-label">Labor Requirement</div>
+                <div class="dx-field-value">
+                  <select [(ngModel)]='laborRequirement' name='laborRequirement'>
+                    <option value="union">union</option>
+                    <option value="open shop">open shop</option>
+                    <option value="prevailing wage">prevailing wage</option>
+                  </select>
+                </div>
+              </div>
+              <div class="dx-field">
+                <div class="dx-field-label">Project Value $</div>
+                <div class="dx-field-value">
+                  <dx-number-box name="projectValue" [(value)]="projectValue" [showClearButton]="true"></dx-number-box>
+                </div>
+              </div>
+              <div class="dx-field">
+                <div class="dx-field-label">Project Size</div>
+                <div class="dx-field-value">
+                  <dx-text-box name="projectSize" [(value)]="projectSize" [showClearButton]="true"></dx-text-box>
+                </div>
+              </div>
+              <div class="dx-field">
+                <div class="dx-field-label">Construction Type</div>
+                <div class="dx-field-value">
+                  <select [(ngModel)]='constructionType' name='constructionType'>
+                    <option value="new construction">new construction</option>
+                    <option value="remodel">remodel</option>
+                    <option value="tenant improvements">tenant improvements</option>
+                  </select>
+                </div>
+              </div>
+              <div class="dx-field">
+                <div class="dx-field-label">Source Award Status</div>
+                <div class="dx-field-value">
+                  <select [(ngModel)]='awardStatus' name='awardStatus'>
+                    <option value="Preparing Proposal">Preparing Proposal</option>
+                    <option value="Bid Submitted">Bid Submitted</option>
+                    <option value="Awarded">Awarded</option>
+                    <option value="Lost">Lost</option>
+                    <option value="Suspended Bid">Suspended Bit</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          
+          <div class='project-form form-detail' [ngClass]="{'active': viewMode === 'source'}">
+            <div class="dx-fieldset">
+              <div class="dx-field">
+                <div class="dx-field-label">Source Company Name</div>
+                <div class="dx-field-value">
+                  <dx-text-box name="source_company_id" [(value)]="source_company_id" [showClearButton]="true"></dx-text-box>
+                </div>
+              </div>
+            </div>
+            <div class="dx-fieldset">
+              <div class="dx-field">
+                <div class="dx-field-label">Source Company Website</div>
+                <div class="dx-field-value">
+                  <dx-text-box name="source_company_domain" [(value)]="source_company_domain" [showClearButton]="true"></dx-text-box>
+                </div>
+              </div>
+            </div>
+
+            <!-- <div class="dx-fieldset">
+              <div class="dx-field">
+                <div class="dx-field-label">Source Contact First Name</div>
+                <div class="dx-field-value">
+                  <dx-text-box name="projectNumber" [(value)]="projectNumber" [showClearButton]="true"></dx-text-box>
+                </div>
+              </div>
+            </div>
+              
+            <div class="dx-fieldset">
+              <div class="dx-field">
+                <div class="dx-field-label">Source Contact Last Name</div>
+                <div class="dx-field-value">
+                  <dx-text-box name="projectNumber" [(value)]="projectNumber" [showClearButton]="true"></dx-text-box>
+                </div>
+              </div>
+            </div>
+
+            <div class="dx-fieldset">
+              <div class="dx-field">
+                <div class="dx-field-label">Source Contact Email</div>
+                <div class="dx-field-value">
+                  <dx-text-box name="projectNumber" [(value)]="projectNumber" [showClearButton]="true"></dx-text-box>
+                </div>
+              </div>
+            </div> -->
+
+            <hr>
+
+            <div class="dx-fieldset">
+              <div class="dx-field">
+                <div class="dx-field-label">Source System Type</div>
+                <div class="dx-field-value">
+                  <!-- <dx-text-box name="source_sys_type_id" [(value)]="source_sys_type_id" [showClearButton]="true"></dx-text-box> -->
+                  <select name='source_sys_type_id' [(value)]='source_sys_type_id'>
+                    <option *ngFor="let sourceSystemType of sourceSystemTypes" [ngValue]="sourceSystemType.source_sys_type_id">
+                      {{ sourceSystemType.source_type_name }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- <div class="dx-fieldset">
+              <div class="dx-field">
+              <div class="dx-field-label">Submitter Email</div>
+              <div class="dx-field-value">
+                <dx-text-box name="submitterEmail" [readOnly]="true" [(value)]="submitterEmail" [showClearButton]="true">
+                  <dx-validator>
+                    <dxi-validation-rule type="required"></dxi-validation-rule>
+                    <dxi-validation-rule type="email" message="Email is invalid"></dxi-validation-rule>
+                  </dx-validator>
+                </dx-text-box>
+              </div>
+              </div>
+            </div> -->
+
+            <!-- <div class="dx-fieldset">
+              <div class="dx-field">
+              <div class="dx-field-label">Source System URL</div>
+              <div class="dx-field-value">
+                <dx-text-box name="source_sys_url" [(value)]="source_sys_url" [showClearButton]="true"></dx-text-box>
+              </div>
+            </div>
+            </div>
+             -->
+
+          </div>
+
+        </div>
+
+        <div class='button-group'>
+          <button class='btn btn-light' (click)='onCancel($event)'>Cancel</button>
+          <button type='submit' class='btn btn-primary'>Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

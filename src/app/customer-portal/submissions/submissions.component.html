@@ -1,0 +1,79 @@
+<div class='submissions-content'>
+  <div class='submissions-header'>
+    <div>
+      <select *ngIf='isBidRetrieverAdmin' class='submissions-view-mode' [(ngModel)]='submissionViewMode' (change)='onChangeSubmissionViewMode()'>
+        <option value="all">All Submissions</option>
+        <option value="open">Open Submissions</option>
+        <option value="queued">Queued Submissions</option>
+        <option value="processing">Processing Submissions</option>
+        <option value="errored">Error Submissions</option>
+        <option value="completed">Completed Submissions</option>
+        <option value="deleted">Terminated Submissions</option>
+      </select>
+      <select *ngIf='!isBidRetrieverAdmin' class='submissions-view-mode' [(ngModel)]='submissionViewMode' (change)='onChangeSubmissionViewMode()'>
+        <option value="my">My Projects</option>
+        <option *ngIf='currentOffice' value="office">My {{ currentOffice.company_office_name }} Projects</option>
+        <option value="all">All Projects</option>
+      </select>
+    </div>
+
+    <input class='submissions-search' type='text' placeholder='Search' (input)="onSearchChange($event.target.value)"/>
+
+    <div class='buttons-group'>
+      <button class="btn btn-light" (click)='onViewProject()'>View Project</button>
+      <button class="btn btn-light" (click)='onViewSubmission()'>View Submission</button>
+      <div class="btn-group">
+        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Other Actions
+        </button>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" (click)='onViewProject()'>View Project</a>
+          <a class="dropdown-item" (click)='onViewSubmission()'>View Project Submission</a>
+          <div class="dropdown-divider orange"></div>
+          <a class='dropdown-item' (click)='onViewPublishedSubmission()'>View Published Submission</a>
+          <a class='dropdown-item' (click)='onViewSubmissionEmail()'>View Submission Email</a>
+          <div *ngIf='isBidRetrieverAdmin' class="dropdown-divider orange"></div>
+          <a *ngIf='isBidRetrieverAdmin' class="dropdown-item text-danger" (click)='onDeleteSubmission()'>Delete Submission</a>
+          <div class="dropdown-divider orange"></div>
+          <a class="dropdown-item" (click)='onViewTransactionLogs()'>View Transaction Log</a>
+          <a class="dropdown-item" (click)='onRefresh()'>Refresh Grid</a>
+          <a class="dropdown-item orange" (click)='onHelp()'>Help</a>
+        </div>
+      </div>
+      <select class='refresh-interval' [(ngModel)]='refreshInterval' (change)='onChangeRefreshInterval()'>
+        <option value="1">1 min</option>
+        <option value="2">2 min</option>
+        <option value="5">5 min</option>
+        <option value="10">10 min</option>
+        <option value="30">30 min</option>
+        <option value="60">60 min</option>
+        <option value="0">None</option>
+      </select>
+    </div>
+  </div>
+
+  <div class='submissions-table'>
+    <ag-grid-angular
+      #grid
+      style="width: 100%;"
+      class="ag-theme-balham"
+      [rowData]="rowData"
+      [columnDefs]="columnDefs"
+      rowSelection="multiple"
+      rowDragManaged=true
+      (rowDoubleClicked)="onRowDoubleClicked($event)"
+      (gridReady)="onGridReady($event)"
+      >
+    </ag-grid-angular>
+  </div>
+
+</div>
+
+<!-- Submission Detail Modal -->
+<submission-detail-modal #submissionDetailModal></submission-detail-modal>
+
+<!-- Transaction Logs Modal -->
+<submission-transaction-logs-modal #transactionLogsModal></submission-transaction-logs-modal>
+
+<!-- Submission Delete Modal -->
+<remove-submission-modal #removeSubmissionModal></remove-submission-modal>

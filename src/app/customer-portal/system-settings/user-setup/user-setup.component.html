@@ -1,0 +1,85 @@
+<div class='buttons-group'>
+  <button class='btn btn-light' (click)='onRemove()'>Remove User</button>
+  <button class='btn btn-light' (click)='onEdit()'>Edit User</button>
+  <button class='btn btn-primary' (click)='onAdd()'>Add User</button>
+</div>
+<ng2-smart-table #table [settings]="settings" [source]="data" (userRowSelect)="onUserRowSelected($event)"></ng2-smart-table>
+
+<div #editModal class='modal-container'>
+  <div class='modal-box'>
+    <div class='user-setup-edit-modal'>
+      <div class='modal-title'>
+        {{editModalTitle}}
+      </div>
+      <div class='user-setup-edit-form'>
+        <form (ngSubmit)='onSave()'>
+          <div class='user-setup-edit-form-body'>
+            <div class='user-setup-edit-form-inputs'>
+              <div *ngIf="dataStore?.currentUser?.user_role === 'sys admin'">User Email Address</div>
+              <input *ngIf="dataStore?.currentUser?.user_role === 'sys admin'" type='email' name='email' [(ngModel)]='editEmail' required/>
+              <div *ngIf="dataStore?.currentUser?.user_role === 'sys admin'">User First Name</div>
+              <input *ngIf="dataStore?.currentUser?.user_role === 'sys admin'" type='text' name='firstName' [(ngModel)]='editFirstName' required/>
+              <div *ngIf="dataStore?.currentUser?.user_role === 'sys admin'">User Last Name</div>
+              <input *ngIf="dataStore?.currentUser?.user_role === 'sys admin'" type='text' name='lastName' [(ngModel)]='editLastName' required/>
+              <div *ngIf="dataStore?.currentUser?.user_role === 'sys admin'">User Phone Number</div>
+              <input *ngIf="dataStore?.currentUser?.user_role === 'sys admin'" type='phone' name='phone' [(ngModel)]='editPhone' required/>
+              <div>Password</div>
+              <input type='password' name='password' [(ngModel)]='editPassword'/>
+              <div *ngIf="dataStore?.currentUser?.user_role === 'sys admin'">User Role</div>
+              <select *ngIf="dataStore?.currentUser?.user_role === 'sys admin'" name='role' [(ngModel)]='editRole'>
+                <option value="submitter">Submitter</option>
+                <option value="user">User</option>
+                <option *ngIf='isSysAdmin' value="sys admin">Sys Admin</option>
+              </select>
+              <div *ngIf="dataStore?.currentUser?.user_role === 'sys admin'">User Office</div>
+              <select *ngIf="dataStore?.currentUser?.user_role === 'sys admin'" name='office' [(ngModel)]='editOfficeId'>
+                <option *ngFor="let office of offices" [value]="office.company_office_id">{{ office.company_office_name }}</option>
+              </select>
+            </div>
+            <div class='user-setup-edit-form-help'>
+              {{editModalDescriptionText}}
+
+              <div class='warning mt-3'>
+                <div class='mb-2'>WARNING: </div>
+                <div class='mb-1'>Users Assigned a role of "Submitter" cannot access the project dashboard, viewer or desktop sync apps.</div>
+                <div>Assign a role of "User" if the contact should have access to those services.</div>
+              </div>
+            </div>
+          </div>
+          <div class='user-setup-edit-form-buttons'>
+            <button class='btn btn-light' type='button' (click)='onCloseEditModal()'>Cancel</button>
+            <button class='btn btn-primary' type='submit'>Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div #removeModal class='modal-container'>
+  <div class='modal-box'>
+    <div class='user-remove-modal'>
+      <div class='modal-title'>
+        {{removeDescriptionText}}
+      </div>
+      <div class='user-remove-modal-buttons'>
+        <button class='btn btn-light' type='button' (click)='onCloseRemoveModal()'>Cancel</button>
+        <button class='btn btn-primary' type='submit' (click)='onConfirmRemove()'>Yes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div #roleAlertModal class='modal-container'>
+  <div class='modal-box'>
+    <div class='role-alert-modal'>
+      <div class='modal-title'>
+        {{roleAlertText}}
+      </div>
+      <div class='role-alert-modal-buttons'>
+        <button class='btn btn-light' type='button' (click)='onCloseAlertModal()'>Cancel</button>
+        <button class='btn btn-primary' type='submit' (click)='onConfirmSave()'>Yes</button>
+      </div>
+    </div>
+  </div>
+</div>

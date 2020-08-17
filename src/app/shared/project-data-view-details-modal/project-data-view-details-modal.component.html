@@ -1,0 +1,97 @@
+<div class="data-view-details">
+  <dx-scroll-view class="data-view-details-content">
+    <div class="data-view dx-fieldset">
+      <div class="dx-field">
+        <div class="dx-field-label">View Name</div>
+        <dx-text-box class="dx-field-value"
+                    [showClearButton]="true"
+                    [(value)]="dataViewName">
+        </dx-text-box>
+      </div>
+      <div class="dx-field">
+        <div class="dx-field-label">View Description</div>
+        <dx-text-area class="dx-field-value"
+                      [height]="60"
+                      [(value)]="dataViewDescription">
+        </dx-text-area>
+      </div>
+    </div>
+
+    <div class="data-source dx-fieldset">
+      <div class="dx-field">
+        <div class="dx-field-label">Source Name</div>
+        <div class="dx-field-value">
+          <dx-select-box #dataViewDetailsDataSource
+                         [dataSource]="dataSourceContent"
+                         [showClearButton]="true"
+                         displayExpr="data_source_name"
+                         valueExpr="data_source_id"
+                         [value]="dataSourceId"
+                         (onValueChanged)="selectDataSourceValueChangedAction($event)">
+          </dx-select-box>
+        </div>
+      </div>
+      <div class="dx-field">
+        <div class="dx-field-label">Filter Name</div>
+        <div class="dx-field-value">
+          <dx-select-box #dataViewDetailsDataFilter
+                         [dataSource]="dataFilterContent"
+                         [showClearButton]="true"
+                         displayExpr="data_view_filter_name"
+                         valueExpr="data_view_filter_id"
+                         [(value)]="dataFilterId">
+          </dx-select-box>
+        </div>
+      </div>
+    </div>
+
+    <div class="data-column-settings dx-fieldset">
+      <div class="dx-fieldset-header">Data View Column Settings</div>
+
+      <dx-data-grid #dataViewColumnSettingGrid
+                    id="dataViewColumnSettingGrid"
+                    [allowColumnResizing]="true"
+                    [columnAutoWidth]="true"
+                    columnResizingMode="widget"
+                    [dataSource]="dataViewColumnSettingGridContentSource"
+                    height="380px"
+                    keyExpr="data_view_field_setting_id"
+                    (onRowInserting)="gridColumnSettingRowInsertingAction($event)"
+                    [rowAlternationEnabled]="true"
+                    [showColumnLines]="true"
+                    [showRowLines]="true"
+                    [showBorders]="true"
+                    class="data-view-column-setting-grid">
+        <dxo-editing mode="cell" [allowAdding]="true" [allowDeleting]="true" [allowUpdating]="true" refreshMode="reshape"></dxo-editing>
+        <dxo-paging [enabled]="false"></dxo-paging>
+        <dxo-scrolling mode="vertical" [scrollByContent]="true" [scrollByThumb]="true"></dxo-scrolling>
+        <dxo-sorting mode="multiple"></dxo-sorting>
+        <dxo-column-fixing [enabled]="true"></dxo-column-fixing>
+
+        <dxi-column dataField="data_view_field_setting_id" caption="Setting Id" [visible]="false"></dxi-column>
+        <dxi-column dataField="data_view_field_sequence" caption="Column" alignment="center" sortOrder="ASC" dataType="number"></dxi-column>
+        <dxi-column dataField="data_view_field_id" caption="Field Name" [width]="320" dataType="string">
+          <dxo-lookup [dataSource]="dataSourceFields" displayExpr="data_source_field_displayname" valueExpr="data_source_field_id" itemTemplate="lookupItem">
+          </dxo-lookup>
+          <dxi-validation-rule type="required"></dxi-validation-rule>
+        </dxi-column>
+        <dxi-column dataField="data_view_field_heading" caption="Heading" [width]="320" dataType="string">
+          <dxi-validation-rule type="required"></dxi-validation-rule>
+        </dxi-column>
+        <dxi-column dataField="data_view_field_width" caption="Width" dataType="number"></dxi-column>
+        <dxi-column dataField="data_view_field_alignment" caption="Alignment">
+          <dxo-lookup [dataSource]="dataViewColumnSettingGridCellTemplates.alignment" displayExpr="name" valueExpr="id"></dxo-lookup>
+        </dxi-column>
+        <dxi-column dataField="data_view_field_sort_sequence" caption="Sort Sequence" alignment="center"></dxi-column>
+        <dxi-column dataField="data_view_field_sort" caption="Sort" [width]="100">
+          <dxo-lookup [dataSource]="dataViewColumnSettingGridCellTemplates.sort" displayExpr="name" valueExpr="id"></dxo-lookup>
+        </dxi-column>
+      </dx-data-grid>
+    </div>
+  </dx-scroll-view>
+
+  <div class="data-view-details-footer">
+    <dx-button type="danger" class="btn-cancel" text="Cancel" (click)="buttonCancelAction()"></dx-button>
+    <dx-button type="success" class="btn-apply" text="OK" (click)="buttonApplyAction()"></dx-button>
+  </div>
+</div>

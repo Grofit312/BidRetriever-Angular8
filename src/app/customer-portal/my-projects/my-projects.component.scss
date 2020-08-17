@@ -1,0 +1,67 @@
+app-my-projects {
+  overflow: hidden;
+}
+
+.my-projects {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+  overflow: hidden;
+  .total-number-of-rows {
+      font-size: 16px;
+      margin: 5px 2px;
+  }
+
+  .header {
+    margin-bottom: 20px;
+
+    .dx-toolbar-menu-container .dx-dropdownmenu-button {
+      background-color: #007BFF;
+      border-color: #007BFF;
+
+      .dx-icon {
+        color: #FFFFFF;
+      }
+    }
+  }
+
+  .content {
+    flex: 1 1 auto;
+    overflow: auto;
+  }
+}
+
+.dx-dropdownmenu-popup {
+  .dx-template-wrapper.dx-list-item-content {
+    height: fit-content;
+    padding: 5px 0;
+    font-size: 0;
+  }
+
+  .separator {
+    height: 1px;
+    background: #808080;
+  }
+}
+
+.dx-selectbox-popup-wrapper {
+  .project-toolbar-view-type-item.manage-project-view {
+    margin: -7px -9px;
+    padding: 7px 9px;
+    border-top: 1px solid #808080;
+    color: #007BFF;
+  }
+}
+
+.dx-overlay-wrapper.dx-lookup-popup-wrapper {
+  .dx-overlay-content {
+    .dx-toolbar.dx-widget.dx-collection.dx-popup-title {
+      display: none;
+    }
+
+    .dx-toolbar.dx-widget.dx-collection.dx-popup-bottom.dx-popup-cancel {
+      padding: 5px 10px;
+    }
+  }
+}

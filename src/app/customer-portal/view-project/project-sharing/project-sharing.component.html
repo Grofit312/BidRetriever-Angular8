@@ -1,0 +1,62 @@
+<div class='project-sharing'>
+  <div *ngIf='isPubliclyShared' class='public-alert'>
+    This project has been designated as a public project. That means that any Bid Retriever user or
+    company can view the project information and documents.
+  </div>
+  <div class="project-sharing-header">
+    <select class="dropdown share-type">
+      <option value="all" selected>All Share Types</option>
+      <option value="admin">External User</option>
+      <option value="observer">Internal Observer</option>
+      <option value="collaborator">Internal Collaborator</option>
+      <option value="none">No Access</option>
+    </select>
+    <input class="input-search" type="text" placeholder="Search" />
+    <div class='button-group'>
+      <button class='btn btn-light' (click)='onAddShare()'>Add Share</button>
+      <button class='btn btn-light' (click)='onRemoveShare()'>Remove Share</button>
+      <div class="btn-group">
+        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Other Actions
+        </button>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" (click)='onAddShare()'>Add Share</a>
+          <a class="dropdown-item" (click)='onRemoveShare()'>Remove Share</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" (click)='onCopyDownloadLink()'>Copy Download Link</a>
+          <a class="dropdown-item" (click)='onCopyViewLink()'>Copy View Link</a>
+          <a class="dropdown-item" (click)='onCopyEmailLinks()'>Copy Email Links</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" (click)='onSharePublicly()'>{{ isPubliclyShared ? 'Remove ' : '' }}Share Publicly</a>
+          <div class="dropdown-divider orange"></div>
+          <a class="dropdown-item" (click)='onRefresh()'>Refresh Grid</a>
+          <a class="dropdown-item orange" (click)='onHelp()'>Help</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div>This project is shared with the following contacts/companies.</div>
+  <div class='projects-table'>
+    <ag-grid-angular
+      #grid
+      style="width: 100%;"
+      class="ag-theme-balham"
+      [rowData]="rowData"
+      [columnDefs]="columnDefs"
+      rowSelection="single"
+      (gridReady)="onGridReady($event)"
+      >
+    </ag-grid-angular>
+  </div>
+
+  <input #clipboardInput class='clipboard-input' type='text' />
+</div>
+
+<!-- Add Submission Modal -->
+<add-share-user-modal #addShareUserModal></add-share-user-modal>
+
+<!-- Public Share Modal -->
+<public-share-modal #publicShareModal></public-share-modal>
+
+<!-- Remove Share Modal -->
+<remove-share-modal #removeShareModal></remove-share-modal>

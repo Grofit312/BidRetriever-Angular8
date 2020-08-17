@@ -1,0 +1,419 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import '~angular-tree-component/dist/angular-tree-component.css';
+
+* {
+  outline: none;
+}
+
+body {
+  overflow: hidden;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+#version {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  color: darkgray;
+}
+
+input {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+textarea {
+  padding: 5px 10px;
+  resize: none !important;
+}
+
+.ng2-smart-table-container {
+  height: 500px;
+  overflow: scroll;
+  border: 1px solid lightgray;
+
+  .ng2-smart-pagination {
+    display: flex !important;
+  }
+  .ng2-smart-filters {
+    display: none;
+  }
+}
+
+.modal-container {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1200;
+  background: rgba(0,0,0,0.7);
+  display: none;
+
+  .modal-box {
+    display: block;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    padding: 30px 50px;
+    box-shadow: 0px 2px 4px 0 rgba(50,50,50,0.5);
+    background: white;
+
+    .modal-title {
+      font-size: 2em;
+      font-weight: 600;
+    }
+
+    input {
+      height: 40px;
+      width: 300px;
+      margin-top: 5px;
+      margin-bottom: 10px;
+    }
+
+    select {
+      height: 40px;
+      width: 300px;
+      margin-bottom: 10px;
+      margin-top: 5px;
+    }
+
+    .btn {
+      width: 150px;
+      margin-left: 20px;
+    }
+  }
+}
+
+.buttons-group {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+
+  .btn {
+    margin-left: 10px;
+    width: 150px;
+  }
+}
+
+.ag-cell-edit-input {
+  height: 100% !important;
+}
+
+.btn-group .dropdown-menu {
+  left: -40px !important;
+
+  .dropdown-divider {
+    &.orange {
+      border-top: 1px solid orange !important;
+    }
+  }
+
+  .dropdown-item {
+    text-align: center;
+    cursor: pointer;
+
+    &.orange {
+      color: orange !important;
+    }
+  }
+}
+
+.simple-notification-wrapper {
+  z-index: 10000 !important;
+}
+
+div.ag-root .ag-cell-focus {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
+.wc-date-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 40px !important;
+  line-height: 40px !important;
+  border: 1px solid lightgray !important;
+  padding: 0 10px !important;
+  margin: 5px 0 10px !important;
+
+  span {
+    color: black !important;
+  }
+}
+
+.wc-date-popover {
+  top: 0 !important;
+  left: unset !important;
+  right: -20px !important;
+  transform: translateX(100%) !important;
+  box-shadow: 0px 3px 6px rgba(black, .4) !important;
+}
+
+.datetime-no-value {
+  .wc-date-container {
+    span {
+      visibility: hidden !important;
+    }
+  }
+}
+
+// ::-webkit-scrollbar {
+//   width: 0;
+// }
+
+
+/* Custom PDF Viewer Styles */
+.fv__ui-body {
+  max-height: calc(100vh - 70px);
+  min-height: calc(100vh - 70px);
+  overflow: scroll;
+
+  .fv__ui-sidebar {
+    display: flex !important;
+  }
+
+  .fv__ui-sidebar-panel-body {
+    display: flex;
+  }
+}
+
+.fv__ui-grouplist-item {
+  #docRevision {
+    width: 150px;
+  }
+}
+
+.fv__ui-button[name='marquee-button'] {
+  span {
+    display: none;
+  }
+  i {
+    background-image: url('/assets/marquee.png');
+    background-size: cover;
+  }
+}
+
+.fv__ui-button[name='loupe-button'] {
+  span {
+    display: none;
+  }
+}
+
+%fv-custom {
+  display: inline-block;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 32px;
+  height: 32px;
+}
+
+.fv_icon-toolbar-left-arrow {
+  @extend %fv-custom;
+  background-image: url('/assets/green_left_arrow.svg');
+}
+
+.fv_icon-toolbar-right-arrow {
+  @extend %fv-custom;
+  background-image: url('/assets/green_right_arrow.svg');
+}
+
+.fv__icon-toolbar-gear {
+  @extend %fv-custom;
+  width: 24px;
+  height: 24px;
+  margin: auto;
+  background-image: url('/assets/gear.png');
+}
+
+.fv__icon-toolbar-hand {
+  background-image: url('/assets/hand.png');
+  background-size: contain;
+}
+
+.fv__icon-toolbar-select {
+  background-image: url('/assets/arrow.png');
+  background-size: contain;
+}
+
+.fv__icon-toolbar-zoom-in {
+  background-image: url('/assets/zoom_in.png');
+  background-size: contain;
+}
+
+.fv__icon-toolbar-zoom-out {
+  background-image: url('/assets/zoom_out.png');
+  background-size: contain;
+}
+
+.fv_icon-toolbar-zoom-extent {
+  @extend %fv-custom;
+  background-image: url('/assets/zoom_extent.png');
+}
+
+%fv__icon-sidebar {
+  background-size: 20px;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.fv__icon-sidebar-favorites {
+  @extend %fv__icon-sidebar;
+  background-image: url('/assets/favorite.png');
+}
+
+.fv__icon-sidebar-current-plans {
+  @extend %fv__icon-sidebar;
+  background-image: url('/assets/doc_plans.ico');
+}
+
+.fv__icon-sidebar-current-specs {
+  @extend %fv__icon-sidebar;
+  background-image: url('/assets/doc_specs.ico');
+}
+
+.fv__icon-sidebar-linked {
+  @extend %fv__icon-sidebar;
+  background-image: url('/assets/doc_links.ico');
+}
+
+.fv__icon-sidebar-comparison {
+  @extend %fv__icon-sidebar;
+  background-image: url('/assets/doc_comparison.png');
+}
+
+.fv__icon-sidebar-detail {
+  @extend %fv__icon-sidebar;
+  background-image: url('/assets/doc_detail.ico');
+}
+
+.fv__icon-sidebar-source-docs {
+  @extend %fv__icon-sidebar;
+  background-image: url('/assets/doc_origin.ico');
+}
+
+#addFavorite, #removeFavorite {
+  display: none;
+}
+
+.fv__icon-toolbar-add-favorite {
+  background-image: url('/assets/empty_favorite.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.fv__icon-toolbar-remove-favorite {
+  background-image: url('/assets/favorite.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.fv__ui-grouplist-item[name='home-tab-favorite'] {
+  width: 100%;
+  justify-content: flex-end !important;
+
+  a {
+    margin-left: auto;
+  }
+
+  &:after {
+    background-color: unset;
+  }
+}
+
+.fv__ui-grouplist[name='home-toolbar-group-list'] {
+  overflow: visible;
+}
+
+.fv__ui-loupe-tool-dialog {
+  bottom: 0;
+}
+
+.dx-scheduler {
+  height: 100%;
+}
+
+.node-content-wrapper {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+tree-node-content {
+  display: flex;
+}
+
+.upper-component {
+  overflow-y: scroll;
+}
+
+// 27-07-2020 company notes modal
+.fix-modal-notes .modal-box {
+  display: block !important;
+  position: absolute !important;
+  left: 50%;
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%) !important;
+  padding: 0!important;
+  box-shadow: 0px 2px 4px 0 rgba(50, 50, 50, 0.5);
+  background: white;
+  max-width: 700px !important;
+  overflow-y: inherit !important;
+  width: 100%;
+}
+
+.fix-modal-notes .modal-box .notes-edit-form-buttons {
+  margin-top: 10px;
+}
+
+.fix-modal-notes .modal-title {
+  background-color: #0000 !important;
+  color: #000 !important;
+  padding: 14px 12px !important;
+  font-size: 22px !important;
+  border-bottom: 1px solid #d8d8d8;
+}
+
+.fix-modal-notes .notes-edit-form {
+  padding: 15px 25px;
+  margin: 0px !important;
+}
+.notes-edit-modal .notes-edit-form h4 {
+  font-size: 15px;
+  font-weight: 400;
+  margin-top: 4px;
+}
+.notes-edit-form-inputs {
+  width: 100%;
+  float: left;
+}
+ckeditor .ck-content {
+  min-height:222px !important;
+}
+ckeditor .ck-content p {
+  margin: 0 0 4px 0;
+}
+.ck.ck-content.ck-editor__editable {
+  max-height: 310px !important;
+  overflow-y: scroll;
+}
+@media(max-width:767px)
+{
+  .fix-modal-notes .modal-box 
+  {
+   max-width: 90% !important; 
+  }
+  .modal-container .modal-box input, .modal-container .modal-box select {
+    width: 100%;
+}
+
+}

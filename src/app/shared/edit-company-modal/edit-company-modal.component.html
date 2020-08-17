@@ -1,0 +1,193 @@
+<!-- Create Company Modal -->
+<div #addCompanyModal class='modal-container company-modal'>
+  <div class='modal-box'>
+    <div class='add-company-modal'>
+      <div class='modal-title'>
+        Edit Company
+      </div>
+
+      <ul class="nav nav-tabs" id="add_company_tabs" role="tablist">
+        <li class="nav-item">
+          <a (click)="onClickTab($event, 1)" class="nav-link" [ngClass]="{'active': viewMode === 'basic'}" id="add-company-basic-info" data-toggle="tab" href="#" role="tab" aria-controls="home" aria-selected="true">Basic Info</a>
+        </li>
+        <li class="nav-item">
+          <a (click)="onClickTab($event, 3)" class="nav-link" [ngClass]="{'active': viewMode === 'detail'}" id="add-company-details" data-toggle="tab" href="#" role="tab" aria-controls="profile" aria-selected="false">Details</a>
+        </li>
+      </ul>
+
+      <form (ngSubmit)='onSaveCompany()'>
+        <div class='company-form-wrapper'>
+          <div class='company-form' [ngClass]="{'active': viewMode === 'basic'}">
+            <div class="company-form-half dx-fieldset">
+              <div class="dx-field">
+                <div class="dx-field-label">Company Name</div>
+                <div class="dx-field-value">
+                  <dx-text-box name="companyName" [(value)]="companyName" [showClearButton]="true">
+                    <dx-validator>
+                      <dxi-validation-rule type="required"></dxi-validation-rule>
+                    </dx-validator>
+                  </dx-text-box>
+                </div>
+              </div>
+              <div class="dx-field">
+                <div class="dx-field-label">Company Email</div>
+                <div class="dx-field-value">
+                  <dx-text-box name="companyEmail" [(value)]="companyEmail" [showClearButton]="true">
+                    <dx-validator>
+                      <dxi-validation-rule type="required"></dxi-validation-rule>
+                    </dx-validator>
+                  </dx-text-box>
+                </div>
+              </div>
+              <div class="dx-field">
+                <div class="dx-field-label">Company Phone</div>
+                <div class="dx-field-value">
+                  <dx-text-box name="companyPhone" [(value)]="companyPhone" [showClearButton]="true">
+                    <dx-validator>
+                      <dxi-validation-rule type="required"></dxi-validation-rule>
+                    </dx-validator>
+                  </dx-text-box>
+                </div>
+              </div>
+              <div class="dx-field">
+                <div class="dx-field-label">Company Domain</div>
+                <div class="dx-field-value">
+                  <dx-text-box name="companyDomain" [(value)]="companyDomain" [showClearButton]="true">
+                    <dx-validator>
+                      <dxi-validation-rule type="required"></dxi-validation-rule>
+                    </dx-validator>
+                  </dx-text-box>
+                </div>
+              </div>
+               <div class="dx-field">
+                <div class="dx-field-label">Company Employee Number</div>
+                 <div class="dx-field-value">
+                  <dx-text-box name="companyEmployeeNumber" [(value)]="companyEmployeeNumber" [showClearButton]="true">
+                    <dx-validator>
+                      <dxi-validation-rule type="required"></dxi-validation-rule>
+                    </dx-validator>
+                  </dx-text-box>
+                </div>
+              </div>
+                <div class="dx-field">
+                <div class="dx-field-label">Company Address</div>
+                <div class="dx-field-value field-value-address">
+                  <dx-text-box name="companyAddress1" [(value)]="companyAddress1" placeholder="Company Address 1" [showClearButton]="true"></dx-text-box>
+                  <dx-text-box class="" name="companyAddress1" [(value)]="companyAddress2" placeholder="Company Address 2" [showClearButton]="true"></dx-text-box>
+                  <div class="triple-form d-flex">
+                    <div class="my-flex">
+                    <dx-text-box class="w-33" name="companyCity" [(value)]="companyCity" placeholder="City" [showClearButton]="true"></dx-text-box>
+                    <dx-text-box class="w-33 m-rl" name="companyState" [(value)]="companyState" placeholder="State" [showClearButton]="true"></dx-text-box>
+                     <dx-text-box class="w-33" name="companyZip" [(value)]="companyZip" placeholder="Zip" [showClearButton]="true"></dx-text-box>
+                   </div>
+                    <dx-text-box class="m-top" name="companyCountry" [(value)]="companyCountry" placeholder="Country" [showClearButton]="true"></dx-text-box>
+                  </div>
+                </div>
+              </div>
+              <div class="dx-field">
+                <div class="dx-field-label">Timezone</div>
+                <div class="dx-field-value">
+                  <select name='timezone' [(ngModel)]='companyTimezone'>
+                    <option value="eastern">Eastern</option>
+                    <option value="central">Central</option>
+                    <option value="mountain">Mountain</option>
+                    <option value="pacific">Pacific</option>
+                  </select>
+                </div>
+              </div>
+             
+              <div class="dx-field">
+                <div class="dx-field-label">Company Admin User</div>
+                <div class="dx-field-value">
+                  <select name='companyAdmin' [(ngModel)]='companyAdminUserId'>
+                    <option *ngFor="let user of companyUsers" [value]="user.user_id">{{ user.user_email }}</option>
+                  </select>
+                </div>
+              </div>
+                         
+            <div class='company-form-half pm-0 drop-zone' style="display: none;">
+              <span class="dx-field-label"style="font-size: 14px;">Company Folders / Files</span>
+              <div #dropZone id='drop_zone' (drop)='onDropFiles($event)' (dragover)='onDragOverDropZone($event)'>
+                Drag and Drop Folders and Files Here
+              </div>
+              <div #treeZone id='tree_zone' (drop)='onDropFiles($event)' (dragover)='onDragOverDropZone($event)'>
+                <tree [tree]="fileTree"></tree>
+              </div>
+            </div>
+          </div>
+            </div>
+
+          <div class='company-form form-detail' [ngClass]="{'active': viewMode === 'detail'}">
+            <div class="dx-fieldset">
+              <div class="dx-field">
+                <div class="dx-field-label">Company Record Source</div>
+                <div class="dx-field-value">
+                  <dx-text-box name="companyRecordSource" [(value)]="companyRecordSource" [showClearButton]="true"></dx-text-box>
+                </div>
+              </div>
+              <div class="dx-field">
+                <div class="dx-field-label">Company Revenue</div>
+                <div class="dx-field-value">
+                  <dx-text-box name="companyRevenue" [(value)]="companyRevenue" [showClearButton]="true"></dx-text-box>
+                </div>
+              </div>
+              <div class="dx-field">
+                <div class="dx-field-label">Company Status</div>
+                <div class="dx-field-value">
+                  <select [(ngModel)]='companyStatus' name='companyStatus'>
+                    <option value="draft">Draft</option>
+                    <option value="active">Active</option>
+                    <option value="deleted">Deleted</option>
+                    <option value="archived">Archived</option>
+                    <option value="inactive">Inactive</option>
+                  </select>
+                </div>
+              </div>
+              <div class="dx-field">
+                <div class="dx-field-label">Company Type</div>
+                <div class="dx-field-value">
+                  <select [(ngModel)]='companyType' name='companyType'>
+                    <option value="general contractor">General Contractor</option>
+                    <option value="subcontractor">Subcontractor</option>
+                    <option value="product manufacturer">Product Manufacturer</option>
+                    <option value="AEC firm">AEC Firm</option>
+                    <option value="owner">Owner</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+              </div>
+              <div class="dx-field">
+                <div class="dx-field-label">Company Website</div>
+                <div class="dx-field-value">
+                  <dx-text-box name="companyWebsite" [(value)]="companyWebsite" [showClearButton]="true"></dx-text-box>
+                </div>
+              </div>
+              <div class="dx-field">
+                <div class="dx-field-label">Record Source</div>
+                <div class="dx-field-value">
+                  <dx-text-box name="recordSource" [(value)]="recordSource" [showClearButton]="true"></dx-text-box>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+       <!--   <div class='company-form-half drop-zone'>
+              <span>Company Folders / Files</span>
+              <div #dropZone id='drop_zone' (drop)='onDropFiles($event)' (dragover)='onDragOverDropZone($event)'>
+                Drag and Drop Folders and Files Here
+              </div>
+              <div #treeZone id='tree_zone' (drop)='onDropFiles($event)' (dragover)='onDragOverDropZone($event)'>
+                <tree [tree]="fileTree"></tree>
+              </div>
+            </div> -->
+
+        <div class='button-group'>
+          <button type='submit' class='btn btn-primary'>Update</button>
+          <button class='btn btn-light' (click)='onCancel($event)'>Cancel</button>
+          
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

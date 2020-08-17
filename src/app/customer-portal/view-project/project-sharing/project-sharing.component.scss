@@ -1,0 +1,48 @@
+.project-sharing {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+
+  .public-alert {
+    color: red;
+    font-weight: 700;
+  }
+
+  &-header {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 0 10px;
+
+    .dropdown.share-type {
+      width: 200px;
+      height: 40px;
+    }
+
+    .input-search {
+      text-align: center;
+    }
+
+    .button-group {
+      button {
+        margin-left: 10px;
+      }
+
+      .dropdown-menu {
+        left: unset !important;
+      }
+    }
+  }
+
+  .projects-table {
+    display: flex;
+    flex-grow: 1;
+    margin-top: 5px;
+  }
+
+  .clipboard-input {
+    position: fixed;
+    top: -100px;
+    left: -100px;
+    opacity: 0;
+  }
+}

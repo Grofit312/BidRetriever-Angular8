@@ -1,0 +1,35 @@
+.modal-container {
+  visibility: 'visible';
+
+  .edit-document-modal {
+    width: 600px;
+    height: 800px;
+
+    .nav-tabs {
+      width: 700px;
+      padding-left: 50px;
+      margin-left: -50px;
+    }
+
+    form {
+      margin-top: 20px;
+
+      .edit-document-form {
+        display: none;
+        height: 660px;
+        overflow-y: scroll;
+
+        &.active {
+          display: flex;
+          flex-direction: column;
+        }
+      }
+
+      .button-group {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 30px;
+      }
+    }
+  }
+}

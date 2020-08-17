@@ -1,0 +1,128 @@
+<div class='project-details-container'>
+  <div class="buttons-group">
+    <button class="btn btn-light" (click)='onViewDocuments()'>View Documents</button>
+    <button class='btn btn-light' (click)='onEditCompany()'>Edit Company</button>
+    <div class="btn-group">
+      <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Other Actions
+      </button>
+      <div class="dropdown-menu">
+        
+        
+        <a class="dropdown-item" (click)='onViewDocuments()'>View Documents</a>
+        <a class="dropdown-item" (click)='onEditCompany()'>Edit Company</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" (click)='onAddCompanyEvent()'>Add Company Event</a>
+        <a class="dropdown-item">Edit Company Event</a>
+        <a class="dropdown-item">Add To My Company</a>
+        <div class="dropdown-divider"></div>
+        <a class='dropdown-item'>Archive Company</a>
+        <a class='dropdown-item'>Delete Company</a>
+        <div class="dropdown-divider"></div>
+        <a class='dropdown-item'>Download Company</a>
+       
+        <a class="dropdown-item">View Company Source System</a>
+        <div class="dropdown-divider orange"></div>
+        <a class="dropdown-item">View Transaction Log</a>
+        <a class="dropdown-item orange">Help</a>
+        
+      </div>
+    </div>
+  </div>
+
+   <div class='d-flex'>
+    <div class='w-50 mr-3'>
+      <div class='h5'>Company Details</div>
+      <div id='google_map' class='google-map my-4 bg-light'>
+        <span *ngIf='noAddress' class='no-address'>No Address Provided</span>
+      </div>
+    </div>
+    <div class='w-50 ml-3'>
+      <div class='h5'>Company Dates</div>
+      <div class='project-dates-table my-4'>
+        <ag-grid-angular #grid
+                         style="width: 100%; height: 100%;"
+                         class="ag-theme-balham"
+                         rowSelection="single"
+                         [rowData]="rowData"
+                         [columnDefs]="columnDefs"
+                         (gridReady)="onGridReady($event)"
+        ></ag-grid-angular>
+      </div>
+    </div>
+    
+  </div>
+  <div class='mb-3 d-flex'>
+    <div class='w-50 mr-3'>
+      <div class='text-muted mb-2'>GENERAL INFO</div>
+      <div>
+        <div class='project-info mb-2'>
+          <span class='font-weight-bold'>Company Name</span>
+          <span>{{ dataStore.currentCompany && dataStore.currentCompany?.company_name }}</span>
+        </div>
+        <div class='project-info mb-2'>
+          <span class='font-weight-bold'>Company Email</span>
+          <span>{{ dataStore.currentCompany && dataStore.currentCompany?.company_email }}</span>
+        </div>
+         <div class='project-info mb-2'>
+          <span class='font-weight-bold'>Company Phone</span>
+          <span>{{ dataStore.currentCompany && dataStore.currentCompany?.company_phone }}</span>
+        </div>
+        <div class='project-info mb-2'>
+          <span class='font-weight-bold'>Company Domain</span>
+          <span>{{ dataStore.currentCompany && dataStore.currentCompany?.company_domain }}</span>
+        </div>
+        <div class='project-info mb-2'>
+          <span class='font-weight-bold'>Company Address</span>
+          <span>{{ dataStore.currentCompany && dataStore.currentCompany?.company_address1 }}, {{ dataStore.currentCompany && dataStore.currentCompany?.company_address2 }}</span>
+        </div>
+        <div class='project-info mb-2'>
+          <span class='font-weight-bold'>Company City</span>
+          <span>{{ dataStore.currentCompany && dataStore.currentCompany?.company_city }}</span>
+        </div>
+        <div class='project-info mb-2'>
+          <span class='font-weight-bold'>Company State</span>
+          <span>{{ dataStore.currentCompany && dataStore.currentCompany?.company_state }}</span>
+        </div>
+        <div class='project-info mb-2'>
+          <span class='font-weight-bold'>Company Zipcode</span>
+          <span>{{ dataStore.currentCompany && dataStore.currentCompany?.company_zip }}</span>
+        </div>
+        <div class='project-info mb-2'>
+          <span class='font-weight-bold'>Company Country</span>
+          <span>{{ dataStore.currentCompany && dataStore.currentCompany?.company_country }}</span>
+        </div>
+      </div>
+    </div>
+    <div class='w-50 ml-3'>
+      <div class='text-muted mb-2'>DETAILS</div>
+      <div>
+        <div class='project-info mb-2'>
+          <span class='font-weight-bold'>Company Record Source</span>
+          <span>{{ dataStore.currentCompany && dataStore.currentCompany?.company_record_source }}</span>
+        </div>
+        <div class='project-info mb-2'>
+          <span class='font-weight-bold'>Company Revenue</span>
+          <span>{{ dataStore.currentCompany && dataStore.currentCompany?.company_revenue }}</span>
+        </div>
+        <div class='project-info mb-2'>
+          <span class='font-weight-bold'>Company Status</span>
+          <span>{{ dataStore.currentCompany && dataStore.currentCompany?.company_status }}</span>
+        </div>
+         <div class='project-info mb-2'>
+          <span class='font-weight-bold'>Company Type</span>
+          <span>{{ dataStore.currentCompany && dataStore.currentCompany?.company_type }}</span>
+        </div>
+          <div class='project-info mb-2'>
+          <span class='font-weight-bold'>Company Website</span>
+          <span>{{ dataStore.currentCompany && dataStore.currentCompany?.company_website }}</span>
+        </div>
+
+        
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Edit Project Modal -->
+<edit-company-modal #editCompanyModal></edit-company-modal>
+

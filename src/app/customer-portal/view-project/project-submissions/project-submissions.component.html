@@ -1,0 +1,72 @@
+<div class='project-submissions'>
+  <div class='modal-controls'>
+    <select class='submissions-view-mode' [(ngModel)]='submissionsViewMode' (change)='onChangeSubmissionViewMode()'>
+      <option value="all">All Submissions View</option>
+      <option value="open">Pending Submissions View</option>
+      <option value="deleted">Deleted Submissions View</option>
+    </select>
+    <input class='submissions-search' type='text' placeholder='Search' (input)="onSearchChange($event.target.value)"/>
+    <div class='button-group'>
+      <button *ngIf='!dataStore.isSharedProject' class='btn btn-light' (click)='onAddSubmission()'>Add Submission</button>
+      <button class='btn btn-light' (click)='onViewSubmission()'>View Submission</button>
+      <div class="btn-group">
+        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Other Actions
+        </button>
+        <div class="dropdown-menu">
+          <a *ngIf='!dataStore.isSharedProject' class="dropdown-item" (click)='onAddSubmission()'>Add Submission</a>
+          <a class="dropdown-item" (click)='onViewSubmission()'>View Submission</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" (click)='onViewSourceSystemLink()'>View Source System Link</a>
+          <a class="dropdown-item" (click)='onViewSubmissionEmail()'>View Submission Email</a>
+          <a *ngIf='!dataStore.isSharedProject' class="dropdown-item" (click)='onRemoveSubmission()'>Remove Submission</a>
+          <a *ngIf='!dataStore.isSharedProject' class="dropdown-item" (click)='onRenameSubmission()'>Rename Submission</a>
+          <div class="dropdown-divider orange"></div>
+          <a class="dropdown-item" (click)='onExport()'>Export List To CSV</a>
+          <a class="dropdown-item" (click)='onViewTransactionLogs()'>View Transaction Log</a>
+          <a class="dropdown-item" (click)='onRefresh()'>Refresh Grid</a>
+          <a class="dropdown-item orange" (click)='onHelp()'>Help</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class='submissions-table'>
+    <ag-grid-angular
+      #grid
+      style="width: 100%;"
+      class="ag-theme-balham"
+      [rowData]="rowData"
+      [columnDefs]="columnDefs"
+      rowSelection="multiple"
+      rowDragManaged=true
+      (cellValueChanged)="onCellValueChanged($event)"
+      (gridReady)="onGridReady($event)"
+      >
+    </ag-grid-angular>
+  </div>
+</div>
+
+<!-- Add Submission Modal -->
+<add-submission-modal #addSubmissionModal></add-submission-modal>
+
+<!-- Submission Detail Modal -->
+<submission-detail-modal #submissionDetailModal></submission-detail-modal>
+
+<!-- Submission Rename Modal -->
+<div #submissionRenameModal class='modal-container'>
+  <div class='modal-box'>
+    <div class='submission-rename-modal'>
+      <input type='text' [(ngModel)]='selectedSubmission.submission_name'/>
+      <div class='button-group'>
+        <button class='btn btn-light' (click)='onCancelRenaming()'>Cancel</button>
+        <button class='btn btn-primary' (click)='onSaveRenaming()'>Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<submission-transaction-logs-modal #transactionLogsModal></submission-transaction-logs-modal>
+
+<!-- Submission Delete Modal -->
+<remove-submission-modal #removeSubmissionModal></remove-submission-modal>

@@ -1,0 +1,51 @@
+.modal-container {
+  visibility: 'visible';
+
+  &.bg-transparent {
+    background: transparent;
+  }
+
+  .document-detail-modal {
+    display: flex;
+    flex-direction: column;
+    width: calc(100vw - 160px);
+    height: calc(100vh - 160px);
+
+    .modal-controls {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+      flex-shrink: 0;
+
+      .revisions-view-mode {
+        width: 200px;
+        height: 40px;
+        margin: unset;
+      }
+
+      .revisions-search {
+        text-align: center;
+      }
+
+      .button-group {
+        margin-bottom: unset;
+
+        button {
+          width: 160px;
+        }
+      }
+    }
+
+    .revisions-table {
+      flex-grow: 1;
+      display: flex;
+      overflow: scroll;
+    }
+
+    .btn-close {
+      flex-shrink: 0;
+      margin-left: auto;
+      margin-top: 20px;
+    }
+  }
+}

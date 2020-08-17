@@ -1,0 +1,47 @@
+.destination-system-settings-container {
+  .destination-system-setting {
+    margin-bottom: 30px;
+    display: flex;
+    flex-direction: row;
+
+    .destination-system-setting-selector {
+      select {
+        margin-top: 5px;
+        width: 300px;
+        height: 40px;
+      }
+
+      input {
+        height: 40px;
+        width: 300px;
+        margin-top: 5px;
+      }
+
+      button {
+        margin-top: 5px;
+      }
+    }
+
+    .destination-system-setting-description {
+      max-width: 400px;
+      margin-top: 20px;
+      margin-left: 50px;
+    }
+  }
+}
+
+.dropbox-confirm-modal {
+  .modal-title {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+  }
+
+  .button-group {
+    text-align: center;
+
+    button {
+      margin: 0 10px;
+      width: 200px;
+    }
+  }
+}

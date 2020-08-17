@@ -1,0 +1,53 @@
+.user-setup-edit-modal {
+  min-width: 768px;
+
+  .user-setup-edit-form {
+    margin-top: 20px;
+
+    form {
+      .user-setup-edit-form-body {
+        display: flex;
+        flex-direction: row;
+
+        .user-setup-edit-form-help {
+          margin-left: 50px;
+          margin-top: 30px;
+          font-size: 1.2em;
+          min-width: 300px;
+
+          .warning {
+            color: red;
+          }
+        }
+      }
+
+      .user-setup-edit-form-buttons {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+      }
+    }
+  }
+}
+
+.user-remove-modal {
+  .user-remove-modal-buttons {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  }
+}
+
+.role-alert-modal {
+  .modal-title {
+    font-size: 1.2rem;
+  }
+
+  .role-alert-modal-buttons {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  }
+}

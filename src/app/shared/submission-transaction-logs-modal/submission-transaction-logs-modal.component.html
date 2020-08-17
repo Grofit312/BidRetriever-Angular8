@@ -1,0 +1,66 @@
+<!-- Transaction Logs Modal -->
+<div #submissionTransactionLogsModal class='modal-container'>
+  <div class='modal-box'>
+    <div class='transaction-logs-modal'>
+        <div class="modal-header">
+          <div>
+            <div><b>Submission Name: </b><span>{{ currentSubmission.submission_name }}</span></div>
+            <div><b>Submitted By: </b><span>{{ currentSubmission.submitter_email }}</span></div>
+          </div>
+          <div>
+            <div><b>Submission Date/Time: </b><span>{{ currentSubmission.submission_date }}</span></div>
+            <div><b>Submission Status: </b><span>{{ currentSubmission.submission_process_status }}</span></div>
+          </div>
+        </div>
+        <div class="modal-header">
+          <div>
+            <select class='filter' [(ngModel)]='transactionStatus' (change)='onChangeTransactionStatus()'>
+              <option value="all">All Transactions</option>
+              <option value="failed">Failed Transactions</option>
+            </select>
+            <select class='filter' [(ngModel)]='transactionLevel' (change)='onChangeTransactionLevel()'>
+              <option value="summary">Summary</option>
+              <option value="detail">Details</option>
+              <option value="transaction">Transactions</option>
+            </select>
+          </div>
+          <input class='logs-search' type='text' placeholder='Search' (input)="onSearchChange($event.target.value)" [(ngModel)]='searchWord'/>
+          <div class='buttons-group'>
+            <button class="btn btn-light" (click)='onViewDetails()'>View Details</button>
+            <button class='btn btn-light' (click)='onExportLog()'>Export Log</button>
+            <div class="btn-group">
+              <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Other Actions
+              </button>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" (click)='onViewDetails()'>View Details</a>
+                <a class='dropdown-item' (click)='onExportLog()'>Export Log</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" (click)='onViewFileTransactionLog()'>View File Transaction Log</a>
+                <a class="dropdown-item" (click)='onViewProjectTransactionLog()'>View Project Transaction Log</a>
+                <div class="dropdown-divider orange"></div>
+                <a class="dropdown-item" (click)='onRefresh()'>Refresh Grid</a>
+                <a class="dropdown-item orange" (click)='onHelp()'>Help</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class='logs-table'>
+          <ag-grid-angular
+          #grid
+          style="width: 100%;"
+          class="ag-theme-balham"
+          [columnDefs]="columnDefs"
+          [gridOptions]="gridOptions"
+          [rowData]="rowData"
+          rowSelection="multiple"
+          (gridReady)="onGridReady($event)"
+          >
+          </ag-grid-angular>
+        </div>
+
+        <button class='btn btn-primary btn-close' (click)='onCloseModal()'>Close</button>
+    </div>
+  </div>
+</div>

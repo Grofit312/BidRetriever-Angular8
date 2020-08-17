@@ -1,0 +1,43 @@
+.modal-container {
+  visibility: 'visible';
+
+  .transaction-logs-modal {
+    display: flex;
+    flex-direction: column;
+    width: calc(100vw - 160px);
+    height: calc(100vh - 160px);
+
+    .modal-header {
+      border-bottom: unset;
+      padding: unset;
+      align-items: center;
+    }
+
+    .filter {
+      width: 200px;
+      height: 40px;
+      margin: unset;
+      margin-right: 10px;
+    }
+
+    .buttons-group {
+      margin-bottom: unset;
+    }
+
+    .logs-search {
+      text-align: center;
+    }
+
+    .logs-table {
+      flex-grow: 1;
+      display: flex;
+      overflow: scroll;
+    }
+
+    .btn-close {
+      flex-shrink: 0;
+      margin-left: auto;
+      margin-top: 20px;
+    }
+  }
+}

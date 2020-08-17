@@ -1,0 +1,44 @@
+.project-files-container {
+  flex: 1 1 auto;
+  display: flex;
+  justify-content: space-between;
+  overflow: hidden;
+
+  .left-pane {
+    width: calc(20% - 5px);
+    border: 1px solid #dee2e6;
+  }
+
+  .right-pane {
+    width: calc(80% - 5px);
+    display: flex;
+    flex-direction: column;
+
+    .modal-controls {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      flex-shrink: 0;
+
+      .documents-view-mode {
+        width: 200px;
+        height: 40px;
+        margin: unset;
+      }
+
+      .documents-search {
+        text-align: center;
+      }
+
+      .button-group {
+        margin-bottom: unset;
+      }
+    }
+
+    .grid {
+      position: relative;
+      flex-grow: 1;
+      height: calc(100% - 60px);
+    }
+  }
+}

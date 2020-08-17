@@ -1,0 +1,92 @@
+.div-subscription-title {
+  font-weight: 600;
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+}
+
+.subscription-type {
+  width: 500px;
+  height: 40px;
+  max-width: 100%;
+  margin-top: 10px;
+}
+
+.div-subscription-instruction {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-top: 30px;
+}
+
+.div-license {
+  margin: 30px 0;
+
+  .div-license-input {
+    display: flex;
+    align-items: center;
+
+    input {
+      margin-right: 20px;
+      text-align: center;
+    }
+
+    span {
+      font-weight: 600;
+    }
+  }
+}
+
+.div-total-price {
+  margin-bottom: 40px;
+}
+
+.div-subscription-card-info {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 30px;
+
+  .span-title {
+    font-weight: 600;
+  }
+
+  .span-value {
+    margin-left: 40px;
+  }
+}
+
+.div-buttons {
+  margin-bottom: 30px;
+
+  .btn {
+    margin-right: 10px;
+  }
+}
+
+.subscription-settings-remove-modal {
+  .subscription-settings-remove-modal-buttons {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  }
+}
+
+.card-input-modal {
+  .modal-title {
+    font-size: 1.2rem;
+  }
+
+  #card-element {
+    border: 1px solid gray;
+    padding: 5px 10px;
+    margin: 50px 0;
+    margin-right: 30px;
+    min-width: 500px;
+  }
+
+  .card-input-modal-buttons {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  }
+}

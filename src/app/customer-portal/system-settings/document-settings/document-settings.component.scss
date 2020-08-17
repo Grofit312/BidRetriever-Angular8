@@ -1,0 +1,30 @@
+.document-settings-container {
+  .document-setting {
+    margin-bottom: 60px;
+    display: flex;
+    flex-direction: row;
+
+    .document-setting-selector {
+      select {
+        margin-top: 5px;
+        width: 350px;
+        height: 40px;
+      }
+    }
+
+    .document-setting-description {
+      max-width: 800px;
+      margin-top: 25px;
+      margin-left: 50px;
+    }
+  }
+}
+
+.alert-modal {
+  .alert-modal-buttons {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  }
+}

@@ -1,0 +1,16 @@
+<dx-date-box [type]="type"
+             (onOpened)="dateTimeOpenedAction($event)"
+             (onClosed)="dateTimeClosedAction($event)"
+             (onValueChanged)="dateBoxValueChangedAction($event)"
+             [(value)]="value"
+             [showClearButton]="showClearButton"
+></dx-date-box>
+
+<div style="display: none">
+  <dx-select-box #timezoneSelectBox
+                 class="custom-datetime-timezone-select"
+                 [items]="availableTimeZones"
+                 [(value)]="timezone"
+                 [searchEnabled]="true"
+  ></dx-select-box>
+</div>

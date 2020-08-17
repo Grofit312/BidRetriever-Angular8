@@ -1,0 +1,36 @@
+.system-accounts-edit-modal {
+  .system-accounts-edit-form {
+    margin-top: 20px;
+
+    form {
+      .system-accounts-edit-form-body {
+
+        .system-accounts-setting {
+          display: flex;
+          flex-direction: row;
+
+          .system-accounts-setting-description {
+            max-width: 400px;
+            margin-top: 30px;
+            margin-left: 50px;
+          }
+        }
+      }
+
+      .system-accounts-edit-form-buttons {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+      }
+    }
+  }
+}
+
+.system-accounts-remove-modal {
+  .system-accounts-remove-modal-buttons {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  }
+}

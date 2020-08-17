@@ -1,0 +1,130 @@
+<!-- Create Event Modal -->
+<div #addEventModal class='modal-container'>
+  <div class='modal-box'>
+    <div class='add-event-modal'>
+      <div class='modal-title'>
+        Add Event
+      </div>
+
+      <form (ngSubmit)='onSaveEvent()'>
+        <div class='event-form'>
+          <div class="event-form-wrapper">
+            <div class='event-form-half dx-fieldset'>
+              <div class="dx-field">
+                <div class="dx-field-label">Event Name</div>
+                <div class="dx-field-value">
+                  <dx-text-box name="eventName" [(value)]="eventName" [showClearButton]="true"></dx-text-box>
+                </div>
+              </div>
+              <div class="dx-field">
+                <div class="dx-field-label">Event Description</div>
+                <div class="dx-field-value">
+                  <dx-text-box name="eventDescription" [(value)]="eventDescription" [showClearButton]="true"></dx-text-box>
+                </div>
+              </div>
+              <div class="dx-field">
+                <div class="dx-field-label">Event Start Date/Time</div>
+                <div class="dx-field-value">
+                  <app-custom-datetime name="eventStartDateTime"
+                                       [value]="eventStartDateTime"
+                                       (onValueChanged)="eventStartDateTime = $event"
+                                       type="datetime"
+                                       [showClearButton]="true"
+                  ></app-custom-datetime>
+                </div>
+              </div>
+              <div class="dx-field">
+                <div class="dx-field-label">Event End Date/Time</div>
+                <div class="dx-field-value">
+                  <app-custom-datetime name="eventEndDateTime"
+                                       [value]="eventEndDateTime"
+                                       (onValueChanged)="eventEndDateTime = $event"
+                                       type="datetime"
+                                       [showClearButton]="true"
+                  ></app-custom-datetime>
+                </div>
+              </div>
+              <div class="dx-field">
+                <div class="dx-field-label">Event Organizer</div>
+                <div class="dx-field-value">
+                  <select [(ngModel)]='eventOrganizer' name='eventOrganizer'>
+                    <option *ngFor='let organizer of eventOrganizers' [ngValue]='organizer'>{{ organizer.user_email }}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="dx-field">
+                <div class="dx-field-label">Related Project</div>
+                <div class="dx-field-value">
+                  <select [(ngModel)]='relatedProject' name='relatedProject' (ngModelChange)='onRelatedProjectChange()'>
+                    <option *ngFor='let project of relatedProjects' [ngValue]='project'>{{ project.project_name || project.project_id }}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="dx-field">
+                <div class="dx-field-label">Office</div>
+                <div class="dx-field-value">
+                  <select [(ngModel)]='office' name='office'>
+                    <option value=''>No Office Assigned</option>
+                    <option *ngFor='let office of offices' [ngValue]='office'>{{ office.company_office_name }}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="dx-field">
+                <div class="dx-field-label">Status</div>
+                <div class="dx-field-value">
+                  <select [(ngModel)]='status' name='status'>
+                    <option *ngFor='let status of calendarApi.eventStatus' [ngValue]='status.value'>{{ status.name }}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="dx-field">
+                <div class="dx-field-label">Event Type</div>
+                <div class="dx-field-value">
+                  <select [(ngModel)]='eventType' name='eventType'>
+                    <option *ngFor='let type of calendarApi.eventType' [ngValue]='type.value'>{{ type.name }}</option>
+                  </select>
+                </div>
+              </div>
+              <!-- <div class="dx-field">
+                <div class="dx-field-label">Event Color</div>
+                <div class="dx-field-value">
+                  <select [(ngModel)]='eventColor' name='eventColor'>
+                  </select>
+                </div>
+              </div> -->
+            </div>
+            <div class='event-form-half drop-zone'>
+              <div class='buttons d-flex align-center justify-content-end mb-3 mt-1'>
+                <button class='btn btn-light' (click)='onRemoveAttendee($event)'>Remove Attendee</button>
+                <button class='btn btn-primary' (click)='onAddAttendee($event)'>Add Attendee</button>
+              </div>
+              <span>Event Attendees</span>
+              <div class='list'>
+                <ag-grid-angular
+                  #attendeeGrid
+                  style="width: 100%; height: 100%;"
+                  class="ag-theme-balham"
+                  [rowData]="attendees"
+                  [columnDefs]="columnDefs"
+                  rowSelection="multiple"
+                >
+                </ag-grid-angular>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class='button-group'>
+          <button class='btn btn-light' (click)='onCancel($event)'>Cancel</button>
+          <button type='submit' class='btn btn-primary'>Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Remove Attendee Modal -->
+<add-attendee-modal #addAttendeeModal></add-attendee-modal>
+
+<!-- Remove Attendee Modal -->
+<remove-attendee-modal #removeAttendeeModal></remove-attendee-modal>

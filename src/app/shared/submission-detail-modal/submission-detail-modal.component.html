@@ -1,0 +1,80 @@
+<!-- Submission Detail Modal -->
+<div #submissionDetailModal class='modal-container' [ngClass]="{'bg-transparent': (hasTransparentBackground)}">
+  <div class='modal-box'>
+    <div class='submission-detail-modal'>
+      <div class='modal-title'>
+        Project Submission
+      </div>
+      <div class='modal-subtitle'>
+        Project: {{ currentProject.project_name }}
+      </div>
+      <div class='modal-subtitle-2'>
+        <span>Submission Name: {{ currentSubmission.submission_name }}</span>
+        <span>Source System: {{ currentSubmission.source_sys_name || 'N/A' }}</span>
+        <span>Submission Date: {{ currentSubmission.submission_date }}</span>
+        <span>Submitted By: {{ currentSubmission.submitter_email }}</span>
+      </div>
+      <div class='modal-controls'>
+        <select class='documents-view-mode' [(ngModel)]='documentsViewMode' (change)='onChangeDocumentViewMode()'>
+          <option value="all">All Documents View</option>
+          <option value="original">Original Files View</option>
+        </select>
+        <input class='documents-search' type='text' placeholder='Search' (input)="onSearchChange($event.target.value)"/>
+        <div class='button-group'>
+          <button *ngIf='!dataStore.isSharedProject' class='btn btn-light' (click)='onEditDocument()'>Edit Document</button>
+          <button class='btn btn-light' (click)='onViewDocument()'>View Document</button>
+          <div class="btn-group">
+            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Other Actions
+            </button>
+            <div class="dropdown-menu">
+              <a *ngIf='!dataStore.isSharedProject' class="dropdown-item" (click)='onEditDocument()'>Edit Document</a>
+              <a class="dropdown-item" (click)='onViewDocument()'>View Document</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" (click)='onViewDocumentDetails()'>View Document Details</a>
+              <a class="dropdown-item" (click)='onViewSourceSystemLink()'>View Source System Link</a>
+              <a class="dropdown-item" (click)='onViewSubmissionEmail()'>View Submission Email</a>
+              <div *ngIf='!dataStore.isSharedProject' class="dropdown-divider"></div>
+              <a class="dropdown-item" (click)='onDownloadFile()'>Download File</a>
+              <a class="dropdown-item" (click)='onDownloadSubmission()'>Download All Files</a>
+              <a *ngIf='!dataStore.isSharedProject' class="dropdown-item" (click)='onRemoveDocument()'>Remove Document</a>
+              <div class="dropdown-divider orange"></div>
+              <a class="dropdown-item" (click)='onExport()'>Export List To CSV</a>
+              <a class="dropdown-item" (click)='onViewTransactionLogs()'>View Transaction Log</a>
+              <a *ngIf="dataStore.currentUser && dataStore.currentUser.user_role !== 'submitter'" class="dropdown-item" (click)='onViewSubmissionDetails()'>View Submission Details</a>
+              <a class="dropdown-item" (click)='onRefresh()'>Refresh Grid</a>
+              <a class="dropdown-item orange" (click)='onHelp()'>Help</a>
+            </div>
+        </div>
+      </div>
+    </div>
+
+    <div class='documents-table'>
+      <ag-grid-angular
+        #grid
+        style="width: 100%;"
+        class="ag-theme-balham"
+        [rowData]="rowData"
+        [columnDefs]="columnDefs"
+        rowSelection="multiple"
+        rowDragManaged=true
+        (cellValueChanged)="onCellValueChanged($event)"
+        (gridReady)="onGridReady($event)"
+        (selectionChanged)="onGridSelectionChanged($event)"
+        [gridOptions]="gridOptions"
+        >
+      </ag-grid-angular>
+    </div>
+
+    <button class='btn btn-primary btn-close' (click)='onCloseModal()'>Close</button>
+    <div class='count-monitor'>
+      <span>Total Files: {{ rowData?.length }}</span><span>Files Selected: {{ selectedCount }}</span>
+    </div>
+  </div>
+</div>
+
+<!-- Transaction log popup -->
+<transaction-logs-modal #transactionLogsModal></transaction-logs-modal>
+
+<!-- Document View popup -->
+<document-detail-modal #documentDetailModal></document-detail-modal>

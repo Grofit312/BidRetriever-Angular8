@@ -1,0 +1,74 @@
+
+<div *ngIf='isSysAdmin'>
+  <div class='div-subscription-title'>Bid Retrieve Per Project Monthly Billing</div>
+
+  <div class='div-subscription-instruction'>Select Your Bid Retriever Core Server Subscription Type:</div>
+  <select class='subscription-type' [(ngModel)]='subscriptionType'>
+    <option *ngFor="let product of coreProducts" [ngValue]='product.product_id'>
+      {{ product.product_name }}
+    </option>
+  </select>
+
+  <div class='div-license'>
+    <div>Select The Number Of User Tools Licenses:</div>
+    <div class='div-license-input'>
+      <input name='licenseCount' type='number' [(ngModel)]='licenseCount'/>
+      <span>{{ userToolLicenseProduct?.product_name }}</span>
+    </div>
+  </div>
+
+  <!-- <div class='div-total-price'><b></b> per Month Total Monthly Subscription</div> -->
+
+  <div class='div-subscription-instruction'>Enter payment information below, and we will bill you monthly based on your subscription type.</div>
+
+  <div class='div-subscription-card-info'>
+    <span class='span-title'>Card Number:</span>
+    <span class='span-value'>{{ cardNumber }}</span>
+  </div>
+  <div class='div-subscription-card-info'>
+    <span class='span-title'>Expiration Date:</span>
+    <span class='span-value'>{{ expirationDate }}</span>
+  </div>
+
+  <div class='div-buttons'>
+    <button *ngIf='!currentCoreSubscription' class='btn btn-primary' (click)='onSubscribe()'>Subscribe</button>
+    <button *ngIf='currentCoreSubscription' class='btn btn-primary' (click)='onUpdateSubscription()'>Update Subscription</button>
+    <button *ngIf='currentCoreSubscription' class='btn btn-info' (click)='onUpdateCardInfo()'>Edit Card Information</button>
+    <button *ngIf='currentCoreSubscription' class='btn btn-danger' (click)='onUnsubscribe()'>Unsubscribe</button>
+  </div>
+
+  <!-- <div class='div-subscription-instruction'>You will receive an email with the invoice detailing the number and sizes of each project submitted.</div> -->
+</div>
+
+<div *ngIf='!isSysAdmin'>
+  You are not allowed to access this page.
+</div>
+
+<div #cardInputModal class='modal-container'>
+  <div class='modal-box'>
+    <div class='card-input-modal'>
+      <div class='modal-title'>
+        Please enter credit card information below:
+      </div>
+      <div id='card-element' class='field'></div>
+      <div class='card-input-modal-buttons'>
+        <button class='btn btn-light' type='button' (click)='onCloseCardModal()'>Cancel</button>
+        <button class='btn btn-primary' type='submit' (click)='onSaveCardInfo()'>OK</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div #removeModal class='modal-container'>
+  <div class='modal-box'>
+    <div class='subscription-settings-remove-modal'>
+      <div class='modal-title'>
+        Are you going to unsubscribe from your current plan?
+      </div>
+      <div class='subscription-settings-remove-modal-buttons'>
+        <button class='btn btn-light' type='button' (click)='onCloseUnsubscribeModal()'>Cancel</button>
+        <button class='btn btn-primary' type='submit' (click)='onConfirmUnsubscribe()'>Yes</button>
+      </div>
+    </div>
+  </div>
+</div>

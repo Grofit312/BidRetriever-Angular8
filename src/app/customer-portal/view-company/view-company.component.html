@@ -1,0 +1,49 @@
+
+<div class="view-project">
+
+	<div class="view-project-header">
+	    <div class='project-name'>{{ projectName }}</div>
+	    <div class='project-info-group'>
+	      
+	      <div class='project-info'>
+	        <span class='text-muted'>STATUS</span>
+	        <span>{{ projectStatus }}</span>
+	      </div>
+	    </div>
+	</div>
+  	<div class="view-project-content">
+	  	<ul class="nav nav-tabs" id="view_project_tabs" role="tablist">
+		  <li class="nav-item">
+		    <a (click)="onClickTab(1)" class="nav-link active" id="tab-overview" data-toggle="tab" role="tab" href="#overview" aria-controls="home" aria-selected="true">OVERVIEW</a>
+		  </li>
+		  <li class="nav-item">
+		    <a (click)="onClickTab(2)" class="nav-link" id="tab-notes" data-toggle="tab" role="tab" href="#notes" aria-controls="profile" aria-selected="false">Notes</a>
+		  </li>
+		  <!-- <li class="nav-item">
+		    <a (click)="onClickTab(3)" class="nav-link" id="tab-view-submissions" data-toggle="tab" href="#view-submission" role="tab" aria-controls="profile" aria-selected="false">Submissions</a>
+		  </li>
+		  <li class="nav-item"
+		  >
+		    <a (click)="onClickTab(4)" class="nav-link" id="tab-notifications" data-toggle="tab" href="#notifications" role="tab" aria-controls="contact" aria-selected="false">Notifications</a>
+		  </li>
+		  <li class="nav-item">
+		    <a (click)="onClickTab(5)" class="nav-link" id="tab-source" data-toggle="tab" href="#source" role="tab" aria-controls="contact" aria-selected="false">Source</a>
+		  </li>
+		  <li class="nav-item">
+		    <a (click)="onClickTab(6)" class="nav-link" id="tab-sharing" data-toggle="tab" href="#sharing" role="tab" aria-controls="contact" aria-selected="false">Sharing</a>
+		  </li>
+		  <li class="nav-item">
+		    <a (click)="onClickTab(7)" class="nav-link" id="tab-administration" data-toggle="tab" href="#administration" role="tab" aria-controls="contact" aria-selected="false">Administration</a>
+		  </li>
+		  <li class="nav-item">
+		    <a (click)="onClickTab(8)" class="nav-link text-danger" id="tab-internal" data-toggle="tab" href="#internal" role="tab" aria-controls="contact" aria-selected="false">Bid Retriever Internal</a>
+		  </li> -->
+		</ul>
+	    <div class="view-project-router">
+	      <router-outlet></router-outlet>
+	    </div>
+   </div>
+   <div class="view-project-footer">
+    <dx-button class="action-close" type="danger" text="Close" (click)="btnCloseAction()"></dx-button>
+  </div>
+</div>

@@ -1,0 +1,70 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: calc(100% + 40px);
+  margin: -20px;
+}
+
+.data-view-details {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  &-content {
+    flex: 1 1 auto;
+
+    .dx-fieldset {
+      margin: 10px;
+
+      &.data-view, &.data-source, &.data-filter {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-column-gap: 20px;
+
+        .dx-field {
+          display: flex;
+          flex-direction: column;
+
+          .dx-field-label, .dx-field-value {
+            width: 100%;
+          }
+        }
+      }
+
+      .dx-fieldset-header {
+        margin-bottom: 10px;
+      }
+    }
+  }
+
+  &-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 20px;
+
+    dx-button {
+      width: 100px;
+
+      &:first-child {
+        margin-right: 20px;
+      }
+    }
+
+    .btn-cancel {
+      border-color: #dae0e5;
+      background-color: #e2e6ea;
+      color: #212529;
+    }
+
+    .btn-apply {
+      border-color: #007bff;
+      background-color: #007bff;
+      color: #fff;
+    }
+  }
+}
+
+.dx-dropdownlist-popup-wrapper .dx-list:not(.dx-list-select-decorator-enabled) .dx-list-item-content {
+  padding: 3px 9px;
+}

@@ -1,0 +1,44 @@
+<!-- Add Share User Modal -->
+<div #addShareUserModal class='modal-container'>
+  <div class='modal-box'>
+    <div class='add-share-user-modal'>
+      <div class='modal-title'>
+        Add Share User
+      </div>
+
+      <form (ngSubmit)='onSaveShareUser()'>
+        <div class='share-user-form'>
+          <div class='share-user-form-half'>
+            <span>User Email Address</span>
+            <input required name='email' [(ngModel)]='email' (ngModelChange)='onEmailChange($event)'/>
+            <span>User First Name</span>
+            <input required name='firstName' [(ngModel)]='firstName' [readonly]='!isNewUser'/>
+            <span>User Last Name</span>
+            <input required name='lastName' [(ngModel)]='lastName' [readonly]='!isNewUser'/>
+            <span>Company Name</span>
+            <input required name='companyName' [(ngModel)]='companyName' [readonly]='!isNewUser'/>
+            <span>User Phone Number</span>
+            <input required name='phone' [(ngModel)]='phone' [readonly]='!isNewUser'/>
+            <span>Share Type</span>
+            <select required name="shareType" [(ngModel)]="shareType">
+              <option value="admin">Admin</option>
+              <option value="collaborator">Collaborator</option>
+              <option value="observer">Observer</option>
+              <option value="none" selected>None</option>
+            </select>
+          </div>
+          <div class='share-user-form-half'>
+            <b>
+              Enter the email address first so that the system can verify if we already have the user information.
+            </b>
+          </div>
+        </div>
+
+        <div class='button-group'>
+          <button class='btn btn-light' (click)='onCancel($event)'>Cancel</button>
+          <button type='submit' class='btn btn-primary'>Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

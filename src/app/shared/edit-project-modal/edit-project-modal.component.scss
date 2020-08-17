@@ -1,0 +1,68 @@
+.modal-container {
+  visibility: 'visible';
+
+  .edit-project-modal {
+    width: 600px;
+    height: 800px;
+
+    .modal-title {
+      display: none;
+    }
+
+    .nav-tabs {
+      width: 700px;
+      padding-left: 50px;
+      margin-left: -50px;
+    }
+
+    form {
+      margin-top: 20px;
+
+      .project-form-wrapper {
+        height: 660px;
+        overflow-y: auto;
+      }
+
+      .project-form {
+        display: flex;
+        justify-content: space-between;
+
+        display: none;
+
+        &.active {
+          display: block;
+        }
+
+        input {
+          margin: 0;
+          height: unset;
+          width: 100%;
+        }
+
+        .checkbox {
+          display: flex;
+          align-items: center;
+          margin-bottom: 10px;
+
+          input {
+            width: unset;
+            margin: unset;
+            margin-right: 10px;
+          }
+        }
+        .triple-form {
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          grid-column-gap: 5px;
+          margin-top: 5px;
+        }
+      }
+
+      .button-group {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 30px;
+      }
+    }
+  }
+}

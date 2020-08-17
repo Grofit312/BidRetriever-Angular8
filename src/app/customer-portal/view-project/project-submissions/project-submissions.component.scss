@@ -1,0 +1,45 @@
+.project-submissions {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.modal-controls {
+  display: flex;
+  justify-content: space-between;
+  flex-shrink: 0;
+
+  .submissions-view-mode {
+    width: 200px;
+    height: 40px;
+    margin: unset;
+  }
+
+  .submissions-search {
+    text-align: center;
+  }
+
+  .button-group {
+    margin-bottom: unset;
+  }
+}
+
+.submissions-table {
+  flex: 1 1 auto;
+  display: flex;
+  margin-top: 5px;
+  overflow: auto;
+}
+
+.submission-rename-modal {
+  input {
+    width: 100%;
+  }
+
+  .button-group {
+    .btn:first-of-type {
+      margin-left: unset;
+    }
+  }
+}

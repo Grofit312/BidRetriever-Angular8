@@ -1,0 +1,62 @@
+<div class='buttons-group'>
+  <button class='btn btn-light' (click)='onRemove()'>Remove Office</button>
+  <button class='btn btn-light' (click)='onEdit()'>Edit Office</button>
+  <button class='btn btn-primary' (click)='onAdd()'>Add Office</button>
+</div>
+<ng2-smart-table #table [settings]="settings" [source]="data" (userRowSelect)="onUserRowSelected($event)"></ng2-smart-table>
+
+<div #editModal class='modal-container'>
+  <div class='modal-box'>
+    <div class='company-office-setup-edit-modal'>
+      <div class='modal-title'>
+        {{editModalTitle}}
+      </div>
+      <div class='company-office-setup-edit-form'>
+        <form (ngSubmit)='onSave()'>
+          <div class='company-office-setup-edit-form-body'>
+            <div class='company-office-setup-edit-form-inputs'>
+              <div>Office Name</div>
+              <input type='text' name='editOfficeName' [(ngModel)]='editOfficeName' required/>
+              <div>Office Address</div>
+              <textarea name='editOfficeAddress' [(ngModel)]='editOfficeAddress' required></textarea>
+              <div>Office Phone</div>
+              <input type='tel' name='editOfficePhone' [(ngModel)]='editOfficePhone' required/>
+              <div>Office Admin User</div>
+              <select name='adminUser' [(ngModel)]='editOfficeAdminUserId'>
+                <option *ngFor="let user of users" [value]="user.user_id">{{ user.user_lastname + ', ' + user.user_firstname }}</option>
+              </select>
+              <div>Office Timezone</div>
+              <select name='timezone' [(ngModel)]='editOfficeTimezone'>
+                <option value="eastern">Eastern</option>
+                <option value="central">Central</option>
+                <option value="mountain">Mountain</option>
+                <option value="pacific">Pacific</option>
+              </select>
+            </div>
+            <div class='company-office-setup-edit-form-help'>
+              {{editModalDescriptionText}}
+            </div>
+          </div>
+          <div class='company-office-setup-edit-form-buttons'>
+            <button class='btn btn-light' type='button' (click)='onCloseEditModal()'>Cancel</button>
+            <button class='btn btn-primary' type='submit'>Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div #removeModal class='modal-container'>
+  <div class='modal-box'>
+    <div class='company-office-remove-modal'>
+      <div class='modal-title'>
+        {{removeDescriptionText}}
+      </div>
+      <div class='company-office-remove-modal-buttons'>
+        <button class='btn btn-light' type='button' (click)='onCloseRemoveModal()'>Cancel</button>
+        <button class='btn btn-primary' type='submit' (click)='onConfirmRemove()'>Yes</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,67 @@
+<div class='project-files-container'>
+  <div class='left-pane'>
+    <tree-root
+      #folderTree
+      [nodes]='folderNodes'
+      [options]='treeOptions'
+    >
+      <ng-template #treeNodeTemplate let-node="node" let-index="index">
+        <img style='height: 20px' src='/assets/folder.png' alt='folder'/>
+        <span style='font-size: .75rem; white-space: nowrap;'>{{ node.data.name }}</span>
+      </ng-template>
+    </tree-root>
+  </div>
+  <div class='right-pane'>
+    <div class='modal-controls'>
+      <select class='documents-view-mode' [(ngModel)]='documentsViewMode' (change)='onChangeDocumentViewMode()'>
+        <option value="all">All Documents View</option>
+      </select>
+      <input class='documents-search' type='text' placeholder='Search' (input)="onSearchChange($event.target.value)"/>
+      <div class='button-group'>
+        <button class='btn btn-light' (click)='onViewDocumentDetails()'>View Details</button>
+        <button class='btn btn-light' (click)='onViewDocument()'>View Document</button>
+        <div class="btn-group">
+          <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Other Actions
+          </button>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" (click)='onViewDocument()'>View Document</a>
+            <a class="dropdown-item" (click)='onViewDocumentDetails()'>View Document Details</a>
+            <div class="dropdown-divider"></div>
+            <a *ngIf='!dataStore.isSharedProject' class="dropdown-item" (click)='onEditDocument()'>Edit Document</a>
+            <a class="dropdown-item" (click)='onToggleFavorite()'>{{ isFavoriteDocument ? 'Remove From' : 'Add To' }} Favorite</a>
+            <a *ngIf='!dataStore.isSharedProject' class="dropdown-item" (click)='onRemoveDocument()'>Remove Document</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" (click)='onDownloadDocument()'>Download File</a>
+            <a class="dropdown-item" (click)='onDownloadFolder()'>Download Folder</a>
+            <a class="dropdown-item" (click)='onDownloadProject()'>Download Project</a>
+            <div class="dropdown-divider orange"></div>
+            <a class="dropdown-item" (click)='onExport()'>Export File List To CSV</a>
+            <a class="dropdown-item" (click)='onViewTransactionLogs()'>View Transaction Log</a>
+            <a class="dropdown-item orange" (click)='onHelp()'>Help</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class='grid'>
+      <ag-grid-angular
+      #fileGrid
+      style="width: 100%; height: 100%;"
+      class="ag-theme-balham"
+      [rowData]="files"
+      [columnDefs]="columnDefs"
+      rowSelection="single"
+      (gridReady)="onGridReady($event)"
+      ></ag-grid-angular>
+    </div>
+  </div>
+</div>
+
+<!-- Transaction log popup -->
+<transaction-logs-modal #transactionLogsModal></transaction-logs-modal>
+
+<!-- Document View popup -->
+<document-detail-modal #documentDetailModal></document-detail-modal>
+
+<!-- Document Edit popup -->
+<edit-document-modal #editDocumentModal></edit-document-modal>

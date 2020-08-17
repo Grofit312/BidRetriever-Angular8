@@ -1,0 +1,41 @@
+.company-office-setup-edit-modal {
+  min-width: 768px;
+
+  .company-office-setup-edit-form {
+    margin-top: 20px;
+
+    form {
+      textarea {
+        width: 100%;
+        height: 150px;
+      }
+
+      .company-office-setup-edit-form-body {
+        display: flex;
+        flex-direction: row;
+
+        .company-office-setup-edit-form-help {
+          margin-left: 50px;
+          margin-top: 30px;
+          font-size: 1.2em;
+          min-width: 300px;
+        }
+      }
+
+      .company-office-setup-edit-form-buttons {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+      }
+    }
+  }
+}
+
+.company-office-remove-modal {
+  .company-office-remove-modal-buttons {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  }
+}

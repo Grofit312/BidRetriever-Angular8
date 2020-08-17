@@ -1,0 +1,24 @@
+<div class='sign-in-container'>
+  <div class='sign-in-title'><img src='/assets/logo.png' alt='logo'/></div>
+
+  <div class='sign-in-content'>
+    <div class='sign-in-form'>
+      <form (ngSubmit)="onLogin()">
+        <input name='email' type='email' [(ngModel)]='email' placeholder='Email*' required/>
+        <input name='password' [type]="showPassword ? 'text' : 'password'" [(ngModel)]='password' placeholder='Password*' required/>
+        <div class='password-check'><input type='checkbox' (click)="onTogglePasswordVisibility()"/><span>Show Password</span></div>
+        <button type='submit' class='btn btn-primary'>Existing User Sign In</button>
+      </form>
+      <div class='sign-in-bottom'>
+        <a class='forgot-password' href='/forgot-password?email={{email}}'>Forgot password</a>
+        <div class='description'>To Access Projects or Free trial</div>
+        <div class='description'>Click Below For Free Registration</div>
+        <a (click)="onRegisterAction()"><button class='btn btn-primary'>New User Registration</button></a>
+      </div>
+    </div>
+
+    <a href='http://bidretriever.net' target='_blank'><img class='img-ads' src='/assets/ad.png' alt='ad'/></a>
+  </div>
+
+
+</div>

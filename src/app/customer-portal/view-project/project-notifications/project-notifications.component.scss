@@ -1,0 +1,46 @@
+.user-notifications-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 0 10px;
+
+  .user-notifications-search {
+    text-align: center;
+  }
+
+  .user-notifications-view-mode {
+    width: 200px;
+    height: 40px;
+    margin-right: 10px;
+  }
+
+  .btn {
+    margin-left: 10px;
+  }
+}
+
+.user-notifications-content {
+  flex: 1 1 auto;
+  position: relative;
+  width: 100%;
+
+  display: flex;
+  overflow-y: auto;
+
+  .user-notifications-table {
+    position: relative;
+    width: 70%;
+    height: 100%;
+
+    &.full-width {
+      width: 100%
+    }
+  }
+
+  .notification_html {
+    width: 30%;
+    flex-shrink: 0;
+    margin-left: 20px;
+    overflow: scroll;
+    border: 1px solid lightgray;
+  }
+}

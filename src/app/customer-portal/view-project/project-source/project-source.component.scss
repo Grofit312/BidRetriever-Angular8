@@ -1,0 +1,84 @@
+.project-source {
+  flex: 1 1 auto;
+  display: flex;
+  overflow: hidden;
+
+  .source-details {
+    width: 300px;
+    min-width: 300px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    overflow-y: auto;
+
+    .category {
+      margin-top: 20px;
+
+      &:first-child {
+        margin-top: 0;
+      }
+
+      p {
+        margin: 0;
+      }
+
+      &-title {
+        color: #888;
+        font-size: 18px;
+        font-weight: 700;
+      }
+
+      .subcategory-title {
+        padding-left: 5px;
+        font-size: 16px;
+        font-weight: 700;
+      }
+
+      .subcategory-subtitle {
+        padding-left: 10px;
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      .subcategory-description {
+        padding-left: 15px;
+        font-size: 13px;
+        font-weight: 400;
+      }
+    }
+  }
+
+  .source-content {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    margin-left: 20px;
+    overflow: hidden;
+
+    .header {
+      margin-bottom: 20px;
+
+      .toolbar-view-project,
+      .toolbar-select-source-project {
+        background-color: #F8F9FA;
+      }
+
+      .dx-toolbar-menu-container .dx-dropdownmenu-button {
+        background-color: #007BFF;
+        border-color: #007BFF;
+
+        .dx-icon {
+          color: #FFFFFF;
+        }
+      }
+    }
+
+    .content {
+      flex: 1 1 auto;
+      overflow: hidden;
+
+      #sourceGrid {
+        max-height: 100%;
+      }
+    }
+  }
+}

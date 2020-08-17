@@ -1,0 +1,65 @@
+.modal-container {
+  visibility: 'visible';
+
+  .add-event-modal {
+    width: 700px;
+    height: 800px;
+
+    form {
+      margin-top: 20px;
+
+      .event-form {
+        height: 660px;
+        overflow-y: auto;
+
+        &-wrapper {
+          display: flex;
+          justify-content: space-between;
+        }
+
+        input {
+          margin: 0;
+          height: unset;
+          width: 100%;
+        }
+
+        .event-form-half {
+          display: flex;
+          flex-direction: column;
+
+          &.dx-fieldset {
+            margin: 0;
+          }
+
+          .dx-field {
+            display: flex;
+            flex-direction: column;
+
+            .dx-field-label {
+              width: 100%;
+            }
+
+            .dx-field-value {
+              width: 100%;
+            }
+          }
+
+          .buttons button {
+            height: 30px;
+            font-size: .75rem;
+          }
+
+          .list {
+            height: 500px;
+          }
+        }
+      }
+
+      .button-group {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 30px;
+      }
+    }
+  }
+}

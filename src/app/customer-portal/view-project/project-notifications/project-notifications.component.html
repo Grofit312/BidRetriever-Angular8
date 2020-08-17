@@ -1,0 +1,40 @@
+<div class='user-notifications-buttons'>
+  <select class='user-notifications-view-mode' [(ngModel)]='notificationViewMode' (change)='onChangeNotificationViewMode()'>
+    <option value="all">All Notifications</option>
+  </select>
+  <input class='user-notifications-search' type='text' placeholder='Search' (input)="onSearchChange($event.target.value)"/>
+  <div>
+    <button class='btn btn-primary' (click)='onViewNotification()'>View Notification</button>
+    <button class='btn btn-primary' (click)='onNewNotification()'>New Notification</button>
+    <div class="btn-group">
+      <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Other Actions
+      </button>
+      <div class="dropdown-menu">
+        <a class="dropdown-item" (click)='onViewNotification()'>View Notification</a>
+        <a class="dropdown-item" (click)='onNewNotification()'>New Notification</a>
+        <div class="dropdown-divider orange"></div>
+        <a class="dropdown-item" (click)='onTogglePreview()'>{{ showPreviewPane ? 'Hide Preview' : 'Show Preview' }}</a>
+      </div>
+    </div>
+  </div>
+</div>
+<div class='user-notifications-content'>
+  <div class='user-notifications-table' [ngClass]="{'full-width': (!showPreviewPane)}">
+    <ag-grid-angular
+      #grid
+      style="width: 100%; height: 100%;"
+      class="ag-theme-balham"
+      [rowData]="rowData"
+      [columnDefs]="columnDefs"
+      rowSelection="single"
+      rowDragManaged=true
+      (selectionChanged)="onGridSelectionChanged($event)"
+      (gridReady)="onGridReady($event)"
+      >
+    </ag-grid-angular>
+  </div>
+
+  <div [hidden]='!showPreviewPane' #notificationHtml class='notification_html'>
+  </div>
+</div>

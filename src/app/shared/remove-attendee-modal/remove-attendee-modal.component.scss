@@ -1,0 +1,25 @@
+.remove-attendee-modal {
+  background-color: transparent;
+
+  .modal-title {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+  }
+
+  .modal-subtitle {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+  }
+
+  .emails {
+    margin-bottom: 20px;
+  }
+
+  .button-group {
+    text-align: center;
+
+    button {
+      margin: 0 10px;
+    }
+  }
+}

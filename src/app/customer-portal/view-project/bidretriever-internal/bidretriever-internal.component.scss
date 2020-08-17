@@ -1,0 +1,56 @@
+.internal-info-list {
+  padding: 20px 50px;
+  display: flex;
+  justify-content: space-between;
+
+  .internal-info-half-list {
+    width: calc(50% - 15px);
+  }
+
+  .internal-info {
+    display: flex;
+
+    .font-weight-bold {
+      margin-right: 20px;
+      width: 200px;
+    }
+
+    input, select {
+      flex-grow: 1;
+      max-width: 400px;
+    }
+
+    select {
+      height: 40px;
+    }
+
+    .btn {
+      margin-left: 10px;
+    }
+  }
+}
+
+.uncompleted-records {
+  padding: 0 50px;
+
+  .table-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 10px;
+
+    .buttons {
+      display: flex;
+      align-items: center;
+
+      .btn {
+        margin-left: 10px;
+      }
+    }
+  }
+
+  .uncompleted-records-table {
+    height: calc(100vh - 530px);
+    margin-bottom: 100px;
+  }
+}

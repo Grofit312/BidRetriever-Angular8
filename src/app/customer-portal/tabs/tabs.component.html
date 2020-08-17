@@ -1,0 +1,82 @@
+<ul class="nav nav-tabs" id="tabs" role="tablist">
+  <li class="nav-item">
+    <a
+      (click)="onClickTab($event, 1)"
+      class="nav-link active"
+      id="tab-my-projects"
+      data-toggle="tab"
+      href="#my-projects"
+      role="tab"
+      aria-controls="home"
+      aria-selected="true"
+    >My Projects</a>
+  </li>
+  <li class="nav-item">
+    <a
+      (click)="onClickTab($event, 2)"
+      class="nav-link"
+      id="tab-shared-projects"
+      data-toggle="tab"
+      href="#shared-projects"
+      role="tab"
+      aria-controls="home"
+      aria-selected="true"
+    >Shared Projects</a>
+  </li>
+  <li class="nav-item">
+    <a
+      (click)="onClickTab($event, 3)"
+      class="nav-link"
+      id="tab-my-calendar"
+      data-toggle="tab"
+      href="#my-calendar"
+      role="tab"
+      aria-controls="home"
+      aria-selected="true"
+    >My Calendar</a>
+  </li>
+  <li class="nav-item">
+    <a
+      (click)="onClickTab($event, 4)"
+      class="nav-link"
+      id="tab-my-settings"
+      data-toggle="tab"
+      href="#my-settings"
+      role="tab"
+      aria-controls="profile"
+      aria-selected="false"
+    >My Settings</a>
+  </li>
+  <li class="nav-item">
+    <a
+      (click)="onClickTab($event, 5)"
+      class="nav-link"
+      id="tab-system-settings"
+      data-toggle="tab"
+      href="#system-settings"
+      role="tab"
+      aria-controls="contact"
+      aria-selected="false"
+    >System Settings</a>
+  </li>
+  <li class="nav-item">
+    <a
+      (click)="onClickTab($event, 6)"
+      class="nav-link"
+      id="tab-all-submissions"
+      data-toggle="tab"
+      href="#submissions"
+      role="tab"
+      aria-controls="contact"
+      aria-selected="false"
+    >Project Log</a>
+  </li>
+  <li class="desktop-sync-item">
+    <a
+      *ngIf="!isDesktopSynced"
+      href="http://bidretriever.net/downloads.html"
+      target="_blank"
+      class="desktop-sync-link"
+    >Click Here To Install Desktop Sync</a>
+  </li>
+</ul>

@@ -1,0 +1,30 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+dx-tab-panel {
+  flex: 1 1 auto;
+  overflow: hidden;
+}
+
+.source-tab-template {
+  overflow-y: auto;
+}
+
+.footer {
+  margin-top: 10px;
+  margin-left: auto;
+
+  .btn-apply {
+    width: 120px;
+    background-color: #007BFF;
+    color: #FFFFFF;
+  }
+
+  .btn-cancel {
+    width: 120px;
+    background-color: #FBF9FA;
+  }
+}

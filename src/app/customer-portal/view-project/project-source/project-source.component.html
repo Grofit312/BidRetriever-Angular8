@@ -1,0 +1,123 @@
+<div class="project-source">
+  <div class="left-sidebar source-details">
+    <div class="category">
+      <p class="category-title">Project Information:</p>
+      <div class="subcategory">
+        <p class="subcategory-title"></p>
+        <p class="subcategory-subtitle">Project Name</p>
+        <p class="subcategory-description">{{ currentProject?.project_name || '--' }}</p>
+        <p class="subcategory-subtitle">Project Address</p>
+        <p class="subcategory-description">{{ currentProject?.project_address }}</p>
+        <p class="subcategory-subtitle">Bid Date</p>
+        <p class="subcategory-description">{{ currentProject?.project_bid_datetime || '--' }}</p>
+      </div>
+    </div>
+
+    <div class="category">
+      <p class="category-title">Source Company Information</p>
+
+      <div class="subcategory" *ngIf="currentProject?.source_company_name">
+        <p class="subcategory-title">{{ currentProject?.source_company_name }}</p>
+        <p class="subcategory-description">{{ currentProject?.source_company_address || '--' }}</p>
+        <p class="subcategory-description">{{ currentProject?.source_company_phone || '--' }}</p>
+        <p class="subcategory-description">{{ currentProject?.source_company_website || '--' }}</p>
+      </div>
+    </div>
+
+    <div class="category">
+      <p class="category-title">Source Contact Information</p>
+
+      <div class="subcategory">
+        <p class="subcategory-title">Source Contact Name</p>
+        <p class="subcategory-subtitle">{{ currentProject?.source_user_fullname || '--' }}</p>
+        <p class="subcategory-subtitle">{{ currentProject?.source_user_address || '--' }}</p>
+        <p class="subcategory-subtitle">{{ currentProject?.source_user_phone || '--' }}</p>
+        <p class="subcategory-subtitle">{{ currentProject?.source_user_email || '--' }}</p>
+      </div>
+
+      <div class="subcategory">
+        <p class="subcategory-title">Source Contact Information</p>
+        <p class="subcategory-description">Total Invited Projects: 20</p>
+        <p class="subcategory-description">Total Projects Bid: 20</p>
+        <p class="subcategory-description">Total Projects Won: 0</p>
+        <p class="subcategory-description">Total Projects Value: $230,000</p>
+      </div>
+
+      <div class="subcategory">
+        <p class="subcategory-title">Other Projects Bidding</p>
+        <p class="subcategory-description">Project Title Number 1</p>
+        <p class="subcategory-description">Project Title Number 2</p>
+        <p class="subcategory-description">Project Title Number 3</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="source-content">
+    <dx-toolbar class="header">
+      <dxi-item location="before" widget="dxSelectBox" [options]="toolbarConfig.sourceType"></dxi-item>
+
+      <dxi-item location="center" widget="dxTextBox" [options]="toolbarConfig.searchText"></dxi-item>
+
+      <dxi-item location="after" widget="dxButton" [options]="toolbarConfig.viewProject"></dxi-item>
+      <dxi-item location="after" widget="dxButton" [options]="toolbarConfig.addProject"></dxi-item>
+      <dxi-item location="after" widget="dxButton" [options]="toolbarConfig.addSource"></dxi-item>
+
+      <dxi-item widget="dxButton" locateInMenu="always" [options]="toolbarConfig.others.viewProject"></dxi-item>
+      <dxi-item widget="dxButton" locateInMenu="always" [options]="toolbarConfig.others.addSource"></dxi-item>
+      <dxi-item widget="dxButton" locateInMenu="always" [options]="toolbarConfig.others.removeSource"></dxi-item>
+    </dx-toolbar>
+
+    <div class="content" #sourceContent>
+      <dx-data-grid #sourceGrid
+                    id="sourceGrid"
+                    [allowColumnResizing]="true"
+                    [columnAutoWidth]="true"
+                    [dataSource]="sourceGridDataSource"
+                    (onRowClick)="sourceGridRowClickAction($event)"
+                    [remoteOperations]="true"
+                    [rowAlternationEnabled]="true"
+                    [showColumnLines]="true"
+                    [showRowLines]="true"
+                    [showBorders]="true">
+        <dxo-paging [enabled]="false"></dxo-paging>
+        <dxo-scrolling mode="vertical"></dxo-scrolling>
+        <dxo-selection mode="multiple"></dxo-selection>
+
+        <dxi-column dataField="project_source_id" caption="Project Source Id" [visible]="false"></dxi-column>
+        <dxi-column dataField="source_company_id" caption="Source Company Id" [visible]="false"></dxi-column>
+        <dxi-column dataField="source_company_name" caption="Source Company"></dxi-column>
+        <dxi-column dataField="project_name" caption="Project Name"></dxi-column>
+        <dxi-column dataField="source_company_contact_name" caption="Source Contact"></dxi-column>
+        <dxi-column dataField="source_company_contact_phone" caption="Source Contact Phone" [visible]="false"></dxi-column>
+        <dxi-column dataField="project_bid_datetime" caption="Bid Due Date"></dxi-column>
+        <dxi-column dataField="source_company_contact_email" caption="Contact Email" [visible]="false"></dxi-column>
+        <dxi-column dataField="project_admin_office_name" caption="Project Admin Office Name" [visible]="false"></dxi-column>
+        <dxi-column dataField="project_admin_user_displayname" caption="Project Admin User DisplayName" [visible]="false"></dxi-column>
+        <dxi-column dataField="project_admin_user_email" caption="Project Admin User Email" [visible]="false"></dxi-column>
+        <dxi-column dataField="project_admin_user_phone" caption="Project Admin User Phone" [visible]="false"></dxi-column>
+        <dxi-column dataField="project_desc" caption="Project Description" [visible]="false"></dxi-column>
+        <dxi-column dataField="project_source_sys_name" caption="Source System"></dxi-column>
+        <dxi-column dataField="secondary_project_id" caption="Secondary Project Id" [visible]="false"></dxi-column>
+        <dxi-column dataField="source_contact_id" caption="Source Contact Id" [visible]="false"></dxi-column>
+      </dx-data-grid>
+    </div>
+  </div>
+</div>
+
+<dx-popup [closeOnOutsideClick]="true"
+          [dragEnabled]="false"
+          [(visible)]="isProjectSourceModalShown"
+          [showTitle]="true"
+          [title]="addProjectSourceModalTitle"
+          width="100vw"
+          height="100vh">
+  <div *dxTemplate="let data of 'content'">
+    <add-project-source-modal
+      (onApply)="onAddProjectSourceModalApplyAction()"
+      (onCancel)="onAddProjectSourceModalCancelAction()"
+    ></add-project-source-modal>
+  </div>
+</dx-popup>
+
+<!-- Add Project Modal -->
+<app-project-source-modal #addProjectModal></app-project-source-modal>

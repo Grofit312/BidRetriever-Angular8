@@ -1,0 +1,233 @@
+.modal-container {
+    visibility: 'visible';
+    justify-content: center;
+    align-items: flex-start;
+    padding: 30px 0;
+    .add-company-modal {
+        width: 100%;
+        height: auto;
+        .nav-tabs {
+            width: 800px;
+            padding-left: 50px;
+            margin-left: -50px;
+        }
+
+        form {
+            margin-top: 20px;
+
+            .company-form-wrapper {
+                max-height: calc(100vh - 48vh);
+                overflow-y: auto;
+            }
+
+            .company-form {
+                display: flex;
+                justify-content: space-between;
+                display: none;
+                &.active {
+                    display: flex;
+
+                    &.form-date {
+                        display: block;
+                    }
+                    &.form-detail {
+                        display: block;
+                    }
+                }
+                input {
+                    margin: 0;
+                    height: unset;
+                    width: 100%;
+                }
+
+                .company-form-half {
+                    display: flex;
+                    flex-direction: column;
+
+                    &.dx-fieldset {
+                        margin: 0;
+                    }
+
+                .dx-field {
+                    display: flex;
+                    flex-direction: column;
+                    .dx-field-label {
+                      width: 100%;
+                    }
+
+                    .dx-field-value {
+                        width: 100%;
+
+                        &.field-value-address {
+                            display: grid;
+                            grid-template-columns: 1fr;
+                            grid-row-gap: 5px;
+
+                            .triple-form {
+                                display: grid;
+                                grid-template-columns: repeat(3, minmax(0, 1fr));
+                                grid-column-gap: 5px;
+                            }
+                        }
+                    }
+                }
+                &.drop-zone {
+                    flex-grow: 1;
+                    margin-left: 40px;
+                    overflow: hidden;
+                    #drop_zone {
+                        text-align: center;
+                        height: 600px;
+                        line-height: 600px;
+                        border: 1px dashed black;
+                        margin-top: 10px;
+                    }
+
+                    #tree_zone {
+                        height: 600px;
+                        border: 1px dashed black;
+                        margin-top: 10px;
+                        display: none;
+                        overflow: scroll;
+                    }
+                }
+
+                .double-form {
+                    width: 300px;
+                    display: flex;
+                    justify-content: space-between;
+
+                    div {
+                        width: 145px;
+
+                        input {
+                            width: 100%;
+                        }
+                    }
+                }
+
+                .triple-form {
+                    width: 300px;
+                    display: flex;
+                    justify-content: space-between;
+
+                    input {
+                        width: 95px;
+                    }
+                }
+
+                .checkbox {
+                    display: flex;
+                    align-items: center;
+                    margin-bottom: 10px;
+
+                        input {
+                            width: unset;
+                            margin: unset;
+                            margin-right: 10px;
+                        }
+                }
+            }
+          }
+
+          .button-group {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 30px;
+          }
+        }
+    }
+    .modal-box {
+        padding: 0 !important;
+        max-width: 40% !important; 
+        height: auto !important;
+        overflow-y: auto;
+        transform: unset !important;
+        position: unset !important;
+        margin: auto;
+        .modal-title{
+            background-color: transparent;
+            color: #222;
+            padding: 20px;
+            font-size: 24px;
+        }
+        .add-company-modal{
+            height: auto !important;
+        }
+        .add-company-modal .nav-tabs {
+            width: 100%;
+            padding-left: 20px;
+            margin-left: 0px;
+            padding-top: 30px;
+        }
+        .company-form-half{
+                width: 100% !important;
+                padding: 0 20px;
+        }
+        .pm-0{
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        .dx-texteditor.dx-editor-outlined {
+        background: #f6f8fa;
+        padding: 4px;
+        }
+        .d-flex{
+            display: block !important;
+            width: unset !important;
+            .w-33{
+                width: 33.33%;
+            }
+            
+            .my-flex{
+                display: flex;
+            }
+            .m-rl{
+                    margin: 0 6px;
+            }
+            .m-top{
+                   margin-top: 6px;
+            }
+
+        }
+        select {
+            height: 44px;
+            width: 100%;
+            background: #f6f8fa;
+            padding: 4px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 0;
+        }
+        form {
+            background-color: #fff !important;
+            .button-group {
+                margin-top: 0 !important;
+                border-top: 1px solid #ddd;
+                padding: 20px 20px !important;
+                justify-content: left !important;
+                
+            }
+        }
+        #drop_zone {
+            height: 200px !important;
+            line-height: 200px !important;
+            margin-bottom: 40px;
+        }
+        .form-detail{
+            .dx-field-label {
+                float: unset !important;
+                width: 100% !important;
+            }
+            .dx-fieldset .dx-field-value {
+                width: 100% !important;
+            }
+        }
+
+        
+
+    }
+   
+
+
+}

@@ -1,0 +1,48 @@
+<div class='shared-projects-content'>
+  <div class='shared-projects-header'>
+    <select class='shared-projects-view-mode' [(ngModel)]='projectViewMode' (change)='onChangeProjectViewMode()'>
+      <option value="my-user">My Shared Projects</option>
+      <option value="my-office">My Office Shared Projects</option>
+      <option value="my-company">My Company Shared Projects</option>
+      <option value="archived">Archived Shared Projects</option>
+      <option value="public">Public Shared Projects</option>
+    </select>
+
+    <input class='shared-projects-search' type='text' placeholder='Search' (input)="onSearchChange($event.target.value)" [(ngModel)]='searchWord'/>
+
+    <div class='buttons-group'>
+      <button class="btn btn-light" (click)='onViewSharedProject()'>View Shared Project</button>
+      <button class='btn btn-light' (click)='onAddToMyProjects()'>Add to My Projects</button>
+      <div class="btn-group">
+        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Other Actions
+        </button>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" (click)='onViewSharedProject()'>View Shared Project</a>
+          <a class="dropdown-item" (click)='onAddToMyProjects()'>Add To My Projects</a>
+          <div class="dropdown-divider"></div>
+          <a class='dropdown-item' (click)='onViewSharedProjectFiles()'>View Shared Project Files</a>
+          <a *ngIf='projectViewMode.includes("my")' class="dropdown-item" (click)='onArchiveSharedProject()'>Archive Shared project</a>
+          <a *ngIf='projectViewMode.includes("my")' class="dropdown-item" (click)='onDeleteSharedProject()'>Delete Shared project</a>
+          <div class="dropdown-divider orange"></div>
+          <a class="dropdown-item" (click)='onViewTransactionLogs()'>View Transaction Log</a>
+          <a class="dropdown-item" (click)='onRefresh()'>Refresh Grid</a>
+          <a class="dropdown-item orange" (click)='onHelp()'>Help</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class='shared-projects-table'>
+    <ag-grid-angular
+      #grid
+      style="width: 100%;"
+      class="ag-theme-balham"
+      [rowData]="rowData"
+      [columnDefs]="columnDefs"
+      rowSelection="single"
+      (gridReady)="onGridReady($event)"
+      >
+    </ag-grid-angular>
+  </div>
+</div>

@@ -1,0 +1,57 @@
+.my-calendar-content {
+  padding: 30px 50px;
+  height: calc(100% - 40px);
+  display: flex;
+  flex-direction: column;
+
+  .my-calendar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+
+    .my-calendar-view-mode {
+      width: 200px;
+      height: 40px;
+      margin-right: 10px;
+    }
+
+    .buttons-group {
+      margin-bottom: unset;
+    }
+  }
+
+  .my-calendar {
+    height: calc(100vh - 350px);
+    margin-top: 20px;
+    margin-bottom: 40px;
+
+    .split-pane-content-primary, .split-pane-content-secondary {
+      height: 100%;
+    }
+
+    .side-overview {
+      height: 100%;
+      padding: 5px;
+      border: 2px solid lightgray;
+      overflow-y: scroll;
+
+      .data {
+        font-size: .9rem;
+        margin-bottom: 5px;
+
+        .name {
+          font-weight: 700;
+        }
+
+        .value {
+          margin-left: 10px;
+        }
+      }
+    }
+
+    .calendar {
+      height: 100%;
+    }
+  }
+}

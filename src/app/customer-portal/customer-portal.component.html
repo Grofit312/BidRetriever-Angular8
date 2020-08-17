@@ -1,0 +1,34 @@
+<div class="customer-portal">
+  <div class="customer-portal-banner" *ngIf="!dataStore.showPortalHeader && showBannerLogo">
+    <img class="logo" src="/assets/logo.png" alt="logo" />
+    <span *ngIf="environment === 'DEV'" class="dev-version">*** DEVELOP ***</span>
+    <!-- <span class="current-user">{{ welcomeMessage }}</span> -->
+    <dx-menu [dataSource]="menus" displayExpr="name" orientation="horizontal"
+      (onItemClick)="menuItemClickAction($event)"></dx-menu>
+  </div>
+  <div class="customer-portal-header" *ngIf="dataStore?.showPortalHeader">
+    <img class="logo" src="/assets/logo.png" alt="logo" />
+    <span *ngIf="environment === 'DEV'" class="dev-version">*** DEVELOP ***</span>
+    <!-- <span class="title">Project Dashboard</span> -->
+    <!-- <span class="current-user">{{ welcomeMessage }}</span> -->
+    <dx-menu [dataSource]="menus" displayExpr="name" orientation="horizontal"
+      (onItemClick)="menuItemClickAction($event)"></dx-menu>
+  </div>
+
+  <div class="customer-portal-content">
+    <dx-tabs *ngIf="dataStore?.showPortalHeader && !showBannerLogo" class="main-tab" [dataSource]="mainTabs"
+      itemTemplate="tabItem" [scrollByContent]="true" [showNavButtons]="true" [selectedIndex]="selectedTabIndex"
+      (onSelectionChanged)="tabSelectAction($event)">
+      <div *dxTemplate="let tab of 'tabItem'">
+        <span *ngIf="tab.id !== 'click-to-install-desktop-sync'">{{ tab.text }}</span>
+        <a href="http://bidretriever.net/downloads.html" target="_blank" rel="noopener noreferrer"
+          *ngIf="tab.id === 'click-to-install-desktop-sync'">
+          {{ tab.text }}
+        </a>
+      </div>
+    </dx-tabs>
+    <div class="main-router" [ngClass]="{ 'view-project': showBannerLogo }">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>

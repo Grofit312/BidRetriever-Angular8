@@ -1,0 +1,86 @@
+import { CustomerPortalComponent } from "app/customer-portal/customer-portal.component";
+import { customerPortalRouting } from "app/customer-portal/customer-portal.routes";
+import { MyProjectsComponent } from "app/customer-portal/my-projects/my-projects.component";
+import { MyCompaniesComponent } from "app/customer-portal/my-companies/my-companies.component";
+import { MySettingsComponent } from "app/customer-portal/my-settings/my-settings.component";
+import { TabsComponent } from "app/customer-portal/tabs/tabs.component";
+import { FormsModule } from "@angular/forms";
+import { AgGridModule } from 'ag-grid-angular';
+import { ValidationService } from "app/providers/validation.service";
+import { AngularDateTimePickerModule } from 'angular2-datetimepicker';
+import { NotificationViewerComponent } from "app/customer-portal/notification-viewer/notification-viewer.component";
+import { SubmissionsComponent } from "app/customer-portal/submissions/submissions.component";
+import { SharedModule } from "app/shared/shared.module";
+import { DocViewerComponent } from "./doc-viewer/doc-viewer.component";
+import { TreeModule } from 'angular-tree-component';
+import { MyCalendarComponent } from "./my-calendar/my-calendar.component";
+import {
+  DxSchedulerModule,
+  DxButtonModule,
+  DxDataGridModule,
+  DxDropDownBoxModule,
+  DxLookupModule,
+  DxSelectBoxModule,
+  DxTextBoxModule,
+  DxToolbarModule,
+  DxPopupModule,
+  DxPopoverModule,
+  DxTemplateModule,
+  DxTabsModule,
+  DxTabPanelModule,
+  DxMenuModule
+} from "devextreme-angular";
+import { SplitPaneModule } from 'ng2-split-pane/lib/ng2-split-pane';
+import { SharedProjectsComponent } from "./shared-projects/shared-projects.component";
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
+
+
+
+
+@NgModule({
+  declarations: [
+    CustomerPortalComponent,
+    TabsComponent,
+    MySettingsComponent,
+    MyProjectsComponent,
+    MyCompaniesComponent,
+    NotificationViewerComponent,
+    SubmissionsComponent,
+    DocViewerComponent,
+    MyCalendarComponent,
+    SharedProjectsComponent,
+ 
+    
+  ],
+  imports: [
+    customerPortalRouting,
+    CommonModule,
+    FormsModule,
+    AgGridModule.withComponents([]),
+    AngularDateTimePickerModule,
+    SharedModule,
+    TreeModule,
+    DxSchedulerModule,
+    SplitPaneModule,
+    DxButtonModule,
+    DxDropDownBoxModule,
+    DxDataGridModule,
+    DxLookupModule,
+    DxMenuModule,
+    DxSelectBoxModule,
+    DxTextBoxModule,
+    DxToolbarModule,
+    DxPopupModule,
+    DxPopoverModule,
+    DxTabsModule,
+    DxTabPanelModule,
+    DxTemplateModule
+  ],
+  providers: [
+    ValidationService,
+  ],
+})
+
+export class CustomerPortalModule {
+}
