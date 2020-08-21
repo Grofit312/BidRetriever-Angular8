@@ -10,7 +10,10 @@ import * as moment from 'moment';
 import { MyCalendarApi } from 'app/customer-portal/my-calendar/my-calendar.component.api.service';
 import { CompanyOfficeApi } from 'app/customer-portal/system-settings/company-office-setup/company-office-setup.api.service';
 import { UserInfoApi } from 'app/customer-portal/system-settings/user-setup/user-setup.api.service';
+import { CompaniesApi } from 'app/customer-portal/my-companies/my-companies.api.service';
+import { SourceSystemAccountsApi } from 'app/customer-portal/system-settings/source-system-accounts/source-system-accounts.api.service';
 const CircularJSON = require('circular-json');
+
 
 @Component({
   selector: 'edit-project-modal',
@@ -23,6 +26,7 @@ export class EditProjectModalComponent implements OnInit {
   @ViewChild('editProjectModal', { static: true }) editProjectModal: ElementRef;
   parent = null;
 
+
   currentProject:any = {};
   preBidDateTime:any = {};
   projectStartDateTime:any = {};
@@ -33,10 +37,43 @@ export class EditProjectModalComponent implements OnInit {
   awardDateTime:any = {};
   expectedContractDateTime:any = {};
   contractDateTime:any = {};
-
+  selectedItem: any;
   viewMode = 'basic';
   offices = [];
   companyUsers = [];
+  data: any;
+  email_company: any;
+  company_office_id: any;
+  contactEmailDetail: any;
+  contactFirstName:any;
+  contactSecondName:any;
+  companyTypeList: any[] = [];
+  selectedCompanyId = 0;
+  searchModeOption: string = "contains";
+  searchExprOption: any = "company_name";
+  searchTimeoutOption: number = 200;
+  minSearchLengthOption: number = 0;
+  sourceSystemTypes: any[];
+  submitterEmail:any;
+  searchExprOptionItems: Array<any> = [
+    {
+      name: "'company_name'",
+      value: "company_name",
+    },
+    {
+      name: "['company_name', 'company_id']",
+      value: ["company_name", "company_id"],
+    },
+  ];
+  company_website: any;
+  companyData: any;
+  company_email:any;
+  source_sys_url:any;
+  source_sys_type_id:any;
+  contact_firstname:any;
+  company_name: any;
+  company_array: any[]=[];
+  company_id: any;
 
   constructor(
     public dataStore: DataStore,
@@ -48,6 +85,8 @@ export class EditProjectModalComponent implements OnInit {
     public calendarApi: MyCalendarApi,
     private userApiService: UserInfoApi,
     private officeApi: CompanyOfficeApi,
+    private companyApi: CompaniesApi,
+    private sourceSystemAccountsApi: SourceSystemAccountsApi,
   ) {
     DatePicker.prototype.ngOnInit = function() {
       this.settings = Object.assign(this.defaultSettings, this.settings);
@@ -59,6 +98,77 @@ export class EditProjectModalComponent implements OnInit {
   }
 
   ngOnInit() {
+    if (!this.dataStore.currentUser) {
+      this.dataStore.authenticationState.subscribe(value => {
+        console.log('Authentication', value, this.dataStore.currentUser);
+        if(value){
+          this.getCompanyList();
+          console.log("Custom Data", this.dataStore);
+        }
+      });
+    }
+    this.sourceSystemAccountsApi
+    .findSourceSystemTypes()
+    .then((sourceSystemTypes: any) => {
+      if (Array.isArray(sourceSystemTypes)) {
+        this.sourceSystemTypes = sourceSystemTypes;
+      } else {
+        this.sourceSystemTypes = [sourceSystemTypes];
+      }
+
+      return this.sourceSystemAccountsApi.findSourceSystems(
+        this.dataStore.currentUser.customer_id
+      );
+    })
+    .catch((err) => {
+      this.notificationService.error("Error", err, {
+        timeOut: 3000,
+        showProgressBar: false,
+      });
+    });
+}
+
+  
+
+  getCompanyList() {
+    debugger;
+    this.companyApi
+      .findCompaniesByCustomerId( this.dataStore.currentCustomer["customer_id"],
+        this.dataStore.currentCustomer["customer_timezone"] || "eastern", null)
+      .then((sourceSystemTypes: any) => {
+        // this.companyTypeList = sourceSystemTypes;  
+        sourceSystemTypes.forEach(element => {
+          this.companyTypeList.push({
+            ID: element.company_id,
+            name: element.company_name
+          })
+        });   
+        console.log("this.companyTypeList :- ", this.companyTypeList);
+      });
+  }
+
+  onCompanySelected(event) {
+    console.log("event.itemData", event.itemData);
+    this.data = event.itemData;
+    this.company_website = event.itemData["company_website"];   
+    this.companyData = event.itemData;
+  }
+
+  onEmailDetail(email) {
+    debugger;
+    const params: any = {
+      contact_email: email.component["_changedValue"],
+      contact_firstname: this.contactFirstName,
+      contact_lastname: this.contactSecondName,
+      //company_office_id: this.offices[0].company_office_id,
+      customer_id: this.offices[0].customer_id,  
+      //company_office_name:this.offices[0].company_office_name    
+    };
+    this.sourceSystemAccountsApi.createContactEmail(params).then((res: any) => {
+      debugger
+      this.contactEmailDetail =  res.data;    
+      console.log("companyTypeList", this.contactEmailDetail);
+    });
   }
 
   initialize(parent: any, project: any) {
@@ -70,7 +180,11 @@ export class EditProjectModalComponent implements OnInit {
     }
 
     this.currentProject = project;
+    console.log('Current Project',this.currentProject);
     this.currentProject['project_auto_update_status'] = project['auto_update_status'] === 'active';
+    this.company_name=this.currentProject['source_company_name'];
+
+    this.selectedCompanyId = this.companyTypeList.findIndex(x=>x.ID == this.currentProject.source_company_id); //  '0c59ae70-e162-11ea-ab7c-adea4aaa59e1'; // this.currentProject.source_company_id;
 
     this.userApiService.findUsers(this.dataStore.currentUser['customer_id'])
       .then((users: any[]) => {
@@ -80,7 +194,6 @@ export class EditProjectModalComponent implements OnInit {
           const secondUserEmail = secondUser.user_email ? secondUser.user_email.toLowerCase() : '';
           return firstUserEmail.localeCompare(secondUserEmail);
         });
-
         return this.calendarApi.findCalendarEvents(null, this.currentProject['project_id']);
       })
       .then((res: any[]) => {
@@ -111,7 +224,9 @@ export class EditProjectModalComponent implements OnInit {
       this.viewMode = 'date';
     } else if (index === 3) {
       this.viewMode = 'detail';
-    } else {
+    } else if (index === 4) {
+      this.viewMode = 'source'
+    }else {
       this.viewMode = 'basic';
     }
   }
@@ -129,10 +244,14 @@ export class EditProjectModalComponent implements OnInit {
     }
 
     const projectOffice = this.offices.find(office => office['company_office_id'] === this.currentProject['project_assigned_office_id']);
+    debugger
     const params = Object.assign(
       {},
       this.currentProject,
       { project_name: projectName },
+      { source_company_id: this.data ? this.data.ID : null },
+      { source_company_contact_id: this.contactEmailDetail ? this.contactEmailDetail.contact_id : null},
+      { contact_firstname: this.contact_firstname },
       { project_bid_datetime: this.currentProject['project_bid_datetime'] ? this.formatDateTime(this.currentProject['project_bid_datetime']) : null },
       { project_assigned_office_name: projectOffice ? projectOffice['company_office_name'] : '' },
       { auto_update_status: this.currentProject['project_auto_update_status'] ? 'active' : 'inactive' }

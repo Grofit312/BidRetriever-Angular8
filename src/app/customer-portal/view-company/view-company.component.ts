@@ -89,6 +89,16 @@ export class ViewCompanyComponent implements OnInit {
         this.router.navigate([`/customer-portal/view-company/${companyId}/overview`], {queryParams: this.queryParams });
         break;
 
+
+
+
+
+
+
+
+
+        
+
       case 2:
         this.router.navigate([`/customer-portal/view-company/${companyId}/notes`], {queryParams: this.queryParams });
         break;
@@ -102,5 +112,4 @@ export class ViewCompanyComponent implements OnInit {
   // btnCloseAction() {
   //   this.router.navigate(['/customer-portal']);
   // }
-
 }

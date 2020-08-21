@@ -76,6 +76,7 @@ export class AmazonService {
    * @param path
    */
   public uploadFile(buffer: any, path: string) {
+    debugger
     return new Promise((resolve, reject) => {
       this.awaitInitialization()
         .then(res => {
@@ -261,6 +262,31 @@ export class AmazonService {
     });
   }
 
+  
+/**
+* Generate pre-signed url for the target s3 file
+* @param bucket_name
+* @param file_key
+*/
+public getPresignedUrlWithOriginalFileName(bucket_name: string, file_key: string, doc_name: string) {
+  return new Promise((resolve, reject) => {
+  this.awaitInitialization()
+  .then(res => {
+  debugger
+  const url = this.s3.getSignedUrl('getObject', {
+  Bucket: bucket_name,
+  Key: file_key,
+  Expires: 60 * 5,
+  ResponseContentDisposition: 'attachment; filename ="' + doc_name + '"'
+  });
+  resolve(url);
+  })
+  .catch(err => {
+  reject('Failed to initialize AWS modules');
+  });
+  });
+  }
+
   /**
    * Get uncompleted records list from 920~964 tables
    * @param project_id
@@ -274,7 +300,6 @@ export class AmazonService {
           tasks.push(this.fetchUncompletedRecordsFromProjectStandardizationTable(project_id, timezone));
           tasks.push(this.fetchUncompletedRecordsFromComparisonDrawingTable(project_id, timezone));
           tasks.push(this.fetchUncompletedRecordsFromFilePublishTable(project_id, timezone));
-
           return Promise.all(tasks);
         })
         .then((res: any[]) => {

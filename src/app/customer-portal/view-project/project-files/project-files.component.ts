@@ -375,7 +375,8 @@ export class ProjectFilesComponent implements OnInit {
 
     this.projectApiService.getDocument(selectedDocuments[0]['doc_id'])
       .then((doc: any) => {
-        return this.amazonService.getPresignedUrl(doc['bucket_name'], doc['file_key']);
+        const ext = doc['file_key'].substr(doc['file_key'].lastIndexOf('.') + 1);
+        return this.amazonService.getPresignedUrlWithOriginalFileName(doc['bucket_name'], doc['file_key'], `${doc['doc_name']}.${ext}`);
       })
       .then((url: string) => {
         window.open(url, '_blank');
@@ -389,7 +390,7 @@ export class ProjectFilesComponent implements OnInit {
     if (!this.activeFolderNode) {
       return this.notificationService.error('No Selection', 'Please a folder', { timeOut: 3000, showProgressBar: false });
     }
-
+debugger
     this.projectApiService.getPublishedFolderLink(this.currentProject['project_id'], this.activeFolderNode.data.id)
       .then((url: string) => {
         const downloadUrl = url.replace('dl=0', 'dl=1');

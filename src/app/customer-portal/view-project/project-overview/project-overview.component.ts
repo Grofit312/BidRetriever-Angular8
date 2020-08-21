@@ -23,6 +23,7 @@ export class ProjectOverviewComponent implements OnInit {
   @ViewChild('editProjectModal', { static: false }) editProjectModal;
   @ViewChild('addEventModal', { static: false }) addEventModal;
   @ViewChild('editEventModal', { static: false }) editEventModal;
+  destinationId = '';
 
   columnDefs = [
     {
@@ -51,6 +52,11 @@ export class ProjectOverviewComponent implements OnInit {
   lng = 7.809007;
 
   noAddress = false;
+  project_id: any;
+  user_email: any;
+  user_id: any;
+  setting_name: any;
+  project_setting_id: any;
 
   constructor(
     private _momentPipe: MomentPipe,
@@ -65,7 +71,7 @@ export class ProjectOverviewComponent implements OnInit {
 
   ngOnInit() {
     debugger
-    console.log("DataStore",this.dataStore.currentProject);
+    console.log("DataStore", this.dataStore.currentProject);
     if (this.dataStore.currentProject) {
       this.loadInfo();
       if (this.route.snapshot.queryParams['status'] === 'edit') {
@@ -97,7 +103,7 @@ export class ProjectOverviewComponent implements OnInit {
   loadMap() {
     try {
       const geocoder = new window['google'].maps.Geocoder();
-      geocoder.geocode({address: this.dataStore.currentProject.project_address}, (res, status) => {
+      geocoder.geocode({ address: this.dataStore.currentProject.project_address }, (res, status) => {
         if (status === window['google'].maps.GeocoderStatus.OK) {
           new window['google'].maps.Map(document.getElementById('google_map'), {
             center: res[0].geometry.location,
@@ -173,6 +179,45 @@ export class ProjectOverviewComponent implements OnInit {
     }
   }
 
+  onUpdateProject() {
+    debugger
+    this.user_email = this.dataStore.currentUser.user_email;
+    this.user_id = this.dataStore.currentUser.customer_id;
+    this.project_id = this.dataStore.currentProject.project_id;
+    this.viewProjectApi.getProjectSettings(this.project_id)
+      .then((res: any[]) => {
+        debugger
+        console.log("setting Result", res);
+        const destinationId = res.find(setting => setting.setting_name === 'PROJECT_DESTINATION_TYPE_ID');
+        destinationId && (this.destinationId = destinationId.setting_value);
+        this.setting_name = destinationId.setting_name;
+        this.project_setting_id = destinationId.project_setting_id;
+      }).then(res => {
+        const params: any = {
+          submission_type: "user_requested",
+          submitter_email: this.user_email,
+          user_id: this.user_id,
+          process_status: "queued",
+          destination_sys_type: "Demo",
+          destination_path: this.setting_name,
+          destination_id: this.project_setting_id,
+        }
+        this.viewProjectApi.updateProject(params)
+          .then((result: any[]) => {
+            console.log("status", result);
+            if(result){
+              this.notificationService.success('Success', 'This update project from source is created.', { timeOut: 3000, showProgressBar: false });
+            } else {
+              this.notificationService.error('Error', 'This update project from source is  not created.', { timeOut: 3000, showProgressBar: false });
+            }
+           
+          });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
+
   onViewDocuments() {
     const { currentUser: { user_id: userId } } = this.dataStore;
     window.open(`${window['env'].docViewerBaseUrl}?project_id=${this.dataStore.currentProject['project_id']}&user_id=${userId}&doc_id=unknown&folder_id=unknown&doc_type=normal`, '_blank');
@@ -183,7 +228,6 @@ export class ProjectOverviewComponent implements OnInit {
       window.open(this.dataStore.currentProject['source_url'], '_blank');
       return;
     }
-
     this.notificationService.error('Error', 'This project source system is empty.', { timeOut: 3000, showProgressBar: false });
   }
 

@@ -20,12 +20,12 @@
             <span>User Phone Number</span>
             <input required name='phone' [(ngModel)]='phone' [readonly]='!isNewUser'/>
             <span>Share Type</span>
-            <select required name="shareType" [(ngModel)]="shareType">
-              <option value="admin">Admin</option>
-              <option value="collaborator">Collaborator</option>
-              <option value="observer">Observer</option>
-              <option value="none" selected>None</option>
-            </select>
+            <select name='shareType' [(value)]='shareType'>
+              <option value="">Share Type</option>
+              <option *ngFor="let data of shareType" [ngValue]="data.value">
+                {{ data.name }}
+              </option>
+            </select>          
           </div>
           <div class='share-user-form-half'>
             <b>

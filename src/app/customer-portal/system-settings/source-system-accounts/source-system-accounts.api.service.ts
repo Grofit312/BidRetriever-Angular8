@@ -28,6 +28,50 @@ export class SourceSystemAccountsApi {
     });
   }
 
+  public findCompanyList(customer_id) {
+    return new Promise((resolve, reject) => {
+      axios.get(window['env'].apiBaseUrl + `/CompanyList?customer_id=${customer_id}`, {
+        validateStatus: (status) => {
+          return status === 200 || status === 400
+        }
+      })
+        .then(res => {
+          if (res.status === 200) {
+            resolve(res.data);
+          } else {
+            reject(res.data.status);
+          }
+        })
+        .catch(err => {
+          console.log(err);
+          reject(err);
+        });
+    });
+  }
+
+  public createContactEmail(params: any) {
+    debugger
+    return new Promise((resolve, reject) => {
+      axios.post(window['env'].apiBaseUrl + '/CreateContact', queryString.stringify(params), {
+        validateStatus: (status) => {
+          return status === 200 || status === 400
+        }
+      })
+        .then(res => {
+          if (res.status === 200) {
+            resolve(res);
+          } else {
+            reject(res.data);
+          }
+        })
+        .catch(err => {
+          console.log(err);
+          reject(err);
+        });
+    });
+  }
+
+
   public findSourceSystems(customer_id: string) {
     return new Promise((resolve, reject) => {
       axios.get(window['env'].apiBaseUrl + `/FindCustomerSourceSystems?customer_id=${customer_id}`, {

@@ -16,6 +16,8 @@ import { TreeModule } from 'angular-tree-component';
 import { ProjectFilesApi } from "./project-files/project-files.api.service";
 import { ProjectSourceComponent } from "./project-source/project-source.component";
 import { ProjectSharingComponent } from "./project-sharing/project-sharing.component";
+import { ProjectNotesComponent } from "./project-notes/project-notes.component";
+
 
 import {
   DxButtonModule,
@@ -30,9 +32,11 @@ import {
   DxTemplateModule,
   DxTabPanelModule,
   DxScrollViewModule,
+
 } from "devextreme-angular";
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
+import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 
 @NgModule({
   declarations: [
@@ -46,6 +50,8 @@ import { CommonModule } from "@angular/common";
     ProjectSourceComponent,
     ProjectSharingComponent,
     BidretrieverInternalComponent,
+    ProjectNotesComponent
+    
   ],
   imports: [
     viewProjectRouting,
@@ -67,6 +73,8 @@ import { CommonModule } from "@angular/common";
     DxTemplateModule,
     DxTextBoxModule,
     DxToolbarModule,
+    CKEditorModule
+    
   ],
   providers: [
     ViewProjectApi,

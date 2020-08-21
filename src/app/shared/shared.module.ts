@@ -50,6 +50,8 @@ import { ProjectDataViewDetailsModalComponent } from './project-data-view-detail
 import { ProjectSourceModalComponent } from './project-source-modal/project-source-modal.component';
 import { CompanyDataViewModalComponent } from './company-data-view-modal/company-data-view-modal.component';
 import { CompanyDataViewDetailsModalComponent } from './company-data-view-details-modal/company-data-view-details-modal.component';
+import { CompaniesApi } from 'app/customer-portal/my-companies/my-companies.api.service';
+import { SourceSystemAccountsApi } from 'app/customer-portal/system-settings/source-system-accounts/source-system-accounts.api.service';
 
 @NgModule({
   imports: [
@@ -112,7 +114,9 @@ import { CompanyDataViewDetailsModalComponent } from './company-data-view-detail
 
     CompanyDataViewModalComponent,
 
-    CompanyDataViewDetailsModalComponent
+    CompanyDataViewDetailsModalComponent,
+
+    
   ],
   exports: [
     AddProjectModalComponent,
@@ -141,9 +145,13 @@ import { CompanyDataViewDetailsModalComponent } from './company-data-view-detail
     ProjectDataViewModalComponent,
     ProjectSourceModalComponent,
     CompanyDataViewModalComponent,
-    CompanyDataViewDetailsModalComponent
+    CompanyDataViewDetailsModalComponent,
 
 
   ],
+  providers: [
+    CompaniesApi,
+    SourceSystemAccountsApi
+   ],
 })
 export class SharedModule { }

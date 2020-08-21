@@ -43,6 +43,7 @@ export class ProjectSharingApi {
   }
 
   public createSharedProject(params: any) {
+    debugger
     return new Promise((resolve, reject) => {
       axios.post(window['env'].apiBaseUrl + '/CreateSharedProject', queryString.stringify(params))
         .then(res => {

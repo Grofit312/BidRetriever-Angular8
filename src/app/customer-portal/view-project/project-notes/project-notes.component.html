@@ -1,0 +1,84 @@
+<div class='notes-container'>
+  <div class='left-pane'>
+    <tree-root #folderTree [nodes]='folderNodes' [focused]="true" [options]='treeOptions'>
+      <ng-template #treeNodeTemplate let-node="node" let-index="index">
+        <div id='div-{{node.id}}' class="nodediv">
+          <img style='height: 20px' src='/assets/folder.png' alt='folder' />
+          <span style='font-size: .75rem; white-space: nowrap;'
+            [ngClass]="{'active': ischildVisible == true}">{{ node.data.subject }}</span></div>
+      </ng-template>
+    </tree-root>
+  </div>
+  <div class='mid-pane'>
+    <div class='buttons-group'>    
+      <button class='btn btn-primary' (click)='onAdd()'>Add Notes</button>
+    </div>
+    <div *ngIf="currentNote" class="notes">
+      <ng-container *ngTemplateOutlet="tree;context:{node:currentNote}">
+      </ng-container>
+    </div>
+    <ng-template #tree let-node="node">
+      <div class="desc" *ngIf="isVisible(node)">
+        <div class="desc-header">
+          <h5><span>Auther Name</span> : {{node.firstName}} {{node.lastName}}</h5>
+        <h5><span>Created Date</span> : {{node.createdDate | date: 'MM-dd-yyyy' }}</h5>
+        </div> 
+        <h4>{{node.subject}}</h4>
+        <div class="descript" [innerHTML]="node.description"></div>
+        <div class="buttons">
+          <button  class="edit-btn ad_com action-close dx-button dx-button-danger dx-button-mode-contained dx-widget dx-button-has-text .dx-button-has-text .dx-button-content"
+           (click)='onAddComment()'>Add Comment</button>
+          <button
+            class=" edit-btn gray action-close dx-button dx-button-danger dx-button-mode-contained dx-widget dx-button-has-text .dx-button-has-text .dx-button-content"
+            (click)="onEdit(node)">Edit</button>
+          <button *ngIf="node.userRole == 'sys admin'"
+            class=" del-btn action-close dx-button dx-button-danger dx-button-mode-contained dx-widget dx-button-has-text .dx-button-has-text .dx-button-content"
+            (click)="onDelete(node.id)">Delete</button>
+        </div>
+      </div>
+
+      <ul class="child-flow" *ngIf="node.children && node.children.length > 0">
+        <ng-container *ngFor="let child of node.children">
+          <li>
+            <ng-container *ngTemplateOutlet="tree;context:{node:child}">
+            </ng-container>
+          </li>
+        </ng-container>
+      </ul>
+    </ng-template>
+  </div>
+  <div class='right-pane'></div>
+</div>
+
+<div #editModal class='modal-container fix-modal-notes'>
+  <div class='modal-box'>
+    <div class='notes-edit-modal'>
+      <div class='modal-title'>
+        {{editModalTitle}}
+      </div>
+      <div class='notes-edit-form'>
+        <form (ngSubmit)='saveNotes()'>
+          <div class='notes-edit-form-body'>
+            <div class='notes-edit-form-inputs'>
+              <div>Subject</div>
+              <input type='text' name='subject' [(ngModel)]="subject" [ngModelOptions]="{standalone: true}" required />
+              <div>
+                <select [(ngModel)]="noteType" [ngModelOptions]="{standalone: true}">
+                  <option value="">--Select--</option>
+                  <option *ngFor="let item of noteTypes" [value]="item.value">{{item.text}}</option>
+                </select>
+              </div>
+              <h4>Description</h4>
+              <ckeditor [editor]="Editor" [(ngModel)]="description" [ngModelOptions]="{standalone: true}" required>
+              </ckeditor>
+            </div>
+          </div>
+          <div class='notes-edit-form-buttons'>
+            <button class='btn btn-light' type='button' (click)='onCloseEditModal()'>Cancel</button>
+            <button class='btn btn-primary' type='submit'>Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

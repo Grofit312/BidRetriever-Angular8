@@ -23,10 +23,9 @@ export class AddShareUserModalComponent implements OnInit {
   lastName = '';
   companyName = '';
   phone = '';
-  shareType = 'none';
+  shareType:any[]=[];
   isNewUser = false;
   userId = '';
-
   timer = null;
 
   constructor(
@@ -36,7 +35,26 @@ export class AddShareUserModalComponent implements OnInit {
     private notificationService: NotificationsService,
     private projectSharingApi: ProjectSharingApi,
     public dataStore: DataStore,
-  ) { }
+  ) { 
+    this.shareType= [
+    {
+      name: "Admin",
+      value: "admin",
+    },
+    {
+      name: "Collaborator",
+      value: "collaborator",
+    },
+    {
+      name: "Observer",
+      value: "observer",
+    },
+    {
+      name: "None",
+      value: "none",
+    }   
+  ];
+  }
 
   ngOnInit() {
   }
@@ -44,19 +62,20 @@ export class AddShareUserModalComponent implements OnInit {
   initialize(project_id: string, parent: any) {
     this.projectId = project_id;
     this.parent = parent;
-    this.addShareUserModal.nativeElement.style.display = 'block';
+    this.addShareUserModal.nativeElement.style.display = 'block'; 
   }
+ 
 
-  createSharedProject() {
+  createSharedProject() {    
     const params = {
       project_id: this.projectId,
       share_user_id: this.userId,
       share_source_company_id: this.dataStore.currentUser['customer_id'],
-      share_source_user_id: this.dataStore.currentUser['user_id'],
+      share_source_user_id: this.dataStore.currentUser['user_id']  
+    
     };
 
     this.spinner.show();
-
     this.projectSharingApi.createSharedProject(params)
       .then(res => {
         this.spinner.hide();
@@ -72,6 +91,7 @@ export class AddShareUserModalComponent implements OnInit {
       });
   }
 
+
   onEmailChange(event: any) {
     if (this.timer) {
       clearTimeout(this.timer);
@@ -84,6 +104,7 @@ export class AddShareUserModalComponent implements OnInit {
 
       this.authApi.getUser(this.email)
         .then((user: any) => {
+          console.log("User",user);
           // user already exists
           this.firstName = user.user_firstname;
           this.lastName = user.user_lastname;
@@ -104,6 +125,7 @@ export class AddShareUserModalComponent implements OnInit {
         });
     }, 1500);
   }
+
 
   onSaveShareUser() {
     if (this.isNewUser) {

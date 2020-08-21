@@ -16,6 +16,9 @@
         <li class="nav-item">
           <a (click)="onClickTab($event, 3)" class="nav-link" [ngClass]="{'active': viewMode === 'detail'}" id="edit-project-details" data-toggle="tab" href="#" role="tab" aria-controls="profile" aria-selected="false">Details</a>
         </li>
+        <li class="nav-item">
+          <a (click)="onClickTab($event, 4)" class="nav-link" [ngClass]="{'active': viewMode === 'source'}" id="edit-project-source" data-toggle="tab" href="#" role="tab" aria-controls="profile" aria-selected="false">Source</a>
+        </li>
       </ul>
 
       <form (ngSubmit)='onSaveProject()'>
@@ -292,6 +295,101 @@
               </div>
             </div>
           </div>
+          <div class='project-form form-detail' [ngClass]="{'active': viewMode === 'source'}">
+            <div class="dx-fieldset">
+              <div class="dx-field">
+                <div class="dx-field-label">Source Company Name</div>
+                <div class="dx-field-value">
+                    <dx-select-box id="mySelectBox" *ngIf="companyTypeList.length > 0" [dataSource]="companyTypeList"
+                        displayExpr="name"           
+                        valueExpr= "ID"          
+                        [searchMode]="searchModeOption"
+                        [searchExpr]="searchExprOption"                       
+                        [value]="companyTypeList[selectedCompanyId].ID"
+                        [searchTimeout]="searchTimeoutOption"                      
+                        [minSearchLength]="minSearchLengthOption"
+                        [searchEnabled]="true"
+                        (onItemClick)="onCompanySelected($event)" 
+                        ></dx-select-box>
+                  <!-- <dx-text-box name="source_company_id" [(value)]="source_company_id" [showClearButton]="true"></dx-text-box> -->
+                </div>
+              </div>
+            </div>
+            <!-- <button class="btn" (click)="searchCompany()">Search</button> -->
+            <div class="dx-fieldset">
+              <div class="dx-field">
+                <div class="dx-field-label">Source Company Website</div>
+                <div class="dx-field-value">
+                  <dx-text-box name="source_company_website" [(value)]="currentProject.company_website" [showClearButton]="true"></dx-text-box>
+                </div>
+              </div>
+            </div>
+
+          <div class="dx-fieldset">
+              <div class="dx-field">
+                <div class="dx-field-label">Source Contact First Name</div>
+                <div class="dx-field-value">
+                  <dx-text-box name="contactFirstName" [(value)]="currentProject.contact_firstname"  [(ngModel)]="contactFirstName" [showClearButton]="true"></dx-text-box>
+                </div>
+              </div>
+            </div>
+              
+            <div class="dx-fieldset">
+              <div class="dx-field">
+                <div class="dx-field-label">Source Contact Last Name</div>
+                <div class="dx-field-value">
+                  <dx-text-box name="contactSecondName" [(value)]="currentProject.contact_lastname" [(ngModel)]="contactSecondName"  [showClearButton]="true"></dx-text-box>
+                </div>
+              </div>
+            </div>
+
+           <div class="dx-fieldset">
+              <div class="dx-field">
+                <div class="dx-field-label">Source Contact Email</div>
+                <div class="dx-field-value">
+                  <dx-text-box name="company_email" [(value)]="currentProject.source_contact_email" [showClearButton]="true" (onChange)="onEmailDetail($event)"></dx-text-box>
+                </div>
+              </div>
+            </div>
+            <hr>
+            <div class="dx-fieldset">
+              <div class="dx-field">
+                <div class="dx-field-label">Source System Type</div>
+                <div class="dx-field-value">
+                  <!-- <dx-text-box name="source_sys_type_id" [(value)]="source_sys_type_id" [showClearButton]="true"></dx-text-box> -->
+                  <select name='source_sys_type_id' [(value)]='source_sys_type_id'>
+                    <option *ngFor="let sourceSystemType of sourceSystemTypes" [ngValue]="sourceSystemType.source_sys_type_id">
+                      {{ sourceSystemType.source_type_name }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="dx-fieldset">
+              <div class="dx-field">
+              <div class="dx-field-label">Submitter Email</div>
+              <div class="dx-field-value">
+                <dx-text-box name="submitterEmail" [readOnly]="true" [(value)]="currentProject.user_email" [showClearButton]="true">
+                  <dx-validator>
+                    <dxi-validation-rule type="required"></dxi-validation-rule>
+                    <dxi-validation-rule type="email" message="Email is invalid"></dxi-validation-rule>
+                  </dx-validator>
+                </dx-text-box>
+              </div>
+              </div>
+            </div>
+
+            <div class="dx-fieldset">
+              <div class="dx-field">
+              <div class="dx-field-label">Source System URL</div>
+              <div class="dx-field-value">
+                <dx-text-box name="source_sys_url" [(value)]="currentProject.source_url" [showClearButton]="true"></dx-text-box>
+              </div>
+            </div>
+            </div>         
+
+          </div> 
         </div>
 
         <div class='button-group'>

@@ -8,6 +8,7 @@ import { BidretrieverInternalComponent } from 'app/customer-portal/view-project/
 import { ProjectSubmissionsComponent } from './project-submissions/project-submissions.component';
 import { ProjectSourceComponent } from './project-source/project-source.component';
 import { ProjectSharingComponent } from './project-sharing/project-sharing.component';
+import { ProjectNotesComponent } from "./project-notes/project-notes.component";
 import { ModuleWithProviders } from '@angular/core';
 
 const routes: Routes = [
@@ -46,6 +47,10 @@ const routes: Routes = [
       {
         path: 'internal',
         component: BidretrieverInternalComponent
+      },
+      {
+        path: 'project-notes',
+        component: ProjectNotesComponent
       },
       {
         path: '',

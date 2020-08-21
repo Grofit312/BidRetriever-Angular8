@@ -311,24 +311,34 @@
                 <div class="dx-field">
                   <div class="dx-field-label">Source Company Name</div>
                   <div class="dx-field-value">
-                    <dx-text-box name="source_company_id" [(value)]="source_company_id" [showClearButton]="true"></dx-text-box>
+                      <dx-select-box [dataSource]="companyTypeList"
+                          displayExpr="company_name"
+                          [searchMode]="searchModeOption"
+                          [searchExpr]="searchExprOption"
+                          [searchTimeout]="searchTimeoutOption"
+                          [minSearchLength]="minSearchLengthOption"
+                          [searchEnabled]="true"
+                          (onItemClick)="onCompanySelected($event)" 
+                          ></dx-select-box>
+                    <!-- <dx-text-box name="source_company_id" [(value)]="source_company_id" [showClearButton]="true"></dx-text-box> -->
                   </div>
                 </div>
               </div>
+              <!-- <button class="btn" (click)="searchCompany()">Search</button> -->
               <div class="dx-fieldset">
                 <div class="dx-field">
                   <div class="dx-field-label">Source Company Website</div>
                   <div class="dx-field-value">
-                    <dx-text-box name="source_company_domain" [(value)]="source_company_domain" [showClearButton]="true"></dx-text-box>
+                    <dx-text-box name="source_company_website" [(value)]="company_website" [showClearButton]="true"></dx-text-box>
                   </div>
                 </div>
               </div>
   
-              <!-- <div class="dx-fieldset">
+            <div class="dx-fieldset">
                 <div class="dx-field">
                   <div class="dx-field-label">Source Contact First Name</div>
                   <div class="dx-field-value">
-                    <dx-text-box name="projectNumber" [(value)]="projectNumber" [showClearButton]="true"></dx-text-box>
+                    <dx-text-box name="contactFirstName" [(value)]="contactFirstName" [showClearButton]="true"></dx-text-box>
                   </div>
                 </div>
               </div>
@@ -337,22 +347,20 @@
                 <div class="dx-field">
                   <div class="dx-field-label">Source Contact Last Name</div>
                   <div class="dx-field-value">
-                    <dx-text-box name="projectNumber" [(value)]="projectNumber" [showClearButton]="true"></dx-text-box>
+                    <dx-text-box name="contactSecondName" [(value)]="contactSecondName" [showClearButton]="true"></dx-text-box>
                   </div>
                 </div>
               </div>
   
-              <div class="dx-fieldset">
+             <div class="dx-fieldset">
                 <div class="dx-field">
                   <div class="dx-field-label">Source Contact Email</div>
                   <div class="dx-field-value">
-                    <dx-text-box name="projectNumber" [(value)]="projectNumber" [showClearButton]="true"></dx-text-box>
+                    <dx-text-box name="company_email" [(value)]="company_email" [showClearButton]="true" (onChange)="onEmailDetail($event)"></dx-text-box>
                   </div>
                 </div>
-              </div> -->
-  
+              </div>
               <hr>
-  
               <div class="dx-fieldset">
                 <div class="dx-field">
                   <div class="dx-field-label">Source System Type</div>
@@ -367,7 +375,7 @@
                 </div>
               </div>
   
-              <!-- <div class="dx-fieldset">
+              <div class="dx-fieldset">
                 <div class="dx-field">
                 <div class="dx-field-label">Submitter Email</div>
                 <div class="dx-field-value">
@@ -379,19 +387,18 @@
                   </dx-text-box>
                 </div>
                 </div>
-              </div> -->
+              </div>
   
-              <!-- <div class="dx-fieldset">
+              <div class="dx-fieldset">
                 <div class="dx-field">
                 <div class="dx-field-label">Source System URL</div>
                 <div class="dx-field-value">
                   <dx-text-box name="source_sys_url" [(value)]="source_sys_url" [showClearButton]="true"></dx-text-box>
                 </div>
               </div>
-              </div>
-               -->
+              </div>         
   
-            </div>
+            </div> 
   
           </div>
   

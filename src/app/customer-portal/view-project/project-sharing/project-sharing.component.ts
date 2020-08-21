@@ -99,7 +99,7 @@ export class ProjectSharingComponent implements OnInit {
     this.projectSharingApi.findShareUsers(this.projectId)
       .then((users: any[]) => {
         this.originData = users;
-        this.rowData = users.filter(user => !user['public']);
+        this.rowData =users;
         console.log(this.rowData);
       })
       .catch(err => {

@@ -13,7 +13,8 @@ import { ModuleWithProviders } from '@angular/core';
 const routes: Routes = [
   {
     path: '',
-    component: CustomerPortalComponent,
+    component: CustomerPortalComponent,	
+    canActivate: [AuthenticationGuard],
     children: [
       {
         path: 'my-projects',

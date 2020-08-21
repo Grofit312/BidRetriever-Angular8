@@ -26,6 +26,7 @@
     "@ckeditor/ckeditor5-build-classic": "^20.0.0",
     "@ckeditor/ckeditor5-image": "^20.0.0",
     "@ckeditor/ckeditor5-upload": "^20.0.0",
+    "@tinymce/tinymce-angular": "^3.1.0",
     "@types/lodash": "^4.14.149",
     "@types/query-string": "^6.1.1",
     "@types/uuid": "^3.4.4",
@@ -66,6 +67,7 @@
     "rxjs-compat": "^6.5.5",
     "sweetalert2": "^9.17.1",
     "text-encoding-shim": "^1.0.3",
+    "tinymce": "^5.4.1",
     "tslib": "^2.0.0",
     "uuid": "^3.3.2",
     "zone.js": "~0.10.3"

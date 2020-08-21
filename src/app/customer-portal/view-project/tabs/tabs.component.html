@@ -20,7 +20,10 @@
   <li [hidden]='isSharedProject' class="nav-item">
     <a (click)="onClickTab(7)" class="nav-link" id="tab-administration" data-toggle="tab" href="#administration" role="tab" aria-controls="contact" aria-selected="false">Administration</a>
   </li>
+  <li [hidden]='isSharedProject' class="nav-item">
+    <a (click)="onClickTab(8)" class="nav-link" id="tab-project-notes" data-toggle="tab" href="#project-notes" role="tab" aria-controls="contact" aria-selected="false">Notes</a>
+  </li>
   <li [hidden]='isSharedProject || !isBidRetrieverUser' class="nav-item">
-    <a (click)="onClickTab(8)" class="nav-link text-danger" id="tab-internal" data-toggle="tab" href="#internal" role="tab" aria-controls="contact" aria-selected="false">Bid Retriever Internal</a>
+    <a (click)="onClickTab(9)" class="nav-link text-danger" id="tab-internal" data-toggle="tab" href="#internal" role="tab" aria-controls="contact" aria-selected="false">Bid Retriever Internal</a>
   </li>
 </ul>

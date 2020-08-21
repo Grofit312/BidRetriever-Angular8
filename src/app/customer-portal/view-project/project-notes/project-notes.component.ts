@@ -1,36 +1,28 @@
 import { Component, OnInit, ElementRef, ViewChild, AfterViewInit } from "@angular/core";
 import * as ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { NotificationsService } from "angular2-notifications";
-import { NotesApi } from "../notes.api.service";
 import { ActivatedRoute, ParamMap, Router } from "@angular/router";
 import { NgxSpinnerService } from "ngx-spinner";
 import { DataStore } from "app/providers/datastore";
 import { IActionMapping, TREE_ACTIONS } from "angular-tree-component";
 import Swal from "sweetalert2";
-
-declare var tinymce: any;
-
+import { ViewProjectApi } from "../view-project.api.service";
 enum EditType {
   CREATE,
   UPDATE,
 }
 
 @Component({
-  selector: "app-company-notes",
-  templateUrl: "./company-notes.component.html",
-  styleUrls: ["./company-notes.component.scss"],
+  selector: "app-project-notes",
+  templateUrl: "./project-notes.component.html",
+  styleUrls: ["./project-notes.component.scss"],
 })
-export class CompanyNotesComponent implements OnInit, AfterViewInit {
+export class ProjectNotesComponent implements OnInit,AfterViewInit {
   @ViewChild("editModal", { static: false }) editModal: ElementRef;
   @ViewChild("folderTree", { static: true }) folderTree;
 
   public Editor = ClassicEditor;
-  myTitle = 'floarla';
-  model: any;
-  FroalaEditor:any;
-  content: string = '<span>My Document\'s Title</span>';
-
-  companyId: any;
+  project_id: any;
   editType: EditType;
   editModalTitle = "";
   subject = "";
@@ -44,16 +36,11 @@ export class CompanyNotesComponent implements OnInit, AfterViewInit {
   activeFolderNode = null;
   note_id: any;
   isAdd = false;
-  created_user_name:any;
   selectedNode: any;
   isComment = false;
   ischildVisible = false;
   note_parent_type:any;
-  firstName:any;
-  lastName:any; 
-  createdDate:any;
   divStyle = "";
-  tinymceInit:any;
   noteTypes = [
     {
       text: "Company",
@@ -78,13 +65,9 @@ export class CompanyNotesComponent implements OnInit, AfterViewInit {
         node.setIsActive(true);
         TREE_ACTIONS.TOGGLE_SELECTED(tree, node, event);
         if (node !== this.activeFolderNode) {
-          debugger
           this.activeFolderNode = node;
-          this.currentNote = node.data; 
-          this.activeFolderNode.expandAll()  
-          //this.activeFolderNode.collapseToLevel(3);
+          this.currentNote = node.data;
           console.log("currentdata", this.currentNote);
-          this.createdDate=this.currentNote.createdDate
         }
       },
     },
@@ -94,48 +77,20 @@ export class CompanyNotesComponent implements OnInit, AfterViewInit {
     actionMapping: this.actionMapping,
   };
 
-  constructor(  
+  constructor(
     private notificationService: NotificationsService,
     private activatedRoute: ActivatedRoute,
     private router: Router,
-    private notesApi: NotesApi,
+    private notesApi: ViewProjectApi,
     private spinner: NgxSpinnerService,
     public dataStore: DataStore
-  ) {
-   
-  } 
+  ) {}
 
-  public imgModel: Object = {
-    src: '/image.jpg'
-  };
-  public imgOptions: Object = {
-    angularIgnoreAttrs: ['style', 'ng-reflect-froala-editor', 'ng-reflect-froala-model'],
-    immediateAngularModelUpdate: true,
-    events: {
-      "contentChanged": () => {
-      }
-    }
-  }
   ngOnInit() {
     this.load();
     console.log("dataStore", this.dataStore);
-    // this.firstName = this.dataStore.currentUser.user_firstname;
-    // this.lastName = this.dataStore.currentUser.user_lastname; 
-    // console.log("firstName", this.firstName);   
-    // console.log("lastName", this.lastName);  
-    // this.FroalaEditor.DefineIcon('alert', { SVG_KEY: 'help' });
-    // this.FroalaEditor.RegisterCommand('alert', {
-    //   title: 'Hello',
-    //   focus: false,
-    //   undo: false,
-    //   refreshAfterCallback: false,  
-    //   callback: function () {
-    //     alert('Hello!');
-    //   }
-    // }); 
-  
   }
- 
+
   onEditNotes() {
     console.log(this.activeFolderNode);
     if (!this.currentNote) {
@@ -153,18 +108,18 @@ export class CompanyNotesComponent implements OnInit, AfterViewInit {
   }
 
   load() {
-    debugger
+    debugger;
     this.spinner.show();
-    this.companyId = this.activatedRoute.snapshot.queryParams["company_id"];
+    //this.project_id = this.activatedRoute.snapshot.queryParams["project_id"];
+    this.project_id = this.dataStore.currentProject.project_id;
+    console.log("ProjectId", this.project_id);
     this.notesApi
-      .getNotesByCompanyId(this.companyId)
+      .getNotesByProjectId(this.project_id)
       .then((res: any[]) => {
-        debugger
-        this.notes = res;        
-        this.folderNodes = res;        
-        console.log("FolderNode",this.folderNodes);
+        this.notes = res;
+        this.folderNodes = res;
         console.log("Notes :", res);
-        this.spinner.hide();
+        this.spinner.hide();      
         setTimeout(() => this.folderTree.treeModel.expandAll(), 500)
       })
       .catch((err) => {
@@ -175,30 +130,8 @@ export class CompanyNotesComponent implements OnInit, AfterViewInit {
       });
   }
 
- ngAfterViewInit() {
-    setTimeout(() => this.setNodeActiveOnLaodTree(), 500)
-  } 
-
-  setNodeActiveOnLaodTree(){
-   this.folderTree.treeModel.expandAll();
-   const node =  this.folderTree.treeModel.getFirstRoot();
-   TREE_ACTIONS.TOGGLE_SELECTED(this.folderTree, node, event);
-   TREE_ACTIONS.ACTIVATE(this.folderTree, node, event);
-   TREE_ACTIONS.SELECT(this.folderTree, node, event);
-   this.activeFolderNode = node;
-   this.currentNote = node.data; 
-  }
-
-  // imagesUploHadhandler(blobInfo, success, failure) {
-  //   debugger
-  //   var data = JSON.stringify({fileName: blobInfo.blob().name});
-  //   this.notesApi.uploadFiles(data).then(
-  //     (data) => {
-  //     });
-  // }
-
-
   onAdd() {
+    debugger;
     this.description = "";
     this.editModalTitle = `Add Notes`;
     this.subject = "";
@@ -235,6 +168,19 @@ export class CompanyNotesComponent implements OnInit, AfterViewInit {
   onCloseEditModal() {
     this.editModal.nativeElement.style.display = "none";
   }
+  ngAfterViewInit() {
+    setTimeout(() => this.setNodeActiveOnLaodTree(), 500)
+  }
+
+  setNodeActiveOnLaodTree(){
+   this.folderTree.treeModel.expandAll();
+   const node =  this.folderTree.treeModel.getFirstRoot();
+   TREE_ACTIONS.TOGGLE_SELECTED(this.folderTree, node, event);
+   TREE_ACTIONS.ACTIVATE(this.folderTree, node, event);
+   TREE_ACTIONS.SELECT(this.folderTree, node, event);
+   this.activeFolderNode = node;
+   this.currentNote = node.data; 
+  }
 
   saveNotes() {
     debugger;
@@ -252,31 +198,31 @@ export class CompanyNotesComponent implements OnInit, AfterViewInit {
         { timeOut: 3000, showProgressBar: false }
       );
     }
-    this.note_parent_type="Company"
+    this.note_parent_type="Project"
     const created_user_id = this.dataStore.currentUser.user_id;
     let note_parent_id = null;
     if (!this.isComment) {
       note_parent_id = this.activeFolderNode
         ? this.activeFolderNode.data.parent_id
-        : this.companyId;
+        : this.project_id;
     } else {
       note_parent_id = this.activeFolderNode
         ? this.activeFolderNode.data.id
-        : this.companyId;
+        : this.project_id;
     }
     const params: any = {
       created_user_id: created_user_id,
-      note_company_id: this.companyId,
+      note_company_id: this.project_id,
       note_desc: this.description,
-      note_type: this.noteType,
       note_parent_type:this.note_parent_type,
+      note_type: this.noteType,
       note_parent_id: note_parent_id,
       note_priority: "High",
       note_relevance_number: 0,
       note_vote_count: 0,
       note_subject: this.subject,
       note_id: this.note_id,
-    };                                                                                                                   
+    };
 
     this.spinner.show();
     if (this.note_id == 0) {
@@ -375,8 +321,6 @@ export class CompanyNotesComponent implements OnInit, AfterViewInit {
             this.load();
             this.folderTree.treeModel.update();
             this.currentNote = "";
-            //this.reset();
-            //this.editModal.nativeElement.style.display = 'none';
             this.notificationService.success(
               "Success",
               "Note has been Deleted",
@@ -400,21 +344,22 @@ export class CompanyNotesComponent implements OnInit, AfterViewInit {
 
   isVisible(note: any) {
     if(this.dataStore != null){
-      const user_id = this.dataStore.currentUser.user_id;
-      const company_id = this.dataStore.currentCompany.company_id;
-      if (note.noteType == "public") {
-        this.ischildVisible = true;
-        return true;
-      } else if (note.noteType == "personal" && note.userId == user_id) {
-        this.ischildVisible = true;
-        return true;
-      } else if (note.noteType == "company" && note.companyId == company_id) {
-        this.ischildVisible = true;
-        return true;
-      } else if (note.noteType == "") {
-        this.ischildVisible = true;
-        return true;
-      }
-    }``
+    console.log("Note Data", note);
+    const user_id = this.dataStore.currentUser.user_id;
+    const project_id = this.dataStore.currentProject.project_id;
+    if (note.noteType == "public") {
+      this.ischildVisible = true;
+      return true;
+    } else if (note.noteType == "personal" && note.userId == user_id) {
+      this.ischildVisible = true;
+      return true;
+    } else if (note.noteType == "company" && note.companyId == project_id) {
+      this.ischildVisible = true;
+      return true;
+    } else if (note.noteType == "" && note.companyId == project_id) {
+      this.ischildVisible = true;
+      return true;
+    }
+  }
   }
 }

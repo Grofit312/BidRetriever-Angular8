@@ -25,6 +25,7 @@ import { CompanyNotesComponent } from './company-notes/company-notes.component';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TreeModule } from 'angular-tree-component';
+import { EditorModule } from '@tinymce/tinymce-angular';
 @NgModule({
   declarations: [
     CompanyOverviewComponent,
@@ -46,13 +47,13 @@ import { TreeModule } from 'angular-tree-component';
     DxTemplateModule,
     DxTextBoxModule,
     DxToolbarModule,
+    EditorModule,
     SharedModule,
     CKEditorModule,
     FormsModule,
     ReactiveFormsModule,
     TreeModule,
     AgGridModule.withComponents([]),
-
   ],
    providers: [
     ViewCompanyApi,

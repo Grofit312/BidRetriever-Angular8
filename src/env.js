@@ -3,6 +3,7 @@ const isHTTPS = window.location.protocol === 'https:';
 
 const env = {
   apiBaseUrl: isHTTPS ? 'https://d2j583f0s18fa8.cloudfront.net' : 'http://windowsserver-2131615750.us-east-1.elb.amazonaws.com/service/api',
+  apiBaseUrls: isHTTPS ? 'https://d2j583f0s18fa8.cloudfront.net' : 'http://3.87.236.229/wip-api',
   docViewerBaseUrl: 'http://br-viewer2.s3-website-us-east-1.amazonaws.com/',
   projectPublishTableName: '960ProjectPublish',
   filePreprocessingTableName: '925FilePreprocessing',
@@ -21,5 +22,4 @@ const env = {
 
   helpHeroAppId: 'puUCqzf21HE'
 };
-
 window.env = env;

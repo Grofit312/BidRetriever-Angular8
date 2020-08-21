@@ -60,11 +60,13 @@
 
       <dxi-item location="after" widget="dxButton" [options]="toolbarConfig.viewProject"></dxi-item>
       <dxi-item location="after" widget="dxButton" [options]="toolbarConfig.addProject"></dxi-item>
-      <dxi-item location="after" widget="dxButton" [options]="toolbarConfig.addSource"></dxi-item>
+      <!-- <dxi-item location="after" widget="dxButton" [options]="toolbarConfig.addSource"></dxi-item> -->
 
       <dxi-item widget="dxButton" locateInMenu="always" [options]="toolbarConfig.others.viewProject"></dxi-item>
       <dxi-item widget="dxButton" locateInMenu="always" [options]="toolbarConfig.others.addSource"></dxi-item>
       <dxi-item widget="dxButton" locateInMenu="always" [options]="toolbarConfig.others.removeSource"></dxi-item>
+      <dxi-item widget="dxButton" locateInMenu="always" [options]="toolbarConfig.others.addProject"></dxi-item>
+      <dxi-item widget="dxButton" locateInMenu="always" [options]="toolbarConfig.others.viewCompany"></dxi-item>
     </dx-toolbar>
 
     <div class="content" #sourceContent>
@@ -74,6 +76,7 @@
                     [columnAutoWidth]="true"
                     [dataSource]="sourceGridDataSource"
                     (onRowClick)="sourceGridRowClickAction($event)"
+                    (onContextMenuPreparing)="addProjectSourceGridMenuItems($event)"
                     [remoteOperations]="true"
                     [rowAlternationEnabled]="true"
                     [showColumnLines]="true"
@@ -82,11 +85,10 @@
         <dxo-paging [enabled]="false"></dxo-paging>
         <dxo-scrolling mode="vertical"></dxo-scrolling>
         <dxo-selection mode="multiple"></dxo-selection>
-
         <dxi-column dataField="project_source_id" caption="Project Source Id" [visible]="false"></dxi-column>
         <dxi-column dataField="source_company_id" caption="Source Company Id" [visible]="false"></dxi-column>
-        <dxi-column dataField="source_company_name" caption="Source Company"></dxi-column>
         <dxi-column dataField="project_name" caption="Project Name"></dxi-column>
+        <dxi-column dataField="source_company_name" caption="Source Company"></dxi-column>      
         <dxi-column dataField="source_company_contact_name" caption="Source Contact"></dxi-column>
         <dxi-column dataField="source_company_contact_phone" caption="Source Contact Phone" [visible]="false"></dxi-column>
         <dxi-column dataField="project_bid_datetime" caption="Bid Due Date"></dxi-column>

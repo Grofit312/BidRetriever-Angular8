@@ -8,7 +8,7 @@ import { ProjectSourceApi } from './project-source.api.service';
 import CustomStore from 'devextreme/data/custom_store';
 import DataSource from 'devextreme/data/data_source';
 import { DataStore } from 'app/providers/datastore';
-import { DxDataGridComponent } from 'devextreme-angular';
+import { DxDataGridComponent ,DxToolbarComponent} from 'devextreme-angular';
 import { Title } from '@angular/platform-browser';
 
 @Component({
@@ -24,6 +24,7 @@ export class ProjectSourceComponent implements OnInit, AfterViewInit {
   @ViewChild('sourceContent', { static: true }) sourceContent: ElementRef;
   @ViewChild('sourceGrid', { static: true }) sourceGrid: DxDataGridComponent;
   @ViewChild('addProjectModal', { static: false }) addProjectModal;
+  @ViewChild('projectSourceToolbar', { static: false }) projectSourceToolbar: DxToolbarComponent;
   
   sourceGridDataSource: any;
   sourceGridContent: any[] = [];
@@ -37,6 +38,7 @@ export class ProjectSourceComponent implements OnInit, AfterViewInit {
   currentSourceType = 'Test1';
 
   toolbarConfig: any;
+  company_Id:any;
 
   addProjectSourceModalTitle = 'Select Other Projects That Match';
   isProjectSourceModalShown = false;
@@ -89,14 +91,14 @@ export class ProjectSourceComponent implements OnInit, AfterViewInit {
         text: 'Add Project',
         onClick: () => this.toolbarAddProjectAction()
       },
-      addSource: {
-        type: 'normal',
-        text: 'Select Source Project',
-        elementAttr: {
-          class: 'toolbar-select-source-project'
-        },
-        onClick: () => this.toolbarAddSourceAction(),
-      },
+      // addSource: {
+      //   type: 'normal',
+      //   text: 'Select Source Project',
+      //   elementAttr: {
+      //     class: 'toolbar-select-source-project'
+      //   },
+      //   onClick: () => this.toolbarAddSourceAction(),
+      // },
 
       others: {
         viewProject: {
@@ -113,7 +115,17 @@ export class ProjectSourceComponent implements OnInit, AfterViewInit {
           type: 'normal',
           text: 'Remove Source',
           onClick: () => this.toolbarRemoveSourceAction()
-        }
+        },
+        addProject: {
+          type: 'normal',          
+          text: 'Add Project',
+          onClick: () => this.toolbarAddProjectAction()
+        },
+        viewCompany: {
+          type: 'normal',          
+          text: 'View Comapny',
+          onClick: () => this.toolbarViewCompanyAction()
+        },
       }
     };
 
@@ -149,6 +161,7 @@ export class ProjectSourceComponent implements OnInit, AfterViewInit {
             return this._projectSourceApi.findProjectSources(this._dataStore.currentProject.project_id)
             .then((sources: any) => {
               this.sourceGridContent = sources;
+              console.log("Grid",sources);
               this.sourceGridContentLoaded = true;
               return resolve({
                 data: this.sourceGridContent,
@@ -178,6 +191,7 @@ export class ProjectSourceComponent implements OnInit, AfterViewInit {
 
       this.sourceGrid.instance.refresh()
         .then(() => {})
+        
         .catch((error) => {
           console.log('Grid Refresh Error', error);
         });
@@ -209,7 +223,10 @@ export class ProjectSourceComponent implements OnInit, AfterViewInit {
   }
 
   sourceGridRowClickAction(event) {
+    debugger
     const selectedRow = event.data;
+    this.company_Id = selectedRow.source_company_id;
+    console.log('selectedRow.source_company_id',  selectedRow.source_company_id);    
     this._loadProjectSourceInfo(selectedRow.secondary_project_id);
   }
 
@@ -229,6 +246,27 @@ export class ProjectSourceComponent implements OnInit, AfterViewInit {
     }
     const selectedRows = this.sourceGridContent.filter(({project_source_id: projectSourceId}) => selectedRowKeys.includes(projectSourceId));
     window.open(`/customer-portal/view-project/${selectedRows[0].secondary_project_id}`, '_blank');
+  }
+
+  toolbarViewCompanyAction() {
+    debugger
+    console.log('event', this.company_Id);
+    
+     const { selectedRowKeys } = this.sourceGrid;
+    if (selectedRowKeys.length === 0) {
+      this.notificationService.error('No Selection', 'Please select one project!', { timeOut: 3000, showProgressBar: false });
+       return;
+    } else if (selectedRowKeys.length > 1) {
+      this.notificationService.error('Multiple Selection', 'Please select just one project!', { timeOut: 3000, showProgressBar: false });
+      return;
+    } else if (this.company_Id == undefined) {
+      this.notificationService.error('No Source Company', 'There is no source company associated with this project.', { timeOut: 3000, showProgressBar: false });
+      return;
+    }
+    //const selectedRows = this.sourceGridContent.filter(({ project_source_id: projectSourceId }) => selectedRowKeys.includes(projectSourceId));
+      window.open(
+      `/customer-portal/view-company/${this.company_Id}/overview`,
+      "_blank")
   }
 
   toolbarAddSourceAction() {
@@ -328,5 +366,47 @@ export class ProjectSourceComponent implements OnInit, AfterViewInit {
       .catch(err => {
         this.notificationService.error('Error', err, { timeOut: 3000, showProgressBar: false });
       });
+  }
+
+  addProjectSourceGridMenuItems(e) {
+    debugger
+
+    if (!e.row) { return; }
+    if (!e.row.data.project_bid_datetime) {
+      e.row.data.project_bid_datetime = null;
+    }
+    e.component.selectRows([e.row.data.project_source_id]);
+    if (e.row && e.row.rowType === 'data') {   // e.items can be undefined
+      if (!e.items) { e.items = []; }
+      // Add a custom menu item
+      e.items.push(        
+          {
+            type: 'normal',
+            text: 'View Project',
+            onClick: () => this.toolbarViewProjectAction()
+          },
+           {
+            type: 'normal',
+            text: 'Select Source Project',
+            onClick: () => this.toolbarAddSourceAction()
+          },
+           {
+            type: 'normal',
+            text: 'Remove Source',
+            onClick: () => this.toolbarRemoveSourceAction()
+          },
+           {
+            type: 'normal',          
+            text: 'Add Project',
+            onClick: () => this.toolbarAddProjectAction()
+          },
+           {
+            type: 'normal',          
+            text: 'View Comapny',
+            onClick: () => this.toolbarViewCompanyAction()
+          },
+       );
+    }
+    return e;
   }
 }

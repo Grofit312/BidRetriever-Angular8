@@ -15,6 +15,7 @@ import { UserInfoApi } from 'app/customer-portal/system-settings/user-setup/user
 import { DestinationSettingsApi } from 'app/customer-portal/system-settings/destination-system-settings/destination-system-settings.api.service';
 import { SourceSystemAccountsApi } from 'app/customer-portal/system-settings/source-system-accounts/source-system-accounts.api.service';
 import { ProjectSourceApi } from 'app/customer-portal/view-project/project-source/project-source.api.service';
+import { CompaniesApi } from 'app/customer-portal/my-companies/my-companies.api.service';
 const CircularJSON = require('circular-json');
 const moment = require('moment-timezone');
 
@@ -86,6 +87,32 @@ export class ProjectSourceModalComponent implements OnInit {
   source_company_id = '';
   source_sys_type_id = '';
   sourceSystemTypes: any[];
+  data: any;
+  email_company: any;
+  company_office_id: any;
+  contactEmailDetail: any;
+  contactFirstName:any;
+  contactSecondName:any;
+  companyTypeList: any;
+  searchModeOption: string = "contains";
+  searchExprOption: any = "company_name";
+  searchTimeoutOption: number = 200;
+  minSearchLengthOption: number = 0;
+  searchExprOptionItems: Array<any> = [
+    {
+      name: "'company_name'",
+      value: "company_name",
+    },
+    {
+      name: "['company_name', 'company_id']",
+      value: ["company_name", "company_id"],
+    },
+  ];
+  company_website: any;
+  companyData: any;
+  company_email:any;
+  source_sys_url:any;
+
 
 
   constructor(
@@ -100,7 +127,8 @@ export class ProjectSourceModalComponent implements OnInit {
     private validationService: ValidationService,
     private loggerService: Logger,
     private sourceSystemAccountsApi: SourceSystemAccountsApi,
-    private _projectSourceApi: ProjectSourceApi
+    private _projectSourceApi: ProjectSourceApi,
+    private companyApi: CompaniesApi,
   ) {
     DatePicker.prototype.ngOnInit = function () {
       this.settings = Object.assign(this.defaultSettings, this.settings);
@@ -112,7 +140,7 @@ export class ProjectSourceModalComponent implements OnInit {
   }
 
   ngOnInit() {
-
+    this.getCompanyList();
     this.sourceSystemAccountsApi.findSourceSystemTypes()
     .then((sourceSystemTypes: any) => {
       if (Array.isArray(sourceSystemTypes)) {
@@ -128,6 +156,42 @@ export class ProjectSourceModalComponent implements OnInit {
     });
     
   }
+
+  getCompanyList() {
+    debugger;
+    this.companyApi
+      .findCompaniesByCustomerId( this.dataStore.currentCustomer["customer_id"],
+        this.dataStore.currentCustomer["customer_timezone"] || "eastern", null)
+      .then((sourceSystemTypes: any) => {
+        this.companyTypeList = sourceSystemTypes;
+        console.log("this.companyTypeList :- ", this.companyTypeList);
+      });
+  }
+
+  onCompanySelected(event) {
+    console.log("event.itemData", event.itemData);
+    this.data = event.itemData;
+    this.company_website = event.itemData["company_website"];   
+    this.companyData = event.itemData;
+  }
+
+  onEmailDetail(email) {
+    debugger;
+    const params: any = {
+      contact_email: email.component["_changedValue"],
+      contact_firstname: this.contactFirstName,
+      contact_lastname: this.contactSecondName,
+      //company_office_id: this.offices[0].company_office_id,
+      customer_id: this.offices[0].customer_id,  
+      //company_office_name:this.offices[0].company_office_name    
+    };
+    this.sourceSystemAccountsApi.createContactEmail(params).then((res: any) => {
+      debugger
+      this.contactEmailDetail =  res.data;    
+      console.log("companyTypeList", this.contactEmailDetail);
+    });
+  }
+
 
   initialize(parent: any) {
     this.parent = parent;
@@ -218,7 +282,7 @@ export class ProjectSourceModalComponent implements OnInit {
           projectId, submissionId, 'detail');
 
         const projectOffice = this.offices.find(office => office['company_office_id'] === this.projectOfficeId);
-
+debugger
         return this.apiService.createProject({          
           project_id: projectId,
           project_admin_user_id: this.projectAdminUserId,
@@ -251,7 +315,8 @@ export class ProjectSourceModalComponent implements OnInit {
           project_labor_requirement: this.laborRequirement,
           project_value: this.projectValue ? parseInt(this.projectValue, 10) : '',  
           project_size: this.projectSize,     
-
+          source_company_id: this.data.company_id,
+          source_company_contact_id : this.contactEmailDetail.contact_id,
           project_construction_type: this.constructionType,
           project_award_status: this.awardStatus,
           project_assigned_office_id: projectOffice ? projectOffice['company_office_id'] : '',
@@ -669,6 +734,7 @@ export class ProjectSourceModalComponent implements OnInit {
     return this.convertToUserTimeZone(timestamp).format('YYYY-MM-DD_HH-mm');
   }
 
+
   convertToUserTimeZone(utcDateTime) {
     const timezone = (this.dataStore.currentCustomer ? this.dataStore.currentCustomer['customer_timezone'] : 'eastern') || 'eastern';
     const datetime = moment(utcDateTime);
@@ -683,4 +749,5 @@ export class ProjectSourceModalComponent implements OnInit {
       default: return datetime.utc();
     }
   }
+  
 }

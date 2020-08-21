@@ -30,6 +30,32 @@ export class NotesApi {
     });
   }
 
+  public uploadFiles(formData: FormData) {
+    debugger
+    return new Promise((resolve, reject) => {
+      axios
+        .post(
+          window["env"].apiBaseUrl + "/UploadFile", formData,
+          {
+            validateStatus: (status) => {
+              return status === 200 || status === 400;
+            },
+          }
+        )
+        .then((res) => {
+          if (res.status === 200) {
+            resolve(res);
+          } else {
+            reject(res.data.status);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          reject(err);
+        });
+    });
+  }
+
   public getNotesByCompanyIds(company_id: any) {
     return new Promise((resolve, reject) => {
       let apiUrl = `${window["env"].apiBaseUrl}/FindNotes?company_id=${company_id}`;

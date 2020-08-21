@@ -154,9 +154,9 @@ export class EditCompanyModalComponent implements OnInit {
       return this.notificationService.error('Error', 'Please input company name', { timeOut: 3000, showProgressBar: false });
     }
 
-    if (!this.companyEmail || !this.companyEmail.trim()) {
-      return this.notificationService.error('Error', 'Please input company email', { timeOut: 3000, showProgressBar: false });
-    }
+    // if (!this.companyEmail || !this.companyEmail.trim()) {
+    //   return this.notificationService.error('Error', 'Please input company email', { timeOut: 3000, showProgressBar: false });
+    // }
 
     if (!this.companyDomain || !this.companyDomain.trim()) {
       return this.notificationService.error('Error', 'Please input company domain', { timeOut: 3000, showProgressBar: false });

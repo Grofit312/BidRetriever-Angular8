@@ -61,7 +61,6 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
 
   @ViewChild('projectGrid', { static: false }) projectGrid: DxDataGridComponent;
   @ViewChild('projectToolbar', { static: false }) projectToolbar: DxToolbarComponent;
-
   @ViewChild('projectToolbarViewType', { static: false }) projectToolbarViewType: DxSelectBoxComponent;
 
   private PROJECT_TOOLBAR_INITIAL_VIEW = 'BidRetriever_Project_Page_Toolbar_Initial_View';
@@ -185,7 +184,7 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
       },
 
       others: {
-         viewSourceProject: {
+        viewSourceProject: {
           type: 'normal',
           text: 'View Source Project',
           onClick: () => this.onViewProjectSourceSystem()
@@ -517,6 +516,7 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
   }
 
   private getGridProjectContentByLoadOption(loadOptions) {
+    debugger
     let projects = this.projectGridContent;
     if (loadOptions.sort && loadOptions.sort.length > 0) {
       projects = projects.sort((first, second) => {
@@ -524,13 +524,15 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
 
         let firstValue = first[loadOptions.sort[0].selector];
         let secondValue = second[loadOptions.sort[0].selector];
-        if (sortColumnOption.dataType === 'date' || sortColumnOption.dataType === 'datetime') {
-          firstValue = new Date(firstValue).getTime();
-          secondValue = new Date(secondValue).getTime();
-        }
-        firstValue = firstValue.toString().toLowerCase();
-        secondValue = secondValue.toString().toLowerCase();
 
+        if (sortColumnOption) {
+          if (sortColumnOption.dataType === 'date' || sortColumnOption.dataType === 'datetime') {
+            firstValue = new Date(firstValue).getTime();
+            secondValue = new Date(secondValue).getTime();
+            firstValue = firstValue.toString().toLowerCase();
+            secondValue = secondValue.toString().toLowerCase();
+          }
+        }
         let loadOptionIndex = 0;
         while (loadOptionIndex < loadOptions.sort.length) {
           if (firstValue > secondValue && loadOptions.sort[loadOptionIndex].desc) {
@@ -948,7 +950,7 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
           this.userInfoApiService.findUsers()
             .then((res: any[]) => {
               res = res.map((item) => {
-                console.log("itemitem :",item)
+                console.log("itemitem :", item)
                 item.user_email = item.user_email.toLowerCase();
                 if (!item.user_displayname) {
                   if (!item.user_firstname && !item.user_lastname) {
@@ -956,7 +958,7 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
                   } else {
                     item.user_displayname = `${item.user_lastname ? item.user_lastname + ', ' : ''}${item.user_firstname} (${item.user_email})`;
                   }
-                }else{
+                } else {
                   item.user_displayname = `${item.user_displayname} (${item.user_email})`;
                 }
                 return item;
@@ -978,11 +980,11 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
             .then((res: any[]) => {
               res = res.map((item) => {
                 item.user_email = item.user_email.toLowerCase();
-                console.log("item.user_displayname :",item.user_displayname);    
+                console.log("item.user_displayname :", item.user_displayname);
                 if (!item.user_displayname) {
                   item.user_displayname = `${item.user_lastname ? item.user_lastname + ', ' : ''}${item.user_firstname} (${item.user_email})`;
-                }else{
-                   item.user_displayname = `${item.user_displayname} (${item.user_email})`;
+                } else {
+                  item.user_displayname = `${item.user_displayname} (${item.user_email})`;
                 }
                 return item;
               });
@@ -1004,7 +1006,7 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
       } else {
         return resolve([]);
       }
-     // return resolve([]);
+      // return resolve([]);
     });
   }
 
@@ -1211,7 +1213,7 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
   }
 
   addProjectGridMenuItems(e) {
-
+debugger;
     if (!e.row) { return; }
 
     if (!e.row.data.project_bid_datetime) {
@@ -1305,19 +1307,19 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
       return;
     } else if (selectedRowKeys.length == 1) {
 
-       const selectedRows = this.projectGridContent.filter(({ project_id: projectId }) => selectedRowKeys.includes(projectId));
-     
+      const selectedRows = this.projectGridContent.filter(({ project_id: projectId }) => selectedRowKeys.includes(projectId));
+
       // const { currentUser: { user_id: userId } } = this.dataStore;
-       console.log("selectedRows :",selectedRows);
+      console.log("selectedRows :", selectedRows);
       // window.open(`/customer-portal/view-project/${selectedRows[0].project_id}`, '_blank');
       if (selectedRows && selectedRows[0]['source_url']) {
-      
+
         window.open(selectedRows[0]['source_url'], '_blank');
         return;
       }
       this.notificationService.error('Error', 'This project source system is empty.', { timeOut: 3000, showProgressBar: false });
-    
-    }else{
+
+    } else {
       this.notificationService.error('Error', 'Multiple Selection', 'Please select just one project!', { timeOut: 3000, showProgressBar: false });
     }
 

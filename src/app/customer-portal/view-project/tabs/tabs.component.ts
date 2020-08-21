@@ -44,6 +44,8 @@ export class TabsComponent implements OnInit {
       document.getElementById('tab-source').click();
     } else if (url.includes('sharing')) {
       document.getElementById('tab-sharing').click();
+    } else if (url.includes('project-notes')) {
+      document.getElementById('tab-project-notes').click();
     } else {
       document.getElementById('tab-overview').click();
     }
@@ -91,6 +93,10 @@ export class TabsComponent implements OnInit {
       break;
 
       case 8:
+        this._router.navigate([`/customer-portal/view-project/${projectId}/project-notes`]);
+        break;
+
+      case 9:
       this._router.navigate([`/customer-portal/view-project/${projectId}/internal`]);
       break;
 

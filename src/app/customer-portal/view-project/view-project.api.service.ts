@@ -129,4 +129,185 @@ export class ViewProjectApi {
     }
     return timezonedDateTime;
   }
+
+  public createNote(params: any) {
+    return new Promise((resolve, reject) => {
+      axios
+        .post(
+          window["env"].apiBaseUrl + "/CreateNote",
+          queryString.stringify(params),
+          {
+            validateStatus: (status) => {
+              return status === 200 || status === 400;
+            },
+          }
+        )
+        .then((res) => {
+          if (res.status === 200) {
+            resolve(res.data.note_id);
+          } else {
+            reject(res.data.status);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          reject(err);
+        });
+    });
+  }
+
+  public getNotesByProjectIds(project_id: any) {
+    return new Promise((resolve, reject) => {
+      let apiUrl = `${window["env"].apiBaseUrl}/FindNotes?project_id=${project_id}`;
+      axios
+        .get(apiUrl, {
+          validateStatus: (status) => {
+            return status === 200 || status === 400;
+          },
+        })
+        .then((res) => {
+          if (res.status === 200) {
+            res.data = res.data.map((project) => {
+              return project;
+            });
+
+            resolve(res.data);
+          } else {
+            reject(res.data.status);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          reject(err);
+        });
+    });
+  }
+
+  public getComments(note_id: any, timezone: any) {
+    return new Promise((resolve, reject) => {
+      let apiUrl = `${window["env"].apiBaseUrl}/FindCompanyNotes?note_id=${note_id}&timezone=${timezone}`;
+      axios
+        .get(apiUrl, {
+          validateStatus: (status) => {
+            return status === 200 || status === 400;
+          },
+        })
+        .then((res) => {
+          if (res.status === 200) {
+            res.data = res.data.map((project) => {
+              return project;
+            });
+
+            resolve(res.data);
+          } else {
+            reject(res.data.status);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          reject(err);
+        });
+    });
+  }
+
+  public getNotesByProjectId(project_id: any) {
+    return new Promise((resolve, reject) => {
+      let apiUrl = `${window["env"].apiBaseUrl}/FindCompanyNotes/${project_id}`;
+      axios
+        .get(apiUrl, {
+          validateStatus: (status) => {
+            return status === 200 || status === 400;
+          },
+        })
+        .then((res) => {
+          if (res.status === 200) {
+            res.data = res.data.map((project) => {
+              return project;
+            });
+
+            resolve(res.data);
+          } else {
+            reject(res.data.status);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          reject(err);
+        });
+    });
+  }
+
+  public updateNote(params: any) {
+    return new Promise((resolve, reject) => {
+      axios
+        .post(
+          window["env"].apiBaseUrl + "/UpdateNote",
+          queryString.stringify(params),
+          {
+            validateStatus: (status) => {
+              return status === 200 || status === 400;
+            },
+          }
+        )
+        .then((res) => {
+          if (res.status === 200) {
+            resolve(res.data.note_id);
+          } else {
+            reject(res.data.status);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          reject(err);
+        });
+    });
+  }
+
+  public deleteNote(note_id: string) {
+    return new Promise((resolve, reject) => {
+      const params = {
+        note_id,
+      };
+      axios
+        .post(
+          `${window["env"].apiBaseUrl}/RemoveNotes`,
+          queryString.stringify(params)
+        )
+        .then((res) => {
+          resolve();
+        })
+        .catch((err) => {
+          console.log(err);
+          reject(err);
+        });
+    });
+  }
+
+  public updateProject(params: any) {
+    debugger
+    return new Promise((resolve, reject) => {
+      axios
+        .post(
+          window["env"].apiBaseUrls + "/wipapi/Create920",
+          queryString.stringify(params),
+          {
+            validateStatus: (status) => {
+              return status === 200 || status === 400;
+            },
+          }
+        )
+        .then((res) => {
+          debugger
+          if (res.status === 200) {
+            resolve(res);
+          } else {
+            reject(res.data.status);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          reject(err);
+        });
+    });
+  }
 }
