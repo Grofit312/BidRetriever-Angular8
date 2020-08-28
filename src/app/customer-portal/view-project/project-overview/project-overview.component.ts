@@ -6,6 +6,7 @@ import { ViewProjectApi } from '../view-project.api.service';
 import { ProjectsApi } from 'app/customer-portal/my-projects/my-projects.api.service';
 import { ActivatedRoute } from '@angular/router';
 import { MomentPipe } from 'app/shared/pipes/moment.pipe';
+import { AmazonService } from 'app/providers/amazon.service';
 
 @Component({
   selector: 'app-project-overview',
@@ -13,7 +14,8 @@ import { MomentPipe } from 'app/shared/pipes/moment.pipe';
   styleUrls: ['./project-overview.component.scss'],
   providers: [
     MyCalendarApi,
-    MomentPipe
+    MomentPipe,
+    AmazonService
   ]
 })
 export class ProjectOverviewComponent implements OnInit {
@@ -57,6 +59,14 @@ export class ProjectOverviewComponent implements OnInit {
   user_id: any;
   setting_name: any;
   project_setting_id: any;
+  customer_id: any;
+  project_name: any;
+  source_sys_type_id: any;
+  source_url: any;
+  source_password: any;
+  source_token: any;
+  destinationTypeId: any;
+  destinationPath: any;
 
   constructor(
     private _momentPipe: MomentPipe,
@@ -65,7 +75,8 @@ export class ProjectOverviewComponent implements OnInit {
     private viewProjectApi: ViewProjectApi,
     private projectsApi: ProjectsApi,
     private notificationService: NotificationsService,
-    public route: ActivatedRoute
+    public route: ActivatedRoute,
+    private amazonService: AmazonService
   ) {
   }
 
@@ -175,43 +186,59 @@ export class ProjectOverviewComponent implements OnInit {
     if (value) {
       return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     } else {
-      return '0';
+      return ;
     }
   }
 
   onUpdateProject() {
-    debugger
-    this.user_email = this.dataStore.currentUser.user_email;
-    this.user_id = this.dataStore.currentUser.customer_id;
+    debugger  
+    this.user_email = this.dataStore.currentProject.user_email;
+    this.customer_id = this.dataStore.currentProject.customer_id;
     this.project_id = this.dataStore.currentProject.project_id;
+    this.project_name  = this.dataStore.currentProject.project_name;
+    this.source_sys_type_id   = this.dataStore.currentProject.source_sys_type_id;
+    this.source_url   = this.dataStore.currentProject.source_url ;
+    this.source_token  = this.dataStore.currentProject.source_token;
+    this.source_password = this.dataStore.currentProject.source_password;
     this.viewProjectApi.getProjectSettings(this.project_id)
       .then((res: any[]) => {
         debugger
-        console.log("setting Result", res);
-        const destinationId = res.find(setting => setting.setting_name === 'PROJECT_DESTINATION_TYPE_ID');
-        destinationId && (this.destinationId = destinationId.setting_value);
-        this.setting_name = destinationId.setting_name;
-        this.project_setting_id = destinationId.project_setting_id;
-      }).then(res => {
-        const params: any = {
+        this.destinationTypeId = res.find(setting => setting.setting_name === 'PROJECT_DESTINATION_TYPE_ID');
+        this.destinationPath = res.find(setting => setting.setting_name === 'PROJECT_DESTINATION_PATH');
+        this.destinationId = res.find(setting => setting.setting_name === 'PROJECT_DESTINATION_ID'); 
+        
+      }).then(res => {        
+        if ((this.destinationId == '' || this.destinationId  == undefined || this.destinationId  == null)
+          || (this.destinationTypeId  == '' || this.destinationTypeId == undefined || this.destinationTypeId == null)
+        ) {
+          const message = 'We are sorry, but the Create920 function cannot be used because required parameters for the project have not been defined. Make sure that the following values have been defined: <list of missing parameter>. And try again'
+          this.notificationService.error('Error', message, { timeOut: 3000, showProgressBar: false });
+        } else {
+          const params: any = {
           submission_type: "user_requested",
           submitter_email: this.user_email,
-          user_id: this.user_id,
+          customer_id: this.customer_id,
           process_status: "queued",
-          destination_sys_type: "Demo",
-          destination_path: this.setting_name,
-          destination_id: this.project_setting_id,
+          destination_sys_type: this.destinationTypeId,
+          destination_path: this.destinationPath,
+          destination_id: this.destinationId,
+          project_name:this.project_name,
+          source_sys_type_id:this.source_sys_type_id,
+          source_url:this.source_url,
+          source_token:this.source_token,
+          source_password:this.source_password,
         }
-        this.viewProjectApi.updateProject(params)
+          this.amazonService.updateProject(params)
           .then((result: any[]) => {
             console.log("status", result);
-            if(result){
-              this.notificationService.success('Success', 'This update project from source is created.', { timeOut: 3000, showProgressBar: false });
+            if (result) {
+              this.notificationService.success('Success', 'Your project has been scheduled for retrieving an update from the source.This may take between 15 - 60 min (possibly longer for very large projects) and you will receive an email notification if there are any changes.', { timeOut: 3000, showProgressBar: false });
             } else {
-              this.notificationService.error('Error', 'This update project from source is  not created.', { timeOut: 3000, showProgressBar: false });
+              this.notificationService.error('Error', 'This Record has been not created.', { timeOut: 3000, showProgressBar: false });
             }
-           
+
           });
+        }
       })
       .catch(err => {
         console.log(err);
@@ -236,7 +263,6 @@ export class ProjectOverviewComponent implements OnInit {
   }
 
   onAddToMyProjects() {
-
   }
 
   onArchiveProject() {

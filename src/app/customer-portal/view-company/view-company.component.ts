@@ -87,20 +87,12 @@ export class ViewCompanyComponent implements OnInit {
     switch (index) {
       case 1:
         this.router.navigate([`/customer-portal/view-company/${companyId}/overview`], {queryParams: this.queryParams });
-        break;
-
-
-
-
-
-
-
-
-
-        
-
+        break;     
       case 2:
         this.router.navigate([`/customer-portal/view-company/${companyId}/notes`], {queryParams: this.queryParams });
+        break;
+      case 3:
+        this.router.navigate([`/customer-portal/view-company/${companyId}/projects`], {queryParams: this.queryParams });
         break;
     }
   }

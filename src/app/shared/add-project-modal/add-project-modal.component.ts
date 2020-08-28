@@ -117,8 +117,8 @@ export class AddProjectModalComponent implements OnInit {
   email_company: any;
   company_office_id: any;
   contactEmailDetail: any;
-  contactFirstName:any;
-  contactSecondName:any;
+  contactFirstName: any;
+  contactSecondName: any;
 
   constructor(
     private _destinationSettingsApi: DestinationSettingsApi,
@@ -132,7 +132,7 @@ export class AddProjectModalComponent implements OnInit {
     private validationService: ValidationService,
     private loggerService: Logger,
     private sourceSystemAccountsApi: SourceSystemAccountsApi,
-    private companyApi: CompaniesApi,
+    private companyApi: CompaniesApi
   ) {
     DatePicker.prototype.ngOnInit = function () {
       this.settings = Object.assign(this.defaultSettings, this.settings);
@@ -146,14 +146,15 @@ export class AddProjectModalComponent implements OnInit {
   ngOnInit() {
     debugger;
     if (!this.dataStore.currentUser) {
-      this.dataStore.authenticationState.subscribe(value => {
-        console.log('Authentication', value, this.dataStore.currentUser);
-        if(value){
+      this.dataStore.authenticationState.subscribe((value) => {
+        console.log("Authentication", value, this.dataStore.currentUser);
+        if (value) {
           this.getCompanyList();
           console.log("Custom Data", this.dataStore);
         }
       });
     }
+    this.getCompanyList();
     this.sourceSystemAccountsApi
       .findSourceSystemTypes()
       .then((sourceSystemTypes: any) => {
@@ -178,8 +179,11 @@ export class AddProjectModalComponent implements OnInit {
   getCompanyList() {
     debugger;
     this.companyApi
-      .findCompaniesByCustomerId( this.dataStore.currentCustomer["customer_id"],
-        this.dataStore.currentCustomer["customer_timezone"] || "eastern", null)
+      .findCompaniesByCustomerId(
+        this.dataStore.currentCustomer["customer_id"],
+        this.dataStore.currentCustomer["customer_timezone"] || "eastern",
+        null
+      )
       .then((sourceSystemTypes: any) => {
         this.companyTypeList = sourceSystemTypes;
         console.log("this.companyTypeList :- ", this.companyTypeList);
@@ -189,7 +193,7 @@ export class AddProjectModalComponent implements OnInit {
   onCompanySelected(event) {
     console.log("event.itemData", event.itemData);
     this.data = event.itemData;
-    this.company_website = event.itemData["company_website"];   
+    this.company_website = event.itemData["company_website"];
     this.companyData = event.itemData;
   }
 
@@ -201,12 +205,12 @@ export class AddProjectModalComponent implements OnInit {
       contact_lastname: this.contactSecondName,
       contact_display_name: `${this.contactFirstName} ${this.contactSecondName}`,
       //company_office_id: this.offices[0].company_office_id,
-      customer_id: this.offices[0].customer_id,  
-      //company_office_name:this.offices[0].company_office_name    
+      customer_id: this.offices[0].customer_id,
+      //company_office_name:this.offices[0].company_office_name
     };
     this.sourceSystemAccountsApi.createContactEmail(params).then((res: any) => {
-      debugger
-      this.contactEmailDetail =  res.data;    
+      debugger;
+      this.contactEmailDetail = res.data;
       console.log("companyTypeList", this.contactEmailDetail);
     });
   }
@@ -269,8 +273,8 @@ export class AddProjectModalComponent implements OnInit {
     }
   }
 
-  onSaveProject() {  
-    debugger
+  onSaveProject() {
+    debugger;
     if (!this.projectName || !this.projectName.trim()) {
       return this.notificationService.error(
         "Error",
@@ -329,7 +333,7 @@ export class AddProjectModalComponent implements OnInit {
           (office) => office["company_office_id"] === this.projectOfficeId
         );
 
-        return this.apiService.createProject({          
+        return this.apiService.createProject({
           project_id: projectId,
           project_admin_user_id: this.projectAdminUserId,
           project_name: projectName,
@@ -391,7 +395,9 @@ export class AddProjectModalComponent implements OnInit {
             ? projectOffice["company_office_name"]
             : "",
           auto_update_status: this.autoUpdateStatus ? "active" : "inactive",
-          source_company_contact_id : this.contactEmailDetail ? this.contactEmailDetail.contact_id : null
+          source_company_contact_id: this.contactEmailDetail
+            ? this.contactEmailDetail.contact_id
+            : null,
         });
       })
       .then((res) => {

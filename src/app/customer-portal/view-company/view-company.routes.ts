@@ -3,6 +3,7 @@ import { ModuleWithProviders } from '@angular/core';
 import { ViewCompanyComponent } from 'app/customer-portal/view-company/view-company.component';
 import {CompanyOverviewComponent} from "./company-overview/company-overview.component"
 import { CompanyNotesComponent } from './company-notes/company-notes.component';
+import { CompanyProjectsComponent } from './company-projects/company-projects.component';
 const routes: Routes = [
   {
     path: '',
@@ -15,6 +16,10 @@ const routes: Routes = [
       {
         path: 'notes',
         component: CompanyNotesComponent
+      },
+      {
+        path: 'projects',
+        component: CompanyProjectsComponent
       }
     ]
   }

@@ -22,15 +22,16 @@ export class AmazonService {
 
   constructor() {
     let tasks = [];
-
     tasks.push(axios.get(`${window['env'].apiBaseUrl}/GetSystemSettings?system_setting_id=AWS_ACCESS_KEY_ID`));
     tasks.push(axios.get(`${window['env'].apiBaseUrl}/GetSystemSettings?system_setting_id=AWS_SECRET_ACCESS_KEY`));
     tasks.push(axios.get(`${window['env'].apiBaseUrl}/GetSystemSettings?system_setting_id=AWS_REGION`));
-    tasks.push(axios.get(`${window['env'].apiBaseUrl}/GetSystemSettings?system_setting_id=BR_TEMP_VAULT`));
+    tasks.push(axios.get(`${window['env'].apiBaseUrl}/GetSystemSettings?system_setting_id=920_LAMBDA_FUNCTION_NAME`));
     tasks.push(axios.get(`${window['env'].apiBaseUrl}/GetSystemSettings?system_setting_id=BR_PERM_VAULT`));
     tasks.push(axios.get(`${window['env'].apiBaseUrl}/GetSystemSettings?system_setting_id=BR_WIPAPI_ENDPOINT`));
-
+      debugger
     Promise.all(tasks).then((res: any[]) => {
+      debugger
+      console.log("Result",res);
       this._wipApiBaseUrl = res[5]['data']['setting_value'];
 
       AWS.config.update({
@@ -38,6 +39,7 @@ export class AmazonService {
         secretAccessKey: res[1]['data']['setting_value'],
         region: res[2]['data']['setting_value']
       });
+
 
       this.tempBucketName = res[3]['data']['setting_value'];
       this.permBucketName = res[4]['data']['setting_value'];
@@ -76,7 +78,6 @@ export class AmazonService {
    * @param path
    */
   public uploadFile(buffer: any, path: string) {
-    debugger
     return new Promise((resolve, reject) => {
       this.awaitInitialization()
         .then(res => {
@@ -300,6 +301,7 @@ public getPresignedUrlWithOriginalFileName(bucket_name: string, file_key: string
           tasks.push(this.fetchUncompletedRecordsFromProjectStandardizationTable(project_id, timezone));
           tasks.push(this.fetchUncompletedRecordsFromComparisonDrawingTable(project_id, timezone));
           tasks.push(this.fetchUncompletedRecordsFromFilePublishTable(project_id, timezone));
+
           return Promise.all(tasks);
         })
         .then((res: any[]) => {
@@ -777,5 +779,51 @@ public getPresignedUrlWithOriginalFileName(bucket_name: string, file_key: string
     }
 
     return timezonedDateTime;
+  }
+
+  public getSystemSettings(system_setting_id: string) {
+    debugger
+    return new Promise((resolve, reject) => {
+      axios.get(window['env'].apiBaseUrl + `/GetSystemSettings?system_setting_id=${system_setting_id}`)
+        .then(res => {
+          resolve(res.data);
+        })
+        .catch(err => {
+          console.log(err);
+          reject(err);
+        });
+    });
+  }
+
+  /**
+   * Create Update Project From Source  
+   */
+
+  public updateProject(params: any) {
+    debugger
+    return new Promise((resolve, reject) => {
+      axios
+        .post(
+          this._wipApiBaseUrl + "/Create920",
+          queryString.stringify(params),
+          {
+            validateStatus: (status) => {
+              return status === 200 || status === 400;
+            },
+          }
+        )
+        .then((res) => {
+          debugger
+          if (res.status === 200) {
+            resolve(res);
+          } else {
+            reject(res.data.status);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          reject(err);
+        });
+    });
   }
 }

@@ -12,7 +12,8 @@ Environment variables are fetched at loading time and imported as properties of 
 ### Deployment
 - Run `npm install` from the cloned repository
 - Replace the node_modules/mailparser directory with the one zipped inside the repository (mailparser.zip). (This involves some bug fixing)
-- Run `ng build --environment=prod --sourcemap=true --output-hashing=all` to generate build files
+~~- Run `ng build --environment=prod --sourcemap=true --output-hashing=all` to generate build files~~
+- From inside VS Code - `ng build --prod`
 - Upload files under `/dist` to S3 bucket (with public access/web hosting enabled)
 
 ### Configure S3 bucket

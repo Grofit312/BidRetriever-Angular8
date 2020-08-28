@@ -49,7 +49,8 @@ import { TreeModule } from 'angular-tree-component';
     DataStore,
     AuthApi,
     AmazonService,
-    Logger
+    Logger,
+    AmazonService
   ],
   bootstrap: [AppComponent]
 })

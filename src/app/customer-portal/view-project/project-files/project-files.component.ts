@@ -29,12 +29,14 @@ export class ProjectFilesComponent implements OnInit {
 
   documentsViewMode = 'all';
   currentProject = {};
+  ischildVisible=false;
 
   prevClickEventDate = null;
 
   actionMapping: IActionMapping = {
     mouse: {
       click: (tree, node, event) => {
+           node.setIsActive(true);
         TREE_ACTIONS.TOGGLE_SELECTED(tree, node, event);
 
         if (node !== this.activeFolderNode) {
@@ -45,6 +47,11 @@ export class ProjectFilesComponent implements OnInit {
               this.loadFiles();
             }
           }
+        }
+        if (node.id === this.currentProject['project_id']) {
+          this.loadRootFolders();
+        } else {
+          this.loadSubFolders();
         }
       },
       dblClick: (tree, node, event) => {
@@ -207,6 +214,7 @@ export class ProjectFilesComponent implements OnInit {
       .then(res => {
         this.currentProject = res;
         this.loadRootFolders();
+        this.loadSubFolders(true);
       })
       .catch(err => {
         this.notificationService.error('Error', err, { timeOut: 3000, showProgressBar: false });
@@ -234,6 +242,7 @@ export class ProjectFilesComponent implements OnInit {
                 id: folder['folder_id'],
                 name: folder['folder_name'],
                 children: [],
+                hasChildren:  folder.children > 0 ? true : false
               };
             }),
           }
@@ -266,6 +275,7 @@ export class ProjectFilesComponent implements OnInit {
             id: folder['folder_id'],
             name: folder['folder_name'],
             children: [],
+            hasChildren: folder.children > 0 ? true : false
           };
         });
         this.folderTree.treeModel.update();

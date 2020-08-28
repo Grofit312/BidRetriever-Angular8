@@ -204,7 +204,35 @@ export class MyCalendarApi {
             if (res.data.length === 0) {
               reject('Project not found');
             } else {
+              debugger
               resolve(res.data[0]);
+            }
+          } else {
+            reject(res.data.status);
+          }
+        })
+        .catch(err => {
+          console.log(err);
+          reject(err);
+        });
+    });
+  }
+
+
+  public findProjectList(source_company_id: string) {
+    return new Promise((resolve, reject) => {
+      axios.get(window['env'].apiBaseUrl + `/FindProjects?source_company_id=${source_company_id}&detail_level=all`, {
+        validateStatus: (status) => {
+          return status === 200 || status === 400
+        }
+      })
+        .then(res => {
+          if (res.status === 200) {
+            if (res.data.length === 0) {
+              reject('Project not found');
+            } else {
+              debugger
+              resolve(res.data);
             }
           } else {
             reject(res.data.status);

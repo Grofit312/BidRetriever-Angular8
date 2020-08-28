@@ -26,11 +26,19 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TreeModule } from 'angular-tree-component';
 import { EditorModule } from '@tinymce/tinymce-angular';
+import { CompanyProjectsComponent } from './company-projects/company-projects.component';
+import { MyCalendarApi } from '../my-calendar/my-calendar.component.api.service';
+import { ProjectsApi } from '../my-projects/my-projects.api.service';
+import { UserInfoApi } from '../system-settings/user-setup/user-setup.api.service';
+import { CompanyOfficeApi } from '../system-settings/company-office-setup/company-office-setup.api.service';
+import { AuthApi } from 'app/providers/auth.api.service';
+import { ValidationService } from 'app/providers/validation.service';
 @NgModule({
   declarations: [
     CompanyOverviewComponent,
     ViewCompanyComponent,
-    CompanyNotesComponent
+    CompanyNotesComponent,
+    CompanyProjectsComponent
   ],
   imports: [
     ViewCompanyRouter,
@@ -57,7 +65,13 @@ import { EditorModule } from '@tinymce/tinymce-angular';
   ],
    providers: [
     ViewCompanyApi,
-    NotesApi
+    NotesApi,
+    MyCalendarApi,
+    ProjectsApi,
+    UserInfoApi,
+    CompanyOfficeApi,
+    AuthApi,
+    ValidationService
    ],
 })
 export class ViewCompanyModule 

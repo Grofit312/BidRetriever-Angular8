@@ -282,32 +282,5 @@ export class ViewProjectApi {
         });
     });
   }
-
-  public updateProject(params: any) {
-    debugger
-    return new Promise((resolve, reject) => {
-      axios
-        .post(
-          window["env"].apiBaseUrls + "/wipapi/Create920",
-          queryString.stringify(params),
-          {
-            validateStatus: (status) => {
-              return status === 200 || status === 400;
-            },
-          }
-        )
-        .then((res) => {
-          debugger
-          if (res.status === 200) {
-            resolve(res);
-          } else {
-            reject(res.data.status);
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-          reject(err);
-        });
-    });
-  }
+ 
 }
