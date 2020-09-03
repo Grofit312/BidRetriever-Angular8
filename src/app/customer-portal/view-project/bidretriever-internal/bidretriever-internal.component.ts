@@ -29,6 +29,19 @@ export class BidretrieverInternalComponent implements OnInit {
   destinationId = '';
   sourceSystemTypes = [];
 
+  tableFilters = [
+    { name: 'Not Completed', value: 'not-completed' },
+    { name: 'All Status', value: 'all-status' },
+    { name: 'Completed', value: 'completed' },
+    { name: 'Errored', value: 'errored' },
+    { name: 'In Edit', value: 'in-edit' },
+    { name: 'Processing', value: 'processing' },
+    { name: 'Queued', value: 'queued' },
+    { name: 'Rasterize Failed', value: 'rasterize-failed' },
+    { name: 'Scheduled Duplicated', value: 'scheduled-duplicated' }
+  ];
+  selectedTableFilter = 'not-completed';
+
   columnDefs = [
     {
       headerName: 'Table Name',
@@ -38,6 +51,14 @@ export class BidretrieverInternalComponent implements OnInit {
       filter: true,
       minWidth: 150,
       checkboxSelection: true,
+    },
+    {
+      headerName: 'Record Key',
+      field: 'record_key',
+      sortable: true,
+      resizable: true,
+      filter: true,
+      minWidth: 150
     },
     {
       headerName: 'Create Datetime',
@@ -132,7 +153,8 @@ export class BidretrieverInternalComponent implements OnInit {
     },
   ];
 
-  rowData = null;
+  rowData = [];
+  originalRowData = [];
 
   get selectedRecord() {
     const selectedRecords = this.grid.api.getSelectedRows();
@@ -162,7 +184,7 @@ export class BidretrieverInternalComponent implements OnInit {
   onGridReady(params): void {
     params.api.sizeColumnsToFit();
   }
-  
+
   loadInternalInfo() {
     const projectId = this.activatedRoute.parent.snapshot.params['project_id'];
 
@@ -197,12 +219,14 @@ export class BidretrieverInternalComponent implements OnInit {
   loadUnCompleteRecords() {
     const projectId = this.activatedRoute.parent.snapshot.params['project_id'];
 
-    this.rowData = null;
+    this.originalRowData = [];
+    this.rowData = [];
 
-    this.amazonService.getUncompletedRecords(projectId,
+    this.amazonService.getAllWipRecords(projectId,
       this.dataStore.currentCustomer ? (this.dataStore.currentCustomer['customer_timezone'] || 'eastern') : 'eastern')
       .then((res: any[]) => {
-        this.rowData = res;
+        this.originalRowData = res;
+        this.setGridRowData();
       })
       .catch(err => {
         this.notificationService.error('Error', err, { timeOut: 3000, showProgressBar: false });
@@ -251,20 +275,8 @@ export class BidretrieverInternalComponent implements OnInit {
     }
 
     const tasks: Promise<any>[] = selectedRecords.map(record => {
-      const { table_name: tableName } = record;
-      switch (tableName) {
-        case '925':
-          return this.amazonService.updateRecordStatus('925FilePreprocessing', 'source_file_id', record.source_file_id, 'queued');
-        case '940':
-          return this.amazonService.updateRecordStatus('940ProjectStandardization', 'file_id', record.file_id, 'queued');
-        case '9414':
-          return this.amazonService.updateRecordStatus('9414CompareFiles', 'compare_id', record.compare_id, 'queued');
-        case '964':
-          return this.amazonService.updateRecordStatus('964PublishFiles', 'publish_id', record.publish_id, 'queued');
-        default:
-          this.notificationService.error('Error', 'Invalid table name', { timeOut: 3000, showProgressBar: false });
-          return null;
-      }
+      const { table_name: tableName, record_key: recordKey } = record;
+      return this.amazonService.updateWipRecordStatus(tableName, recordKey, 'queued', true);
     }).filter(task => !_.isNil(task));
 
     if (!tasks || tasks.length == 0) {
@@ -308,5 +320,23 @@ export class BidretrieverInternalComponent implements OnInit {
       project_id: this.activatedRoute.parent.snapshot.params['project_id'],
       transaction_level: transaction_level,
     });
+  }
+
+  setGridRowData() {
+    if (!this.originalRowData || this.originalRowData.length === 0) {
+      this.rowData = [];
+    }
+
+    switch (this.selectedTableFilter) {
+      case 'not-completed':
+        this.rowData = this.originalRowData.filter(({ process_status }) => process_status !== 'completed');
+        break;
+      case 'all-status':
+        this.rowData = this.originalRowData;
+        break;
+      default:
+        this.rowData = this.originalRowData.filter(({ process_status }) => process_status === this.selectedTableFilter);
+        break;
+    }
   }
 }

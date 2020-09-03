@@ -52,6 +52,17 @@
       <button class='btn btn-light' (click)='onRefresh()'>Refresh</button>
     </div>
   </div>
+  <div class="table-meta">
+    <div class="table-total-count">
+      Total Count: {{ rowData?.length }}
+    </div>
+
+    <select class="table-filter" [(ngModel)]="selectedTableFilter" (change)="setGridRowData()">
+      <option *ngFor="let filter of tableFilters" [ngValue]="filter.value">
+        {{ filter.name }}
+      </option>
+    </select>
+  </div>
   <div class='uncompleted-records-table'>
     <ag-grid-angular
       #grid

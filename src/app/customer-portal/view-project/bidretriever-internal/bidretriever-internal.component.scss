@@ -49,6 +49,21 @@
     }
   }
 
+  .table-meta {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 10px;
+
+    .table-total-count {
+      font-weight: 600;
+    }
+
+    .table-filter {
+      height: 40px;
+    }
+  }
+
   .uncompleted-records-table {
     height: calc(100vh - 530px);
     margin-bottom: 100px;

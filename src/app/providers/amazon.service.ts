@@ -6,6 +6,21 @@ import axios from 'axios';
 import * as AWS from 'aws-sdk';
 const moment = require('moment-timezone');
 import * as queryString from 'query-string';
+import { reject } from 'lodash';
+
+const WIP_TABLE_KEYS = {
+  922: 'id_922',
+  923: 'id_923',
+  925: 'file_preprocessing_id',
+  940: 'project_standardization_id',
+  941: 'drawing_standardization_id',
+  94111: 'extract_id',
+  94114: 'ocr_id',
+  9414: 'compare_id',
+  9418: 'manual_plan_processing_id',
+  964: 'publish_files_id',
+  970: 'user_notifications_id'
+};
 
 @Injectable()
 export class AmazonService {
@@ -292,28 +307,83 @@ public getPresignedUrlWithOriginalFileName(bucket_name: string, file_key: string
    * Get uncompleted records list from 920~964 tables
    * @param project_id
    */
-  public getUncompletedRecords(project_id: string, timezone: string) {
-    return new Promise((resolve, reject) => {
-      this.awaitInitialization()
-        .then(res => {
-          const tasks = [];
-          tasks.push(this.fetchUncompletedRecordsFromFilePreprocessingTable(project_id, timezone));
-          tasks.push(this.fetchUncompletedRecordsFromProjectStandardizationTable(project_id, timezone));
-          tasks.push(this.fetchUncompletedRecordsFromComparisonDrawingTable(project_id, timezone));
-          tasks.push(this.fetchUncompletedRecordsFromFilePublishTable(project_id, timezone));
+  private getWipRecords(routineName: string, projectId: string, timezone: string) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        await this.awaitInitialization();
+      } catch (error) {
+        return reject('Failed to initialize system settings');
+      }
 
-          return Promise.all(tasks);
-        })
-        .then((res: any[]) => {
-          resolve(res.reduce((prev, current) => prev.concat(current)).map(record => {
-            record.description = JSON.stringify(record);
-            record.create_datetime = this.convertToTimeZoneObject(record.create_datetime, timezone).format('YYYY-MM-DD HH:mm:ss A z');
-            return record;
-          }));
-        })
-        .catch(err => {
-          reject('Failed to initialize AWS modules');
+      try {
+        const { data: records } = await axios.get(`${this._wipApiBaseUrl}/Find${routineName}?project_id=${projectId}`);
+        const matchedRecords = records.map(({ invoke_wip_processing, ...record }) => ({
+          table_name: routineName,
+          record_key: record[WIP_TABLE_KEYS[routineName]],
+          create_datetime: this.convertToTimeZoneObject(record.create_datetime, timezone).format('YYYY-MM-DD HH:mm:ss A z'),
+          edit_datetime: this.convertToTimeZoneObject(record.edit_datetime, timezone).format('YYYY-MM-DD HH:mm:ss A z'),
+          process_status: record.process_status,
+          submission_id: record.submission_id,
+          file_original_filename: record.file_original_filename,
+          original_filepath: record.original_filepath,
+          doc_type: record.doc_type,
+          doc_id: record.doc_id,
+          file_id: record.file_id,
+          description: JSON.stringify(record)
+        }));
+
+        return resolve(matchedRecords);
+      } catch (error) {
+        return resolve([]);
+      }
+    });
+  }
+
+  public getAllWipRecords(projectId: string, timezone: string) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        await this.awaitInitialization();
+      } catch (error) {
+        return reject('Failed to initialize system settings');
+      }
+
+      try {
+        const routineNames = [
+          '922', '923', '925', '940', '941', '94111', '94114', '9414', '9418', '964', '970'
+        ];
+
+        const tasks = [];
+        routineNames.forEach(routineName => tasks.push(this.getWipRecords(routineName, projectId, timezone)));
+
+        const routineRecords = await Promise.all(tasks);
+        let records = [];
+        routineRecords.forEach(routineRecord => {
+          records = records.concat(routineRecord);
         });
+        return resolve(records);
+      } catch (error) {
+        return reject(error);
+      }
+    });
+  }
+
+  public updateWipRecordStatus(routineName: string, recordKey: string, processStatus: string, invokeWipProcessing: boolean = false) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        await this.awaitInitialization();
+      } catch (error) {
+        return reject('Failed to initialize system settings');
+      }
+
+      try {
+        const params = {};
+        params[`search_${WIP_TABLE_KEYS[routineName]}`] = recordKey;
+        params['process_status'] = processStatus;
+        params['invoke_wip_processing'] = invokeWipProcessing;
+        await axios.post(`${this._wipApiBaseUrl}Update${routineName}`, queryString.stringify(params));
+      } catch (error) {
+        return reject(error);
+      }
     });
   }
 

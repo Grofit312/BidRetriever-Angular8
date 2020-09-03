@@ -10,11 +10,17 @@ Customer Portal Page (Eduard)
 Environment variables are fetched at loading time and imported as properties of `window` object, so no need to re-build/deploy the whole app when env variables are updated.  Only updating the `env.js` would work.
 
 ### Deployment
-- Run `npm install` from the cloned repository
-- Replace the node_modules/mailparser directory with the one zipped inside the repository (mailparser.zip). (This involves some bug fixing)
-~~- Run `ng build --environment=prod --sourcemap=true --output-hashing=all` to generate build files~~
-- From inside VS Code - `ng build --prod`
+- Run `npm install` from the cloned repository	
+- Replace the node_modules/mailparser directory with the one zipped inside the repository (mailparser.zip). (This involves some bug fixing)	
+--npm i mailparser
+--npm i stream
+--Replace the node: {crypto: true, stream: true} in node_modules/@angular-devkit/build-angular/src/angular-cli-files/models/webpack-configs/browser.js
+--Run `node --max-old-space-size=8192 node_modules/@angular/cli/bin/ng build --prod`
 - Upload files under `/dist` to S3 bucket (with public access/web hosting enabled)
+
+###skip this step
+~- Run `ng build --environment=prod --sourcemap=true --output-hashing=all` to generate build files~
+
 
 ### Configure S3 bucket
 Reference guide [here](https://github.com/BidRetriever/Documentation/blob/master/S3%20Configuration.md)
