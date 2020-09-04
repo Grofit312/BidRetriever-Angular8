@@ -34,7 +34,7 @@ const routes: Routes = [
   },
   {
     path: 'customer-portal',
-    loadChildren: () => import('./customer-portal/customer-portal.module').then(m => m.CustomerPortalModule)
+    loadChildren: () => import('./customer-portal/customer-portal.module').then(m => m.CustomerPortalModule),
   },
   {
     path: '**',
@@ -42,4 +42,5 @@ const routes: Routes = [
   }
 ];
 
+// export const appRouting: ModuleWithProviders = RouterModule.forRoot(routes, { useHash: true });
 export const appRouting: ModuleWithProviders = RouterModule.forRoot(routes);

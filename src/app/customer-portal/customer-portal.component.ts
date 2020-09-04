@@ -172,11 +172,11 @@ export class CustomerPortalComponent implements OnInit {
     const lastName = this.dataStore.currentUser.user_lastname || '';
     this.welcomeMessage = `Welcome, ${firstName} ${lastName}`;
     this.menus.push({
-      id: "1",
+      id: '1',
       name: this.welcomeMessage,
       items: [{
-        id: "1_1",
-        name: "Log out"
+        id: '1_1',
+        name: 'Log out'
       }]
     });
 
@@ -192,7 +192,7 @@ export class CustomerPortalComponent implements OnInit {
 
   menuItemClickAction(event) {
     switch (event.itemData.id) {
-      case "1_1":
+      case '1_1':
         this.btnLogoutAction();
         break;
     }

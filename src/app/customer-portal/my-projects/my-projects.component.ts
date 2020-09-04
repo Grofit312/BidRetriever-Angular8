@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewEncapsulation, HostListener, ElementRef, AfterViewInit, ViewChild } from '@angular/core';
 import { ProjectsApi } from './my-projects.api.service';
 import { DataStore } from 'app/providers/datastore';
-
 import { NotificationsService } from 'angular2-notifications';
 import { ValidationService } from 'app/providers/validation.service';
 import { RowNode } from 'ag-grid-community/dist/lib/entities/rowNode';
@@ -58,7 +57,6 @@ class DatePicker {
 })
 export class MyProjectsComponent implements OnInit, AfterViewInit {
   @ViewChild('projectContent', { static: false }) projectContent: ElementRef;
-
   @ViewChild('projectGrid', { static: false }) projectGrid: DxDataGridComponent;
   @ViewChild('projectToolbar', { static: false }) projectToolbar: DxToolbarComponent;
   @ViewChild('projectToolbarViewType', { static: false }) projectToolbarViewType: DxSelectBoxComponent;
@@ -88,7 +86,7 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
   toolbarConfig: any = {};
   toolbarUsersSelectBox: any = null;
   toolbarUsersContent = [];
-
+  sortName:any
   // Modal Flags
   isProjectDataViewModalShown = false;
 
@@ -424,7 +422,8 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
   }
 
   loadCurrentOffice() {
-    this.userInfoApiService.findUsers(this.dataStore.currentUser['customer_id'])
+    if(this.dataStore.currentUser){
+      this.userInfoApiService.findUsers(this.dataStore.currentUser['customer_id'])
       .then((users: any[]) => {
         const emails = users.filter(({ status }) => status === 'active').map((user) => {
           if (!user.user_displayname) {
@@ -464,6 +463,7 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
       .catch(err => {
         this.notificationService.error('Error', err, { timeOut: 3000, showProgressBar: false });
       });
+    }    
   }
 
   /* Switch Project View Mode */
@@ -518,6 +518,7 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
   private getGridProjectContentByLoadOption(loadOptions) {
     debugger
     let projects = this.projectGridContent;
+         //this.sortName = loadOptions.sort[0].selector;
     if (loadOptions.sort && loadOptions.sort.length > 0) {
       projects = projects.sort((first, second) => {
         const sortColumnOption = this.projectGridColumns.find((column) => column.dataField === loadOptions.sort[0].selector);
@@ -649,6 +650,7 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
                 newGridColumn['visibleIndex'] = viewFieldSetting.data_view_field_sequence;
               }
               if (viewFieldSetting.data_view_field_sort) {
+                debugger
                 newGridColumn['sortOrder'] = viewFieldSetting.data_view_field_sort.toLowerCase();
               }
               if (viewFieldSetting.data_view_field_sort_sequence) {
@@ -1034,7 +1036,7 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
       return;
     }
     const selectedRows = this.projectGridContent.filter(({ project_id: projectId }) => selectedRowKeys.includes(projectId));
-    window.open(`/customer-portal/view-project/${selectedRows[0].project_id}`, '_blank');
+    window.open(`/#/customer-portal/view-project/${selectedRows[0].project_id}`, '_blank');
   }
 
   /* View Project Documents through doc viewer */
@@ -1199,7 +1201,7 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
    * @param event
    */
   onRowDoubleClicked(event: any) {
-    window.open(`/customer-portal/view-project/${event['data']['project_id']}`, '_blank');
+    window.open(`/#/customer-portal/view-project/${event['data']['project_id']}`, '_blank');
   }
 
   onRefresh() {
@@ -1311,7 +1313,7 @@ debugger;
 
       // const { currentUser: { user_id: userId } } = this.dataStore;
       console.log("selectedRows :", selectedRows);
-      // window.open(`/customer-portal/view-project/${selectedRows[0].project_id}`, '_blank');
+      // window.open(`/#/customer-portal/view-project/${selectedRows[0].project_id}`, '_blank');
       if (selectedRows && selectedRows[0]['source_url']) {
 
         window.open(selectedRows[0]['source_url'], '_blank');

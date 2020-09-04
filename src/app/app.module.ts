@@ -20,7 +20,7 @@ import { AmazonService } from 'app/providers/amazon.service';
 import { RouterModule } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TreeModule } from 'angular-tree-component';
-
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -50,7 +50,8 @@ import { TreeModule } from 'angular-tree-component';
     AuthApi,
     AmazonService,
     Logger,
-    AmazonService
+    AmazonService,
+    {provide: LocationStrategy, useClass: HashLocationStrategy}
   ],
   bootstrap: [AppComponent]
 })

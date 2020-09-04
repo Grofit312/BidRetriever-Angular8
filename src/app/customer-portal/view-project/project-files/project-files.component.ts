@@ -206,6 +206,7 @@ export class ProjectFilesComponent implements OnInit {
   initialize() {
     const projectId = this.activatedRoute.parent.snapshot.params['project_id'];
 
+    if(this.dataStore.currentUser['user_id'] != null){
     this.docViewerApiService.findUserFavorites(this.dataStore.currentUser['user_id'], projectId, 'document')
       .then((favorites: any[]) => {
         this.favorites = favorites;
@@ -219,6 +220,7 @@ export class ProjectFilesComponent implements OnInit {
       .catch(err => {
         this.notificationService.error('Error', err, { timeOut: 3000, showProgressBar: false });
       });
+    }
 
     this.logger.logActivity({
       activity_level: 'transaction',

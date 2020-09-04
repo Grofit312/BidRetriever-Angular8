@@ -604,21 +604,15 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
           this.projectGridContentLoaded = true;
           if (!this.projectViewTypeSelected) {
             this.projectGridColumns = [
-              //{ dataField: 'project_id', dataType: 'number', caption: 'Project Id', width: 250, visible: false, allowEditing: false },
+              { dataField: 'project_id', dataType: 'number', caption: 'Project Id', width: 250, visible: false, allowEditing: false },
               { dataField: 'project_name', caption: 'Project Name', width: 400, minWidth: 250, allowEditing: true },
               { dataField: 'project_number', caption: 'Project Number', minWidth: 150, allowEditing: false },
               { dataField: 'project_admin_user_fullname', caption: 'Admin User', minWidth: 150, allowEditing: false },
-              //{ dataField: 'source_company_name', caption: 'Source Company', minWidth: 150, allowEditing: false },
-              { dataField: 'project_bid_datetime', caption: 'Bid Date/Time', minWidth: 150, cellTemplate: 'dateCell', editCellTemplate: 'dateTimeEditor', allowEditing: false },
+               { dataField: 'project_bid_datetime', caption: 'Bid Date/Time', minWidth: 150, cellTemplate: 'dateCell', editCellTemplate: 'dateTimeEditor', allowEditing: false },
               { dataField: 'project_state', caption: 'City/State', width: 150, minWidth: 100, allowEditing: false },
               { dataField: 'project_assigned_office_name', caption: 'Office', width: 150, minWidth: 100, editCellTemplate: 'projectAssignedOfficeNameEditor', allowEditing: true },
-              //{ dataField: 'auto_update_status', caption: 'Automatic Updates', width: 180, minWidth: 150, allowEditing: true, editCellTemplate: 'autoUpdateStatusEditor' },
               { dataField: 'create_datetime', caption: 'Create Date', width: 180, minWidth: 150, dataType: 'datetime', cellTemplate: 'dateCell', allowEditing: false },
-              //{ dataField: 'last_change_date', caption: 'Last Change Date', width: 180, minWidth: 150, dataType: 'datetime', cellTemplate: 'dateCell', allowEditing: false },
-              { dataField: 'project_stage', caption: 'Stage', width: 100, minWidth: 100, allowEditing: true, editCellTemplate: 'statusEditor' },
-              //{ dataField: 'project_notes', caption: 'Notes', minWidth: 100, allowEditing: true },
-              //{ dataField: 'project_process_status', caption: 'Processing Status', minWidth: 100, allowEditing: false },
-              //{ dataField: 'project_process_message', caption: 'Processing Message', minWidth: 100, allowEditing: false }
+              { dataField: 'project_stage', caption: 'Stage', width: 100, minWidth: 100, allowEditing: true, editCellTemplate: 'projectStageEditor' },             
             ];
           } else {
             const newGridColumnList = [];
@@ -1036,7 +1030,7 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
       return;
     }
     const selectedRows = this.projectGridContent.filter(({ project_id: projectId }) => selectedRowKeys.includes(projectId));
-    window.open(`/customer-portal/view-project/${selectedRows[0].project_id}`, '_blank');
+    window.open(`/#/customer-portal/view-project/${selectedRows[0].project_id}`, '_blank');
   }
 
   /* View Project Documents through doc viewer */
@@ -1201,7 +1195,7 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
    * @param event
    */
   onRowDoubleClicked(event: any) {
-    window.open(`/customer-portal/view-project/${event['data']['project_id']}`, '_blank');
+    window.open(`/#/customer-portal/view-project/${event['data']['project_id']}`, '_blank');
   }
 
   onRefresh() {
@@ -1313,7 +1307,7 @@ debugger;
 
       // const { currentUser: { user_id: userId } } = this.dataStore;
       console.log("selectedRows :", selectedRows);
-      // window.open(`/customer-portal/view-project/${selectedRows[0].project_id}`, '_blank');
+      // window.open(`/#/customer-portal/view-project/${selectedRows[0].project_id}`, '_blank');
       if (selectedRows && selectedRows[0]['source_url']) {
 
         window.open(selectedRows[0]['source_url'], '_blank');

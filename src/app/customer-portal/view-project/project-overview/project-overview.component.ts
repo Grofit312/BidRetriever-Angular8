@@ -82,6 +82,7 @@ export class ProjectOverviewComponent implements OnInit {
 
   ngOnInit() {
     debugger
+    
     console.log("DataStore", this.dataStore.currentProject);
     if (this.dataStore.currentProject) {
       this.loadInfo();
@@ -192,6 +193,7 @@ export class ProjectOverviewComponent implements OnInit {
 
   onUpdateProject() {
     debugger  
+
     this.user_email = this.dataStore.currentProject.user_email;
     this.customer_id = this.dataStore.currentProject.customer_id;
     this.project_id = this.dataStore.currentProject.project_id;

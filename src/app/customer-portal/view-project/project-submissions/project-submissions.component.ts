@@ -272,7 +272,7 @@ export class ProjectSubmissionsComponent implements OnInit {
     const fileKey = selectedSubmissions[0]['submission_email_file_key'];
 
     if (bucketName && fileKey) {
-      window.open(`/email-viewer?bucket_name=${bucketName}&file_key=${fileKey}`, '_blank');
+      window.open(`/#/email-viewer?bucket_name=${bucketName}&file_key=${fileKey}`, '_blank');
     } else {
       this.notificationService.error('Not Found', 'Email file not found.', { timeOut: 3000, showProgressBar: false });
     }

@@ -6,7 +6,6 @@ import * as querystring from 'query-string';
 
 @Injectable()
 export class Logger {
-
   public logAppTransaction(params: any) {
     return new Promise((resolve, reject) => {
       axios.post(`${window['env'].apiBaseUrl}/LogAppOpp`, querystring.stringify(params), {

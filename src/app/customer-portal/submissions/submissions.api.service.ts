@@ -36,7 +36,7 @@ export class SubmissionsApi {
                 submission['total_processing_time'] = this.getFormattedDuration(passedMinutes);
               }
               return submission;
-            });
+            }).sort((first: any, second: any) => -1 * moment(first.submission_date).diff(moment(second.submission_date), 'seconds'));
 
             resolve(result);
           } else {

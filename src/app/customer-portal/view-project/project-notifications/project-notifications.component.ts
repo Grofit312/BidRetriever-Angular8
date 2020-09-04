@@ -119,7 +119,7 @@ export class ProjectNotificationsComponent implements OnInit {
       return;
     }
 
-    window.open(`/customer-portal/notification-viewer`, '_blank');
+    window.open(`/#/customer-portal/notification-viewer`, '_blank');
   }
 
   onNewNotification() {

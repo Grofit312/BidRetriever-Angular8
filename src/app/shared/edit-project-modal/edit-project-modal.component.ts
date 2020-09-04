@@ -74,6 +74,7 @@ export class EditProjectModalComponent implements OnInit {
   company_name: any;
   company_array: any[]=[];
   company_id: any;
+  customerId: any;
 
   constructor(
     public dataStore: DataStore,
@@ -98,15 +99,24 @@ export class EditProjectModalComponent implements OnInit {
   }
 
   ngOnInit() {
+    debugger
     if (!this.dataStore.currentUser) {
       this.dataStore.authenticationState.subscribe(value => {
+        debugger
         console.log('Authentication', value, this.dataStore.currentUser);
         if(value){
           this.getCompanyList();
+          this.sourceSystemAccounts();
           console.log("Custom Data", this.dataStore);
         }
       });
     }
+    this.getCompanyList();
+    this.sourceSystemAccounts();
+}
+
+sourceSystemAccounts(){
+  if(this.dataStore.currentCustomer){
     this.sourceSystemAccountsApi
     .findSourceSystemTypes()
     .then((sourceSystemTypes: any) => {
@@ -115,9 +125,8 @@ export class EditProjectModalComponent implements OnInit {
       } else {
         this.sourceSystemTypes = [sourceSystemTypes];
       }
-
       return this.sourceSystemAccountsApi.findSourceSystems(
-        this.dataStore.currentUser.customer_id
+        this.dataStore.currentCustomer.customer_id
       );
     })
     .catch((err) => {
@@ -126,28 +135,33 @@ export class EditProjectModalComponent implements OnInit {
         showProgressBar: false,
       });
     });
+  }  
 }
-
-  
 
   getCompanyList() {
     debugger;
-    this.companyApi
-      .findCompaniesByCustomerId( this.dataStore.currentCustomer["customer_id"],
-        this.dataStore.currentCustomer["customer_timezone"] || "eastern", null)
-      .then((sourceSystemTypes: any) => {
-        // this.companyTypeList = sourceSystemTypes;  
-        sourceSystemTypes.forEach(element => {
-          this.companyTypeList.push({
-            ID: element.company_id,
-            name: element.company_name
-          })
-        });   
-        console.log("this.companyTypeList :- ", this.companyTypeList);
-      });
+    if(this.dataStore.currentCustomer != null) {
+      this.customerId=this.dataStore.currentCustomer["customer_id"];
+      console.log("customerId",this.customerId);
+      this.companyApi
+        .findCompaniesByCustomerId( this.dataStore.currentCustomer["customer_id"],
+          this.dataStore.currentCustomer["customer_timezone"] || "eastern", null)
+        .then((sourceSystemTypes: any) => {
+          //this.companyTypeList = sourceSystemTypes;  
+          sourceSystemTypes.forEach(element => {
+            this.companyTypeList.push({
+              ID: element.company_id,
+              name: element.company_name,
+              company_website:element.company_website
+            })
+          });   
+          console.log("this.companyTypeList :- ", this.companyTypeList);
+        });
+    }
   }
 
   onCompanySelected(event) {
+    debugger
     console.log("event.itemData", event.itemData);
     this.data = event.itemData;
     this.company_website = event.itemData["company_website"];   
@@ -160,18 +174,24 @@ export class EditProjectModalComponent implements OnInit {
       contact_email: email.component["_changedValue"],
       contact_firstname: this.contactFirstName,
       contact_lastname: this.contactSecondName,
-      //company_office_id: this.offices[0].company_office_id,
       customer_id: this.offices[0].customer_id,  
-      //company_office_name:this.offices[0].company_office_name    
     };
     this.sourceSystemAccountsApi.createContactEmail(params).then((res: any) => {
       debugger
-      this.contactEmailDetail =  res.data;    
+      this.contactEmailDetail =  res.data;   
+      if(res.data){
+        this.notificationService.success(
+          "Success",
+          "New contact is created",
+          { timeOut: 3000, showProgressBar: false }
+        );
+      } 
       console.log("companyTypeList", this.contactEmailDetail);
     });
   }
 
   initialize(parent: any, project: any) {
+    debugger
     this.parent = parent;
     this.editProjectModal.nativeElement.style.display = 'block';
 
@@ -248,17 +268,15 @@ export class EditProjectModalComponent implements OnInit {
     const params = Object.assign(
       {},
       this.currentProject,
-      { project_name: projectName },
-      { source_company_id: this.data ? this.data.ID : null },
-      { source_company_contact_id: this.contactEmailDetail ? this.contactEmailDetail.contact_id : null},
-      { contact_firstname: this.contact_firstname },
-      { project_bid_datetime: this.currentProject['project_bid_datetime'] ? this.formatDateTime(this.currentProject['project_bid_datetime']) : null },
+      { project_name: projectName },     
+      { source_company_id: this.data == undefined ? this.currentProject.source_company_id : this.data.ID },
+      { source_company_contact_id: this.contactEmailDetail ? this.contactEmailDetail.contact_id : ""},     
+      {company_website: this.company_website?this.company_website:""},
+      { project_bid_datetime: this.currentProject['project_bid_datetime'] ? this.formatDateTime(this.currentProject['project_bid_datetime']) : "" },
       { project_assigned_office_name: projectOffice ? projectOffice['company_office_name'] : '' },
       { auto_update_status: this.currentProject['project_auto_update_status'] ? 'active' : 'inactive' }
     );
-
     this.spinner.show();
-
     this.apiService.updateProject(this.currentProject['project_id'], params).then(res => this.updateProjectEvents()).then(res => {
       this.spinner.hide();
       this.notificationService.success('Updated', 'Project has been updated', { timeOut: 3000, showProgressBar: false });
@@ -287,10 +305,9 @@ export class EditProjectModalComponent implements OnInit {
     tasks.push(this.updateProjectEvent(this.awardDateTime, 'Award Date', 'project_award_datetime'));
     tasks.push(this.updateProjectEvent(this.expectedContractDateTime, 'Expected Contract Date', 'project_expected_contract_datetime'));
     tasks.push(this.updateProjectEvent(this.contractDateTime, 'Contract Date', 'project_contract_datetime'));
-
     return Promise.all(tasks);
-  }
-
+    }  
+ 
   updateProjectEvent(eventData: any, event_name: string, event_type: string) {
     const customerId = this.currentProject['project_customer_id'] || this.dataStore.currentUser['customer_id'];
     const projectName = this.currentProject['project_name'];

@@ -37,6 +37,7 @@ export class BidretrieverInternalComponent implements OnInit {
     { name: 'In Edit', value: 'in-edit' },
     { name: 'Processing', value: 'processing' },
     { name: 'Queued', value: 'queued' },
+    { name: 'Queued Manual', value: 'queued-manual' },
     { name: 'Rasterize Failed', value: 'rasterize-failed' },
     { name: 'Scheduled Duplicated', value: 'scheduled-duplicated' }
   ];

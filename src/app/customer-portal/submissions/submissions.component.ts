@@ -87,6 +87,14 @@ export class SubmissionsComponent implements OnInit {
         minWidth: 100,
       },
       {
+        headerName: 'Source Company',
+        field: 'source_company_name',
+        sortable: true,
+        filter: true,
+        resizable: true,
+        minWidth: 100
+      },
+      {
         headerName: 'Submission Name',
         field: 'submission_name',
         sortable: true,
@@ -266,7 +274,7 @@ export class SubmissionsComponent implements OnInit {
       return;
     }
 
-    window.open(`/customer-portal/view-project/${selectedSubmissions[0]['project_id']}`, '_blank');
+    window.open(`/#/customer-portal/view-project/${selectedSubmissions[0]['project_id']}`, '_blank');
   }
 
   /* View Submission */
@@ -331,7 +339,7 @@ export class SubmissionsComponent implements OnInit {
     const fileKey = selectedSubmissions[0]['submission_email_file_key'];
 
     if (bucketName && fileKey) {
-      window.open(`/email-viewer?bucket_name=${bucketName}&file_key=${fileKey}`, '_blank');
+      window.open(`/#/email-viewer?bucket_name=${bucketName}&file_key=${fileKey}`, '_blank');
     } else {
       this.notificationService.error('Not Found', 'Email file not found.', { timeOut: 3000, showProgressBar: false });
     }
@@ -391,7 +399,7 @@ export class SubmissionsComponent implements OnInit {
    * @param event
    */
   onRowDoubleClicked(event: any) {
-    // window.open(`/customer-portal/view-project/${event['data']['project_id']}`, '_blank');
+    // window.open(`/#/customer-portal/view-project/${event['data']['project_id']}`, '_blank');
   }
 
   /* Table Event: Global Search */
@@ -405,6 +413,6 @@ export class SubmissionsComponent implements OnInit {
       { colId: 'submission_date', sort: 'desc' },
     ];
     event.api.setSortModel(defaultSortModel);
-      event.api.sizeColumnsToFit();
-   }
+    event.api.sizeColumnsToFit();
+  }
 }

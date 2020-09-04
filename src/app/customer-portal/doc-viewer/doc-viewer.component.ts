@@ -805,7 +805,7 @@ export class DocViewerComponent implements OnInit {
 
   onViewProject = () => {
     const projectId = this.activatedRoute.snapshot.params['project_id'];
-    window.open(`/customer-portal/view-project/${projectId}`, '_blank');
+    window.open(`/#/customer-portal/view-project/${projectId}`, '_blank');
   }
 
   onEditProject = () => {

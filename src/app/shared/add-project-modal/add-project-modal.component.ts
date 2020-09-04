@@ -144,18 +144,21 @@ export class AddProjectModalComponent implements OnInit {
   }
 
   ngOnInit() {
-    debugger;
     if (!this.dataStore.currentUser) {
       this.dataStore.authenticationState.subscribe((value) => {
-        console.log("Authentication", value, this.dataStore.currentUser);
         if (value) {
           this.getCompanyList();
-          console.log("Custom Data", this.dataStore);
+          this.sourceSystemAccounts();
         }
       });
     }
     this.getCompanyList();
-    this.sourceSystemAccountsApi
+    this.sourceSystemAccounts();
+  }
+
+  sourceSystemAccounts(){
+    if(this.dataStore.currentCustomer){
+      this.sourceSystemAccountsApi
       .findSourceSystemTypes()
       .then((sourceSystemTypes: any) => {
         if (Array.isArray(sourceSystemTypes)) {
@@ -174,44 +177,46 @@ export class AddProjectModalComponent implements OnInit {
           showProgressBar: false,
         });
       });
+    }
   }
 
   getCompanyList() {
-    debugger;
-    this.companyApi
-      .findCompaniesByCustomerId(
-        this.dataStore.currentCustomer["customer_id"],
-        this.dataStore.currentCustomer["customer_timezone"] || "eastern",
-        null
-      )
-      .then((sourceSystemTypes: any) => {
-        this.companyTypeList = sourceSystemTypes;
-        console.log("this.companyTypeList :- ", this.companyTypeList);
-      });
+    if (this.dataStore.currentCustomer != null) {
+      this.companyApi
+        .findCompaniesByCustomerId(
+          this.dataStore.currentCustomer["customer_id"],
+          this.dataStore.currentCustomer["customer_timezone"] || "eastern",
+          null
+        )
+        .then((sourceSystemTypes: any) => {
+          this.companyTypeList = sourceSystemTypes;
+        });
+    }
   }
 
   onCompanySelected(event) {
-    console.log("event.itemData", event.itemData);
     this.data = event.itemData;
     this.company_website = event.itemData["company_website"];
     this.companyData = event.itemData;
   }
 
   onEmailDetail(event: any) {
-    debugger;
     const params: any = {
       contact_email: event.target.value,
       contact_firstname: this.contactFirstName,
       contact_lastname: this.contactSecondName,
-      contact_display_name: `${this.contactFirstName} ${this.contactSecondName}`,
-      //company_office_id: this.offices[0].company_office_id,
+      contact_display_name: `${this.contactFirstName} ${this.contactSecondName}`,   
       customer_id: this.offices[0].customer_id,
-      //company_office_name:this.offices[0].company_office_name
     };
     this.sourceSystemAccountsApi.createContactEmail(params).then((res: any) => {
-      debugger;
       this.contactEmailDetail = res.data;
-      console.log("companyTypeList", this.contactEmailDetail);
+      if (res.data) {
+        this.notificationService.success(
+          "Success",
+          "New contact is created",
+          { timeOut: 3000, showProgressBar: false }
+        );
+      }
     });
   }
 
@@ -238,25 +243,25 @@ export class AddProjectModalComponent implements OnInit {
     this.treeZone.nativeElement.style.display = "none";
     this.dropZone.nativeElement.style.display = "block";
     this.addProjectModal.nativeElement.style.display = "block";
-
-    this.userApiService
-      .findUsers(this.dataStore.currentUser["customer_id"])
-      .then((users: any[]) => {
-        this.companyUsers = users.filter(({ status }) => status === "active");
-        return this.officeApiService.findOffices(
-          this.dataStore.currentUser["customer_id"]
-        );
-      })
-      .then((offices: any[]) => {
-        console.log("Offices", offices);
-        this.offices = offices;
-      })
-      .catch((err) => {
-        this.notificationService.error("Error", err, {
-          timeOut: 3000,
-          showProgressBar: false,
+    if (this.dataStore.currentUser != null) {
+      this.userApiService
+        .findUsers(this.dataStore.currentUser["customer_id"])
+        .then((users: any[]) => {
+          this.companyUsers = users.filter(({ status }) => status === "active");
+          return this.officeApiService.findOffices(
+            this.dataStore.currentUser["customer_id"]
+          );
+        })
+        .then((offices: any[]) => {
+          this.offices = offices;
+        })
+        .catch((err) => {
+          this.notificationService.error("Error", err, {
+            timeOut: 3000,
+            showProgressBar: false,
+          });
         });
-      });
+    }
   }
 
   onClickTab(_: any, index: number) {
@@ -274,7 +279,6 @@ export class AddProjectModalComponent implements OnInit {
   }
 
   onSaveProject() {
-    debugger;
     if (!this.projectName || !this.projectName.trim()) {
       return this.notificationService.error(
         "Error",
@@ -385,16 +389,17 @@ export class AddProjectModalComponent implements OnInit {
             ? parseInt(this.projectValue, 10)
             : "",
           project_size: this.projectSize,
-          source_company_id: this.data ? this.data.company_id : null,
+          source_company_id: this.data.company_id ? this.data.company_id : null,
           project_construction_type: this.constructionType,
           project_award_status: this.awardStatus,
           project_assigned_office_id: projectOffice
             ? projectOffice["company_office_id"]
             : "",
           project_assigned_office_name: projectOffice
-            ? projectOffice["company_office_name"]
-            : "",
+            ? projectOffice["company_office_name"] : "",
+
           auto_update_status: this.autoUpdateStatus ? "active" : "inactive",
+          company_website: this.company_website ? this.company_website : "",
           source_company_contact_id: this.contactEmailDetail
             ? this.contactEmailDetail.contact_id
             : null,
@@ -761,7 +766,7 @@ export class AddProjectModalComponent implements OnInit {
           reader.onload = ((theFile) => (e) => {
             const s3Key = `${submission_id}/${item.path}${this.timestamp()}_${
               file.name
-            }`;
+              }`;
 
             item.filename = file.name;
             item.filepath =
@@ -790,7 +795,6 @@ export class AddProjectModalComponent implements OnInit {
           })(file);
 
           reader.onerror = (e) => {
-            console.log(e);
             this.notificationService.error(
               "Error",
               "Failed to read dropped file",
@@ -804,7 +808,6 @@ export class AddProjectModalComponent implements OnInit {
           reader.readAsArrayBuffer(file);
         },
         (err) => {
-          console.log(err.toString());
           this.notificationService.error(
             "Error",
             "Failed to read dropped file",

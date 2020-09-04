@@ -6,6 +6,7 @@ import { NotificationsService } from 'angular2-notifications';
 import { Logger } from 'app/providers/logger.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Title } from '@angular/platform-browser';
+import { AuthApi } from 'app/providers/auth.api.service';
 
 @Component({
   selector: 'app-view-project',
@@ -21,7 +22,9 @@ export class ViewProjectComponent implements OnInit {
 
   constructor(
     public dataStore: DataStore,
-    private router: Router,
+    private authApiService: AuthApi,
+    private _router: Router,
+    public route: ActivatedRoute,
     private activatedRoute: ActivatedRoute,
     private apiService: ViewProjectApi,
     private notificationService: NotificationsService,
@@ -33,6 +36,7 @@ export class ViewProjectComponent implements OnInit {
 
   ngOnInit() {  
     debugger     
+    this.getDataStore();
     this.dataStore.showPortalHeader = false;   
     if (this.dataStore.currentUser) {
       this.load();
@@ -65,7 +69,6 @@ export class ViewProjectComponent implements OnInit {
         this.projectStatus = res['status'];
         this.projectDueDate = res['project_bid_datetime'];
         this.projectRating = Number(res['project_rating']);
-
         this.dataStore.currentProject = res;
         this.dataStore.getProjectState.next(true);
         this.spinner.hide();       
@@ -86,4 +89,38 @@ export class ViewProjectComponent implements OnInit {
       project_id: projectId,
     });
   }
+
+  getDataStore(){
+    if (!localStorage.getItem('br_token')) {
+      
+    this.authApiService.authenticate(localStorage.getItem('br_token'))
+      .then((res: any) => {
+        const user = res.user;
+        localStorage.setItem('br_token', user.token);
+        this.dataStore.currentUser = user;
+        this.dataStore.originUserId = user['user_id'];
+        this.dataStore.originUserEmail = user['user_email'];
+        this.dataStore.originUserRole = user['user_role'];
+        return this.authApiService.getCustomer(user.customer_id);
+      })
+      .then((customer: any) => {
+        this.dataStore.currentCustomer = customer;
+        this.dataStore.authenticationState.next(true);
+      })
+      .catch(err => {
+        console.log('Clear Token');
+        this.notificationService.error('Error', err, { timeOut: 3000, showProgressBar: false });
+
+        localStorage.setItem('br_token', '');
+        const { user_id: userId } = this.route.snapshot.queryParams;
+        if (!userId) {
+          this._router.navigate([ '/sign-in' ], { queryParams: { redirect_url: this._router.url } });
+          return;
+        }
+
+      });
+    };
+  }
+
 }
+
