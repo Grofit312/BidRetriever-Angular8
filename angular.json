@@ -17,11 +17,7 @@
             "main": "src/main.ts",
             "tsConfig": "src/tsconfig.app.json",
             "polyfills": "src/polyfills.ts",
-            "assets": [
-              "src/assets",
-              "src/env.js",
-              "src/pdf-sdk"
-            ],
+            "assets": ["src/assets", "src/env.js", "src/pdf-sdk"],
             "styles": [
               "src/styles.scss",
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
@@ -36,7 +32,11 @@
               "node_modules/jquery/dist/jquery.min.js",
               "node_modules/jquery-ui-dist/jquery-ui.js",
               "node_modules/bootstrap/dist/js/bootstrap.min.js",
-              "node_modules/bootstrap-datetime-picker/js/bootstrap-datetimepicker.min.js"
+              "node_modules/bootstrap-datetime-picker/js/bootstrap-datetimepicker.min.js",
+              "node_modules/amcharts3/amcharts/amcharts.js",
+              "node_modules/amcharts3/amcharts/themes/light.js",
+              "node_modules/amcharts3/amcharts/serial.js",
+              "node_modules/amcharts3/amcharts/pie.js"
             ]
           },
           "configurations": {
@@ -105,20 +105,13 @@
               "node_modules/devextreme/dist/css/dx.common.css",
               "node_modules/devextreme/dist/css/dx.light.css"
             ],
-            "assets": [
-              "src/assets",
-              "src/env.js",
-              "src/pdf-sdk"
-            ]
+            "assets": ["src/assets", "src/env.js", "src/pdf-sdk"]
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": [
-              "src/tsconfig.app.json",
-              "src/tsconfig.spec.json"
-            ],
+            "tsConfig": ["src/tsconfig.app.json", "src/tsconfig.spec.json"],
             "exclude": []
           }
         }
@@ -139,9 +132,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": [
-              "e2e/tsconfig.e2e.json"
-            ],
+            "tsConfig": ["e2e/tsconfig.e2e.json"],
             "exclude": []
           }
         }

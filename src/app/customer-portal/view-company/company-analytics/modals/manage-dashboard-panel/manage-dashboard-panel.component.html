@@ -1,0 +1,147 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    {{ dashboardPanelId ? "Update Dashboard Panel" : "Create Dashboard Panel" }}
+  </h4>
+  <button type="button" class="close" (click)="onCancel()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <form [formGroup]="form">
+    <div class="form-group row">
+      <label for="name" class="form-label col-4">Name:</label>
+      <div class="col-8">
+        <input
+          type="text"
+          id="name"
+          class="form-control"
+          formControlName="name"
+        />
+        <span *ngIf="form.controls.name.errors?.required" class="input-error">
+          This field is required.
+        </span>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="description" class="form-label col-4">Description:</label>
+      <div class="col-8">
+        <textarea
+          type="text"
+          id="description"
+          class="form-control"
+          formControlName="description"
+        ></textarea>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="form-label col-4">DataSource:</label>
+      <div class="col-8">
+        <ng-select
+          class="type-selector mr-1"
+          formControlName="datasource"
+          placeholder="Select..."
+        >
+          <ng-option
+            *ngFor="let option of dataSourceTypes"
+            [value]="option.key"
+          >
+            {{ option.label }}
+          </ng-option>
+        </ng-select>
+        <span
+          *ngIf="form.controls.datasource.errors?.required"
+          class="input-error"
+        >
+          This field is required.
+        </span>
+      </div>
+    </div>
+
+    <div class="form-group row" *ngIf="chartTypes && chartTypes.length">
+      <label class="form-label col-4">Chart Type:</label>
+      <div class="col-8">
+        <ng-select
+          class="type-selector mr-1"
+          formControlName="chartType"
+          placeholder="Select..."
+        >
+          <ng-option *ngFor="let option of chartTypes" [value]="option.key">
+            {{ option.label }}
+          </ng-option>
+        </ng-select>
+        <span
+          *ngIf="form.controls.chartType.errors?.required"
+          class="input-error"
+        >
+          This field is required.
+        </span>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="interval" class="form-label col-4">Start:</label>
+      <div class="col-8">
+        <input
+          type="number"
+          class="form-control"
+          formControlName="panel_start_date_offset"
+        />
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="interval" class="form-label col-4">End:</label>
+      <div class="col-8">
+        <input
+          type="number"
+          class="form-control"
+          formControlName="panel_end_date_offset"
+        />
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="interval" class="form-label col-4">Interval:</label>
+      <div class="col-8">
+        <ng-select
+          class="type-selector mr-1"
+          formControlName="interval"
+          placeholder="Select..."
+        >
+          <ng-option *ngFor="let option of intervalTypes" [value]="option.key">
+            {{ option.label }}
+          </ng-option>
+        </ng-select>
+        <span
+          *ngIf="form.controls.interval.errors?.required"
+          class="input-error"
+        >
+          This field is required.
+        </span>
+      </div>
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" (click)="onCancel()">
+    Cancel
+  </button>
+  <button
+    type="button"
+    class="btn btn-primary"
+    [disabled]="form.invalid"
+    (click)="onSave()"
+  >
+    OK
+  </button>
+</div>
+
+<ngx-spinner
+  name="spinner"
+  bdColor="rgba(0, 0, 0, 0.8)"
+  size="large"
+  color="#fff"
+  type="square-jelly-box"
+  [fullScreen]="false"
+></ngx-spinner>

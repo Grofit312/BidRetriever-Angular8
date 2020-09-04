@@ -1,0 +1,48 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    {{ dashboardId ? "Update Dashboard" : "Create Dashboard" }}
+  </h4>
+  <button type="button" class="close" (click)="onCancel()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <form [formGroup]="form">
+    <div class="form-group row">
+      <label for="name" class="form-label col-4">Dashboard Name:</label>
+      <div class="col-8">
+        <input
+          type="text"
+          id="name"
+          class="form-control"
+          formControlName="name"
+        />
+        <span *ngIf="form.controls.name.errors?.required" class="input-error">
+          This field is required.
+        </span>
+      </div>
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" (click)="onCancel()">
+    Cancel
+  </button>
+  <button
+    type="button"
+    class="btn btn-primary"
+    [disabled]="form.invalid"
+    (click)="onSave()"
+  >
+    OK
+  </button>
+</div>
+
+<ngx-spinner
+  name="spinner"
+  bdColor="rgba(0, 0, 0, 0.8)"
+  size="large"
+  color="#fff"
+  type="square-jelly-box"
+  [fullScreen]="false"
+></ngx-spinner>

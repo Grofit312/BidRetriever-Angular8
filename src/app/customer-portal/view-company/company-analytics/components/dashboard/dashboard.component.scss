@@ -1,0 +1,15 @@
+.container-fluid {
+  height: 100vh;
+}
+
+.portlet {
+  min-width: 50%;
+  flex: 1;
+  padding: 15px;
+}
+
+@media (max-width: 900px) {
+  .portlet {
+    min-width: 100%;
+  }
+}

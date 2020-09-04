@@ -1,8 +1,8 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import {ViewCompanyRouter}  from "./view-company.routes";
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { ViewCompanyRouter } from "./view-company.routes";
 import { ViewCompanyComponent } from "app/customer-portal/view-company/view-company.component";
-import { CompanyOverviewComponent } from './company-overview/company-overview.component';
+import { CompanyOverviewComponent } from "./company-overview/company-overview.component";
 import { ViewCompanyApi } from "app/customer-portal/view-company/view-company.api.service";
 import { NotesApi } from "app/customer-portal/view-company/notes.api.service";
 import { SharedModule } from "app/shared/shared.module";
@@ -21,24 +21,24 @@ import {
   DxTabPanelModule,
   DxScrollViewModule,
 } from "devextreme-angular";
-import { CompanyNotesComponent } from './company-notes/company-notes.component';
-import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { TreeModule } from 'angular-tree-component';
-import { EditorModule } from '@tinymce/tinymce-angular';
-import { CompanyProjectsComponent } from './company-projects/company-projects.component';
-import { MyCalendarApi } from '../my-calendar/my-calendar.component.api.service';
-import { ProjectsApi } from '../my-projects/my-projects.api.service';
-import { UserInfoApi } from '../system-settings/user-setup/user-setup.api.service';
-import { CompanyOfficeApi } from '../system-settings/company-office-setup/company-office-setup.api.service';
-import { AuthApi } from 'app/providers/auth.api.service';
-import { ValidationService } from 'app/providers/validation.service';
+import { CompanyNotesComponent } from "./company-notes/company-notes.component";
+import { CKEditorModule } from "@ckeditor/ckeditor5-angular";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { TreeModule } from "angular-tree-component";
+import { EditorModule } from "@tinymce/tinymce-angular";
+import { CompanyProjectsComponent } from "./company-projects/company-projects.component";
+import { MyCalendarApi } from "../my-calendar/my-calendar.component.api.service";
+import { ProjectsApi } from "../my-projects/my-projects.api.service";
+import { UserInfoApi } from "../system-settings/user-setup/user-setup.api.service";
+import { CompanyOfficeApi } from "../system-settings/company-office-setup/company-office-setup.api.service";
+import { AuthApi } from "app/providers/auth.api.service";
+import { ValidationService } from "app/providers/validation.service";
 @NgModule({
   declarations: [
     CompanyOverviewComponent,
     ViewCompanyComponent,
     CompanyNotesComponent,
-    CompanyProjectsComponent
+    CompanyProjectsComponent,
   ],
   imports: [
     ViewCompanyRouter,
@@ -63,7 +63,7 @@ import { ValidationService } from 'app/providers/validation.service';
     TreeModule,
     AgGridModule.withComponents([]),
   ],
-   providers: [
+  providers: [
     ViewCompanyApi,
     NotesApi,
     MyCalendarApi,
@@ -71,10 +71,7 @@ import { ValidationService } from 'app/providers/validation.service';
     UserInfoApi,
     CompanyOfficeApi,
     AuthApi,
-    ValidationService
-   ],
+    ValidationService,
+  ],
 })
-export class ViewCompanyModule 
-{
-
-}
+export class ViewCompanyModule {}

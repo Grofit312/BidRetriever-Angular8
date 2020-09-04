@@ -1,0 +1,45 @@
+<div class="card p-3" *ngIf="panelData">
+  <div
+    class="card-title d-flex justify-content-between align-items-center mb-0"
+  >
+    <div class="caption">
+      {{ panelData.panel_name }}
+    </div>
+    <div class="actions d-flex align-items-center">
+      <button
+        class="btn btn-info mr-1"
+        ngbTooltip="Dashboard Panel Settings"
+        (click)="onManageDashboard()"
+      >
+        <i class="fa fa-cog"></i>
+      </button>
+      <button
+        class="btn btn-danger mr-1"
+        ngbTooltip="Delete Dashboard Panel"
+        (click)="onDeleteDashboardPanel()"
+      >
+        <i class="fa fa-trash"></i>
+      </button>
+    </div>
+  </div>
+  <hr />
+  <div class="card-content" *ngIf="chartConfig">
+    <div [ngSwitch]="panelData?.panel_chart_type">
+      <div *ngSwitchCase="ChartTypes.BarChart">
+        <app-bar-chart></app-bar-chart>
+      </div>
+      <div *ngSwitchCase="ChartTypes.PieChart">
+        <app-pie-chart [chartConfig]="chartConfig"></app-pie-chart>
+      </div>
+      <div *ngSwitchDefault>Please select a component</div>
+    </div>
+  </div>
+</div>
+
+<ng-template #manageDashboardPanelTemplate let-modal>
+  <app-manage-dashboard-panel
+    [dashboardId]="panelData?.dashboard_id"
+    [dashboardPanelId]="panelData?.panel_id"
+    (closeModal)="closeModal(modal, $event)"
+  ></app-manage-dashboard-panel>
+</ng-template>
