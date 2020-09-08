@@ -51,11 +51,11 @@ class DatePicker {
 }
 
 @Component({
-  selector: 'app-company-projects',
-  templateUrl: './company-projects.component.html',
-  styleUrls: ['./company-projects.component.scss']
+  selector: 'app-company-employees',
+  templateUrl: './company-employees.component.html',
+  styleUrls: ['./company-employees.component.scss']
 })
-export class CompanyProjectsComponent implements OnInit, AfterViewInit {
+export class CompanyEmployeesComponent implements OnInit {
   @ViewChild('projectContent', { static: false }) projectContent: ElementRef;
 
   @ViewChild('projectGrid', { static: false }) projectGrid: DxDataGridComponent;
@@ -94,12 +94,12 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
   selectedUserId = null;
   selectedCustomerId = null;
   source_company_id: any;
+  customer_id: any;
+  detail_level: string;
 
   get isBidRetrieverAdmin() { return this.dataStore.originUserEmail.includes('bidretriever.net'); }
   get isSysAdmin() { return this.dataStore.originUserRole === 'sys admin'; }
-
-  constructor(
-    private myCalenderApi: MyCalendarApi,
+  constructor( private myCalenderApi: MyCalendarApi,
     public dataStore: DataStore,
     private apiService: ProjectsApi,
     private notificationService: NotificationsService,
@@ -107,231 +107,231 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
     private authApiService: AuthApi,
     private officeApiService: CompanyOfficeApi,
     private userInfoApiService: UserInfoApi,
-    private logger: Logger
-  ) {
-    this.toolbarConfig = {
-      projectViewType: {
-        width: 250,
-        dataSource: new DataSource({
-          store: new CustomStore({
-            key: 'view_id',
-            loadMode: 'raw',
-            load: (loadOptions) => this.toolbarProjectViewTypeLoadAction(loadOptions)
-          })
-        }),
-        showClearButton: true,
-        valueExpr: 'view_id',
-        displayExpr: 'view_name',
-        onValueChanged: (event) => {
-          if (event.value === 'manage_project_views') {
-            this.projectToolbarViewType.value = event.previousValue;
-            this.projectViewTypeSelected = event.previousValue;
-            this.isProjectDataViewModalShown = true;
-            return;
+    private logger: Logger) { 
+      this.toolbarConfig = {
+        projectViewType: {
+          width: 250,
+          dataSource: new DataSource({
+            store: new CustomStore({
+              key: 'view_id',
+              loadMode: 'raw',
+              load: (loadOptions) => this.toolbarProjectViewTypeLoadAction(loadOptions)
+            })
+          }),
+          showClearButton: true,
+          valueExpr: 'view_id',
+          displayExpr: 'view_name',
+          onValueChanged: (event) => {
+            if (event.value === 'manage_project_views') {
+              this.projectToolbarViewType.value = event.previousValue;
+              this.projectViewTypeSelected = event.previousValue;
+              this.isProjectDataViewModalShown = true;
+              return;
+            }
+  
+            if (this.projectViewTypeSelected !== event.value) {
+              this.projectViewTypeSelected = event.value;
+              localStorage.setItem(this.PROJECT_TOOLBAR_INITIAL_VIEW, this.projectViewTypeSelected == null ? '' : this.projectViewTypeSelected);
+              this.toolbarRefreshGridAction();
+            }
           }
-
-          if (this.projectViewTypeSelected !== event.value) {
-            this.projectViewTypeSelected = event.value;
-            localStorage.setItem(this.PROJECT_TOOLBAR_INITIAL_VIEW, this.projectViewTypeSelected == null ? '' : this.projectViewTypeSelected);
-            this.toolbarRefreshGridAction();
-          }
-        }
-      },
-      users: {
-        width: 250,
-        dataSource: new DataSource({
-          store: new CustomStore({
-            key: 'user_email',
-            loadMode: 'raw',
-            load: (loadOptions) => this.toolbarUsersLoadAction(loadOptions)
-          })
-        }),
-        showClearButton: false,
-        valueExpr: 'user_email',
-        displayExpr: 'user_displayname',
-        searchEnabled: true,
-        searchTimeout: 200,
-        searchMode: 'contains',
-        searchExpr: 'user_email',
-        onValueChanged: (event: any) => {
-          this.onChangeUser(event.value);
         },
-        onInitialized: (args: any) => {
-          this.toolbarUsersSelectBox = args.component;
-          if (this.dataStore.originUserEmail) {
-            this.toolbarUsersSelectBox.getDataSource().load().done((data) => {
-              console.log('Users Data Loaded onInitialized');
-            });
+        users: {
+          width: 250,
+          dataSource: new DataSource({
+            store: new CustomStore({
+              key: 'user_email',
+              loadMode: 'raw',
+              load: (loadOptions) => this.toolbarUsersLoadAction(loadOptions)
+            })
+          }),
+          showClearButton: false,
+          valueExpr: 'user_email',
+          displayExpr: 'user_displayname',
+          searchEnabled: true,
+          searchTimeout: 200,
+          searchMode: 'contains',
+          searchExpr: 'user_email',
+          onValueChanged: (event: any) => {
+            this.onChangeUser(event.value);
+          },
+          onInitialized: (args: any) => {
+            this.toolbarUsersSelectBox = args.component;
+            if (this.dataStore.originUserEmail) {
+              this.toolbarUsersSelectBox.getDataSource().load().done((data) => {
+                console.log('Users Data Loaded onInitialized');
+              });
+            }
           }
-        }
-      },
-
-      search: {
-        placeholder: 'Search',
-        width: 200,
-        valueChangeEvent: 'keyup',
-        onValueChanged: (event) => this.toolbarSearchAction(event)
-      },
-
-      viewProject: {
-        type: 'normal',
-        text: 'View Project',
-        onClick: () => this.toolbarViewProjectAction()
-      },
-      addProject: {
-        type: 'normal',
-        text: 'Add Project',
-        onClick: () => this.toolbarAddProjectAction()
-      },
-
-      others: {
-        viewSourceProject: {
-          type: 'normal',
-          text: 'View Source Project',
-          onClick: () => this.onViewProjectSourceSystem()
         },
+  
+        search: {
+          placeholder: 'Search',
+          width: 200,
+          valueChangeEvent: 'keyup',
+          onValueChanged: (event) => this.toolbarSearchAction(event)
+        },
+  
         viewProject: {
           type: 'normal',
-          text: 'View Project',
-          onClick: () => this.toolbarViewProjectAction()
+          text: 'View Contact',
+          // onClick: () => this.toolbarViewProjectAction()
         },
         addProject: {
           type: 'normal',
-          text: 'Add Project',
-          onClick: () => this.toolbarAddProjectAction()
+          text: 'Add Contact',
+          // onClick: () => this.toolbarAddProjectAction()
         },
-        viewProjectDocuments: {
-          type: 'normal',
-          text: 'View Project Documents',
-          onClick: () => this.toolbarViewProjectDocumentsAction()
-        },
-        editProject: {
-          type: 'normal',
-          text: 'Edit Project',
-          onClick: () => this.toolbarEditProjectAction()
-        },
-        deleteProject: {
-          type: 'normal',
-          text: 'Delete Project',
-          onClick: () => this.toolbarDeleteProjectAction()
-        },
-        archiveProject: {
-          type: 'normal',
-          text: 'Archive Project',
-          onClick: () => this.toolbarArchiveProjectAction()
-        },
-        addDocumentsToProject: {
-          type: 'normal',
-          text: 'Add Documents To Project',
-          onClick: () => this.toolbarAddDocumentsToProjectAction()
-        },
-        viewPublishedProject: {
-          type: 'normal',
-          text: 'View Published Project',
-          onClick: () => this.toolbarViewPublishedProjectAction()
-        },
-        printProjectList: {
-          type: 'normal',
-          text: 'Print Project List',
-          onClick: () => this.toolbarPrintProjectListAction()
-        },
-        exportProjectListToCsv: {
-          type: 'normal',
-          text: 'Export Project List  To CSV',
-          onClick: () => this.toolbarExportProjectListToCsvAction()
-        },
-        viewTransactionLog: {
-          type: 'normal',
-          text: 'View Transaction Log',
-          onClick: () => this.toolbarViewTransactionLogAction()
-        },
-        refreshGrid: {
-          type: 'normal',
-          text: 'Refresh Grid',
-          onClick: () => this.toolbarRefreshGridAction()
-        },
-        help: {
-          type: 'normal',
-          text: 'Help',
-          onClick: () => this.toolbarHelpAction()
+  
+        others: {
+          viewSourceProject: {
+            type: 'normal',
+            text: 'View Source Project',
+            onClick: () => this.onViewProjectSourceSystem()
+          },
+          viewProject: {
+            type: 'normal',
+            text: 'View Contact',
+            onClick: () => this.toolbarViewProjectAction()
+          },
+          addProject: {
+            type: 'normal',
+            text: 'Add Contact',
+            onClick: () => this.toolbarAddProjectAction()
+          },
+          viewProjectDocuments: {
+            type: 'normal',
+            text: 'View Project Documents',
+            onClick: () => this.toolbarViewProjectDocumentsAction()
+          },
+          editProject: {
+            type: 'normal',
+            text: 'Edit Project',
+            onClick: () => this.toolbarEditProjectAction()
+          },
+          deleteProject: {
+            type: 'normal',
+            text: 'Delete Project',
+            onClick: () => this.toolbarDeleteProjectAction()
+          },
+          archiveProject: {
+            type: 'normal',
+            text: 'Archive Project',
+            onClick: () => this.toolbarArchiveProjectAction()
+          },
+          addDocumentsToProject: {
+            type: 'normal',
+            text: 'Add Documents To Project',
+            onClick: () => this.toolbarAddDocumentsToProjectAction()
+          },
+          viewPublishedProject: {
+            type: 'normal',
+            text: 'View Published Project',
+            onClick: () => this.toolbarViewPublishedProjectAction()
+          },
+          printProjectList: {
+            type: 'normal',
+            text: 'Print Project List',
+            onClick: () => this.toolbarPrintProjectListAction()
+          },
+          exportProjectListToCsv: {
+            type: 'normal',
+            text: 'Export Project List  To CSV',
+            onClick: () => this.toolbarExportProjectListToCsvAction()
+          },
+          viewTransactionLog: {
+            type: 'normal',
+            text: 'View Transaction Log',
+            onClick: () => this.toolbarViewTransactionLogAction()
+          },
+          refreshGrid: {
+            type: 'normal',
+            text: 'Refresh Grid',
+            onClick: () => this.toolbarRefreshGridAction()
+          },
+          help: {
+            type: 'normal',
+            text: 'Help',
+            onClick: () => this.toolbarHelpAction()
+          }
         }
-      }
-    };
-
-    this.projectGridDataSource = new CustomStore({
-      key: 'project_id',
-      load: (loadOptions) => this.gridProjectLoadAction(loadOptions),
-      update: (key, values) => this.gridProjectUpdateAction(key, values)
-    });
-
-    this.projectGridEditorTemplateSource = {
-      status: [
-        { id: 'active', name: 'active' },
-        { id: 'inactive', name: 'inactive' },
-        { id: 'deleted', name: 'deleted' },
-        { id: 'archived', name: 'archived' }
-      ],
-      stage: [
-        { id: 'Prospect', name: 'Prospect' },
-        { id: 'Lead', name: 'Lead' },
-        { id: 'Opportunity', name: 'Opportunity' },
-        { id: 'Proposal', name: 'Proposal' },
-        { id: 'Bid', name: 'Bid' },
-        { id: 'Awarded', name: 'Awarded' },
-        { id: 'Contract', name: 'Contract' },
-        { id: 'Completed', name: 'Completed' },
-        { id: 'Not Interested', name: 'Not Interested' },
-        { id: 'Lost', name: 'Lost' }
-      ],
-      autoUpdateStatus: [
-        { id: 'active', name: 'active' },
-        { id: 'inactive', name: 'inactive' }
-      ],
-      timezone: [
-        { id: 'eastern', name: 'eastern' },
-        { id: 'central', name: 'central' },
-        { id: 'mountain', name: 'mountain' },
-        { id: 'pacific', name: 'pacific' }
-      ],
-      contractType: [
-        { id: 'GMP Bid', name: 'GMP Bid' },
-        { id: 'Negotiated', name: 'Negotiated' },
-        { id: 'Design Build', name: 'Design Build' },
-        { id: 'Time and Materials', name: 'Time and Materials' }
-      ],
-      segment: [
-        { id: 'Commercial', name: 'Commercial' },
-        { id: 'Industrial', name: 'Industrial' },
-        { id: 'Heavy Highway', name: 'Heavy Highway' },
-        { id: 'Residential', name: 'Residential' }
-      ],
-      buildingType: [
-        { id: 'Healthcare', name: 'Healthcare' },
-        { id: 'Government', name: 'Government' },
-        { id: 'Retail', name: 'Retail' },
-        { id: 'Residential', name: 'Residential' }
-      ],
-      laborRequirement: [
-        { id: 'union', name: 'union' },
-        { id: 'open shop', name: 'open shop' },
-        { id: 'prevailing wage', name: 'prevailing wage' }
-      ],
-      constructionType: [
-        { id: 'new construction', name: 'new construction' },
-        { id: 'remodel', name: 'remodel' },
-        { id: 'tenant improvements', name: 'tenant improvements' }
-      ],
-      awardStatus: [
-        { id: 'Preparing Proposal', name: 'Preparing Proposal' },
-        { id: 'Bid Submitted', name: 'Bid Submitted' },
-        { id: 'Awarded', name: 'Awarded' },
-        { id: 'Lost', name: 'Lost' },
-        { id: 'Suspended Bid', name: 'Suspended Bid' }
-      ]
-    };
-  }
+      };
+  
+      this.projectGridDataSource = new CustomStore({
+        key: 'contact_id',
+        load: (loadOptions) => this.gridProjectLoadAction(loadOptions),
+        update: (key, values) => this.gridProjectUpdateAction(key, values)
+      });
+  
+      this.projectGridEditorTemplateSource = {
+        status: [
+          { id: 'active', name: 'active' },
+          { id: 'inactive', name: 'inactive' },
+          { id: 'deleted', name: 'deleted' },
+          { id: 'archived', name: 'archived' }
+        ],
+        stage: [
+          { id: 'Prospect', name: 'Prospect' },
+          { id: 'Lead', name: 'Lead' },
+          { id: 'Opportunity', name: 'Opportunity' },
+          { id: 'Proposal', name: 'Proposal' },
+          { id: 'Bid', name: 'Bid' },
+          { id: 'Awarded', name: 'Awarded' },
+          { id: 'Contract', name: 'Contract' },
+          { id: 'Completed', name: 'Completed' },
+          { id: 'Not Interested', name: 'Not Interested' },
+          { id: 'Lost', name: 'Lost' }
+        ],
+        autoUpdateStatus: [
+          { id: 'active', name: 'active' },
+          { id: 'inactive', name: 'inactive' }
+        ],
+        timezone: [
+          { id: 'eastern', name: 'eastern' },
+          { id: 'central', name: 'central' },
+          { id: 'mountain', name: 'mountain' },
+          { id: 'pacific', name: 'pacific' }
+        ],
+        contractType: [
+          { id: 'GMP Bid', name: 'GMP Bid' },
+          { id: 'Negotiated', name: 'Negotiated' },
+          { id: 'Design Build', name: 'Design Build' },
+          { id: 'Time and Materials', name: 'Time and Materials' }
+        ],
+        segment: [
+          { id: 'Commercial', name: 'Commercial' },
+          { id: 'Industrial', name: 'Industrial' },
+          { id: 'Heavy Highway', name: 'Heavy Highway' },
+          { id: 'Residential', name: 'Residential' }
+        ],
+        buildingType: [
+          { id: 'Healthcare', name: 'Healthcare' },
+          { id: 'Government', name: 'Government' },
+          { id: 'Retail', name: 'Retail' },
+          { id: 'Residential', name: 'Residential' }
+        ],
+        laborRequirement: [
+          { id: 'union', name: 'union' },
+          { id: 'open shop', name: 'open shop' },
+          { id: 'prevailing wage', name: 'prevailing wage' }
+        ],
+        constructionType: [
+          { id: 'new construction', name: 'new construction' },
+          { id: 'remodel', name: 'remodel' },
+          { id: 'tenant improvements', name: 'tenant improvements' }
+        ],
+        awardStatus: [
+          { id: 'Preparing Proposal', name: 'Preparing Proposal' },
+          { id: 'Bid Submitted', name: 'Bid Submitted' },
+          { id: 'Awarded', name: 'Awarded' },
+          { id: 'Lost', name: 'Lost' },
+          { id: 'Suspended Bid', name: 'Suspended Bid' }
+        ]
+      };
+    }
 
   ngOnInit() {
+    debugger
     if (this.dataStore.currentUser) {
       this.load();
     } else {
@@ -513,7 +513,7 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
     if (!event.data.project_bid_datetime) {
       event.data.project_bid_datetime = null;
     }
-    event.component.selectRows([event.data.project_id]);
+    event.component.selectRows([event.data.contact_id]);
   }
 
   private getGridProjectContentByLoadOption(loadOptions) {
@@ -588,41 +588,43 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
           data: [],
           totalCount: 0
         });
-      }
-      // const findProjects = this.selectedUserId === 'all-users'
-      //   ? this.apiService.findProjectsByCustomerId(this.dataStore.currentUser['customer_id'], this.dataStore.currentCustomer['customer_timezone'] || 'eastern', this.projectViewTypeSelected)
-      //   : this.apiService.findProjectsByUserId(this.selectedUserId, this.selectedCustomerId, this.dataStore.currentCustomer['customer_timezone'] || 'eastern', this.projectViewTypeSelected);
-       // const findDataViewFieldSettings = this.apiService.findDataViewFieldSettings(this.projectViewTypeSelected);
-      // const currentOfficeId = this.dataStore.currentUser['customer_office_id'];
+      }  
       this.source_company_id =this.dataStore.currentCompany.company_id;
-      const findProjects= this.myCalenderApi.findProjectList(this.source_company_id); 
+      this.customer_id =this.dataStore.currentCompany.customer_id;
+      this.detail_level="all"
+      const params: any = {
+        company_id:this.source_company_id,
+        customer_id:this.customer_id,
+        detail_level:this.detail_level
+      };           
+      debugger      
+      const findProjects= this.myCalenderApi.findCompanyContact(this.customer_id, this.dataStore.currentCompany.company_id); 
       Promise.all([findProjects])
         .then(([projects, dataViewFieldSettings]) =>  {
           debugger
           console.log("Projects",projects);
+          console.log("dataViewFieldSettings",dataViewFieldSettings);
           this.projectGridContent = projects as any[];
           this.projectGridContentLoaded = true;
           if (!this.projectViewTypeSelected) {
             this.projectGridColumns = [
-              { dataField: 'project_id', dataType: 'number', caption: 'Project Id', width: 250, visible: false, allowEditing: false },
-              { dataField: 'project_name', caption: 'Project Name', width: 400, minWidth: 250, allowEditing: true },
-              { dataField: 'project_number', caption: 'Project Number', minWidth: 150, allowEditing: false },
-              { dataField: 'project_admin_user_fullname', caption: 'Admin User', minWidth: 150, allowEditing: false },
-               { dataField: 'project_bid_datetime', caption: 'Bid Date/Time', minWidth: 150, cellTemplate: 'dateCell', editCellTemplate: 'dateTimeEditor', allowEditing: false },
-              { dataField: 'project_state', caption: 'City/State', width: 150, minWidth: 100, allowEditing: false },
-              { dataField: 'project_assigned_office_name', caption: 'Office', width: 150, minWidth: 100, editCellTemplate: 'projectAssignedOfficeNameEditor', allowEditing: true },
-              { dataField: 'create_datetime', caption: 'Create Date', width: 180, minWidth: 150, dataType: 'datetime', cellTemplate: 'dateCell', allowEditing: false },
-              { dataField: 'project_stage', caption: 'Stage', width: 100, minWidth: 100, allowEditing: true, editCellTemplate: 'projectStageEditor' },             
+              { dataField: 'contact_id', dataType: 'number', caption: 'Contact Id', width: 250, visible: false, allowEditing: false },
+              { dataField: 'contact_firstname', caption: 'Name', width: 400, minWidth: 250, allowEditing: true },
+              { dataField: 'contact_city', caption: 'City', width: 400, minWidth: 250, allowEditing: true },
+              { dataField: 'contact_mobile_phone', caption: 'Mobile', width: 400, minWidth: 250, allowEditing: true },
+              { dataField: 'contact_email', caption: 'Email', width: 400, minWidth: 250, allowEditing: true },
+              { dataField: 'contact_phone', caption: 'Office Phone', width: 400, minWidth: 250, allowEditing: true },    
+              { dataField: 'edit_datetime', caption: 'Last Activity Date', width: 400, minWidth: 250, allowEditing: true },    
+              { dataField: 'contact_status', caption: 'Lead Status', width: 400, minWidth: 250, allowEditing: true },                    
             ];
           } else {
             const newGridColumnList = [];
             const editingAllowedColumns = [
-              'project_name', 'project_bid_datetime', 'auto_update_status', 
-              'project_stage', 'project_timezone', 'project_contract_type', 'project_segment', 'project_building_type', 'project_labor_requirement',
-              'project_value', 'project_size', 'project_construction_type', 'project_award_status', 'project_assigned_office_name',
-              'project_number'
+              'contact_firstname', 'project_number'
+              
             ];
             if(dataViewFieldSettings != undefined && dataViewFieldSettings != null ){
+              debugger
             (dataViewFieldSettings as any[]).forEach((viewFieldSetting) => {
               const newGridColumn = {
                 dataField: viewFieldSetting.data_view_field_name,
@@ -664,20 +666,21 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
                   newGridColumn['cellTemplate'] = 'projectAdminUserEmailCell';
                   newGridColumn['editCellTemplate'] = 'projectAdminUserEmailEditor';
                   break;
-                case 'project_assigned_office_name': newGridColumn['editCellTemplate'] = 'projectAssignedOfficeNameEditor'; break;
-                case 'auto_update_status': newGridColumn['editCellTemplate'] = 'autoUpdateStatusEditor'; break;
-                case 'project_stage': newGridColumn['editCellTemplate'] = 'projectStageEditor'; break;
-                case 'project_timezone': newGridColumn['editCellTemplate'] = 'projectTimezoneEditor'; break;
-                case 'project_contract_type': newGridColumn['editCellTemplate'] = 'projectContractTypeEditor'; break;
-                case 'project_segment': newGridColumn['editCellTemplate'] = 'projectSegmentEditor'; break;
-                case 'project_building_type': newGridColumn['editCellTemplate'] = 'projectBuildingTypeEditor'; break;
-                case 'project_labor_requirement': newGridColumn['editCellTemplate'] = 'projectLaborRequirementEditor'; break;
-                case 'project_construction_type': newGridColumn['editCellTemplate'] = 'projectConstructionTypeEditor'; break;
-                case 'project_award_status': newGridColumn['editCellTemplate'] = 'projectAwardStatusEditor'; break;
+                // case 'project_assigned_office_name': newGridColumn['editCellTemplate'] = 'projectAssignedOfficeNameEditor'; break;
+                // case 'auto_update_status': newGridColumn['editCellTemplate'] = 'autoUpdateStatusEditor'; break;
+                // case 'project_stage': newGridColumn['editCellTemplate'] = 'projectStageEditor'; break;
+                // case 'project_timezone': newGridColumn['editCellTemplate'] = 'projectTimezoneEditor'; break;
+                // case 'project_contract_type': newGridColumn['editCellTemplate'] = 'projectContractTypeEditor'; break;
+                // case 'project_segment': newGridColumn['editCellTemplate'] = 'projectSegmentEditor'; break;
+                // case 'project_building_type': newGridColumn['editCellTemplate'] = 'projectBuildingTypeEditor'; break;
+                // case 'project_labor_requirement': newGridColumn['editCellTemplate'] = 'projectLaborRequirementEditor'; break;
+                // case 'project_construction_type': newGridColumn['editCellTemplate'] = 'projectConstructionTypeEditor'; break;
+                // case 'project_award_status': newGridColumn['editCellTemplate'] = 'projectAwardStatusEditor'; break;
               }
 
               newGridColumnList.push(newGridColumn);
             });
+            
           }
 
             this.projectGridColumns = newGridColumnList;
@@ -691,7 +694,7 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
         })
         .catch((error) => {
           console.log('Load Error', error);
-          this.notificationService.error('Error', error, { timeOut: 3000, showProgressBar: false });
+          this.notificationService.error('Error fgd', error, { timeOut: 3000, showProgressBar: false });
           this.projectGridContent = [];
           this.projectGridContentLoaded = false;
           return resolve({
@@ -705,7 +708,7 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
   gridProjectUpdateAction(key, values) {
     return new Promise((resolve, reject) => {
       try {
-        const updateIndex = this.projectGridContent.findIndex((project) => project.project_id === key);
+        const updateIndex = this.projectGridContent.findIndex((project) => project.contact_id === key);
         if ('project_name' in values) {
           const validProjectName = this.validationService.validateProjectName(values['project_name']);
           if (validProjectName.length === 0) {
@@ -1008,7 +1011,7 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
     });
   }
 
-  /* Toolbar Search Action */
+
   toolbarSearchAction(event) {
     this.searchText = event.value.toLowerCase();
     if (this.projectGrid && this.projectGrid.instance) {
@@ -1016,26 +1019,26 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
     }
   }
 
-  /* Create Project */
+
   toolbarAddProjectAction() {
     this.addProjectModal.initialize(this);
   }
 
-  /* View project details */
+
   toolbarViewProjectAction() {
     const { selectedRowKeys } = this.projectGrid;
     if (selectedRowKeys.length === 0) {
-      this.notificationService.error('No Selection', 'Please select one project!', { timeOut: 3000, showProgressBar: false });
+      this.notificationService.error('No Selection', 'Please select one Contact!', { timeOut: 3000, showProgressBar: false });
       return;
     } else if (selectedRowKeys.length > 1) {
       this.notificationService.error('Multiple Selection', 'Please select just one project!', { timeOut: 3000, showProgressBar: false });
       return;
     }
-    const selectedRows = this.projectGridContent.filter(({ project_id: projectId }) => selectedRowKeys.includes(projectId));
-    window.open(`/#/customer-portal/view-project/${selectedRows[0].project_id}`, '_blank');
+    const selectedRows = this.projectGridContent.filter(({ contact_id: projectId }) => selectedRowKeys.includes(projectId));
+    window.open(`/#/customer-portal/view-project/${selectedRows[0].contact_id}`, '_blank');
   }
 
-  /* View Project Documents through doc viewer */
+  
   toolbarViewProjectDocumentsAction() {
     const { selectedRowKeys } = this.projectGrid;
     if (selectedRowKeys.length === 0) {
@@ -1046,9 +1049,9 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    const selectedRows = this.projectGridContent.filter(({ project_id: projectId }) => selectedRowKeys.includes(projectId));
+    const selectedRows = this.projectGridContent.filter(({ contact_id: projectId }) => selectedRowKeys.includes(projectId));
     const { currentUser: { user_id: userId } } = this.dataStore;
-    window.open(`${window['env'].docViewerBaseUrl}?project_id=${selectedRows[0].project_id}&user_id=${userId}`, '_blank');
+    window.open(`${window['env'].docViewerBaseUrl}?contact_id=${selectedRows[0].contact_id}&user_id=${userId}`, '_blank');
   }
 
   /* Edit Project */
@@ -1062,7 +1065,7 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    const selectedRows = this.projectGridContent.filter(({ project_id: projectId }) => selectedRowKeys.includes(projectId));
+    const selectedRows = this.projectGridContent.filter(({ contact_id: projectId }) => selectedRowKeys.includes(projectId));
     this.editProjectModal.initialize(this, selectedRows[0]);
   }
 
@@ -1070,11 +1073,11 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
   toolbarDeleteProjectAction() {
     const { selectedRowKeys } = this.projectGrid;
     if (selectedRowKeys.length === 0) {
-      this.notificationService.error('No Selection', 'Please select at least one project!', { timeOut: 3000, showProgressBar: false });
+      this.notificationService.error('No Selection', 'Please select at least one contact!', { timeOut: 3000, showProgressBar: false });
       return;
     }
 
-    const selectedRows = this.projectGridContent.filter(({ project_id: projectId }) => selectedRowKeys.includes(projectId));
+    const selectedRows = this.projectGridContent.filter(({ contact_id: projectId }) => selectedRowKeys.includes(projectId));
     const selectedProjects = selectedRows.filter(project => project.status !== 'deleted' && project.status !== 'archived');
 
     this.removeProjectModal.initialize(selectedProjects, true, this);
@@ -1084,11 +1087,11 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
   toolbarArchiveProjectAction() {
     const { selectedRowKeys } = this.projectGrid;
     if (selectedRowKeys.length === 0) {
-      this.notificationService.error('No Selection', 'Please select at least one project!', { timeOut: 3000, showProgressBar: false });
+      this.notificationService.error('No Selection', 'Please select at least one contact!', { timeOut: 3000, showProgressBar: false });
       return;
     }
 
-    const selectedRows = this.projectGridContent.filter(({ project_id: projectId }) => selectedRowKeys.includes(projectId));
+    const selectedRows = this.projectGridContent.filter(({ contact_id: projectId }) => selectedRowKeys.includes(projectId));
     const selectedProjects = selectedRows.filter(project => project.status !== 'deleted' && project.status !== 'archived');
 
     this.removeProjectModal.initialize(selectedProjects, false, this);
@@ -1106,7 +1109,7 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    const selectedRows = this.projectGridContent.filter(({ project_id: projectId }) => selectedRowKeys.includes(projectId));
+    const selectedRows = this.projectGridContent.filter(({ contact_id: projectId }) => selectedRowKeys.includes(projectId));
     if (selectedRows[0].status === 'deleted' || selectedRows[0].status === 'archived') {
       this.notificationService.error('Error', 'You cannot add submission to deleted/archived project!', { timeOut: 3000, showProgressBar: false });
       return;
@@ -1126,8 +1129,8 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    const selectedRows = this.projectGridContent.filter(({ project_id: projectId }) => selectedRowKeys.includes(projectId));
-    this.apiService.getPublishedLink(selectedRows[0].project_id)
+    const selectedRows = this.projectGridContent.filter(({ contact_id: projectId }) => selectedRowKeys.includes(projectId));
+    this.apiService.getPublishedLink(selectedRows[0].contact_id)
       .then((url: string) => {
         window.open(url, '_blank');
       })
@@ -1158,7 +1161,7 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    const selectedRows = this.projectGridContent.filter(({ project_id: projectId }) => selectedRowKeys.includes(projectId));
+    const selectedRows = this.projectGridContent.filter(({ contact_id: projectId }) => selectedRowKeys.includes(projectId));
     this.transactionLogsModal.initialize(selectedRows[0]);
   }
 
@@ -1179,7 +1182,7 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
     }
 
     const columnName = event['colDef']['field'];
-    const projectId = event['data']['project_id'];
+    const projectId = event['data']['contact_id'];
     const newValue = event['newValue'];
 
     // update project
@@ -1197,7 +1200,7 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
    * @param event
    */
   onRowDoubleClicked(event: any) {
-    window.open(`/#/customer-portal/view-project/${event['data']['project_id']}`, '_blank');
+    window.open(`/#/customer-portal/view-project/${event['data']['contact_id']}`, '_blank');
   }
 
   onRefresh() {
@@ -1218,7 +1221,7 @@ debugger;
       e.row.data.project_bid_datetime = null;
     }
 
-    e.component.selectRows([e.row.data.project_id]);
+    e.component.selectRows([e.row.data.contact_id]);
 
     if (e.row && e.row.rowType === 'data') {   // e.items can be undefined
       if (!e.items) { e.items = []; }
@@ -1227,7 +1230,7 @@ debugger;
       e.items.push(
         {
           type: 'normal',
-          text: 'View Project',
+          text: 'View Contact',
           onItemClick: () => this.toolbarViewProjectAction()
         },
         {
@@ -1305,11 +1308,11 @@ debugger;
       return;
     } else if (selectedRowKeys.length == 1) {
 
-      const selectedRows = this.projectGridContent.filter(({ project_id: projectId }) => selectedRowKeys.includes(projectId));
+      const selectedRows = this.projectGridContent.filter(({ contact_id: projectId }) => selectedRowKeys.includes(projectId));
 
       // const { currentUser: { user_id: userId } } = this.dataStore;
       console.log("selectedRows :", selectedRows);
-      // window.open(`/#/customer-portal/view-project/${selectedRows[0].project_id}`, '_blank');
+      // window.open(`/#/customer-portal/view-project/${selectedRows[0].contact_id}`, '_blank');
       if (selectedRows && selectedRows[0]['source_url']) {
 
         window.open(selectedRows[0]['source_url'], '_blank');
@@ -1322,5 +1325,6 @@ debugger;
     }
 
   }
+
 
 }

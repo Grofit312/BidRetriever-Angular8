@@ -7,7 +7,6 @@ import { NgSelectModule } from "@ng-select/ng-select";
 import { NgxSpinnerModule } from "ngx-spinner";
 import { AmChartsModule } from "@amcharts/amcharts3-angular";
 
-import { CompanyAnalyticsRoutingModule } from "./company-analytics-routing.module";
 import { DashboardComponent } from "./components/dashboard/dashboard.component";
 import { ChartCardComponent } from "./components/chart-card/chart-card.component";
 import { ManageDashboardComponent } from "./modals/manage-dashboard/manage-dashboard.component";
@@ -36,8 +35,20 @@ import { BarChartComponent } from "./components/charts/bar-chart/bar-chart.compo
     NgSelectModule,
     NgxSpinnerModule,
     AmChartsModule,
+  ],
+  exports: [
+    DashboardComponent,
+    ChartCardComponent,
+    ManageDashboardComponent,
+    ManageDashboardPanelComponent,
 
-    CompanyAnalyticsRoutingModule,
+    AreaChartComponent,
+    PieChartComponent,
+    BarChartComponent,
+    NgbModule,
+    NgSelectModule,
+    NgxSpinnerModule,
+    AmChartsModule,
   ],
 })
-export class CompanyAnalyticsModule {}
+export class AnalyticsModule {}

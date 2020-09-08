@@ -1,73 +1,89 @@
-import { Routes, RouterModule } from '@angular/router';
-import { CustomerPortalComponent } from 'app/customer-portal/customer-portal.component';
-import { AuthenticationGuard } from 'app/providers/auth.guard';
-import { MySettingsComponent } from 'app/customer-portal/my-settings/my-settings.component';
-import { MyProjectsComponent } from 'app/customer-portal/my-projects/my-projects.component';
-import { MyCompaniesComponent } from 'app/customer-portal/my-companies/my-companies.component';
-import { NotificationViewerComponent } from 'app/customer-portal/notification-viewer/notification-viewer.component';
-import { SubmissionsComponent } from 'app/customer-portal/submissions/submissions.component';
-import { DocViewerComponent } from './doc-viewer/doc-viewer.component';
-import { MyCalendarComponent } from './my-calendar/my-calendar.component';
-import { SharedProjectsComponent } from './shared-projects/shared-projects.component';
-import { ModuleWithProviders } from '@angular/core';
+import { ModuleWithProviders } from "@angular/core";
+import { Routes, RouterModule } from "@angular/router";
+
+import { CustomerPortalComponent } from "app/customer-portal/customer-portal.component";
+import { AuthenticationGuard } from "app/providers/auth.guard";
+import { MySettingsComponent } from "app/customer-portal/my-settings/my-settings.component";
+import { MyProjectsComponent } from "app/customer-portal/my-projects/my-projects.component";
+import { MyCompaniesComponent } from "app/customer-portal/my-companies/my-companies.component";
+import { SystemAnalyticsComponent } from "app/customer-portal/system-analytics/system-analytics.component";
+import { NotificationViewerComponent } from "app/customer-portal/notification-viewer/notification-viewer.component";
+import { SubmissionsComponent } from "app/customer-portal/submissions/submissions.component";
+
+import { DocViewerComponent } from "./doc-viewer/doc-viewer.component";
+import { MyCalendarComponent } from "./my-calendar/my-calendar.component";
+import { SharedProjectsComponent } from "./shared-projects/shared-projects.component";
 const routes: Routes = [
   {
-    path: '',
-    component: CustomerPortalComponent,	
+    path: "",
+    component: CustomerPortalComponent,
     canActivate: [AuthenticationGuard],
     children: [
       {
-        path: 'my-projects',
-        component: MyProjectsComponent
+        path: "my-projects",
+        component: MyProjectsComponent,
       },
       {
-        path: 'my-companies',
-        component: MyCompaniesComponent
+        path: "my-companies",
+        component: MyCompaniesComponent,
       },
       {
-        path: 'shared-projects',
-        component: SharedProjectsComponent
+        path: "shared-projects",
+        component: SharedProjectsComponent,
       },
       {
-        path: 'my-calendar',
-        component: MyCalendarComponent
+        path: "my-calendar",
+        component: MyCalendarComponent,
       },
       {
-        path: 'my-settings',
-        component: MySettingsComponent
+        path: "my-settings",
+        component: MySettingsComponent,
       },
       {
-        path: 'system-settings',
-        loadChildren: () => import('./system-settings/system-settings.module').then(m => m.SystemSettingsModule)
+        path: "system-settings",
+        loadChildren: () =>
+          import("./system-settings/system-settings.module").then(
+            (m) => m.SystemSettingsModule
+          ),
       },
       {
-        path: 'all-submissions',
+        path: "all-submissions",
         component: SubmissionsComponent,
       },
       {
-        path: 'view-project/:project_id',
-        loadChildren: () => import('./view-project/view-project.module').then(m => m.ViewProjectModule)
+        path: "system-analytics",
+        component: SystemAnalyticsComponent,
       },
       {
-        path: 'view-company/:company_id',
-        loadChildren: () => import('./view-company/view-company.module').then(m => m.ViewCompanyModule)
+        path: "view-project/:project_id",
+        loadChildren: () =>
+          import("./view-project/view-project.module").then(
+            (m) => m.ViewProjectModule
+          ),
       },
       {
-        path: 'notification-viewer',
-        component: NotificationViewerComponent
+        path: "view-company/:company_id",
+        loadChildren: () =>
+          import("./view-company/view-company.module").then(
+            (m) => m.ViewCompanyModule
+          ),
       },
       {
-        path: 'doc-viewer/:project_id/:folder_id/:doc_id/:comparison',
-        component: DocViewerComponent
+        path: "notification-viewer",
+        component: NotificationViewerComponent,
       },
-      
       {
-        path: '',
-        redirectTo: 'my-projects'
+        path: "doc-viewer/:project_id/:folder_id/:doc_id/:comparison",
+        component: DocViewerComponent,
       },
-     
 
-    ]
-  }
+      {
+        path: "",
+        redirectTo: "my-projects",
+      },
+    ],
+  },
 ];
-export const customerPortalRouting: ModuleWithProviders = RouterModule.forChild(routes);
+export const customerPortalRouting: ModuleWithProviders = RouterModule.forChild(
+  routes
+);

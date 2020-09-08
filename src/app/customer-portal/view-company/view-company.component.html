@@ -53,9 +53,24 @@
           Projects
         </a>
       </li>
-      <li class="nav-item">
+
+       <li class="nav-item">
         <a
           (click)="onClickTab(4)"
+          class="nav-link"
+          id="tab-employees"
+          data-toggle="tab"
+          role="tab"
+          href="#employees"
+          aria-controls="profile"
+          aria-selected="false"
+        >
+          Employees
+        </a>
+      </li>
+      <li class="nav-item">
+        <a
+          (click)="onClickTab(5)"
           class="nav-link"
           id="tab-analytics"
           data-toggle="tab"

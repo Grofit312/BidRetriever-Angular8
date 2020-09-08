@@ -31,14 +31,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
   selectedDashboardPanelId: string = null;
   dashboardPanels: DashboardPanel[];
 
+  public analyticType;
+
   destroy$: Subject<any> = new Subject();
 
   constructor(
-    private dashboardService: DashboardService,
-    private dataStore: DataStore,
+    public dashboardService: DashboardService,
+    public dataStore: DataStore,
 
-    private modal: NgbModal,
-    private spinner: NgxSpinnerService
+    public modal: NgbModal,
+    public spinner: NgxSpinnerService
   ) {}
 
   ngOnInit(): void {

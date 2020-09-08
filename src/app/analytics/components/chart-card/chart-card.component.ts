@@ -29,6 +29,7 @@ export class ChartCardComponent implements OnInit, OnDestroy {
   manageDashboardPanelTemplate: TemplateRef<any>;
 
   @Input() dashboardPanelId: string;
+  @Input() analyticType: string;
   @Output() remove: EventEmitter<any> = new EventEmitter();
 
   panelData: DashboardPanel;
@@ -47,9 +48,11 @@ export class ChartCardComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    console.log(this.dataStore);
     this.dashboardService
-      .findAnalyticDatasources(this.dataStore.currentUser.customer_id)
+      .findAnalyticDatasources(
+        this.dataStore.currentUser.customer_id,
+        this.analyticType
+      )
       .pipe(takeUntil(this.destroy$))
       .subscribe((analyticDatasources) => {
         this.dataSourceTypes = analyticDatasources.map((item) => ({
@@ -132,7 +135,6 @@ export class ChartCardComponent implements OnInit, OnDestroy {
           valueField: "total_stage",
           titleField: "project_stage",
         };
-        console.log(this.chartConfig);
       });
   }
 }

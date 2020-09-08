@@ -112,10 +112,16 @@ export class ViewCompanyComponent implements OnInit {
         break;
       case 4:
         this.router.navigate(
-          [`/customer-portal/view-company/${companyId}/analytics`],
+          [`/customer-portal/view-company/${companyId}/employees`],
           { queryParams: this.queryParams }
         );
         break;
+        case 5:
+          this.router.navigate(
+            [`/customer-portal/view-company/${companyId}/analytics`],
+            { queryParams: this.queryParams }
+          );
+          break;
     }
   }
 

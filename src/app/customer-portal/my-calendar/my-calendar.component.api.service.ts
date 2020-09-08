@@ -245,7 +245,32 @@ export class MyCalendarApi {
     });
   }
 
+
+  public findCompanyContact(customer_id: any, company_id: any) {
+    debugger
+    return new Promise((resolve, reject) => {
+      axios.get(`${window['env'].apiBaseUrl}/FindContacts?customer_id=${customer_id}&company_id=${company_id}&detail_level=all`, {
+        validateStatus: (status) => {
+          return status === 200 || status === 400
+        }
+      })
+        .then(res => {
+          debugger
+          if (res.status === 200) {
+            resolve(res.data);
+          } else {
+            reject(res.data.status);
+          }
+        })
+        .catch(err => {
+          console.log(err);
+          reject(err);
+        });
+    });
+  }
+
   public findProjects(customer_id: string) {
+    debugger
     return new Promise((resolve, reject) => {
       axios.get(window['env'].apiBaseUrl + `/FindProjects?customer_id=${customer_id}&detail_level=admin`, {
         validateStatus: (status) => {

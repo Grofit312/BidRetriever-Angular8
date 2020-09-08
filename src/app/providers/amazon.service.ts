@@ -40,7 +40,7 @@ export class AmazonService {
     tasks.push(axios.get(`${window['env'].apiBaseUrl}/GetSystemSettings?system_setting_id=AWS_ACCESS_KEY_ID`));
     tasks.push(axios.get(`${window['env'].apiBaseUrl}/GetSystemSettings?system_setting_id=AWS_SECRET_ACCESS_KEY`));
     tasks.push(axios.get(`${window['env'].apiBaseUrl}/GetSystemSettings?system_setting_id=AWS_REGION`));
-    tasks.push(axios.get(`${window['env'].apiBaseUrl}/GetSystemSettings?system_setting_id=920_LAMBDA_FUNCTION_NAME`));
+    tasks.push(axios.get(`${window['env'].apiBaseUrl}/GetSystemSettings?system_setting_id=BR_TEMP_VAULT`));
     tasks.push(axios.get(`${window['env'].apiBaseUrl}/GetSystemSettings?system_setting_id=BR_PERM_VAULT`));
     tasks.push(axios.get(`${window['env'].apiBaseUrl}/GetSystemSettings?system_setting_id=BR_WIPAPI_ENDPOINT`));
       debugger

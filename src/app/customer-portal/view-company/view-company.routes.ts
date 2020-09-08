@@ -4,6 +4,8 @@ import { ViewCompanyComponent } from "app/customer-portal/view-company/view-comp
 import { CompanyOverviewComponent } from "./company-overview/company-overview.component";
 import { CompanyNotesComponent } from "./company-notes/company-notes.component";
 import { CompanyProjectsComponent } from "./company-projects/company-projects.component";
+import { CompanyAnalyticsComponent } from "./company-analytics/company-analytics.component";
+import { CompanyEmployeesComponent } from "./company-employees/company-employees.component";
 
 const routes: Routes = [
   {
@@ -23,11 +25,12 @@ const routes: Routes = [
         component: CompanyProjectsComponent,
       },
       {
+        path: "employees",
+        component: CompanyEmployeesComponent,
+      },
+      {
         path: "analytics",
-        loadChildren: () =>
-          import("./company-analytics/company-analytics.module").then(
-            (m) => m.CompanyAnalyticsModule
-          ),
+        component: CompanyAnalyticsComponent,
       },
     ],
   },

@@ -182,12 +182,14 @@ export class DashboardService {
   }
 
   findAnalyticDatasources(
-    customerId: string
+    customerId: string,
+    analyticDatasourceType: string
   ): Observable<AnalyticDatasource[]> {
     const url = `${window["env"].apiBaseUrl}/AnalyticDatasources/FindAnalyticDatasources`;
 
     let params = new HttpParams();
     params = params.append("customer_id", customerId);
+    params = params.append("analytic_datasource_type", analyticDatasourceType);
 
     return this.http.get<AnalyticDatasource[]>(url, { params });
   }

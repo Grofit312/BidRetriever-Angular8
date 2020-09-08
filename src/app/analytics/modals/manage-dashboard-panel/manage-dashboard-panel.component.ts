@@ -27,6 +27,7 @@ import {
   styleUrls: ["./manage-dashboard-panel.component.scss"],
 })
 export class ManageDashboardPanelComponent implements OnInit, OnDestroy {
+  @Input() analyticType;
   @Input() dashboardId;
   @Input() dashboardPanelId;
   @Output() closeModal: EventEmitter<any> = new EventEmitter();
@@ -69,7 +70,10 @@ export class ManageDashboardPanelComponent implements OnInit, OnDestroy {
 
     this.spinner.show("spinner");
     this.dashboardService
-      .findAnalyticDatasources(this.dataStore.currentUser.customer_id)
+      .findAnalyticDatasources(
+        this.dataStore.currentUser.customer_id,
+        this.analyticType
+      )
       .pipe(takeUntil(this.destroy$))
       .subscribe((analyticDatasources) => {
         this.spinner.hide("spinner");
