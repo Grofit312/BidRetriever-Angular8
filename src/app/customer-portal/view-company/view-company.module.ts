@@ -25,8 +25,6 @@ import { ViewCompanyComponent } from "app/customer-portal/view-company/view-comp
 import { ViewCompanyApi } from "app/customer-portal/view-company/view-company.api.service";
 import { NotesApi } from "app/customer-portal/view-company/notes.api.service";
 import { SharedModule } from "app/shared/shared.module";
-import { AuthApi } from "app/providers/auth.api.service";
-import { ValidationService } from "app/providers/validation.service";
 import { AnalyticsModule } from "app/analytics/analytics.module";
 
 import { ViewCompanyRouter } from "./view-company.routes";

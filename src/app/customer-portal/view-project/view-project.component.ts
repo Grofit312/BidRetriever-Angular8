@@ -35,7 +35,7 @@ export class ViewProjectComponent implements OnInit {
   }
 
   ngOnInit() {  
-    debugger     
+         
     this.getDataStore();
     this.dataStore.showPortalHeader = false;   
     if (this.dataStore.currentUser) {
@@ -59,7 +59,7 @@ export class ViewProjectComponent implements OnInit {
   }
 
   load() {
-    debugger
+    
     this.spinner.show();
     const projectId = this.activatedRoute.snapshot.params['project_id'];
     this.apiService.getProject(projectId,

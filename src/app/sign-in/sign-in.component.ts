@@ -32,7 +32,7 @@ export class SignInComponent implements OnInit {
   }
 
   onLogin () {
-    debugger
+    
     this.authApiService.login(this.email, this.password)
       .then((res: any) => {
         const user = res.user;

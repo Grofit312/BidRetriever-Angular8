@@ -118,14 +118,46 @@ export class ProjectNotificationsComponent implements OnInit {
       this.notificationService.error('Multiple Selection', 'Please select just one notification!', { timeOut: 3000, showProgressBar: false });
       return;
     }
-
-    window.open(`/#/customer-portal/notification-viewer`, '_blank');
+        window.open(`/#/customer-portal/notification-viewer`, '_blank');
   }
 
   onNewNotification() {
 
-  }
+  } 
 
+  addNotificationGridMenuItems(e) {
+        if (!e.row) { return; }
+    
+        if (!e.row.data.project_bid_datetime) {
+          e.row.data.project_bid_datetime = null;
+        }
+    
+        e.component.selectRows([e.row.data.project_id]);
+    
+        if (e.row && e.row.rowType === 'data') {   // e.items can be undefined
+          if (!e.items) { e.items = []; }
+    
+          // Add a custom menu item
+          // e.items.push(
+          //   {
+          //     type: 'normal',
+          //     text: 'View Notification',
+          //     onItemClick: () => this.toolbarViewProjectAction()
+          //   },
+          //   {
+          //     type: 'normal',
+          //     text: 'New Notification',
+          //     onItemClick: () => this.toolbarAddProjectAction()
+          //   },
+          //   {
+          //     type: 'normal',
+          //     text: 'Show Preview',
+          //     onItemClick: () => this.toolbarViewProjectDocumentsAction()
+          //   },         
+          // );
+        }
+        return e;
+      }
   onGridSelectionChanged(event: any) {
     const selectedRows = this.grid.api.getSelectedRows();
 

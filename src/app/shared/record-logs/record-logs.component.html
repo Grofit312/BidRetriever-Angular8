@@ -1,0 +1,13 @@
+<dx-scroll-view #logScrollView
+                [scrollByContent]="true"
+                [scrollByThumb]="true">
+  <div class="record-logs" [innerHTML]="log"></div>
+</dx-scroll-view>
+
+<dx-load-panel #loadPanel
+               shadingColor="rgba(0, 0, 0, .4)"
+               [(visible)]="logIndicatorVisible"
+               [showIndicator]="true"
+               [shading]="true"
+               [closeOnOutsideClick]="false">
+</dx-load-panel>

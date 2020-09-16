@@ -1001,7 +1001,7 @@ this.currentEmail = event.data.company_email;
   }
 
   gridCompanyUpdateAction(key, values) {
-    debugger;
+    ;
     console.log('gridCompanyUpdateAction :', values);
     console.log('keykey :', key);
     return new Promise((resolve, reject) => {
@@ -1017,7 +1017,7 @@ this.currentEmail = event.data.company_email;
           if (validCompanyName.length === 0) {
             return reject('Company name cannot be empty.');
           } else {
-            debugger;
+            ;
             this.apiService
               .updateCompany(key, {
                 company_name: validCompanyName,
@@ -1064,7 +1064,7 @@ this.currentEmail = event.data.company_email;
           const validCompanyDomain = values['company_domain'];
           // const validCompanyEmail = this.validationService.validateCompanyName(values['company_email']);
          
-            debugger;
+            ;
             this.apiService
               .updateCompany(key, {
                 company_domain: validCompanyDomain,
@@ -1092,7 +1092,7 @@ this.currentEmail = event.data.company_email;
           const validCompanyEmail = values['company_email'];
           // const validCompanyEmail = this.validationService.validateCompanyName(values['company_email']);
         
-            debugger;
+            ;
             this.apiService
               .updateCompany(key, {
                 company_email: validCompanyEmail,
@@ -1119,7 +1119,7 @@ this.currentEmail = event.data.company_email;
           const validCompanyEmployeeAddress = values['company_address1'];
           // const validCompanyEmail = this.validationService.validateCompanyName(values['company_email']);
          
-            debugger;
+            ;
             this.apiService
               .updateCompany(key, {
                 company_address1: validCompanyEmployeeAddress,
@@ -1147,7 +1147,7 @@ this.currentEmail = event.data.company_email;
           const validCompanyEmployeeAddress = values['company_address2'];
           // const validCompanyEmail = this.validationService.validateCompanyName(values['company_email']);
          
-            debugger;
+            ;
             this.apiService
               .updateCompany(key, {
                 company_address2: validCompanyEmployeeAddress,
@@ -1175,7 +1175,7 @@ this.currentEmail = event.data.company_email;
           const validCompanyEmployeeNumber = values['company_employee_number'];
           // const validCompanyEmail = this.validationService.validateCompanyName(values['company_email']);
           
-            debugger;
+            ;
             this.apiService
               .updateCompany(key, {
                 company_employee_number: validCompanyEmployeeNumber,
@@ -1204,7 +1204,7 @@ this.currentEmail = event.data.company_email;
           const validCompanyPhone = values['company_phone'];
           // const validCompanyEmail = this.validationService.validateCompanyName(values['company_email']);
          
-            debugger;
+            ;
             this.apiService
               .updateCompany(key, {
                 company_phone: validCompanyPhone,
@@ -1232,7 +1232,7 @@ this.currentEmail = event.data.company_email;
           const validCompanyRevenue = values['company_revenue'];
           // const validCompanyEmail = this.validationService.validateCompanyName(values['company_email']);
          
-            debugger;
+            ;
             this.apiService
               .updateCompany(key, {
                 company_revenue: validCompanyRevenue,
@@ -1260,7 +1260,7 @@ this.currentEmail = event.data.company_email;
           const validCompanyType = values['company_type'];
           // const validCompanyEmail = this.validationService.validateCompanyName(values['company_email']);
          
-            debugger;
+            ;
             this.apiService
               .updateCompany(key, {
                 company_type: validCompanyType,
@@ -1290,7 +1290,7 @@ this.currentEmail = event.data.company_email;
           if (validCompanyWebsite.length === 0) {
             return reject('Company Site cannot be empty.');
           } else {
-            debugger;
+            ;
             this.apiService
               .updateCompany(key, {
                 company_website: validCompanyWebsite,
@@ -1491,7 +1491,7 @@ this.currentEmail = event.data.company_email;
 
   /* View company details */
   toolbarViewCompanyAction() {
-    debugger;
+    ;
     const { selectedRowKeys } = this.companyGrid;
     console.log('CompanyId', selectedRowKeys);
     console.log('CompanyId', this.companyGrid);
@@ -1594,7 +1594,6 @@ this.currentEmail = event.data.company_email;
       );
       return;
     }
-
     const selectedRows = this.companyGridContent.filter(
       ({ company_id: companyId }) => selectedRowKeys.includes(companyId)
     );
@@ -1604,7 +1603,7 @@ this.currentEmail = event.data.company_email;
   /* Delete Company(s) */
   toolbarDeleteCompanyAction() {
     const { selectedRowKeys } = this.companyGrid;
-    if (selectedRowKeys.length === 0) {
+    if (selectedRowKeys.length === 0) { 
       this.notificationService.error(
         'No Selection',
         'Please select at least one company!',

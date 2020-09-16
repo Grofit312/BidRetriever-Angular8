@@ -23,17 +23,24 @@ const moment = require('moment');
 export class BidretrieverInternalComponent implements OnInit {
 
   @ViewChild('grid', { static: false }) grid;
-  @ViewChild('transactionLogsModal', { static: false }) transactionLogsModal;
 
   projectSubmissionIds = '';
   destinationId = '';
   sourceSystemTypes = [];
 
+  isLogModalShown = false;
+  selectedRoutine = '';
+  selectedProjectId = '';
+  selectedProjectName = '';
+  selectedSubmissionId = '';
+  selectedFileId = '';
+  selectedPrimaryKey = '';
+
   tableFilters = [
     { name: 'Not Completed', value: 'not-completed' },
     { name: 'All Status', value: 'all-status' },
     { name: 'Completed', value: 'completed' },
-    { name: 'Errored', value: 'errored' },
+    { name: 'Error', value: 'error' },
     { name: 'In Edit', value: 'in-edit' },
     { name: 'Processing', value: 'processing' },
     { name: 'Queued', value: 'queued' },
@@ -42,6 +49,9 @@ export class BidretrieverInternalComponent implements OnInit {
     { name: 'Scheduled Duplicated', value: 'scheduled-duplicated' }
   ];
   selectedTableFilter = 'not-completed';
+
+  selectedSubmissionFilter = '';
+  submissionFilters = [];
 
   columnDefs = [
     {
@@ -192,6 +202,10 @@ export class BidretrieverInternalComponent implements OnInit {
     this.projectsApi.getProjectSubmissions(projectId, 'all', '')
       .then((res: any[]) => {
         this.projectSubmissionIds = res.map(submission => submission['submission_id']).join(', ');
+        this.submissionFilters = res.map(({ submission_id, submission_name }) => ({
+          value: submission_id,
+          name: submission_name || submission_id,
+        }))
       })
       .catch(err => {
         this.notificationService.error('Error', err, { timeOut: 3000, showProgressBar: false });
@@ -300,9 +314,14 @@ export class BidretrieverInternalComponent implements OnInit {
       return;
     }
 
-    const { project_id, submission_id, doc_id } = selectedRecord;
+    this.selectedProjectId = this.dataStore.currentProject['project_id'];
+    this.selectedProjectName = this.dataStore.currentProject['project_name'];
+    this.selectedRoutine = selectedRecord['table_name'];
+    this.selectedSubmissionId = selectedRecord['submission_id'];
+    this.selectedFileId = selectedRecord['file_id'];
+    this.selectedPrimaryKey = selectedRecord['record_key'];
 
-    this.transactionLogsModal.initialize({ project_id }, { submission_id }, { doc_id });
+    this.isLogModalShown = true;
   }
 
   onRefresh() {
@@ -328,16 +347,26 @@ export class BidretrieverInternalComponent implements OnInit {
       this.rowData = [];
     }
 
+    this.rowData = this.originalRowData;
+
+    if (this.selectedSubmissionFilter) {
+      this.rowData = this.rowData.filter(({ submission_id }) => submission_id === this.selectedSubmissionFilter);
+    }
+
     switch (this.selectedTableFilter) {
       case 'not-completed':
-        this.rowData = this.originalRowData.filter(({ process_status }) => process_status !== 'completed');
+        this.rowData = this.rowData.filter(({ process_status }) => process_status !== 'completed');
         break;
       case 'all-status':
-        this.rowData = this.originalRowData;
+        this.rowData = this.rowData;
         break;
       default:
-        this.rowData = this.originalRowData.filter(({ process_status }) => process_status === this.selectedTableFilter);
+        this.rowData = this.rowData.filter(({ process_status }) => process_status === this.selectedTableFilter);
         break;
     }
+  }
+
+  logModalHiddenAction() {
+    this.isLogModalShown = false;
   }
 }

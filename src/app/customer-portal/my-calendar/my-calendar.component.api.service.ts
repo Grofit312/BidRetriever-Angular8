@@ -204,7 +204,7 @@ export class MyCalendarApi {
             if (res.data.length === 0) {
               reject('Project not found');
             } else {
-              debugger
+              
               resolve(res.data[0]);
             }
           } else {
@@ -231,7 +231,7 @@ export class MyCalendarApi {
             if (res.data.length === 0) {
               reject('Project not found');
             } else {
-              debugger
+              
               resolve(res.data);
             }
           } else {
@@ -247,7 +247,7 @@ export class MyCalendarApi {
 
 
   public findCompanyContact(customer_id: any, company_id: any) {
-    debugger
+    
     return new Promise((resolve, reject) => {
       axios.get(`${window['env'].apiBaseUrl}/FindContacts?customer_id=${customer_id}&company_id=${company_id}&detail_level=all`, {
         validateStatus: (status) => {
@@ -255,7 +255,7 @@ export class MyCalendarApi {
         }
       })
         .then(res => {
-          debugger
+          
           if (res.status === 200) {
             resolve(res.data);
           } else {
@@ -270,7 +270,7 @@ export class MyCalendarApi {
   }
 
   public findProjects(customer_id: string) {
-    debugger
+    
     return new Promise((resolve, reject) => {
       axios.get(window['env'].apiBaseUrl + `/FindProjects?customer_id=${customer_id}&detail_level=admin`, {
         validateStatus: (status) => {

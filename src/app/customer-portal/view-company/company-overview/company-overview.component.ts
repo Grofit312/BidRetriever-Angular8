@@ -77,13 +77,13 @@ export class CompanyOverviewComponent implements OnInit {
   }
 
   loadInfo() {
-    debugger;
+    ;
     this.loadMap();
     this.loadDates();
   }
 
   loadDates() {
-    debugger;
+    ;
     const companyDates = [
       {
         timestamp: this.dataStore.currentCompany["create_datetime"],
@@ -136,7 +136,7 @@ export class CompanyOverviewComponent implements OnInit {
   }
 
   onViewDocuments() {
-    debugger
+    
     const {
       currentUser: { user_id: userId },
     } = this.dataStore;
@@ -147,7 +147,7 @@ export class CompanyOverviewComponent implements OnInit {
   }
 
   onAddCompanyEvent() {
-    debugger
+    
     this.addEventModal.initialize(
       this,
       {

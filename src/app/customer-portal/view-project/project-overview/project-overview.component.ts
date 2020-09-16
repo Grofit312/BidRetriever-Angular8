@@ -81,7 +81,7 @@ export class ProjectOverviewComponent implements OnInit {
   }
 
   ngOnInit() {
-    debugger
+    
     
     console.log("DataStore", this.dataStore.currentProject);
     if (this.dataStore.currentProject) {
@@ -131,7 +131,7 @@ export class ProjectOverviewComponent implements OnInit {
   }
 
   loadDates() {
-    debugger
+    
     const projectDates = [
       {
         timestamp: this.dataStore.currentProject['create_datetime_origin'],
@@ -192,7 +192,7 @@ export class ProjectOverviewComponent implements OnInit {
   }
 
   onUpdateProject() {
-    debugger  
+      
 
     this.user_email = this.dataStore.currentProject.user_email;
     this.customer_id = this.dataStore.currentProject.customer_id;
@@ -204,7 +204,7 @@ export class ProjectOverviewComponent implements OnInit {
     this.source_password = this.dataStore.currentProject.source_password;
     this.viewProjectApi.getProjectSettings(this.project_id)
       .then((res: any[]) => {
-        debugger
+        
         this.destinationTypeId = res.find(setting => setting.setting_name === 'PROJECT_DESTINATION_TYPE_ID');
         this.destinationPath = res.find(setting => setting.setting_name === 'PROJECT_DESTINATION_PATH');
         this.destinationId = res.find(setting => setting.setting_name === 'PROJECT_DESTINATION_ID'); 

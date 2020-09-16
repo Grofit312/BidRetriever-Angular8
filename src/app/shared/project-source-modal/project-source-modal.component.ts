@@ -158,7 +158,7 @@ export class ProjectSourceModalComponent implements OnInit {
   }
 
   getCompanyList() {
-    debugger;
+    ;
     this.companyApi
       .findCompaniesByCustomerId( this.dataStore.currentCustomer["customer_id"],
         this.dataStore.currentCustomer["customer_timezone"] || "eastern", null)
@@ -176,7 +176,7 @@ export class ProjectSourceModalComponent implements OnInit {
   }
 
   onEmailDetail(email) {
-    debugger;
+    ;
     const params: any = {
       contact_email: email.component["_changedValue"],
       contact_firstname: this.contactFirstName,
@@ -186,7 +186,7 @@ export class ProjectSourceModalComponent implements OnInit {
       //company_office_name:this.offices[0].company_office_name    
     };
     this.sourceSystemAccountsApi.createContactEmail(params).then((res: any) => {
-      debugger
+      
       this.contactEmailDetail =  res.data;    
       console.log("companyTypeList", this.contactEmailDetail);
     });
@@ -243,7 +243,7 @@ export class ProjectSourceModalComponent implements OnInit {
   }
 
   onSaveProject() {
-    debugger
+    
 
     // validation check
     if (!this.projectName || !this.projectName.trim()) {
@@ -282,7 +282,7 @@ export class ProjectSourceModalComponent implements OnInit {
           projectId, submissionId, 'detail');
 
         const projectOffice = this.offices.find(office => office['company_office_id'] === this.projectOfficeId);
-debugger
+
         return this.apiService.createProject({          
           project_id: projectId,
           project_admin_user_id: this.projectAdminUserId,
@@ -325,7 +325,7 @@ debugger
         });
       })
       .then(res => {
-        debugger
+        
         this.logTransaction('Add project to source', 'Completed', `Add project to source`, projectId, submissionId, 'detail');
         return this._projectSourceApi.createProjectSource(
           this.dataStore.currentUser.user_id,

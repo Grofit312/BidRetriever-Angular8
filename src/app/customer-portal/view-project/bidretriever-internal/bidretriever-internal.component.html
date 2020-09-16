@@ -57,11 +57,19 @@
       Total Count: {{ rowData?.length }}
     </div>
 
-    <select class="table-filter" [(ngModel)]="selectedTableFilter" (change)="setGridRowData()">
-      <option *ngFor="let filter of tableFilters" [ngValue]="filter.value">
-        {{ filter.name }}
-      </option>
-    </select>
+    <div>
+      <select class="table-filter" [(ngModel)]="selectedTableFilter" (change)="setGridRowData()">
+        <option *ngFor="let filter of tableFilters" [ngValue]="filter.value">
+          {{ filter.name }}
+        </option>
+      </select>
+  
+      <select class="table-filter" [(ngModel)]="selectedSubmissionFilter" (change)="setGridRowData()">
+        <option *ngFor="let filter of submissionFilters" [ngValue]="filter.value">
+          {{ filter.name }}
+        </option>
+      </select>
+    </div>
   </div>
   <div class='uncompleted-records-table'>
     <ag-grid-angular
@@ -78,5 +86,20 @@
   </div>
 </div>
 
-<!-- Transaction logs modal -->
-<transaction-logs-modal #transactionLogsModal></transaction-logs-modal>
+<dx-popup [closeOnOutsideClick]="true"
+					[dragEnabled]="false"
+					[(visible)]="isLogModalShown"
+					[showTitle]="true"
+					title="View Log"
+					(onHidden)="logModalHiddenAction()"
+					width="800px"
+					height="600px">
+    <app-record-logs  *ngIf='isLogModalShown'
+                      [routine]="selectedRoutine"
+                      [projectName]="selectedProjectName"
+                      [projectId]="selectedProjectId"
+                      [submissionId]="selectedSubmissionId"
+                      [fileId]="selectedFileId"
+                      [primaryKey]="selectedPrimaryKey">
+    </app-record-logs>
+</dx-popup>

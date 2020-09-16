@@ -108,7 +108,7 @@ export class ProjectNotesComponent implements OnInit,AfterViewInit {
   }
 
   load() {
-    debugger;
+    ;
     this.spinner.show();
     //this.project_id = this.activatedRoute.snapshot.queryParams["project_id"];
     this.project_id = this.dataStore.currentProject.project_id;
@@ -131,7 +131,7 @@ export class ProjectNotesComponent implements OnInit,AfterViewInit {
   }
 
   onAdd() {
-    debugger;
+    ;
     this.description = "";
     this.editModalTitle = `Add Notes`;
     this.subject = "";
@@ -142,7 +142,7 @@ export class ProjectNotesComponent implements OnInit,AfterViewInit {
   }
 
   onAddComment() {
-    debugger;
+    ;
     this.description = "";
     this.isComment = true;
     console.log(this.activeFolderNode);
@@ -183,7 +183,7 @@ export class ProjectNotesComponent implements OnInit,AfterViewInit {
   }
 
   saveNotes() {
-    debugger;
+    ;
     if (!this.subject || !this.subject.trim()) {
       return this.notificationService.error(
         "Error",
@@ -251,7 +251,7 @@ export class ProjectNotesComponent implements OnInit,AfterViewInit {
         (data) => {
           this.spinner.hide();
           this.load();
-          debugger;
+          ;
           this.folderTree.treeModel.update();
           this.reset();
           this.editModal.nativeElement.style.display = "none";
@@ -285,7 +285,7 @@ export class ProjectNotesComponent implements OnInit,AfterViewInit {
   onEdit(node) {
     console.log("Node", node);
     this.isComment = false;
-    debugger;
+    ;
     console.log(this.activeFolderNode);
     if (!node) {
       // tslint:disable-next-line: max-line-length
@@ -305,7 +305,7 @@ export class ProjectNotesComponent implements OnInit,AfterViewInit {
   }
 
   onDelete(id) {
-    debugger;
+    ;
     Swal.fire({
       title: "Are you sure?",
       text: "Once deleted, you will not be able to recover this Notes!",

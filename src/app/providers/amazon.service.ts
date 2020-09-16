@@ -31,6 +31,7 @@ export class AmazonService {
   lambda = null;
   tempBucketName = '';
   permBucketName = '';
+  logBucketName = '';
 
   initialized = false;
   eventEmitter = new EventEmitter<any>();
@@ -43,10 +44,9 @@ export class AmazonService {
     tasks.push(axios.get(`${window['env'].apiBaseUrl}/GetSystemSettings?system_setting_id=BR_TEMP_VAULT`));
     tasks.push(axios.get(`${window['env'].apiBaseUrl}/GetSystemSettings?system_setting_id=BR_PERM_VAULT`));
     tasks.push(axios.get(`${window['env'].apiBaseUrl}/GetSystemSettings?system_setting_id=BR_WIPAPI_ENDPOINT`));
-      debugger
+    tasks.push(axios.get(`${window['env'].apiBaseUrl}/GetSystemSettings?system_setting_id=BR_LOG_VAULT_BUCKET_NAME`));  
+
     Promise.all(tasks).then((res: any[]) => {
-      debugger
-      console.log("Result",res);
       this._wipApiBaseUrl = res[5]['data']['setting_value'];
 
       AWS.config.update({
@@ -58,6 +58,7 @@ export class AmazonService {
 
       this.tempBucketName = res[3]['data']['setting_value'];
       this.permBucketName = res[4]['data']['setting_value'];
+      this.logBucketName = res[6]['data']['setting_value'];
 
       this.docClient = new AWS.DynamoDB.DocumentClient;
       this.s3 = new AWS.S3({apiVersion: '2006-03-01'});
@@ -165,24 +166,7 @@ export class AmazonService {
 
           axios.post(`${this._wipApiBaseUrl}Create922`, queryString.stringify(params))
             .then((res: any) => {
-
-              // Call 922 Lambda
-              const params = {
-                FunctionName: '922UnzipSourceFiles',
-                InvokeArgs: JSON.stringify({
-                  id_922: res.data.id_922,
-                  processing_type: 'LAMBDA',
-                  event_type: 'INSERT'
-                }),
-              };
-
-              this.lambda.invokeAsync(params, (err) => {
-                if (err) {
-                  return reject(err);
-                } else {
-                  return resolve();
-                }
-              });
+              resolve();
             })
             .catch((error) => {
               console.log('Create FilePreprocessingRecord', error);
@@ -288,7 +272,7 @@ public getPresignedUrlWithOriginalFileName(bucket_name: string, file_key: string
   return new Promise((resolve, reject) => {
   this.awaitInitialization()
   .then(res => {
-  debugger
+  
   const url = this.s3.getSignedUrl('getObject', {
   Bucket: bucket_name,
   Key: file_key,
@@ -381,6 +365,7 @@ public getPresignedUrlWithOriginalFileName(bucket_name: string, file_key: string
         params['process_status'] = processStatus;
         params['invoke_wip_processing'] = invokeWipProcessing;
         await axios.post(`${this._wipApiBaseUrl}Update${routineName}`, queryString.stringify(params));
+        return resolve();
       } catch (error) {
         return reject(error);
       }
@@ -852,7 +837,7 @@ public getPresignedUrlWithOriginalFileName(bucket_name: string, file_key: string
   }
 
   public getSystemSettings(system_setting_id: string) {
-    debugger
+    
     return new Promise((resolve, reject) => {
       axios.get(window['env'].apiBaseUrl + `/GetSystemSettings?system_setting_id=${system_setting_id}`)
         .then(res => {
@@ -870,7 +855,7 @@ public getPresignedUrlWithOriginalFileName(bucket_name: string, file_key: string
    */
 
   public updateProject(params: any) {
-    debugger
+    
     return new Promise((resolve, reject) => {
       axios
         .post(
@@ -883,7 +868,7 @@ public getPresignedUrlWithOriginalFileName(bucket_name: string, file_key: string
           }
         )
         .then((res) => {
-          debugger
+          
           if (res.status === 200) {
             resolve(res);
           } else {
@@ -894,6 +879,46 @@ public getPresignedUrlWithOriginalFileName(bucket_name: string, file_key: string
           console.log(err);
           reject(err);
         });
+    });
+  }
+
+  /**
+   * Read log file from s3 bucket
+   * @param prefix 
+   */
+  public getLog(prefix: string): Promise<string> {
+    return new Promise<string>(async (resolve, reject) => {
+      try {
+        await this.awaitInitialization();
+      } catch (error) {
+        return reject('Failed to load the initialization values');
+      }
+
+      try {
+        this.s3.listObjects({
+          Bucket: this.logBucketName,
+          Prefix: prefix,
+        }, (error, data) => {
+          let tasks = data.Contents.map(({ Key }) => this.s3.getSignedUrlPromise('getObject', {
+            Bucket: this.logBucketName,
+            Key,
+            Expires: 0,
+          }));
+
+          Promise.all(tasks).then((signedUrls: any) => {
+            tasks = signedUrls.map(signedUrl => axios.get(signedUrl));
+
+            Promise.all(tasks).then((responses: any) => {
+              const logs = responses.map(({ data }) => data)
+              resolve(logs.join(' '))
+            })
+          }).catch(errors => {
+            reject('Failed to read logs');
+          })
+        });
+      } catch (error) {
+        return reject(error);
+      }
     });
   }
 }

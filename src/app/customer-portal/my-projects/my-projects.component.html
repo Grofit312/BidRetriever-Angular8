@@ -107,6 +107,11 @@
           valueExpr="id" (onValueChanged)="cell.setValue($event.value)"></dx-select-box>
       </div>
 
+      <div *dxTemplate="let cell of 'updateStatusEditor'">
+        <dx-select-box [items]="projectGridEditorTemplateSource.UpdateStatus" [value]="cell.value"
+          displayExpr="name" valueExpr="id" (onValueChanged)="cell.setValue($event.value)"></dx-select-box>
+      </div>
+
       <div *dxTemplate="let cell of 'autoUpdateStatusEditor'">
         <dx-select-box [items]="projectGridEditorTemplateSource.autoUpdateStatus" [value]="cell.value"
           displayExpr="name" valueExpr="id" (onValueChanged)="cell.setValue($event.value)"></dx-select-box>

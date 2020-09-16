@@ -92,11 +92,12 @@ export class EditCompanyModalComponent implements OnInit {
     console.log("DataStore :", this.dataStore);
   }
 
-  initialize(parent: any, ) {
+  initialize(parent: any,  company: any) {
     console.log("DataStore :", this.dataStore);
-    let myCompany = this.dataStore.currentCompany;
+   // let myCompany = this.dataStore.currentCompany;
+    let myCompany = company;
     this.parent = parent;
-    this.company_id = myCompany.company_id;
+    this.company_id = company.company_id;
     this.companyName = myCompany.company_name;   
     this.companyPhone = myCompany.company_phone;   
     this.companyRecordSource = myCompany.company_record_source;   

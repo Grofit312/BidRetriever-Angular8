@@ -31,7 +31,7 @@ export class NotesApi {
   }
 
   public uploadFiles(formData: FormData) {
-    debugger
+    
     return new Promise((resolve, reject) => {
       axios
         .post(

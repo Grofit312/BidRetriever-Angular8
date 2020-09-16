@@ -61,8 +61,7 @@ export class MyCalendarComponent implements OnInit {
     }
   }
 
-  loadEvents() {
-    debugger
+  loadEvents() {    
     this.myCalenderApi.findCalendarEvents(this.dataStore.currentUser['customer_id'], null)
       .then((res: any[]) => {
         console.log("Events",res);
@@ -83,8 +82,7 @@ export class MyCalendarComponent implements OnInit {
               : today):endDate,
             event,
           };
-        });
-        debugger
+        });      
       this.sample = events.filter(({ event }) => this.getCustomDate(event['calendar_event_start_datetime']) === '2020-08-30'&& event['status'] === 'active');
        console.log("Sample",this.sample);
         const { currentUser: { user_id, customer_office_id } } = this.dataStore;
@@ -105,11 +103,11 @@ export class MyCalendarComponent implements OnInit {
         } else {
           this.events = events;
         }
-        debugger
+      
         this.selectedEvent = this.events.find(({ startDate, endDate }) =>   
           startDate >= moment().startOf('day') && endDate < moment().endOf('day'));
         this.selectedBlankCell = null;
-        debugger
+      
         if (this.selectedEvent) {
           this.loadEventOverview(this.selectedEvent.event);
         } else {
@@ -130,7 +128,7 @@ export class MyCalendarComponent implements OnInit {
     return customDate;
   }
   loadEventOverview(event: any) {
-    debugger
+ 
     const timezone = this.dataStore.currentCustomer ? (this.dataStore.currentCustomer['customer_timezone'] || 'eastern') : 'eastern';
     this.overviewData = [];
 
@@ -304,7 +302,7 @@ export class MyCalendarComponent implements OnInit {
   }
 
   loadCurrentOffice() {
-    debugger
+ 
     if (this.dataStore.currentUser['customer_office_id']) {
       this.officeApiService.getOffice(this.dataStore.currentUser['customer_office_id'])
         .then(office => {
@@ -317,7 +315,7 @@ export class MyCalendarComponent implements OnInit {
   }
 
   onCellClick(event) {
-    debugger
+  
     event.cancel = true;
     this.selectedBlankCell = event;
     this.selectedEvent = this.events.find(({ startDate }) => startDate >= event.cellData.startDate && startDate < event.cellData.endDate);
@@ -333,7 +331,7 @@ export class MyCalendarComponent implements OnInit {
     }
     this.isDouble++;
     setTimeout(() => {
-      debugger
+  
       if (this.isDouble === 2) {
         this.selectedEvent = null;
         this.selectedBlankCell = null;
@@ -349,7 +347,7 @@ export class MyCalendarComponent implements OnInit {
   }
 
   onOptionChanged(event: any) {
-    debugger
+  
     if (event.name === 'currentView' && (event.value === 'day' || event.value === 'week')) {
       setTimeout(() => {
         this.scheduler.instance.scrollToTime(Math.max(this.currentDate.getHours() - 1, 0), 0);
