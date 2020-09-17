@@ -1,6 +1,7 @@
 <dx-scroll-view #logScrollView
                 [scrollByContent]="true"
                 [scrollByThumb]="true">
+  <dx-button type="normal" text="Download" (click)="onDownload()"></dx-button>
   <div class="record-logs" [innerHTML]="log"></div>
 </dx-scroll-view>
 

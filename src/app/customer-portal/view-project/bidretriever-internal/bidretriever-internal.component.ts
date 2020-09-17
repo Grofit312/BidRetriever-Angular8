@@ -369,4 +369,8 @@ export class BidretrieverInternalComponent implements OnInit {
   logModalHiddenAction() {
     this.isLogModalShown = false;
   }
+
+  onSearchChange(searchWord: string) {
+    this.grid.gridOptions.api.setQuickFilter(searchWord);
+  }
 }

@@ -26,7 +26,6 @@ const WIP_TABLE_KEYS = {
 export class AmazonService {
   private _wipApiBaseUrl = '';
 
-  docClient = null;
   s3 = null;
   lambda = null;
   tempBucketName = '';
@@ -60,7 +59,6 @@ export class AmazonService {
       this.permBucketName = res[4]['data']['setting_value'];
       this.logBucketName = res[6]['data']['setting_value'];
 
-      this.docClient = new AWS.DynamoDB.DocumentClient;
       this.s3 = new AWS.S3({apiVersion: '2006-03-01'});
       this.lambda = new AWS.Lambda();
 
@@ -131,19 +129,14 @@ export class AmazonService {
           params.create_datetime = currentDateTime;
           params.edit_datetime = currentDateTime;
 
-          const putParams = {
-            TableName: window['env'].projectPublishTableName,
-            Item: params,
-          }
-
-          this.docClient.put(putParams, (err, res) => {
-            if (err) {
-              console.log(err);
-              reject(err);
-            } else {
-              resolve(res);
-            }
-          });
+          axios.post(`${this._wipApiBaseUrl}Create960`, queryString.stringify(params))
+            .then((res: any) => {
+              resolve();
+            })
+            .catch((error) => {
+              console.log('Create Publish Job Record', error);
+              return reject(error);
+            });
         })
         .catch(err => {
           reject('Failed to initialize AWS modules');
@@ -185,58 +178,35 @@ export class AmazonService {
    * @param sourceSysTypeId
    */
   public updateProjectRetrievalRecords(userIdArray: string[], sourceSysTypeId: string) {
-    return new Promise((resolve, reject) => {
-      this.awaitInitialization()
-        .then(res => {
-          let userIdAttributeValues = '';
-          let expressionAttributeValues = {};
+    return new Promise(async (resolve, reject) => {
+      try {
+        await this.awaitInitialization();
+      } catch (error) {
+        return reject('Failed to initialize system settings');
+      }
 
-          userIdArray.forEach((userId, index) => {
-            if (index < userIdArray.length - 1) {
-              userIdAttributeValues += `:user${index}, `;
-            } else {
-              userIdAttributeValues += `:user${index}`;
+      try {
+        const result = await axios.get(`${this._wipApiBaseUrl}Find920?process_status=unable to authenticate`);
+        const filteredRecords = result.data.filter(({ source_sys_type_id, user_id }) => {
+          if (source_sys_type_id !== sourceSysTypeId) {
+            return false;
+          }
+          for (const userId of userIdArray) {
+            if (userId === user_id) {
+              return true;
             }
-
-            expressionAttributeValues[`:user${index}`] = userId;
-          });
-
-          expressionAttributeValues[':process_status'] = 'unable to authenticate';
-          expressionAttributeValues[':source_sys_type_id'] = sourceSysTypeId;
-
-          const params = {
-            TableName: '920ProjectRetrieval',
-            IndexName: 'ByStatus',
-            KeyConditionExpression: '#process_status = :process_status',
-            ExpressionAttributeNames: {
-              '#process_status': 'process_status',
-              '#source_sys_type_id': 'source_sys_type_id',
-              '#user_id': 'user_id',
-            },
-            ExpressionAttributeValues: expressionAttributeValues,
-            FilterExpression: `#source_sys_type_id = :source_sys_type_id AND #user_id IN (${userIdAttributeValues})`,
-          };
-
-          this.docClient.query(params, (err, data) => {
-            if (err) {
-              console.log(err);
-              reject(err);
-            } else {
-              let updateTasks = data.Items.map(item => this.updateProjectRetrievalRecordStatus(item['submission_id']));
-              Promise.all(updateTasks)
-                .then(res => {
-                  resolve();
-                })
-                .catch(err => {
-                  console.log(err);
-                  reject(err);
-                });
-            }
-          });
-        })
-        .catch(err => {
-          reject('Failed to initialize AWS modules');
+          }
+          return false;
         });
+        
+        for (const item of filteredRecords) {
+          await this.updateProjectRetrievalRecordStatus(item['submission_id']);
+        }
+
+        resolve();
+      } catch (error) {
+        reject('Failed to update retrieval records');
+      }
     });
   }
 
@@ -401,321 +371,31 @@ public getPresignedUrlWithOriginalFileName(bucket_name: string, file_key: string
   }
 
   /**
-   * Update any table record's status
-   * @param tableName
-   * @param keyName
-   * @param keyValue
-   * @param status
-   */
-  public updateRecordStatus(tableName: string, keyName: string, keyValue: string, status: string) {
-    return new Promise((resolve, reject) => {
-      this.getRecordStatus(tableName, keyName, keyValue)
-        .then((currentStatus: string) => {
-          if (currentStatus.includes('completed') || currentStatus.includes('errored')) {
-            return reject('Already completed record');
-          }
-
-          const currentDateTime = moment().format('YYYY-MM-DDTHH:mm:ss.SSSSSS') + 'Z';
-          const params = {
-            TableName: tableName,
-            Key: {
-              [keyName]: keyValue,
-            },
-            UpdateExpression: 'set #process_status = :process_status, #edit_datetime = :edit_datetime',
-            ExpressionAttributeNames: {'#process_status': 'process_status', '#edit_datetime': 'edit_datetime'},
-            ExpressionAttributeValues: {':process_status' : status, ':edit_datetime' : currentDateTime}
-          };
-
-          this.docClient.update(params, (err, data) => {
-            if (err) {
-              console.log(err);
-              reject(err);
-            } else {
-              resolve(data);
-            }
-          });
-        })
-        .catch(err => {
-          reject(err);
-        });
-    });
-  }
-
-  /**
-   * Get WIP record status
-   * @param tableName
-   * @param keyName
-   * @param keyValue
-   */
-  private getRecordStatus(tableName: string, keyName: string, keyValue: string) {
-    return new Promise((resolve, reject) => {
-      const params = {
-        TableName: tableName,
-        Key: {
-          [keyName]: keyValue,
-        },
-      };
-
-      this.docClient.get(params, (err, data) => {
-        if (err) {
-          console.log(err);
-          reject(err);
-        } else {
-          resolve(data.Item.process_status);
-        }
-      });
-    });
-  }
-
-  /**
    * Update project retrieval (920) record status
    * @param submission_id
    * @param status
    */
   private updateProjectRetrievalRecordStatus(submission_id: string, status: string = 'queued') {
-    return new Promise((resolve, reject) => {
-      this.awaitInitialization()
-        .then(res => {
-          const currentDateTime = moment().format('YYYY-MM-DDTHH:mm:ss.SSSSSS') + 'Z';
-          const params = {
-            TableName: '920ProjectRetrieval',
-            Key: {
-              submission_id: submission_id,
-            },
-            UpdateExpression: 'set #process_status = :process_status, #edit_datetime = :edit_datetime',
-            ExpressionAttributeNames: {'#process_status': 'process_status', '#edit_datetime': 'edit_datetime'},
-            ExpressionAttributeValues: {':process_status' : status, ':edit_datetime' : currentDateTime}
-          };
+    return new Promise(async (resolve, reject) => {
+      try {
+        await this.awaitInitialization()
+      } catch (error) {
+        return reject('Failed to initialize system settings');
+      }
 
-          this.docClient.update(params, (err, data) => {
-            if (err) {
-              console.log(err);
-              reject(err);
-            } else {
-              resolve(data);
-            }
-          });
-        })
-        .catch(err => {
-          reject('Failed to initialize AWS modules');
-        });
-    });
-  }
+      try {
+        const currentDateTime = moment().format('YYYY-MM-DDTHH:mm:ss.SSSSSS') + 'Z';
+        const params = {
+          search_submission_id: submission_id,
+          process_status: status,
+          edit_datetime: currentDateTime,
+        };
 
-  /**
-   * Fetch uncompleted records from 920 table
-   * @param project_id
-   * @param timezone
-   */
-  private fetchUncompletedRecordsFromProjectRetrievalTable(project_id: string, timezone: string) {
-    return new Promise((resolve, reject) => {
-      const params = {
-        TableName: '920ProjectRetrieval',
-        IndexName: 'project_id-index',
-        KeyConditionExpression: '#project_id = :project_id',
-        FilterExpression: 'not (contains(#process_status, :completed))',
-        ExpressionAttributeNames: {
-          '#project_id': 'project_id',
-          '#process_status': 'process_status',
-        },
-        ExpressionAttributeValues: {
-          ':completed': 'completed',
-          ':project_id': project_id,
-        },
-      };
-
-      this.docClient.query(params).promise()
-        .then(res => {
-          res.Items.forEach(item => {
-            item.table_name = '920';
-          });
-
-          resolve(res.Items);
-        })
-        .catch(err => {
-          console.log(err);
-          reject(err);
-        });
-    });
-  }
-
-  /**
-   * Fetch uncompleted records from 925 table
-   * @param project_id
-   * @param timezone
-   */
-  private fetchUncompletedRecordsFromFilePreprocessingTable(project_id: string, timezone: string) {
-    return new Promise((resolve, reject) => {
-      let fetchedItems = [];
-      const params = {
-        TableName: '925FilePreprocessing',
-        IndexName: 'project_id-index',
-        KeyConditionExpression: '#project_id = :project_id',
-        FilterExpression: 'not (contains(#process_status, :completed))',
-        ExpressionAttributeNames: {
-          '#project_id': 'project_id',
-          '#process_status': 'process_status',
-        },
-        ExpressionAttributeValues: {
-          ':completed': 'completed',
-          ':project_id': project_id,
-        },
-      };
-
-      const onScan = (error, data) => {
-        if (error) {
-          console.log('Unable to scan the 925 table. Error JSON: ', JSON.stringify(error));
-          reject(error);
-          return;
-        }
-
-        data.Items.forEach(item => item.table_name = '925');
-        fetchedItems = fetchedItems.concat(data.Items);
-
-        if (typeof data.LastEvaluatedKey != "undefined") {
-          params['ExclusiveStartKey'] = data.LastEvaluatedKey;
-          this.docClient.query(params, onScan);
-        } else {
-          resolve(fetchedItems);
-        }
-      };
-
-      this.docClient.query(params, onScan);
-    });
-  }
-
-  /**
-   * Fetch uncompleted records from 940 table
-   * @param project_id
-   * @param timezone
-   */
-  private fetchUncompletedRecordsFromProjectStandardizationTable(project_id: string, timezone: string) {
-    return new Promise((resolve, reject) => {
-      let fetchedItems = [];
-      const params = {
-        TableName: '940ProjectStandardization',
-        IndexName: 'project_id-index',
-        KeyConditionExpression: '#project_id = :project_id',
-        FilterExpression: 'not(contains(#process_status, :completed))',
-        ExpressionAttributeNames: {
-          '#project_id': 'project_id',
-          '#process_status': 'process_status',
-        },
-        ExpressionAttributeValues: {
-          ':completed': 'completed',
-          ':project_id': project_id,
-        },
-      };
-
-      const onScan = (error, data) => {
-        if (error) {
-          console.log('Unable to scan the 940 table. Error JSON: ', JSON.stringify(error));
-          reject(error);
-          return;
-        }
-
-        data.Items.forEach(item => item.table_name = '940');
-        fetchedItems = fetchedItems.concat(data.Items);
-
-        if (typeof data.LastEvaluatedKey != "undefined") {
-          params['ExclusiveStartKey'] = data.LastEvaluatedKey;
-          this.docClient.query(params, onScan);
-        } else {
-          resolve(fetchedItems);
-        }
-      };
-
-      this.docClient.query(params, onScan);
-    });
-  }
-
-  /**
-   * Fetch uncompleted records from 9414 table
-   * @param project_id
-   * @param timezone
-   */
-  private fetchUncompletedRecordsFromComparisonDrawingTable(project_id: string, timezone: string) {
-    return new Promise((resolve, reject) => {
-      let fetchedItems = [];
-      const params = {
-        TableName: '9414CompareFiles',
-        IndexName: 'project_id-index',
-        KeyConditionExpression: '#project_id = :project_id',
-        FilterExpression: '#process_status <> :completed',
-        ExpressionAttributeNames: {
-          '#project_id': 'project_id',
-          '#process_status': 'process_status',
-        },
-        ExpressionAttributeValues: {
-          ':completed': 'completed',
-          ':project_id': project_id,
-        },
-      };
-
-      const onScan = (error, data) => {
-        if (error) {
-          console.log('Unable to scan the 9414 table. Error JSON: ', JSON.stringify(error));
-          reject(error);
-          return;
-        }
-
-        data.Items.forEach(item => item.table_name = '9414');
-        fetchedItems = fetchedItems.concat(data.Items);
-
-        if (typeof data.LastEvaluatedKey != "undefined") {
-          params['ExclusiveStartKey'] = data.LastEvaluatedKey;
-          this.docClient.query(params, onScan);
-        } else {
-          resolve(fetchedItems);
-        }
-      };
-
-      this.docClient.query(params, onScan);
-    });
-  }
-
-  /**
-   * Fetch uncompleted records from 964 table
-   * @param project_id
-   * @param timezone
-   */
-  private fetchUncompletedRecordsFromFilePublishTable(project_id: string, timezone: string) {
-    return new Promise((resolve, reject) => {
-      let fetchedItems = [];
-      const params = {
-        TableName: '964PublishFiles',
-        IndexName: 'project_id-index',
-        KeyConditionExpression: '#project_id = :project_id',
-        FilterExpression: '#process_status <> :completed',
-        ExpressionAttributeNames: {
-          '#project_id': 'project_id',
-          '#process_status': 'process_status',
-        },
-        ExpressionAttributeValues: {
-          ':completed': 'completed',
-          ':project_id': project_id,
-        },
-      };
-
-      const onScan = (error, data) => {
-        if (error) {
-          console.log('Unable to scan the 964 table. Error JSON: ', JSON.stringify(error));
-          reject(error);
-          return;
-        }
-
-        data.Items.forEach(item => item.table_name = '964');
-        fetchedItems = fetchedItems.concat(data.Items);
-
-        if (typeof data.LastEvaluatedKey != "undefined") {
-          params['ExclusiveStartKey'] = data.LastEvaluatedKey;
-          this.docClient.query(params, onScan);
-        } else {
-          resolve(fetchedItems);
-        }
-      };
-
-      this.docClient.query(params, onScan);
+        await axios.post(`${this._wipApiBaseUrl}Update920`, queryString.stringify(params));
+        resolve();
+      } catch (error) {
+        return reject('Failed to update 920 record');
+      }
     });
   }
 
@@ -783,19 +463,18 @@ public getPresignedUrlWithOriginalFileName(bucket_name: string, file_key: string
           params.edit_datetime = currentDateTime;
           params.vault_bucket = this.tempBucketName;
 
+          axios.post(`${this._wipApiBaseUrl}Create920`, queryString.stringify(params))
+            .then((res: any) => {
+              resolve();
+            })
+            .catch((error) => {
+              console.log('Create Project Retrieval Record', error);
+              return reject(error);
+            });
           const putParams = {
             TableName: '920ProjectRetrieval',
             Item: params,
           };
-
-          this.docClient.put(putParams, (err, res) => {
-            if (err) {
-              console.log(err);
-              reject(err);
-            } else {
-              resolve(res);
-            }
-          });
         })
         .catch(err => {
           reject('Failed to initialize AWS modules');

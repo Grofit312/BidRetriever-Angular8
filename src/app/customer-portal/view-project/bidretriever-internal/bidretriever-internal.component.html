@@ -57,6 +57,8 @@
       Total Count: {{ rowData?.length }}
     </div>
 
+    <input class="search" type='text' placeholder='Search' (input)="onSearchChange($event.target.value)"/>
+
     <div>
       <select class="table-filter" [(ngModel)]="selectedTableFilter" (change)="setGridRowData()">
         <option *ngFor="let filter of tableFilters" [ngValue]="filter.value">

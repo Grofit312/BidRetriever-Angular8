@@ -39,6 +39,8 @@ export class RecordLogsComponent implements OnInit {
     try {
       if (this.projectName && this.projectId && this.submissionId && this.fileId && this.routine) {
         this.log = await this.amazonService.getLog(`${this.projectName}-${this.projectId}/sub-${this.submissionId}/file-${this.fileId}/${this.routine}`);
+      } else if (this.projectName && this.projectId) {
+        this.log = await this.amazonService.getLog(`${this.projectName}-${this.projectId}/${this.routine}`);
       } else {
         this.log = await this.amazonService.getLog(`${this.routine}/${this.primaryKey}`);
       }
@@ -48,5 +50,18 @@ export class RecordLogsComponent implements OnInit {
     }
 
     this.logIndicatorVisible = false;
+  }
+
+  onDownload() {
+    const element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(this.log));
+    element.setAttribute('download', 'log.txt');
+
+    element.style.display = 'none';
+    document.body.appendChild(element);
+
+    element.click();
+
+    document.body.removeChild(element);
   }
 }
