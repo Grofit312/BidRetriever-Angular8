@@ -140,7 +140,7 @@ export class ProjectsApi {
   }
 
   public createProjectSubmission(params: any) {
-    debugger
+    
     return new Promise((resolve, reject) => {
       axios.post(`${window['env'].apiBaseUrl}/CreateProjectSubmissionDL`, queryString.stringify(params), {
         validateStatus: (status) => {
@@ -162,7 +162,7 @@ export class ProjectsApi {
   }
 
   public createProject(params: any) {
-    debugger
+    
     return new Promise((resolve, reject) => {
       axios.post(`${window['env'].apiBaseUrl}/CreateProjectDL`, queryString.stringify(params), {
         validateStatus: (status) => {

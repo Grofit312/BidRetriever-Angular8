@@ -62,7 +62,7 @@ export class CompanyDataViewDetailsModalComponent implements OnInit {
         load: (loadOptions) => new Promise((resolve, reject) => {
           this._dataViewApiService.findDataSources(this._dataStore.currentUser.customer_id)
             .then((sources: any[]) => {
-              debugger
+              
               this.dataSourceContentList = sources;
               const selectedDataSource = this.dataSourceContentList.find(item => item.data_source_id === this.dataSourceId);
               this._zone.run(() => {

@@ -41,7 +41,8 @@ import {
   DxValidatorModule,
   DxNumberBoxModule,
   DxTextAreaModule,
-  DxLookupModule
+  DxLookupModule,
+  DxLoadPanelModule,
 } from 'devextreme-angular';
 import { MomentPipe } from './pipes/moment.pipe';
 import { CustomDatetimeComponent } from './custom-datetime/custom-datetime.component';
@@ -52,6 +53,7 @@ import { CompanyDataViewModalComponent } from './company-data-view-modal/company
 import { CompanyDataViewDetailsModalComponent } from './company-data-view-details-modal/company-data-view-details-modal.component';
 import { CompaniesApi } from 'app/customer-portal/my-companies/my-companies.api.service';
 import { SourceSystemAccountsApi } from 'app/customer-portal/system-settings/source-system-accounts/source-system-accounts.api.service';
+import { RecordLogsComponent } from './record-logs/record-logs.component';
 
 @NgModule({
   imports: [
@@ -76,7 +78,8 @@ import { SourceSystemAccountsApi } from 'app/customer-portal/system-settings/sou
     DxTextAreaModule,
     DxTextBoxModule,
     DxToolbarModule,
-    DxValidatorModule
+    DxValidatorModule,
+    DxLoadPanelModule,
   ],
   declarations: [
     AddProjectModalComponent,
@@ -116,6 +119,8 @@ import { SourceSystemAccountsApi } from 'app/customer-portal/system-settings/sou
 
     CompanyDataViewDetailsModalComponent,
 
+    RecordLogsComponent,
+
     
   ],
   exports: [
@@ -146,7 +151,7 @@ import { SourceSystemAccountsApi } from 'app/customer-portal/system-settings/sou
     ProjectSourceModalComponent,
     CompanyDataViewModalComponent,
     CompanyDataViewDetailsModalComponent,
-
+    RecordLogsComponent,
 
   ],
   providers: [

@@ -1,9 +1,9 @@
-<div class='project-details-container'>
-  <div class="buttons-group">
+<div class='project-details-container pt-0'>
+  <div class="buttons-group mt-0 pt-1 mb-0">
     <button class="btn btn-light" (click)='onViewDocuments()'>View Documents</button>
     <button *ngIf='!dataStore.isSharedProject' class='btn btn-light' (click)='onEditProject()'>Edit Project</button>
     <button *ngIf='dataStore.isSharedProject' class='btn btn-light' (click)='onAddToMyProjects()'>Add to My Projects</button>
-    <div class="btn-group">
+    <div class="btn-group ">
       <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         Other Actions
       </button>
@@ -53,7 +53,7 @@
 
   <div class='mb-3 d-flex'>
     <div class='w-50 mr-3'>
-      <div class='text-muted mb-2'>GENERAL INFO</div>
+      <!-- <div class='text-muted mb-2'>GENERAL INFO</div> -->
       <div>
         <div class='project-info mb-2'>
           <span class='font-weight-bold'>Project Name</span>
@@ -78,7 +78,7 @@
       </div>
     </div>
     <div class='w-50 ml-3'>
-      <div class='text-muted mb-2'>DETAILS</div>
+      <!-- <div class='text-muted mb-2'>DETAILS</div> -->
       <div>
         <div class='project-info mb-2'>
           <span class='font-weight-bold'>Project Administrator</span>

@@ -99,10 +99,10 @@ export class EditProjectModalComponent implements OnInit {
   }
 
   ngOnInit() {
-    debugger
+    
     if (!this.dataStore.currentUser) {
       this.dataStore.authenticationState.subscribe(value => {
-        debugger
+        
         console.log('Authentication', value, this.dataStore.currentUser);
         if(value){
           this.getCompanyList();
@@ -139,7 +139,7 @@ sourceSystemAccounts(){
 }
 
   getCompanyList() {
-    debugger;
+    ;
     if(this.dataStore.currentCustomer != null) {
       this.customerId=this.dataStore.currentCustomer["customer_id"];
       console.log("customerId",this.customerId);
@@ -161,7 +161,7 @@ sourceSystemAccounts(){
   }
 
   onCompanySelected(event) {
-    debugger
+    
     console.log("event.itemData", event.itemData);
     this.data = event.itemData;
     this.company_website = event.itemData["company_website"];   
@@ -169,7 +169,7 @@ sourceSystemAccounts(){
   }
 
   onEmailDetail(email) {
-    debugger;
+    ;
     const params: any = {
       contact_email: email.component["_changedValue"],
       contact_firstname: this.contactFirstName,
@@ -177,7 +177,7 @@ sourceSystemAccounts(){
       customer_id: this.offices[0].customer_id,  
     };
     this.sourceSystemAccountsApi.createContactEmail(params).then((res: any) => {
-      debugger
+      
       this.contactEmailDetail =  res.data;   
       if(res.data){
         this.notificationService.success(
@@ -191,7 +191,7 @@ sourceSystemAccounts(){
   }
 
   initialize(parent: any, project: any) {
-    debugger
+    
     this.parent = parent;
     this.editProjectModal.nativeElement.style.display = 'block';
 
@@ -264,7 +264,7 @@ sourceSystemAccounts(){
     }
 
     const projectOffice = this.offices.find(office => office['company_office_id'] === this.currentProject['project_assigned_office_id']);
-    debugger
+    
     const params = Object.assign(
       {},
       this.currentProject,

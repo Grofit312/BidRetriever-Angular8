@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 
 
 @Component({
@@ -6,18 +6,25 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
   templateUrl: './notification-viewer.component.html',
   styleUrls: ['./notification-viewer.component.scss']
 })
-export class NotificationViewerComponent implements OnInit {
+export class NotificationViewerComponent implements OnInit , AfterViewInit{
 
   @ViewChild('notificationViewer', { static:false}) notificationViewer: ElementRef;
+  @ViewChild('notificationHtml', { read: ElementRef, static: false }) notificationHtml: ElementRef;
 
   constructor() { }
 
   ngOnInit() {
-    this.loadNotification();
+   // this.loadNotification();
   }
 
   loadNotification() {
     let notificationContent = localStorage.getItem('notification_content');
-    this.notificationViewer.nativeElement.innerHTML = notificationContent;
+    this.notificationHtml.nativeElement.innerHTML = notificationContent;
+  }
+
+  ngAfterViewInit() {
+    setTimeout(() => {
+      this.loadNotification();
+    }, 600);
   }
 }

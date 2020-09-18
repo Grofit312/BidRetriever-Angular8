@@ -332,7 +332,7 @@ export class CompanyEmployeesComponent implements OnInit {
     }
  
   ngOnInit() {
-    debugger
+    
     if (this.dataStore.currentUser) {
       this.load();
     } else {
@@ -518,7 +518,7 @@ export class CompanyEmployeesComponent implements OnInit {
   }
 
   private getGridProjectContentByLoadOption(loadOptions) {
-    debugger
+    
     let projects = this.projectGridContent;
     if (loadOptions.sort && loadOptions.sort.length > 0) {
       projects = projects.sort((first, second) => {
@@ -598,11 +598,11 @@ export class CompanyEmployeesComponent implements OnInit {
         customer_id:this.customer_id,
         detail_level:this.detail_level
       };           
-      debugger      
+            
       const findProjects= this.myCalenderApi.findCompanyContact(this.customer_id, this.dataStore.currentCompany.company_id); 
       Promise.all([findProjects])
         .then(([projects, dataViewFieldSettings]) =>  {
-          debugger
+          
           console.log("Projects",projects);
           console.log("dataViewFieldSettings",dataViewFieldSettings);
           this.projectGridContent = projects as any[];
@@ -610,7 +610,8 @@ export class CompanyEmployeesComponent implements OnInit {
           if (!this.projectViewTypeSelected) {
             this.projectGridColumns = [
               { dataField: 'contact_id', dataType: 'number', caption: 'Contact Id', width: 250, visible: false, allowEditing: false },
-              { dataField: 'contact_firstname', caption: 'Name', width: 400, minWidth: 250, allowEditing: true },
+              { dataField: 'contact_display_name', caption: 'Name', width: 400, minWidth: 250, allowEditing: true },              
+              { dataField: 'contact_title', caption: 'Title', width: 400, minWidth: 250, allowEditing: true },
               { dataField: 'contact_city', caption: 'City', width: 400, minWidth: 250, allowEditing: true },
               { dataField: 'contact_mobile_phone', caption: 'Mobile', width: 400, minWidth: 250, allowEditing: true },
               { dataField: 'contact_email', caption: 'Email', width: 400, minWidth: 250, allowEditing: true },
@@ -625,7 +626,7 @@ export class CompanyEmployeesComponent implements OnInit {
               
             ];
             if(dataViewFieldSettings != undefined && dataViewFieldSettings != null ){
-              debugger
+              
             (dataViewFieldSettings as any[]).forEach((viewFieldSetting) => {
               const newGridColumn = {
                 dataField: viewFieldSetting.data_view_field_name,
@@ -1215,7 +1216,7 @@ export class CompanyEmployeesComponent implements OnInit {
   }
 
   addProjectGridMenuItems(e) {
-debugger;
+;
     if (!e.row) { return; }
 
     if (!e.row.data.project_bid_datetime) {

@@ -67,7 +67,7 @@ export class DataViewApiService {
   }
 
   public findDataSources(customerId: string) {
-    debugger
+    
     return new Promise((resolve, reject) => {
       axios.get(`${(window as any).env.apiBaseUrl}/FindDataSources?customer_id=${customerId}`, {
         validateStatus: (status) => status === 200 || status === 400

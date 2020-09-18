@@ -40,7 +40,10 @@
       class="ag-theme-balham"
       [rowData]="rowData"
       [columnDefs]="columnDefs"
+      [allowContextMenuWithControlKey]="true"
+      [getContextMenuItems]="getContextMenuItems"
       rowSelection="single"
+      (rowDoubleClicked)="onSelectionChanged($event)"
       (gridReady)="onGridReady($event)"
       >
     </ag-grid-angular>

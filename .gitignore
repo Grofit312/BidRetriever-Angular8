@@ -43,3 +43,4 @@ Thumbs.db
 
 # Package lock file
 !package-lock.json
+debug.log

@@ -389,7 +389,7 @@ export class AddProjectModalComponent implements OnInit {
             ? parseInt(this.projectValue, 10)
             : "",
           project_size: this.projectSize,
-          source_company_id: this.data.company_id ? this.data.company_id : null,
+          source_company_id: (this.data && this.data.company_id) ? this.data.company_id : null,
           project_construction_type: this.constructionType,
           project_award_status: this.awardStatus,
           project_assigned_office_id: projectOffice
@@ -767,7 +767,6 @@ export class AddProjectModalComponent implements OnInit {
             const s3Key = `${submission_id}/${item.path}${this.timestamp()}_${
               file.name
               }`;
-
             item.filename = file.name;
             item.filepath =
               item.path.length > 0

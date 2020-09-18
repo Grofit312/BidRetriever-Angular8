@@ -300,12 +300,12 @@
               <div class="dx-field">
                 <div class="dx-field-label">Source Company Name</div>
                 <div class="dx-field-value">
-                    <dx-select-box id="mySelectBox" *ngIf="companyTypeList.length > 0" [dataSource]="companyTypeList"
+                    <dx-select-box id="mySelectBox"  [dataSource]="companyTypeList"
                         displayExpr="name"           
                         valueExpr= "ID"          
                         [searchMode]="searchModeOption"
                         [searchExpr]="searchExprOption"                       
-                        [value]="companyTypeList[selectedCompanyId].ID"
+                        [value]="companyTypeList[selectedCompanyId]?.ID"
                         [searchTimeout]="searchTimeoutOption"                      
                         [minSearchLength]="minSearchLengthOption"
                         [searchEnabled]="true"
@@ -387,8 +387,7 @@
                 <dx-text-box name="source_sys_url" [(value)]="currentProject.source_url" [showClearButton]="true"></dx-text-box>
               </div>
             </div>
-            </div>         
-
+            </div>       
           </div> 
         </div>
 

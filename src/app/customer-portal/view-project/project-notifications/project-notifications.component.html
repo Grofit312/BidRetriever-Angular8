@@ -29,6 +29,7 @@
       [columnDefs]="columnDefs"
       rowSelection="single"
       rowDragManaged=true
+      (onContextMenuPreparing)='addNotificationGridMenuItems($event)'
       (selectionChanged)="onGridSelectionChanged($event)"
       (gridReady)="onGridReady($event)"
       >

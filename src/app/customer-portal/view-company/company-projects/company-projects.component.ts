@@ -517,7 +517,7 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
   }
 
   private getGridProjectContentByLoadOption(loadOptions) {
-    debugger
+    
     let projects = this.projectGridContent;
     if (loadOptions.sort && loadOptions.sort.length > 0) {
       projects = projects.sort((first, second) => {
@@ -598,7 +598,7 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
       const findProjects= this.myCalenderApi.findProjectList(this.source_company_id); 
       Promise.all([findProjects])
         .then(([projects, dataViewFieldSettings]) =>  {
-          debugger
+          
           console.log("Projects",projects);
           this.projectGridContent = projects as any[];
           this.projectGridContentLoaded = true;
@@ -1211,7 +1211,7 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
   }
 
   addProjectGridMenuItems(e) {
-debugger;
+;
     if (!e.row) { return; }
 
     if (!e.row.data.project_bid_datetime) {

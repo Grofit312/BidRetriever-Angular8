@@ -95,7 +95,7 @@ export class ProjectSharingComponent implements OnInit {
   }
 
   load() {
-    debugger
+    
     this.projectSharingApi.findShareUsers(this.projectId)
       .then((users: any[]) => {
         this.originData = users;

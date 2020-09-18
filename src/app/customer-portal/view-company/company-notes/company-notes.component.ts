@@ -78,7 +78,7 @@ export class CompanyNotesComponent implements OnInit, AfterViewInit {
         node.setIsActive(true);
         TREE_ACTIONS.TOGGLE_SELECTED(tree, node, event);
         if (node !== this.activeFolderNode) {
-          debugger
+          
           this.activeFolderNode = node;
           this.currentNote = node.data; 
           this.activeFolderNode.expandAll()  
@@ -153,13 +153,13 @@ export class CompanyNotesComponent implements OnInit, AfterViewInit {
   }
 
   load() {
-    debugger
+    
     this.spinner.show();
     this.companyId = this.activatedRoute.snapshot.queryParams["company_id"];
     this.notesApi
       .getNotesByCompanyId(this.companyId)
       .then((res: any[]) => {
-        debugger
+        
         this.notes = res;        
         this.folderNodes = res;        
         console.log("FolderNode",this.folderNodes);
@@ -190,7 +190,7 @@ export class CompanyNotesComponent implements OnInit, AfterViewInit {
   }
 
   // imagesUploHadhandler(blobInfo, success, failure) {
-  //   debugger
+  //   
   //   var data = JSON.stringify({fileName: blobInfo.blob().name});
   //   this.notesApi.uploadFiles(data).then(
   //     (data) => {
@@ -209,7 +209,7 @@ export class CompanyNotesComponent implements OnInit, AfterViewInit {
   }
 
   onAddComment() {
-    debugger;
+    ;
     this.description = "";
     this.isComment = true;
     console.log(this.activeFolderNode);
@@ -237,7 +237,7 @@ export class CompanyNotesComponent implements OnInit, AfterViewInit {
   }
 
   saveNotes() {
-    debugger;
+    ;
     if (!this.subject || !this.subject.trim()) {
       return this.notificationService.error(
         "Error",
@@ -305,7 +305,7 @@ export class CompanyNotesComponent implements OnInit, AfterViewInit {
         (data) => {
           this.spinner.hide();
           this.load();
-          debugger;
+          ;
           this.folderTree.treeModel.update();
           this.reset();
           this.editModal.nativeElement.style.display = "none";
@@ -339,7 +339,7 @@ export class CompanyNotesComponent implements OnInit, AfterViewInit {
   onEdit(node) {
     console.log("Node", node);
     this.isComment = false;
-    debugger;
+    ;
     console.log(this.activeFolderNode);
     if (!node) {
       // tslint:disable-next-line: max-line-length
@@ -359,7 +359,7 @@ export class CompanyNotesComponent implements OnInit, AfterViewInit {
   }
 
   onDelete(id) {
-    debugger;
+    ;
     Swal.fire({
       title: "Are you sure?",
       text: "Once deleted, you will not be able to recover this Notes!",

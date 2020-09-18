@@ -223,7 +223,7 @@ export class ProjectSourceComponent implements OnInit, AfterViewInit {
   }
 
   sourceGridRowClickAction(event) {
-    debugger
+    
     const selectedRow = event.data;
     this.company_Id = selectedRow.source_company_id;
     console.log('selectedRow.source_company_id',  selectedRow.source_company_id);    
@@ -249,7 +249,7 @@ export class ProjectSourceComponent implements OnInit, AfterViewInit {
   }
 
   toolbarViewCompanyAction() {
-    debugger
+    
     console.log('event', this.company_Id);
     
      const { selectedRowKeys } = this.sourceGrid;
@@ -368,7 +368,7 @@ export class ProjectSourceComponent implements OnInit, AfterViewInit {
   }
 
   addProjectSourceGridMenuItems(e) {
-    debugger
+    
 
     if (!e.row) { return; }
     if (!e.row.data.project_bid_datetime) {
