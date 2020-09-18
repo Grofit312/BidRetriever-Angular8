@@ -1,0 +1,32 @@
+<div class="view-employee">
+    <div class="view-employee-header">
+      <div class='employee-name'>{{ dataStore.currentContact && dataStore.currentContact?.contactFirstname }}</div>
+      <div class='employee-info-group'>
+        <div class='employee-info'>
+          <span class='font-weight-bold'>Employee Name</span>
+          <span>{{ dataStore.currentContact && dataStore.currentContact?.contactFirstname }}</span>
+        </div>
+        <div class='employee-info'>
+          <span class='font-weight-bold'>Employee Name</span>
+          <span>{{ dataStore.currentContact && dataStore.currentContact?.contactFirstname }}</span>
+        </div>
+  
+        <div class='employee-info'>
+          <span class='text-muted'>STATUS</span>
+          
+        </div>
+      </div>
+    </div>
+  
+    <div class="view-employee-content">
+      <!-- <view-project-tabs></view-project-tabs> -->
+      <div class="view-employee-router">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  
+    <div class="view-employee-footer">
+      <dx-button class="action-close" type="danger" text="Close" (click)="btnCloseAction()"></dx-button>
+    </div>
+  </div>
+  

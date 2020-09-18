@@ -1,0 +1,27 @@
+<div class='employee-details-container'>
+  <div class="buttons-group">
+  </div>
+
+  <div class='mb-3 d-flex'>
+    <div class='w-50 mr-3'>
+      <div class='text-muted mb-2'>GENERAL INFO</div>
+      <div>
+        <div class='employee-info mb-2'>
+          <span class='font-weight-bold'>Employee FirstName</span>
+          <span>{{ dataStore.currentContact && dataStore.currentContact?.contact_firstname }}</span> 
+        </div>
+      </div>
+    </div>
+    <div class='w-50 ml-3'>
+      <div class='text-muted mb-2'>CONTACT DETAILS</div>
+      <div>
+        <div class='employee-info mb-2'>
+          <span class='font-weight-bold'>Employee Phone</span>
+          <span>{{ dataStore.currentContact && dataStore.currentContact?.contact_phone }}</span> 
+          
+          
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
