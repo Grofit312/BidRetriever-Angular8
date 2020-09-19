@@ -62,6 +62,13 @@ const routes: Routes = [
           ),
       },
       {
+        path: "view-employee/:contact_id",
+        loadChildren: () =>
+          import("./view-employee/view-employee.module").then(
+            (m) => m.ViewEmployeeModule
+          ),
+      },
+      {
         path: "view-company/:company_id",
         loadChildren: () =>
           import("./view-company/view-company.module").then(

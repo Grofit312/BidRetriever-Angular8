@@ -39,6 +39,7 @@ import { DocViewerComponent } from "./doc-viewer/doc-viewer.component";
 import { MyCalendarComponent } from "./my-calendar/my-calendar.component";
 import { SharedProjectsComponent } from "./shared-projects/shared-projects.component";
 import { SystemAnalyticsComponent } from "./system-analytics/system-analytics.component";
+import { ViewEmployeeComponent } from './view-employee/view-employee.component';
 
 @NgModule({
   declarations: [
@@ -53,6 +54,7 @@ import { SystemAnalyticsComponent } from "./system-analytics/system-analytics.co
     MyCalendarComponent,
     SharedProjectsComponent,
     SystemAnalyticsComponent,
+    ViewEmployeeComponent,
   ],
   imports: [
     customerPortalRouting,

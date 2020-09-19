@@ -79,6 +79,7 @@ export class CompanyEmployeesComponent implements OnInit {
   @ViewChild('editProjectModal', { static: false }) editProjectModal;
   @ViewChild('removeProjectModal', { static: false }) removeProjectModal;
   @ViewChild('transactionLogsModal', { static: false }) transactionLogsModal;
+  
 
   projectViewMode = 'my';
   searchText = '';
@@ -175,7 +176,7 @@ export class CompanyEmployeesComponent implements OnInit {
         viewProject: {
           type: 'normal',
           text: 'View Contact',
-          // onClick: () => this.toolbarViewProjectAction()
+          onClick: () => this.toolbarViewProjectAction()
         },
         addProject: {
           type: 'normal',
@@ -329,7 +330,7 @@ export class CompanyEmployeesComponent implements OnInit {
         ]
       };
     }
-
+ 
   ngOnInit() {
     
     if (this.dataStore.currentUser) {
@@ -1032,11 +1033,11 @@ export class CompanyEmployeesComponent implements OnInit {
       this.notificationService.error('No Selection', 'Please select one Contact!', { timeOut: 3000, showProgressBar: false });
       return;
     } else if (selectedRowKeys.length > 1) {
-      this.notificationService.error('Multiple Selection', 'Please select just one project!', { timeOut: 3000, showProgressBar: false });
+      this.notificationService.error('Multiple Selection', 'Please select just one Contact!', { timeOut: 3000, showProgressBar: false });
       return;
     }
-    const selectedRows = this.projectGridContent.filter(({ contact_id: projectId }) => selectedRowKeys.includes(projectId));
-    window.open(`/#/customer-portal/view-project/${selectedRows[0].contact_id}`, '_blank');
+    const selectedRows = this.projectGridContent.filter(({ contact_id: contactId }) => selectedRowKeys.includes(contactId));
+    window.open(`/#/customer-portal/view-employee/${selectedRows[0].contact_id}/overview`, '_blank');
   }
 
   
@@ -1231,7 +1232,7 @@ export class CompanyEmployeesComponent implements OnInit {
       e.items.push(
         {
           type: 'normal',
-          text: 'View Contact',
+          text: 'View Project',
           onItemClick: () => this.toolbarViewProjectAction()
         },
         {

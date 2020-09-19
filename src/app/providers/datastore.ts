@@ -13,9 +13,11 @@ export class DataStore {
 
   public currentProject: any = null;
   public currentCompany: any = null;
+  public currentContact: any = null;
 
   public authenticationState = new Subject<boolean>();
   public getProjectState = new Subject<boolean>();
+  public getContactState = new Subject<boolean>();
   public getCompanyState = new Subject<boolean>();
 
   public showPortalHeader = true;
@@ -43,6 +45,7 @@ export class DataStore {
   constructor () {
     this.authenticationState.next(false);
     this.getProjectState.next(false);
+    this.getContactState.next(false);
     this.getCompanyState.next(false);
   }
 }

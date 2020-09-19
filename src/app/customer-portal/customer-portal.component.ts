@@ -21,7 +21,7 @@ export class CustomerPortalComponent implements OnInit {
   selectedTabIndex = 0;
 
   get showBannerLogo() {
-    return this._router.url.includes("view-project");
+    return this._router.url.includes("view-project") || this._router.url.includes("view-employee");
   }
 
   constructor(
