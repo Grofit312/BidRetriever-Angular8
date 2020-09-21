@@ -72,9 +72,7 @@ export class ViewProjectComponent implements OnInit {
         this.dataStore.currentProject = res;
         this.dataStore.getProjectState.next(true);
         this.spinner.hide();       
-          this.titleService.setTitle(this.projectName.substring(0,25));      
-        console.log("Project Name",this.projectName)
-       
+        this.titleService.setTitle(this.projectName.substring(0,25));      
       })
       .catch(err => {
         this.notificationService.error('Error', err, { timeOut: 3000, showProgressBar: false });
