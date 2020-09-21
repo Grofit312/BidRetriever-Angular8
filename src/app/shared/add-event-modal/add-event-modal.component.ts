@@ -87,10 +87,12 @@ export class AddEventModalComponent implements OnInit {
 
   initialize(parent: any, cellData: any) {
     this.parent = parent;
+    if (cellData)
+    {
     this.eventStartDateTime = cellData.startDate;
     this.eventEndDateTime = cellData.endDate;
     this.targetProjectId = cellData.project_id;
-
+    }
     this.addEventModal.nativeElement.style.display = 'block';
 
     this.loadEventOrganizers();
