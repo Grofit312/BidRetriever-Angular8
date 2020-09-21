@@ -160,7 +160,7 @@ export class ProjectSubmissionsComponent implements OnInit {
   }
 
   showInitialSubmission() {
-    const initialSubmissionId = localStorage.getItem('submission_id');
+    const initialSubmissionId = this.activatedRoute.snapshot.queryParamMap.get('submission_id');
     const submission = this.rowData.find(({ submission_id }) => submission_id === initialSubmissionId);
 
     if (submission) {

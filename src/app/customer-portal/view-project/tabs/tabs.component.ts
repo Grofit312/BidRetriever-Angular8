@@ -67,42 +67,36 @@ export class TabsComponent implements OnInit {
         break;
 
       case 3:
-      const { submission_id } = querystring.parse(location.search);
-
-      if (submission_id) {
-        localStorage.setItem('submission_id', submission_id);
-      }
-
-      this._router.navigate([`/customer-portal/view-project/${projectId}/view-submission`], { queryParams });
-      break;
+        this._router.navigate([`/customer-portal/view-project/${projectId}/view-submission`], { queryParams });
+        break;
 
       case 4:
-      this._router.navigate([`/customer-portal/view-project/${projectId}/notifications`], { queryParams });
-      break;
+        this._router.navigate([`/customer-portal/view-project/${projectId}/notifications`], { queryParams });
+        break;
 
       case 5:
-      this._router.navigate([`/customer-portal/view-project/${projectId}/source`], { queryParams });
-      break;
+        this._router.navigate([`/customer-portal/view-project/${projectId}/source`], { queryParams });
+        break;
 
       case 6:
-      this._router.navigate([`/customer-portal/view-project/${projectId}/sharing`], { queryParams });
-      break;
+        this._router.navigate([`/customer-portal/view-project/${projectId}/sharing`], { queryParams });
+        break;
 
       case 7:
-      this._router.navigate([`/customer-portal/view-project/${projectId}/administration`]);
-      break;
+        this._router.navigate([`/customer-portal/view-project/${projectId}/administration`]);
+        break;
 
       case 8:
         this._router.navigate([`/customer-portal/view-project/${projectId}/project-notes`]);
         break;
 
       case 9:
-      this._router.navigate([`/customer-portal/view-project/${projectId}/internal`]);
-      break;
+        this._router.navigate([`/customer-portal/view-project/${projectId}/internal`]);
+        break;
 
       default:
-      this._router.navigate([`/customer-portal/view-project/${projectId}/overview`]);
-      break;
+        this._router.navigate([`/customer-portal/view-project/${projectId}/overview`]);
+        break;
     }
   }
 }
