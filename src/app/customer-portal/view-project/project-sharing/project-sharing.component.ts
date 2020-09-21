@@ -165,7 +165,8 @@ export class ProjectSharingComponent implements OnInit {
   }
 
   getViewLink = () => {
-    return `${window.location.origin}/customer-portal/view-project/${this.dataStore.currentProject['project_id']}`;
+    const { currentUser: { user_id: userId } } = this.dataStore;
+    return `${window['env'].docViewerBaseUrl}?project_id=${this.dataStore.currentProject['project_id']}&user_id=${userId}&doc_id=unknown&folder_id=unknown&doc_type=normal`;
   }
 
   onAddShare() {
