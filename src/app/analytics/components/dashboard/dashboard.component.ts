@@ -135,6 +135,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       })
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
+        this.selectedDashboard = null;
         this.findDashboards();
       });
   }
