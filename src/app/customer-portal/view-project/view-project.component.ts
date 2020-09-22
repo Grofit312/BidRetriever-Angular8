@@ -106,7 +106,6 @@ export class ViewProjectComponent implements OnInit {
         this.dataStore.authenticationState.next(true);
       })
       .catch(err => {
-        console.log('Clear Token');
         this.notificationService.error('Error', err, { timeOut: 3000, showProgressBar: false });
 
         localStorage.setItem('br_token', '');

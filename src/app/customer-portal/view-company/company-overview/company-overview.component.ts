@@ -53,7 +53,6 @@ export class CompanyOverviewComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    console.log("dataStore ", this.dataStore);
     var that = this;
     setTimeout(function () {
       that.loadMap();
@@ -167,10 +166,6 @@ export class CompanyOverviewComponent implements OnInit {
   }
 
   loadMap() {
-    console.log(
-      "this.dataStore.currentCompany.company_address :",
-      this.dataStore.currentCompany
-    );
     try {
       const geocoder = new window["google"].maps.Geocoder();
       geocoder.geocode(

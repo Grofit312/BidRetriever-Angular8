@@ -33,8 +33,6 @@ export class CustomerPortalComponent implements OnInit {
     public route: ActivatedRoute
   ) {
     this.environment = window["env"]["BR_ENVIRONMENT"];
-    console.log("Environment", this.environment);
-
     this.mainTabs = [
       {
         id: "my-projects",
@@ -163,7 +161,6 @@ export class CustomerPortalComponent implements OnInit {
         this.dataStore.authenticationState.next(true);
       })
       .catch((err) => {
-        console.log("Clear Token");
         this.notificationService.error("Error", err, {
           timeOut: 3000,
           showProgressBar: false,

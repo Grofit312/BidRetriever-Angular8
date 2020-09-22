@@ -43,12 +43,9 @@ export class CustomDatetimeComponent implements OnInit {
   }
 
   dateTimeClosedAction(event) {
-    console.log('TimeZone', this.timezone, this.value);
     // Convert the changed value to local timezone (current changed value is converted to utc time and returned)
     this.value = moment(this.value).tz(moment.tz.guess()).format('YYYY-MM-DD HH:mm:ss.SSSSSS');
-    console.log(this.value);
     this.value = moment.tz(this.value, this.timezone).utc().format('YYYY-MM-DDTHH:mm:ss.SSSSSS') + 'Z';
-    console.log(this.value);
     // Convert that utc time to timezone-specified time
     // Convert that timezone-specified time to utc time again.
     this.onValueChanged.emit(this.value);

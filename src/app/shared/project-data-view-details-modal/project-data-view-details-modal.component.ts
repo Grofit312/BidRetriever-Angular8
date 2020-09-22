@@ -167,7 +167,6 @@ export class ProjectDataViewDetailsModalComponent implements OnInit, OnChanges, 
           view_type: 'projects',
           company_id: this._dataStore.currentCustomer.customer_id
         }).then((newViewId) => {
-          console.log('New View', newViewId);
           const tasks = [];
           this.dataViewColumnSettingGridContentSource.forEach((columnSetting) => {
             columnSetting.data_view_id = newViewId;
@@ -268,7 +267,6 @@ export class ProjectDataViewDetailsModalComponent implements OnInit, OnChanges, 
 
     const selectedDataSource = this.dataSourceContentList.find(item => item.data_source_id === this.dataSourceId);
     this._zone.run(() => {
-      console.log('Selected Data Source', selectedDataSource);
       if (selectedDataSource && selectedDataSource.data_source_fields) {
         this.dataSourceFields = selectedDataSource.data_source_fields.sort((first, second) => {
           if (first.data_source_field_displayname < second.data_source_field_displayname) {

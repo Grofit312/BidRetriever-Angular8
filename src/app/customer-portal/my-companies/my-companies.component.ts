@@ -144,7 +144,6 @@ export class MyCompaniesComponent implements OnInit, AfterViewInit {
         valueExpr: 'view_id',
         displayExpr: 'view_name',
         onValueChanged: (event) => {
-          console.log('event ,', event);
           if (event.value === 'manage_company_views') {
             this.companyToolbarViewType.value = event.previousValue;
             this.companyViewTypeSelected = event.previousValue;
@@ -289,8 +288,6 @@ export class MyCompaniesComponent implements OnInit, AfterViewInit {
       update: (key, values) => this.gridCompanyUpdateAction(key, values),
     });
 
-    console.log('this.companyGridDataSource :', this.companyGridDataSource);
-
     this.companyGridEditorTemplateSource = {
       company_type: [
         { id: 'owner', name: 'owner' },
@@ -367,7 +364,6 @@ export class MyCompaniesComponent implements OnInit, AfterViewInit {
       this.load();
     } else {
       this.dataStore.authenticationState.subscribe((value) => {
-        console.log('Authentication', value, this.dataStore.currentUser);
         if (value) {
           this.load();
         }
@@ -521,7 +517,6 @@ export class MyCompaniesComponent implements OnInit, AfterViewInit {
             .findOffices(this.dataStore.currentUser['customer_id'])
             .then((offices) => {
               this.companyGridEditorTemplateSource.assignedOfficeName = offices;
-              console.log('Offices', offices);
             })
             .catch((err) => {
               this.notificationService.error('Error', err, {
@@ -586,8 +581,8 @@ export class MyCompaniesComponent implements OnInit, AfterViewInit {
 
   /* Company Grid Actions */
   gridCompanyEditingStartAction(event) {
-    console.log('event - ', event.data.company_email)
-this.currentEmail = event.data.company_email;
+    this.currentEmail = event.data.company_email;
+
     if (!event.data.company_bid_datetime) {
       event.data.company_bid_datetime = null;
     }
@@ -705,10 +700,7 @@ this.currentEmail = event.data.company_email;
 
       Promise.all([findCompanies, findDataViewFieldSettings])
         .then(([companies, dataViewFieldSettings]) => {
-          console.log('companies :', companies);
-          console.log('dataViewFieldSettings :', dataViewFieldSettings);
           this.companyGridContent = companies as any[];
-
           this.companyGridContentLoaded = true;
 
           if (!this.companyViewTypeSelected) {
@@ -978,7 +970,7 @@ this.currentEmail = event.data.company_email;
           const filteredCompanies = this.getGridCompanyContentByLoadOption(
             loadOptions
           );
-          console.log('filteredCompanies :', filteredCompanies);
+
           return resolve({
             data: filteredCompanies,
             totalCount: filteredCompanies.length,
@@ -1001,9 +993,6 @@ this.currentEmail = event.data.company_email;
   }
 
   gridCompanyUpdateAction(key, values) {
-    ;
-    console.log('gridCompanyUpdateAction :', values);
-    console.log('keykey :', key);
     return new Promise((resolve, reject) => {
       try {
         const updateIndex = this.companyGridContent.findIndex(
@@ -1359,7 +1348,6 @@ this.currentEmail = event.data.company_email;
 
   /* Popup Actions */
   popupDataViewHidingAction(event) {
-    console.log('event', event);
     if (this.companyToolbarViewType.instance) {
       this.companyToolbarViewType.instance.getDataSource().reload();
     }
@@ -1491,10 +1479,7 @@ this.currentEmail = event.data.company_email;
 
   /* View company details */
   toolbarViewCompanyAction() {
-    ;
     const { selectedRowKeys } = this.companyGrid;
-    console.log('CompanyId', selectedRowKeys);
-    console.log('CompanyId', this.companyGrid);
     if (selectedRowKeys.length === 0) {
       this.notificationService.error(
         'No Selection',

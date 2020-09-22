@@ -336,7 +336,6 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
       this.load();
     } else {
       this.dataStore.authenticationState.subscribe(value => {
-        console.log('Authentication', value, this.dataStore.currentUser);
         if (value) {
           this.load();
         }
@@ -455,7 +454,6 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
           this.officeApiService.findOffices(this.dataStore.currentUser['customer_id'])
             .then(offices => {
               this.projectGridEditorTemplateSource.assignedOfficeName = offices;
-              console.log('Offices', offices);
             })
             .catch(err => {
               this.notificationService.error('Error', err, { timeOut: 3000, showProgressBar: false });
@@ -598,8 +596,6 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
       const findProjects= this.myCalenderApi.findProjectList(this.source_company_id); 
       Promise.all([findProjects])
         .then(([projects, dataViewFieldSettings]) =>  {
-          
-          console.log("Projects",projects);
           this.projectGridContent = projects as any[];
           this.projectGridContentLoaded = true;
           if (!this.projectViewTypeSelected) {
@@ -733,7 +729,6 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
             return reject('Failed to update the status');
           });
         } else if ('project_bid_datetime' in values) {
-          console.log('Updated value', values);
           const updatedValue = moment(values['project_bid_datetime']).utc().format('YYYY-MM-DDTHH:mm:ss.SSSSSS') + 'Z';
           this.apiService.updateProject(key, {
             project_bid_datetime: updatedValue
@@ -948,7 +943,6 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
           this.userInfoApiService.findUsers()
             .then((res: any[]) => {
               res = res.map((item) => {
-                console.log("itemitem :", item)
                 item.user_email = item.user_email.toLowerCase();
                 if (!item.user_displayname) {
                   if (!item.user_firstname && !item.user_lastname) {
@@ -978,7 +972,6 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
             .then((res: any[]) => {
               res = res.map((item) => {
                 item.user_email = item.user_email.toLowerCase();
-                console.log("item.user_displayname :", item.user_displayname);
                 if (!item.user_displayname) {
                   item.user_displayname = `${item.user_lastname ? item.user_lastname + ', ' : ''}${item.user_firstname} (${item.user_email})`;
                 } else {
@@ -1314,7 +1307,6 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
       const selectedRows = this.projectGridContent.filter(({ project_id: projectId }) => selectedRowKeys.includes(projectId));
 
       // const { currentUser: { user_id: userId } } = this.dataStore;
-      console.log("selectedRows :", selectedRows);
       // window.open(`/#/customer-portal/view-project/${selectedRows[0].project_id}`, '_blank');
       if (selectedRows && selectedRows[0]['source_url']) {
 

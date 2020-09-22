@@ -102,12 +102,9 @@ export class EditProjectModalComponent implements OnInit {
     
     if (!this.dataStore.currentUser) {
       this.dataStore.authenticationState.subscribe(value => {
-        
-        console.log('Authentication', value, this.dataStore.currentUser);
         if(value){
           this.getCompanyList();
           this.sourceSystemAccounts();
-          console.log("Custom Data", this.dataStore);
         }
       });
     }
@@ -142,7 +139,6 @@ sourceSystemAccounts(){
     ;
     if(this.dataStore.currentCustomer != null) {
       this.customerId=this.dataStore.currentCustomer["customer_id"];
-      console.log("customerId",this.customerId);
       this.companyApi
         .findCompaniesByCustomerId( this.dataStore.currentCustomer["customer_id"],
           this.dataStore.currentCustomer["customer_timezone"] || "eastern", null)
@@ -154,15 +150,12 @@ sourceSystemAccounts(){
               name: element.company_name,
               company_website:element.company_website
             })
-          });   
-          console.log("this.companyTypeList :- ", this.companyTypeList);
+          });
         });
     }
   }
 
   onCompanySelected(event) {
-    
-    console.log("event.itemData", event.itemData);
     this.data = event.itemData;
     this.company_website = event.itemData["company_website"];   
     this.companyData = event.itemData;
@@ -185,8 +178,7 @@ sourceSystemAccounts(){
           "New contact is created",
           { timeOut: 3000, showProgressBar: false }
         );
-      } 
-      console.log("companyTypeList", this.contactEmailDetail);
+      }
     });
   }
 
@@ -200,7 +192,6 @@ sourceSystemAccounts(){
     }
 
     this.currentProject = project;
-    console.log('Current Project',this.currentProject);
     this.currentProject['project_auto_update_status'] = project['auto_update_status'] === 'active';
     this.company_name=this.currentProject['source_company_name'];
 

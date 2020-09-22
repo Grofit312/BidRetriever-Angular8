@@ -83,7 +83,7 @@ export class CompanyNotesComponent implements OnInit, AfterViewInit {
           this.currentNote = node.data; 
           this.activeFolderNode.expandAll()  
           //this.activeFolderNode.collapseToLevel(3);
-          console.log("currentdata", this.currentNote);
+
           this.createdDate=this.currentNote.createdDate
         }
       },
@@ -118,7 +118,6 @@ export class CompanyNotesComponent implements OnInit, AfterViewInit {
   }
   ngOnInit() {
     this.load();
-    console.log("dataStore", this.dataStore);
     // this.firstName = this.dataStore.currentUser.user_firstname;
     // this.lastName = this.dataStore.currentUser.user_lastname; 
     // console.log("firstName", this.firstName);   
@@ -137,7 +136,6 @@ export class CompanyNotesComponent implements OnInit, AfterViewInit {
   }
  
   onEditNotes() {
-    console.log(this.activeFolderNode);
     if (!this.currentNote) {
       // tslint:disable-next-line: max-line-length
       return this.notificationService.error(
@@ -162,8 +160,6 @@ export class CompanyNotesComponent implements OnInit, AfterViewInit {
         
         this.notes = res;        
         this.folderNodes = res;        
-        console.log("FolderNode",this.folderNodes);
-        console.log("Notes :", res);
         this.spinner.hide();
         setTimeout(() => this.folderTree.treeModel.expandAll(), 500)
       })
@@ -209,10 +205,8 @@ export class CompanyNotesComponent implements OnInit, AfterViewInit {
   }
 
   onAddComment() {
-    ;
     this.description = "";
     this.isComment = true;
-    console.log(this.activeFolderNode);
     if (!this.currentNote) {
       // tslint:disable-next-line: max-line-length
       return this.notificationService.error(
@@ -337,10 +331,8 @@ export class CompanyNotesComponent implements OnInit, AfterViewInit {
   }
 
   onEdit(node) {
-    console.log("Node", node);
     this.isComment = false;
-    ;
-    console.log(this.activeFolderNode);
+
     if (!node) {
       // tslint:disable-next-line: max-line-length
       return this.notificationService.error(

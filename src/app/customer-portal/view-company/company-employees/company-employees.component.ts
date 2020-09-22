@@ -337,7 +337,6 @@ export class CompanyEmployeesComponent implements OnInit {
       this.load();
     } else {
       this.dataStore.authenticationState.subscribe(value => {
-        console.log('Authentication', value, this.dataStore.currentUser);
         if (value) {
           this.load();
         }
@@ -456,7 +455,6 @@ export class CompanyEmployeesComponent implements OnInit {
           this.officeApiService.findOffices(this.dataStore.currentUser['customer_id'])
             .then(offices => {
               this.projectGridEditorTemplateSource.assignedOfficeName = offices;
-              console.log('Offices', offices);
             })
             .catch(err => {
               this.notificationService.error('Error', err, { timeOut: 3000, showProgressBar: false });
@@ -602,9 +600,6 @@ export class CompanyEmployeesComponent implements OnInit {
       const findProjects= this.myCalenderApi.findCompanyContact(this.customer_id, this.dataStore.currentCompany.company_id); 
       Promise.all([findProjects])
         .then(([projects, dataViewFieldSettings]) =>  {
-          
-          console.log("Projects",projects);
-          console.log("dataViewFieldSettings",dataViewFieldSettings);
           this.projectGridContent = projects as any[];
           this.projectGridContentLoaded = true;
           if (!this.projectViewTypeSelected) {
@@ -738,7 +733,6 @@ export class CompanyEmployeesComponent implements OnInit {
             return reject('Failed to update the status');
           });
         } else if ('project_bid_datetime' in values) {
-          console.log('Updated value', values);
           const updatedValue = moment(values['project_bid_datetime']).utc().format('YYYY-MM-DDTHH:mm:ss.SSSSSS') + 'Z';
           this.apiService.updateProject(key, {
             project_bid_datetime: updatedValue
@@ -953,7 +947,6 @@ export class CompanyEmployeesComponent implements OnInit {
           this.userInfoApiService.findUsers()
             .then((res: any[]) => {
               res = res.map((item) => {
-                console.log("itemitem :", item)
                 item.user_email = item.user_email.toLowerCase();
                 if (!item.user_displayname) {
                   if (!item.user_firstname && !item.user_lastname) {
@@ -983,7 +976,6 @@ export class CompanyEmployeesComponent implements OnInit {
             .then((res: any[]) => {
               res = res.map((item) => {
                 item.user_email = item.user_email.toLowerCase();
-                console.log("item.user_displayname :", item.user_displayname);
                 if (!item.user_displayname) {
                   item.user_displayname = `${item.user_lastname ? item.user_lastname + ', ' : ''}${item.user_firstname} (${item.user_email})`;
                 } else {
@@ -1301,10 +1293,8 @@ export class CompanyEmployeesComponent implements OnInit {
   }
 
   onViewProjectSourceSystem() {
-
     const { selectedRowKeys } = this.projectGrid;
 
-    //console.log("this.dataStore.currentProject :",this.dataStore.currentProject);
     if (selectedRowKeys.length === 0) {
       this.notificationService.error('No Selection', 'Please select one project!', { timeOut: 3000, showProgressBar: false });
       return;
@@ -1313,7 +1303,6 @@ export class CompanyEmployeesComponent implements OnInit {
       const selectedRows = this.projectGridContent.filter(({ contact_id: projectId }) => selectedRowKeys.includes(projectId));
 
       // const { currentUser: { user_id: userId } } = this.dataStore;
-      console.log("selectedRows :", selectedRows);
       // window.open(`/#/customer-portal/view-project/${selectedRows[0].contact_id}`, '_blank');
       if (selectedRows && selectedRows[0]['source_url']) {
 

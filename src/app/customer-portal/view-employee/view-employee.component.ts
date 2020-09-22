@@ -38,7 +38,6 @@ export class ViewEmployeeComponent implements OnInit {
     }
 
   ngOnInit() {
-    debugger
     this.getDataStore();
     this.dataStore.showPortalHeader = false;   
     if (this.dataStore.currentUser) {
@@ -62,7 +61,6 @@ export class ViewEmployeeComponent implements OnInit {
   }
 
   load() {
-    debugger
     this.spinner.show();
     const contactId = this.activatedRoute.snapshot.params['contact_id'];
     this.apiService.getEmployee(contactId,
@@ -78,11 +76,9 @@ export class ViewEmployeeComponent implements OnInit {
          
         
         this.dataStore.currentContact = res[0];
-         this.dataStore.getContactState.next(true);
+        this.dataStore.getContactState.next(true);
         this.spinner.hide();       
-          this.titleService.setTitle(this.contactFirstname.substring(0,25));      
-        console.log("Employee Name",this.contactFirstname)
-       
+        this.titleService.setTitle(this.contactFirstname.substring(0,25));      
       })
       .catch(err => {
         this.notificationService.error('Error', err, { timeOut: 3000, showProgressBar: false });
@@ -116,7 +112,6 @@ export class ViewEmployeeComponent implements OnInit {
         this.dataStore.authenticationState.next(true);
       })
       .catch(err => {
-        console.log('Clear Token');
         this.notificationService.error('Error', err, { timeOut: 3000, showProgressBar: false });
 
         localStorage.setItem('br_token', '');

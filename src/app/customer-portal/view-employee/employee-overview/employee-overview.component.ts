@@ -33,9 +33,7 @@ export class EmployeeOverviewComponent implements OnInit {
   }
 
   ngOnInit() {
-    debugger
-    console.log("DataStore", this.dataStore.currentContact);
-     }
+  }
    
    onRefresh() {
     window.location.reload();
