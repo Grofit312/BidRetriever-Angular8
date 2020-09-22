@@ -466,12 +466,47 @@ this.filterOptions = [
         if (e.row && e.row.rowType === 'data') {   // e.items can be undefined
           if (!e.items) { e.items = []; }
     
-          // Add a custom menu item
+          
           e.items.push(
             {
               type: 'normal',
-              text: 'View Project',
-          //    onItemClick: () => this.toolbarViewSharedProjectAction()
+              text: 'View Shared Project',
+              onClick: () => this.toolbarViewSharedProjectAction()
+            },
+            {
+              type: 'normal',
+              text: 'Add to My Projects',
+              onClick: () => this.toolbarAddToMyProjectAction()
+            },
+            {
+              type: 'normal',
+              text: 'View Shared Project Files',
+              onClick: () => this.toolbarViewSharedProjectFilesAction()
+            },
+            {
+              type: 'normal',
+              text: 'Archive Shared Project',
+              onClick: () => this.toolbarArchiveSharedProjectAction()
+            },
+            {
+              type: 'normal',
+              text: 'Delete Project',
+              onClick: () => this.toolbarDeleteSharedProjectAction()
+            },
+           {
+              type: 'normal',
+              text: 'View Transaction Log',
+              onClick: () => this.toolbarViewTransactionLogAction()
+            }, 
+            {
+              type: 'normal',
+              text: 'Refresh Grid',
+              onClick: () => this.toolbarRefreshGridAction()
+            },
+            {
+              type: 'normal',
+              text: 'Help',
+              onClick: () => this.toolbarHelpAction()
             }
           );
         }
