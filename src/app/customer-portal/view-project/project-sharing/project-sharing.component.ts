@@ -100,7 +100,6 @@ export class ProjectSharingComponent implements OnInit {
       .then((users: any[]) => {
         this.originData = users;
         this.rowData =users;
-        console.log(this.rowData);
       })
       .catch(err => {
         this.notificationService.error('Error', err, { timeOut: 3000, showProgressBar: false });

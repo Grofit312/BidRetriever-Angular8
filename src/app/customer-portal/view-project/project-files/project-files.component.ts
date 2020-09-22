@@ -204,7 +204,6 @@ export class ProjectFilesComponent implements OnInit {
   }
 
   initialize() {
-    debugger
     const projectId = this.activatedRoute.parent.snapshot.params['project_id'];
     if (this.dataStore.currentUser['user_id'] != null) {
       this.docViewerApiService.findUserFavorites(this.dataStore.currentUser['user_id'], projectId, 'document')
@@ -218,7 +217,6 @@ export class ProjectFilesComponent implements OnInit {
           this.loadSubFolders(true);
         })
         .catch(err => {
-          debugger
           this.notificationService.error('Error bb', err, { timeOut: 3000, showProgressBar: false });
         });
     }
@@ -252,7 +250,6 @@ export class ProjectFilesComponent implements OnInit {
         this.files = null;
 
         setTimeout(() => {
-          debugger
           this.folderTree.treeModel.getNodeById(this.currentProject['project_id']).expand();
 
           const currentPlansFolder = this.folderNodes[0].children.find(child => child.name === 'Plans-Current');
@@ -274,7 +271,6 @@ export class ProjectFilesComponent implements OnInit {
   }
 
   loadSubFolders(loadFiles: boolean = false) {
-    debugger
     const timezone = this.dataStore.currentCustomer ? (this.dataStore.currentCustomer['customer_timezone'] || 'eastern') : 'eastern';
     if (this.activeFolderNode != null){
       this.apiService.getFolderChildren('', '', this.activeFolderNode.id, timezone)
@@ -305,7 +301,6 @@ export class ProjectFilesComponent implements OnInit {
 
 loadFiles() {
   this.files = null;
-  debugger
   const timezone = this.dataStore.currentCustomer ? (this.dataStore.currentCustomer['customer_timezone'] || 'eastern') : 'eastern';
 
   this.apiService.getFolderChildren('', '', this.activeFolderNode.id, timezone)
@@ -334,7 +329,6 @@ onViewDocument() {
     const splitArray = selectedDocuments[0]['doc_name'].split('.');
     if (splitArray.length > 1) {
       const fileExtension = splitArray.pop();
-      console.log('File Extension', fileExtension);
 
       if (fileExtension.toLowerCase() !== 'pdf') {
         return this.onDownloadDocument();
@@ -360,7 +354,6 @@ onViewDocumentDetails(docId ?: string) {
       this.notificationService.error('Multiple Selection', 'Please select a single document.', { timeOut: 3000, showProgressBar: false });
       return;
     }
-    console.log(selectedDocuments[0]);
 
     const submission = {
       submission_datetime: selectedDocuments[0]['submission_datetime'],

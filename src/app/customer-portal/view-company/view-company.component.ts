@@ -61,7 +61,6 @@ export class ViewCompanyComponent implements OnInit {
       .then((res) => {
         // this.projectDueDate = res['project_bid_datetime'];
         // this.projectRating = Number(res['project_rating']);
-        console.log(" this.dataStore.res :", res[0]);
         this.projectName = res[0]["company_name"];
         this.projectStatus = res[0]["company_status"];
         this.dataStore.currentCompany = res[0];

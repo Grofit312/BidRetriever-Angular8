@@ -164,12 +164,10 @@ export class ProjectSourceModalComponent implements OnInit {
         this.dataStore.currentCustomer["customer_timezone"] || "eastern", null)
       .then((sourceSystemTypes: any) => {
         this.companyTypeList = sourceSystemTypes;
-        console.log("this.companyTypeList :- ", this.companyTypeList);
       });
   }
 
   onCompanySelected(event) {
-    console.log("event.itemData", event.itemData);
     this.data = event.itemData;
     this.company_website = event.itemData["company_website"];   
     this.companyData = event.itemData;
@@ -188,7 +186,6 @@ export class ProjectSourceModalComponent implements OnInit {
     this.sourceSystemAccountsApi.createContactEmail(params).then((res: any) => {
       
       this.contactEmailDetail =  res.data;    
-      console.log("companyTypeList", this.contactEmailDetail);
     });
   }
 
@@ -243,8 +240,6 @@ export class ProjectSourceModalComponent implements OnInit {
   }
 
   onSaveProject() {
-    
-
     // validation check
     if (!this.projectName || !this.projectName.trim()) {
       return this.notificationService.error('Error', 'Please input project name', { timeOut: 3000, showProgressBar: false });

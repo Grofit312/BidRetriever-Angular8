@@ -81,9 +81,6 @@ export class ProjectOverviewComponent implements OnInit {
   }
 
   ngOnInit() {
-    
-    
-    console.log("DataStore", this.dataStore.currentProject);
     if (this.dataStore.currentProject) {
       this.loadInfo();
       if (this.route.snapshot.queryParams['status'] === 'edit') {
@@ -232,7 +229,6 @@ export class ProjectOverviewComponent implements OnInit {
         }
           this.amazonService.updateProject(params)
           .then((result: any[]) => {
-            console.log("status", result);
             if (result) {
               this.notificationService.success('Success', 'Your project has been scheduled for retrieving an update from the source.This may take between 15 - 60 min (possibly longer for very large projects) and you will receive an email notification if there are any changes.', { timeOut: 3000, showProgressBar: false });
             } else {

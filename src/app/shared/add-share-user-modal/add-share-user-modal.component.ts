@@ -104,7 +104,6 @@ export class AddShareUserModalComponent implements OnInit {
 
       this.authApi.getUser(this.email)
         .then((user: any) => {
-          console.log("User",user);
           // user already exists
           this.firstName = user.user_firstname;
           this.lastName = user.user_lastname;

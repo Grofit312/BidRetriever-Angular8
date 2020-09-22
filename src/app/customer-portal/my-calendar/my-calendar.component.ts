@@ -64,14 +64,16 @@ export class MyCalendarComponent implements OnInit {
   loadEvents() {    
     this.myCalenderApi.findCalendarEvents(this.dataStore.currentUser['customer_id'], null)
       .then((res: any[]) => {
-        console.log("Events",res);
         const events = res.map(event => {
+          let today = null;
+          let endDate = null;
+
           if(event.calendar_event_end_datetime===event.calendar_event_start_datetime){
-          console.log('event', event)
-          var today = new Date(event.calendar_event_end_datetime);
-          today.setHours(today.getHours() + 1);
-          var endDate = new Date(event.calendar_event_start_datetime);
-          endDate.setHours(today.getHours() + 1);         
+            today = new Date(event.calendar_event_end_datetime);
+            today.setHours(today.getHours() + 1);
+
+            endDate = new Date(event.calendar_event_start_datetime);
+            endDate.setHours(today.getHours() + 1);         
           }
           return {
             text: event.calendar_event_name,
@@ -84,7 +86,6 @@ export class MyCalendarComponent implements OnInit {
           };
         });      
       this.sample = events.filter(({ event }) => this.getCustomDate(event['calendar_event_start_datetime']) === '2020-08-30'&& event['status'] === 'active');
-       console.log("Sample",this.sample);
         const { currentUser: { user_id, customer_office_id } } = this.dataStore;
         if (this.calendarViewMode === 'my-active') {
           this.events = events.filter(({ event }) => event['calendar_event_organizer_user_id'] === user_id && event['status'] === 'active');

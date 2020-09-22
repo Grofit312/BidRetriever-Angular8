@@ -161,7 +161,6 @@ export class ProjectSourceComponent implements OnInit, AfterViewInit {
             return this._projectSourceApi.findProjectSources(this._dataStore.currentProject.project_id)
             .then((sources: any) => {
               this.sourceGridContent = sources;
-              console.log("Grid",sources);
               this.sourceGridContentLoaded = true;
               return resolve({
                 data: this.sourceGridContent,
@@ -169,7 +168,6 @@ export class ProjectSourceComponent implements OnInit, AfterViewInit {
               });
             })
             .catch((error) => {
-              console.log('FindDataView Error', error);
               this.sourceGridContent = [];
               this.sourceGridContentLoaded = false;
               return ({
@@ -225,8 +223,7 @@ export class ProjectSourceComponent implements OnInit, AfterViewInit {
   sourceGridRowClickAction(event) {
     
     const selectedRow = event.data;
-    this.company_Id = selectedRow.source_company_id;
-    console.log('selectedRow.source_company_id',  selectedRow.source_company_id);    
+    this.company_Id = selectedRow.source_company_id; 
     this._loadProjectSourceInfo(selectedRow.secondary_project_id);
   }
 
@@ -249,10 +246,7 @@ export class ProjectSourceComponent implements OnInit, AfterViewInit {
   }
 
   toolbarViewCompanyAction() {
-    
-    console.log('event', this.company_Id);
-    
-     const { selectedRowKeys } = this.sourceGrid;
+    const { selectedRowKeys } = this.sourceGrid;
     if (selectedRowKeys.length === 0) {
       this.notificationService.error('No Selection', 'Please select one project!', { timeOut: 3000, showProgressBar: false });
        return;
@@ -278,7 +272,7 @@ export class ProjectSourceComponent implements OnInit, AfterViewInit {
       this.notificationService.error('No Selection', 'Please select at least one project!', { timeOut: 3000, showProgressBar: false });
       return;
     }
-    console.log('Selected Row Keys', selectedRowKeys);
+
     const tasks = [];
     selectedRowKeys.forEach((rowKey) => {
       tasks.push(this._projectSourceApi.updateProjectSource(rowKey, 'deleted'));
@@ -359,8 +353,6 @@ export class ProjectSourceComponent implements OnInit, AfterViewInit {
         if (res) {
           this.currentProject.source_user_company = res.company_office_name;
         }
-
-        console.log('Current Project', this.currentProject);
       })
       .catch(err => {
         this.notificationService.error('Error', err, { timeOut: 3000, showProgressBar: false });

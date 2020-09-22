@@ -67,7 +67,6 @@ export class ProjectNotesComponent implements OnInit,AfterViewInit {
         if (node !== this.activeFolderNode) {
           this.activeFolderNode = node;
           this.currentNote = node.data;
-          console.log("currentdata", this.currentNote);
         }
       },
     },
@@ -88,11 +87,9 @@ export class ProjectNotesComponent implements OnInit,AfterViewInit {
 
   ngOnInit() {
     this.load();
-    console.log("dataStore", this.dataStore);
   }
 
   onEditNotes() {
-    console.log(this.activeFolderNode);
     if (!this.currentNote) {
       // tslint:disable-next-line: max-line-length
       return this.notificationService.error(
@@ -112,13 +109,12 @@ export class ProjectNotesComponent implements OnInit,AfterViewInit {
     this.spinner.show();
     //this.project_id = this.activatedRoute.snapshot.queryParams["project_id"];
     this.project_id = this.dataStore.currentProject.project_id;
-    console.log("ProjectId", this.project_id);
+
     this.notesApi
       .getNotesByProjectId(this.project_id)
       .then((res: any[]) => {
         this.notes = res;
         this.folderNodes = res;
-        console.log("Notes :", res);
         this.spinner.hide();      
         setTimeout(() => this.folderTree.treeModel.expandAll(), 500)
       })
@@ -142,10 +138,9 @@ export class ProjectNotesComponent implements OnInit,AfterViewInit {
   }
 
   onAddComment() {
-    ;
     this.description = "";
     this.isComment = true;
-    console.log(this.activeFolderNode);
+
     if (!this.currentNote) {
       // tslint:disable-next-line: max-line-length
       return this.notificationService.error(
@@ -283,10 +278,7 @@ export class ProjectNotesComponent implements OnInit,AfterViewInit {
   }
 
   onEdit(node) {
-    console.log("Node", node);
     this.isComment = false;
-    ;
-    console.log(this.activeFolderNode);
     if (!node) {
       // tslint:disable-next-line: max-line-length
       return this.notificationService.error(
@@ -344,7 +336,6 @@ export class ProjectNotesComponent implements OnInit,AfterViewInit {
 
   isVisible(note: any) {
     if(this.dataStore != null){
-    console.log("Note Data", note);
     const user_id = this.dataStore.currentUser.user_id;
     const project_id = this.dataStore.currentProject.project_id;
     if (note.noteType == "public") {

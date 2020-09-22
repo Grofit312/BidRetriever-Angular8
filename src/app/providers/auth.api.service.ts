@@ -23,7 +23,6 @@ export class AuthApi {
           if (res.status === 200) {
             resolve(res.data);
           } else {
-            console.log(res.data.status);
             reject(res.data.status);
           }
         })
@@ -53,7 +52,6 @@ export class AuthApi {
           if (res.status === 200) {
             resolve(res.data);
           } else {
-            console.log(res.data.status);
             reject(res.data.status);
           }
         })
@@ -79,7 +77,6 @@ export class AuthApi {
           if (res.status === 200) {
             resolve(res.data);
           } else {
-            console.log(res.data.status);
             reject(res.data.status);
           }
         })
@@ -105,7 +102,6 @@ export class AuthApi {
           if (res.status === 200) {
             resolve(res.data);
           } else {
-            console.log(res.data.status);
             reject(res.data.status);
           }
         })
@@ -132,7 +128,6 @@ export class AuthApi {
           if (res.status === 200) {
             resolve(res.data);
           } else {
-            console.log(res.data.status);
             reject(res.data.status);
           }
         })
@@ -172,7 +167,6 @@ export class AuthApi {
           if (res.status === 200) {
             resolve(res.data);
           } else {
-            console.log(res.data.status);
             reject(res.data.status);
           }
         })
@@ -194,7 +188,6 @@ export class AuthApi {
           if (res.status === 200) {
             resolve(res.data);
           } else {
-            console.log(res.data.status);
             reject(res.data.status);
           }
         })
@@ -216,7 +209,6 @@ export class AuthApi {
           if (res.status === 200) {
             resolve(res.data);
           } else {
-            console.log(res.data.status);
             reject(res.data.status);
           }
         })
@@ -237,7 +229,6 @@ export class AuthApi {
         if (res.status === 200) {
           resolve(res.data);
         } else {
-          console.log(res.data.status);
           reject(res.data.status);
         }
       }).catch(error => {

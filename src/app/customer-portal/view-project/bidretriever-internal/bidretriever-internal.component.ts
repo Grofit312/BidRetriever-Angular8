@@ -41,7 +41,7 @@ export class BidretrieverInternalComponent implements OnInit {
     { name: 'All Status', value: 'all-status' },
     { name: 'Completed', value: 'completed' },
     { name: 'Error', value: 'error' },
-    { name: 'In Edit', value: 'in-edit' },
+    { name: 'Completing', value: 'completing' },
     { name: 'Processing', value: 'processing' },
     { name: 'Queued', value: 'queued' },
     { name: 'Queued Manual', value: 'queued-manual' },
@@ -355,7 +355,7 @@ export class BidretrieverInternalComponent implements OnInit {
 
     switch (this.selectedTableFilter) {
       case 'not-completed':
-        this.rowData = this.rowData.filter(({ process_status }) => process_status !== 'completed');
+        this.rowData = this.rowData.filter(({ process_status }) => !process_status.includes('completed'));
         break;
       case 'all-status':
         this.rowData = this.rowData;
