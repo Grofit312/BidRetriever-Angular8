@@ -28,6 +28,7 @@
             <a class="dropdown-item" (click)='onViewDocument()'>View Document</a>
             <a class="dropdown-item" (click)='onViewDocumentDetails()'>View Document Details</a>
             <div class="dropdown-divider"></div>
+            <a *ngIf='!dataStore.isSharedProject' class="dropdown-item" (click)='onAddDocsToProjectEvent()'>Add Documents to Project</a>
             <a *ngIf='!dataStore.isSharedProject' class="dropdown-item" (click)='onEditDocument()'>Edit Document</a>
             <a class="dropdown-item" (click)='onToggleFavorite()'>{{ isFavoriteDocument ? 'Remove From' : 'Add To' }} Favorite</a>
             <a *ngIf='!dataStore.isSharedProject' class="dropdown-item" (click)='onRemoveDocument()'>Remove Document</a>
@@ -65,3 +66,6 @@
 
 <!-- Document Edit popup -->
 <edit-document-modal #editDocumentModal></edit-document-modal>
+
+<!-- Add Submission popup -->
+<add-submission-modal #addSubmissionModal></add-submission-modal>

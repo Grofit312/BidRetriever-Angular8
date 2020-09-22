@@ -26,6 +26,7 @@ export class ProjectFilesComponent implements OnInit {
   @ViewChild('documentDetailModal', { static: true }) documentDetailModal;
   @ViewChild('pdfViewerModal', { static: false }) pdfViewerModal;
   @ViewChild('editDocumentModal', { static: true }) editDocumentModal;
+  @ViewChild('addSubmissionModal', { static: false }) addSubmissionModal;
 
   documentsViewMode = 'all';
   currentProject = {};
@@ -487,6 +488,10 @@ onEditDocument(docId: string) {
   }
 
   return false;
+}
+
+onAddDocsToProjectEvent(docId: string) {
+  this.addSubmissionModal.initialize(this, this.dataStore.currentProject); 
 }
 
 onRemoveDocument() { }

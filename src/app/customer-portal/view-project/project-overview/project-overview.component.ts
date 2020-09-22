@@ -25,6 +25,8 @@ export class ProjectOverviewComponent implements OnInit {
   @ViewChild('editProjectModal', { static: false }) editProjectModal;
   @ViewChild('addEventModal', { static: false }) addEventModal;
   @ViewChild('editEventModal', { static: false }) editEventModal;
+  @ViewChild('addSubmissionModal', { static: false }) addSubmissionModal;
+  
   destinationId = '';
 
   columnDefs = [
@@ -319,6 +321,11 @@ export class ProjectOverviewComponent implements OnInit {
       );
     }
   }
+  onAddDocsToProjectEvent()
+  {
+    this.addSubmissionModal.initialize(this, this.dataStore.currentProject); 
+  }
+  
 
   onViewTransactionLogs() {
     this.transactionLogsModal.initialize(this.dataStore.currentProject);

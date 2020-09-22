@@ -12,6 +12,7 @@
         <a *ngIf='!dataStore.isSharedProject' class="dropdown-item" (click)='onEditProject()'>Edit Project</a>
         <div class="dropdown-divider"></div>
         <a *ngIf='!dataStore.isSharedProject' class="dropdown-item" (click)='onAddProjectEvent()'>Add Project Event</a>
+        <a *ngIf='!dataStore.isSharedProject' class="dropdown-item" (click)='onAddDocsToProjectEvent()'>Add Documents to Project</a>
         <a *ngIf='!dataStore.isSharedProject' class="dropdown-item" (click)='onEditProjectEvent()'>Edit Project Event</a>
         <a *ngIf='dataStore.isSharedProject' class="dropdown-item" (click)='onAddToMyProjects()'>Add To My Projects</a>
         <div class="dropdown-divider"></div>
@@ -123,3 +124,6 @@
 
 <!-- Edit Event Modal -->
 <edit-event-modal #editEventModal></edit-event-modal>
+
+<!-- Add Submission popup -->
+<add-submission-modal #addSubmissionModal></add-submission-modal>
