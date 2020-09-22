@@ -7,6 +7,7 @@ import DataSource from 'devextreme/data/data_source';
 import { ProjectsApi } from '../my-projects/my-projects.api.service';
 import { ViewProjectApi } from '../view-project/view-project.api.service';
 import { AuthApi } from 'app/providers/auth.api.service';
+import { DestinationSettingsApi } from 'app/customer-portal/system-settings/destination-system-settings/destination-system-settings.api.service';
 import * as uuid from 'uuid/v1';
 import { AmazonService } from 'app/providers/amazon.service';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -19,7 +20,7 @@ const _ = require('lodash');
   selector: 'app-shared-projects',
   templateUrl: './shared-projects.component.html',
   styleUrls: ['./shared-projects.component.scss'],
-  providers: [ProjectSharingApi, ProjectsApi, ViewProjectApi],
+  providers: [ProjectSharingApi, ProjectsApi, ViewProjectApi, DestinationSettingsApi],
 })
 export class SharedProjectsComponent implements OnInit, AfterViewInit{
   //@ViewChild('grid', { static: true }) grid;
@@ -73,6 +74,7 @@ export class SharedProjectsComponent implements OnInit, AfterViewInit{
   }
 
   constructor(
+    private _destinationSettingsApi: DestinationSettingsApi,
     public dataStore: DataStore,
     private notificationService: NotificationsService,
     private projectSharingApi: ProjectSharingApi,
@@ -545,7 +547,17 @@ this.filterOptions = [
 
   /* Create Project */
   toolbarAddToMyProjectAction() {
-  const sharedProject = this.selectedSharedProject;
+debugger
+  const { selectedRowKeys } = this.projectGrid;
+  if (selectedRowKeys.length === 0) {
+    this.notificationService.error('No Selection', 'Please select one project!', { timeOut: 3000, showProgressBar: false });
+    return;
+  } else if (selectedRowKeys.length > 1) {
+    this.notificationService.error('Multiple Selection', 'Please select just one project!', { timeOut: 3000, showProgressBar: false });
+    return;
+  }
+  const selectedRows = this.projectGridContent.filter(({ project_id: projectId }) => selectedRowKeys.includes(projectId));  
+  const sharedProject = selectedRows[0];
 
     if (sharedProject) {
       this.spinner.show();
@@ -619,8 +631,29 @@ this.filterOptions = [
           });
         })
         .then(res => {
+           
+          return new Promise((resolve, reject) => {
+            this._destinationSettingsApi.findCustomerDestination(this.dataStore.currentUser.customer_id)
+              .then((res) => {
+                return resolve(res);
+              })
+              .catch((err) => {
+                this._destinationSettingsApi.findCustomerDestination('TrialUser')
+                  .then((trialRes) => {
+                    return resolve(trialRes);
+                  })
+                  .catch((error) => {
+                    return reject(error);
+                  })
+              });
+          });
+        })
+        .then(res => {
           return this.amazonService.createProjectRetrievalRecord({
             submission_id: newSubmissionId,
+            destination_id: res['destination_id'],
+            destination_path: res['destination_root_path'],
+            destination_sys_type: res['destination_type_name'],
             source_url: originProject['project_id'],
             email_username: this.dataStore.currentUser['user_email'],
             submitter_email: this.dataStore.currentUser['user_email'],
@@ -647,6 +680,5 @@ this.filterOptions = [
       this.notificationService.error('Error', 'Please select a shared project', { timeOut: 3000, showProgressBar: false });
     }
   }
-
   
 }
