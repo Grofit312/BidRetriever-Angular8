@@ -7,10 +7,13 @@ import { ValidationService } from 'app/providers/validation.service';
 import { Logger } from 'app/providers/logger.service';
 import { DatePicker } from 'angular2-datetimepicker';
 import * as moment from 'moment';
+import * as uuid from "uuid/v1";
 import { MyCalendarApi } from 'app/customer-portal/my-calendar/my-calendar.component.api.service';
 import { CompanyOfficeApi } from 'app/customer-portal/system-settings/company-office-setup/company-office-setup.api.service';
 import { UserInfoApi } from 'app/customer-portal/system-settings/user-setup/user-setup.api.service';
 import { CompaniesApi } from 'app/customer-portal/my-companies/my-companies.api.service';
+import { ContactApi } from 'app/customer-portal/view-company/company-employees/company-employees.component.api.service';
+import DataSource from 'devextreme/data/data_source';
 import { SourceSystemAccountsApi } from 'app/customer-portal/system-settings/source-system-accounts/source-system-accounts.api.service';
 const CircularJSON = require('circular-json');
 
@@ -47,7 +50,7 @@ export class EditProjectModalComponent implements OnInit {
   contactEmailDetail: any;
   contactFirstName:any;
   contactSecondName:any;
-  companyTypeList: any[] = [];
+  companyTypeList: any;
   selectedCompanyId = 0;
   searchModeOption: string = "contains";
   searchExprOption: any = "company_name";
@@ -55,6 +58,17 @@ export class EditProjectModalComponent implements OnInit {
   minSearchLengthOption: number = 0;
   sourceSystemTypes: any[];
   submitterEmail:any;
+
+    //Contact selection
+    contactTypeList: any;
+    conSearchModeOption: string = "contains";
+    conSearchExprOption: any = "contact_email";
+    conSearchTimeoutOption: number = 200;
+    conMinSearchLengthOption: number = 0;
+    
+    companyId="";
+    contactId="";
+
   searchExprOptionItems: Array<any> = [
     {
       name: "'company_name'",
@@ -75,6 +89,9 @@ export class EditProjectModalComponent implements OnInit {
   company_array: any[]=[];
   company_id: any;
   customerId: any;
+  
+  contactData: any;
+  company_domain ="";
 
   constructor(
     public dataStore: DataStore,
@@ -86,7 +103,8 @@ export class EditProjectModalComponent implements OnInit {
     public calendarApi: MyCalendarApi,
     private userApiService: UserInfoApi,
     private officeApi: CompanyOfficeApi,
-    private companyApi: CompaniesApi,
+     private companyApi: CompaniesApi, 
+    private contactApi: ContactApi,
     private sourceSystemAccountsApi: SourceSystemAccountsApi,
   ) {
     DatePicker.prototype.ngOnInit = function() {
@@ -109,6 +127,10 @@ export class EditProjectModalComponent implements OnInit {
       });
     }
     this.getCompanyList();
+    if(this.currentProject.source_company_id)
+    {
+      this.getContactList(this.currentProject.source_company_id);
+    }
     this.sourceSystemAccounts();
 }
 
@@ -136,31 +158,81 @@ sourceSystemAccounts(){
 }
 
   getCompanyList() {
-    ;
-    if(this.dataStore.currentCustomer != null) {
-      this.customerId=this.dataStore.currentCustomer["customer_id"];
-      this.companyApi
-        .findCompaniesByCustomerId( this.dataStore.currentCustomer["customer_id"],
-          this.dataStore.currentCustomer["customer_timezone"] || "eastern", null)
-        .then((sourceSystemTypes: any) => {
-          //this.companyTypeList = sourceSystemTypes;  
-          sourceSystemTypes.forEach(element => {
-            this.companyTypeList.push({
-              ID: element.company_id,
-              name: element.company_name,
-              company_website:element.company_website
-            })
-          });
+    if (this.dataStore.currentCustomer != null) {
+      this.companyApi.findCompaniesByCustomerId(
+          this.dataStore.currentCustomer["customer_id"],
+          this.dataStore.currentCustomer["customer_timezone"] || "eastern",
+          null
+        )
+        .then((res: any) => {
+          this.companyTypeList = new DataSource({store: {data:  res, type:'array', key: 'company_id'}});
         });
     }
   }
-
-  onCompanySelected(event) {
-    this.data = event.itemData;
-    this.company_website = event.itemData["company_website"];   
-    this.companyData = event.itemData;
+  getContactList(company_id:any) {
+    debugger
+    if (this.dataStore.currentCustomer != null ) {
+      this.contactApi
+        .findCompanyContact(this.dataStore.currentCustomer["customer_id"], company_id)
+        .then((res: any) => {
+          this.contactTypeList = new DataSource({store: {data:  res, type:'array', key: 'contact_id'}});
+        });
+    }
   }
+  hasNewCompany ="";
+  onNewCompanyEntry(event){
+    if(!event.text)
+    {
+      event.customItem =null;
+      return;
+    }
+    const newItem = {
+      company_name: event.text,
+      company_id: uuid()
 
+
+    };
+    this.companyTypeList.store().insert(newItem);
+    this.companyTypeList.load();
+    this.hasNewCompany = "true";
+    event.customItem = newItem;
+    this.companyData = newItem;
+ }
+  hasNewContact ="";
+  onNewContactEntry(event){
+        if(!event.text)
+    {
+      event.customItem =null;
+      return;
+    }
+    const newItem = {
+      contact_email: event.text,
+      contact_id: uuid()
+    };
+    this.contactTypeList.store().insert(newItem);
+    this.contactTypeList.load();
+    this.hasNewContact = "true";
+    event.customItem = newItem;
+    this.contactData = newItem;
+  }
+  onCompanySelected(event) {
+    this.hasNewCompany = "";
+    this.data = event.itemData;
+    this.company_website = event.itemData["company_website"];
+    this.company_domain = event.itemData["company_domain"];
+    this.companyData = event.itemData;
+
+    this.getContactList(event.itemData["company_id"]);
+  }
+  
+  onContactSelected(event) {
+    this.hasNewContact = "";
+    this.data = event.itemData;
+    this.contactFirstName = event.itemData["contact_firstname"];
+    this.contactSecondName = event.itemData["contact_lastname"];
+
+    this.contactData = event.itemData;
+  }
   onEmailDetail(email) {
     ;
     const params: any = {
@@ -194,8 +266,6 @@ sourceSystemAccounts(){
     this.currentProject = project;
     this.currentProject['project_auto_update_status'] = project['auto_update_status'] === 'active';
     this.company_name=this.currentProject['source_company_name'];
-
-    this.selectedCompanyId = this.companyTypeList.findIndex(x=>x.ID == this.currentProject.source_company_id); //  '0c59ae70-e162-11ea-ab7c-adea4aaa59e1'; // this.currentProject.source_company_id;
 
     this.userApiService.findUsers(this.dataStore.currentUser['customer_id'])
       .then((users: any[]) => {
@@ -243,6 +313,7 @@ sourceSystemAccounts(){
   }
 
   onSaveProject() {
+    debugger
     if (!this.currentProject['project_name'] || !this.currentProject['project_name'].trim()) {
       return this.notificationService.error('Error', 'Please input project name', { timeOut: 3000, showProgressBar: false });
     }
@@ -255,20 +326,65 @@ sourceSystemAccounts(){
     }
 
     const projectOffice = this.offices.find(office => office['company_office_id'] === this.currentProject['project_assigned_office_id']);
+    this.companyId="";
+    if(this.hasNewCompany){
+
+      this.companyId = uuid();
     
+      this.companyApi.createCompany({
+        company_id: this.companyId,
+        company_name: this.companyData["company_name"],
+        user_id: this.dataStore.currentUser.user_id,
+        company_website: this.company_website,
+        company_domain: this.company_domain,
+        customer_id: this.dataStore.currentUser['customer_id'],
+      }).then(res => {
+        
+      })
+      .catch(err => {
+        console.log(err);
+        this.companyId="";
+      });
+  
+    }
+    this.contactId="";
+    if(this.hasNewContact){
+
+      this.contactId = uuid();
+      const params: any = {
+        contact_id: this.contactId,
+        company_id: this.companyId? this.companyId : (this.data && this.data.company_id) ? this.data.company_id : null,
+        contact_email: this.contactData["contact_email"]  ,
+        contact_firstname: this.contactFirstName,
+        contact_lastname: this.contactSecondName,
+        contact_display_name: `${this.contactFirstName} ${this.contactSecondName}`,   
+        customer_id: this.offices[0].customer_id,
+      };
+  
+      this.contactApi.createContact(params)
+      .then(res => {
+        
+      })
+      .catch(err => {
+        console.log(err);
+        this.contactId="";
+      });
+    }
+            
     const params = Object.assign(
       {},
       this.currentProject,
       { project_name: projectName },     
-      { source_company_id: this.data == undefined ? this.currentProject.source_company_id : this.data.ID },
-      { source_company_contact_id: this.contactEmailDetail ? this.contactEmailDetail.contact_id : ""},     
+      { source_company_id: this.companyId? this.companyId : (this.data && this.data.company_id) ? this.data.company_id : this.currentProject.source_company_id },
+      { source_company_contact_id: this.contactId? this.contactId : this.contactEmailDetail ? this.contactEmailDetail.contact_id : ""},     
       {company_website: this.company_website?this.company_website:""},
       { project_bid_datetime: this.currentProject['project_bid_datetime'] ? this.formatDateTime(this.currentProject['project_bid_datetime']) : "" },
       { project_assigned_office_name: projectOffice ? projectOffice['company_office_name'] : '' },
       { auto_update_status: this.currentProject['project_auto_update_status'] ? 'active' : 'inactive' }
     );
     this.spinner.show();
-    this.apiService.updateProject(this.currentProject['project_id'], params).then(res => this.updateProjectEvents()).then(res => {
+    this.apiService.updateProject(this.currentProject['project_id'], params).then(res => this.updateProjectEvents())
+    .then(res => {
       this.spinner.hide();
       this.notificationService.success('Updated', 'Project has been updated', { timeOut: 3000, showProgressBar: false });
 
@@ -283,6 +399,8 @@ sourceSystemAccounts(){
 
       this.logTransaction('Edit Project', 'Failed', CircularJSON.stringify(err), '', '', 'detail');
     });
+    this.companyId="";
+    this.contactId="";
   }
 
   updateProjectEvents() {

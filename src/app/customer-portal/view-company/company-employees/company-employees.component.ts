@@ -3,6 +3,7 @@ import { Component, OnInit, ViewEncapsulation, HostListener, ElementRef, AfterVi
 import { DataStore } from 'app/providers/datastore';
 import { NotificationsService } from 'angular2-notifications';
 import { ValidationService } from 'app/providers/validation.service';
+import { ContactApi } from './company-employees.component.api.service';
 import { RowNode } from 'ag-grid-community/dist/lib/entities/rowNode';
 import { GridApi } from 'ag-grid-community/dist/lib/gridApi';
 import { AuthApi } from 'app/providers/auth.api.service';

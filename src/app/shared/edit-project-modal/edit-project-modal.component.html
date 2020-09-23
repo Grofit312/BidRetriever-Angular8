@@ -300,16 +300,17 @@
               <div class="dx-field">
                 <div class="dx-field-label">Source Company Name</div>
                 <div class="dx-field-value">
-                    <dx-select-box id="mySelectBox"  [dataSource]="companyTypeList"
-                        displayExpr="name"           
-                        valueExpr= "ID"          
+                    <dx-select-box #sbxCompany [dataSource]="companyTypeList"
+                        displayExpr="company_name"  
+                        [acceptCustomValue]="true"         
                         [searchMode]="searchModeOption"
                         [searchExpr]="searchExprOption"                       
-                        [value]="companyTypeList[selectedCompanyId]?.ID"
                         [searchTimeout]="searchTimeoutOption"                      
                         [minSearchLength]="minSearchLengthOption"
                         [searchEnabled]="true"
+                        [value]="currentProject.source_company_id"
                         (onItemClick)="onCompanySelected($event)" 
+                        (onCustomItemCreating)="onNewCompanyEntry($event)"
                         ></dx-select-box>
                   <!-- <dx-text-box name="source_company_id" [(value)]="source_company_id" [showClearButton]="true"></dx-text-box> -->
                 </div>
@@ -325,6 +326,24 @@
               </div>
             </div>
 
+            <div class="dx-fieldset">
+              <div class="dx-field">
+                <div class="dx-field-label">Source Contact Email</div>
+                <div class="dx-field-value">
+                  <dx-select-box [dataSource]="contactTypeList"
+                        displayExpr="contact_email"
+                        [searchMode]="conSearchModeOption"
+                        [searchExpr]="conSearchExprOption"
+                        [searchTimeout]="conSearchTimeoutOption"
+                        [minSearchLength]="conMinSearchLengthOption"
+                        [searchEnabled]="true"
+                        [acceptCustomValue]="true"
+                        (onCustomItemCreating)="onNewContactEntry($event)"
+                        ></dx-select-box>
+                  <!-- <dx-text-box name="company_email" [(value)]="currentProject.source_contact_email" [showClearButton]="true" (onChange)="onEmailDetail($event)"></dx-text-box> -->
+                </div>
+              </div>
+            </div>
           <div class="dx-fieldset">
               <div class="dx-field">
                 <div class="dx-field-label">Source Contact First Name</div>
@@ -343,14 +362,6 @@
               </div>
             </div>
 
-           <div class="dx-fieldset">
-              <div class="dx-field">
-                <div class="dx-field-label">Source Contact Email</div>
-                <div class="dx-field-value">
-                  <dx-text-box name="company_email" [(value)]="currentProject.source_contact_email" [showClearButton]="true" (onChange)="onEmailDetail($event)"></dx-text-box>
-                </div>
-              </div>
-            </div>
             <hr>
             <div class="dx-fieldset">
               <div class="dx-field">
