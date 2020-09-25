@@ -3,6 +3,7 @@ import { MyCalendarApi } from './my-calendar.component.api.service';
 import { DataStore } from 'app/providers/datastore';
 import { NotificationsService } from 'angular2-notifications';
 import { DxSchedulerComponent } from 'devextreme-angular';
+import { DxContextMenuComponent } from 'devextreme-angular';
 import { ViewProjectApi } from '../view-project/view-project.api.service';
 import { AuthApi } from 'app/providers/auth.api.service';
 import { CompanyOfficeApi } from '../system-settings/company-office-setup/company-office-setup.api.service';
@@ -17,16 +18,16 @@ const moment = require('moment-timezone');
 })
 export class MyCalendarComponent implements OnInit {
   @ViewChild('targetScheduler', {static:false}) scheduler: DxSchedulerComponent;
+  @ViewChild('contextMenu', { static: false }) contextMenu: DxContextMenuComponent;
   @ViewChild('addEventModal', {static:false}) addEventModal;
   @ViewChild('editEventModal', {static:false}) editEventModal;
   @ViewChild('removeEventModal', {static:false}) removeEventModal;
   @ViewChild('editProjectModal', {static:false}) editProjectModal;
-
+  
   calendarViewMode = 'my-active';
   currentOffice = null;
 
   events = [];
-  sample:any[]=[];
   currentDate: Date = new Date();
 
   isDouble = 0;
@@ -38,6 +39,13 @@ export class MyCalendarComponent implements OnInit {
   selectedEvent = null;
   selectedBlankCell = null;
 
+  dataSource = [];
+  ctxdisabled: boolean = true;
+  ctxtarget: any;
+  onContextMenuItemClick: any;
+  cellContextMenuItems: any[];
+  appointmentContextMenuItems: any[];
+
   constructor(
     private myCalenderApi: MyCalendarApi,
     public dataStore: DataStore,
@@ -45,8 +53,24 @@ export class MyCalendarComponent implements OnInit {
     private authApi: AuthApi,
     private officeApiService: CompanyOfficeApi,
     private notificationService: NotificationsService
-  ) { }
+  ) { 
+      const that = this;
+      this.cellContextMenuItems = [
+            { text: 'Add Event', onItemClick: that.onAddEventCtx }
+        ];
 
+        this.appointmentContextMenuItems = [
+          { text: 'View project', onItemClick: that.onViewProjectCtx },
+          { text: 'Add Event', onItemClick: that.onAddEventCtx },
+          { text: 'View project documents', onItemClick: that.onViewProjectDocumentsCtx },
+          { text: 'Edit Project', onItemClick: that.onEditProjectCtx },
+          { text: 'Archive Project', onItemClick: that.onArchiveProjectCtx },
+          { text: 'Edit Event', onItemClick: that.onEditEventCtx },
+          { text: 'Delete Event', onItemClick: that.onDeleteEventCtx },
+          { text: 'Refresh Calendar', onItemClick: that.onRefreshCtx },
+          { text: 'Help', onItemClick: that.onHelp }
+      ];
+  }
   ngOnInit() {
     if (this.dataStore.currentUser) {
       this.loadEvents();
@@ -84,9 +108,8 @@ export class MyCalendarComponent implements OnInit {
               : today):endDate,
             event,
           };
-        });      
-      this.sample = events.filter(({ event }) => this.getCustomDate(event['calendar_event_start_datetime']) === '2020-08-30'&& event['status'] === 'active');
-        const { currentUser: { user_id, customer_office_id } } = this.dataStore;
+        }); 
+      const { currentUser: { user_id, customer_office_id } } = this.dataStore;
         if (this.calendarViewMode === 'my-active') {
           this.events = events.filter(({ event }) => event['calendar_event_organizer_user_id'] === user_id && event['status'] === 'active');
         } else if (this.calendarViewMode === 'my-inactive') {
@@ -364,11 +387,37 @@ export class MyCalendarComponent implements OnInit {
     this.loadEventOverview(event.appointmentData.event);
   }
 
-  onAppointmentDblClick(event) {
+onAppointmentDblClick(event) {
     event.cancel = true;
     this.onEditEvent(event);
   }
 
+
+onCellContextMenu(e) {
+  this.ctxtarget = ".dx-scheduler-date-table-cell";
+  this.ctxdisabled = false;
+  this.dataSource = this.cellContextMenuItems;
+  this.onContextMenuItemClick = this.onItemClick(e);
+}
+
+onAppointmentContextMenu(e) {
+  this.ctxtarget = ".dx-scheduler-appointment";
+  this.ctxdisabled = false;
+  this.dataSource = this.appointmentContextMenuItems;
+  this.onContextMenuItemClick = this.onItemClick(e);
+}
+
+onItemClick(ctxEvent: any): any {
+  return function(e)
+  {
+    e.itemData.onItemClick(ctxEvent, e);
+  }
+}
+
+  onContextMenuHiding(event: any) {
+    this.ctxdisabled = true;
+    this.dataSource = [];
+  }
   onAddEvent(event: any) {
     if (event) {
       this.addEventModal.initialize(this, event.cellData);
@@ -379,7 +428,11 @@ export class MyCalendarComponent implements OnInit {
       this.notificationService.error('Error', 'Please select a cell', { timeOut: 3000, showProgressBar: false });
     }
   }
-
+    //this Component Context Handling !Required!
+    onAddEventCtx = (event: any) => {
+      this.onAddEvent(event);
+    }
+   
   onEditEvent(event: any) {
     if (event) {
       this.editEventModal.initialize(this, event.appointmentData);
@@ -389,6 +442,11 @@ export class MyCalendarComponent implements OnInit {
       this.notificationService.error('Error', 'Please select an event', { timeOut: 3000, showProgressBar: false });
     }
   }
+  //this Component Context Handling !Required!
+  onEditEventCtx = (event: any) => {
+    this.onEditEvent(event);
+  }
+  
 
   onViewProject() {
     if (this.selectedEvent) {
@@ -401,6 +459,10 @@ export class MyCalendarComponent implements OnInit {
       this.notificationService.error('Error', 'Please select an event', { timeOut: 3000, showProgressBar: false });
     }
   }
+    //this Component Context Handling !Required!
+    onViewProjectCtx = (event: any) => {
+      this.onViewProject();
+    }
 
   onEditProject() {
     if (this.selectedEvent) {
@@ -419,13 +481,21 @@ export class MyCalendarComponent implements OnInit {
       this.notificationService.error('Error', 'Please select an event', { timeOut: 3000, showProgressBar: false });
     }
   }
-
+ //this Component Context Handling !Required!
+ onEditProjectCtx = (event: any) => {
+  this.onEditProject();
+}
   onDeleteEvent() {
     if (this.selectedEvent) {
       this.removeEventModal.initialize(this, this.selectedEvent.event);
     } else {
       this.notificationService.error('Error', 'Please select an event', { timeOut: 3000, showProgressBar: false });
     }
+  }
+  
+   //this Component Context Handling !Required!
+   onDeleteEventCtx = (event: any) => {
+    this.onDeleteEvent();
   }
 
   onViewProjectDocuments() {
@@ -440,14 +510,32 @@ export class MyCalendarComponent implements OnInit {
       this.notificationService.error('Error', 'Please select an event', { timeOut: 3000, showProgressBar: false });
     }
   }
+  
+    //this Component Context Handling !Required!
+    onViewProjectDocumentsCtx = (event: any) => {
+      this.onViewProjectDocuments();
+    }
+   
 
   onArchiveProject() {
     // TODO
   }
+  
+   //this Component Context Handling !Required!
+   onArchiveProjectCtx = (event: any) => {
+    this.onArchiveProject();
+  }
+ 
 
   onRefresh() {
     this.loadEvents();
   }
+  
+  //this Component Context Handling !Required!
+  onRefreshCtx = (event: any) => {
+      this.onRefresh();
+  }
+   
 
   onChangeCalendarViewMode() {
     this.loadEvents();
@@ -455,7 +543,7 @@ export class MyCalendarComponent implements OnInit {
 
   onHelp() {
 
-  }
+  } 
 
   onChangeSplit() {
     this.schedulerRefresh();
@@ -472,4 +560,4 @@ export class MyCalendarComponent implements OnInit {
       return '0';
     }
   }
-}
+} 
