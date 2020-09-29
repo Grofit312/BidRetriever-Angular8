@@ -1,6 +1,6 @@
 <!-- Create Event Modal -->
 <div #addEventModal class='modal-container'>
-  <div class='modal-box'>
+  <div class='modal-box-wide'>
     <div class='add-event-modal'>
       <div class='modal-title'>
         Add Event
@@ -52,6 +52,8 @@
                   </select>
                 </div>
               </div>
+            </div>
+              <div class='event-form-half dx-fieldset'>
               <div class="dx-field">
                 <div class="dx-field-label">Related Project</div>
                 <div class="dx-field-value">
@@ -85,6 +87,7 @@
                   </select>
                 </div>
               </div>
+          
               <!-- <div class="dx-field">
                 <div class="dx-field-label">Event Color</div>
                 <div class="dx-field-value">
@@ -102,7 +105,7 @@
               <div class='list'>
                 <ag-grid-angular
                   #attendeeGrid
-                  style="width: 100%; height: 100%;"
+                  style="width: 100%; height: 320px;"
                   class="ag-theme-balham"
                   [rowData]="attendees"
                   [columnDefs]="columnDefs"
