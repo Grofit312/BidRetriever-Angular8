@@ -39,6 +39,8 @@ export class RecordLogsComponent implements OnInit {
     try {
       if (this.projectName && this.projectId && this.submissionId && this.fileId && this.routine) {
         this.log = await this.amazonService.getLog(`${this.projectName}-${this.projectId}/sub-${this.submissionId}/file-${this.fileId}/${this.routine}`);
+      } else if (this.projectName && this.projectId && this.submissionId) {
+        this.log = await this.amazonService.getLog(`${this.projectName}-${this.projectId}/sub-${this.submissionId}/${this.routine}`);
       } else if (this.projectName && this.projectId) {
         this.log = await this.amazonService.getLog(`${this.projectName}-${this.projectId}/${this.routine}`);
       } else {

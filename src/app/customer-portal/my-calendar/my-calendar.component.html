@@ -24,7 +24,7 @@
           <div class="dropdown-divider orange"></div>
           <a class="dropdown-item" (click)='onViewProjectDocuments()'>View project documents</a>
           <a class="dropdown-item" (click)='onEditProject()'>Edit Project</a>
-          <a class="dropdown-item" (click)='onArchiveProject'>Archive Project</a>
+          <a class="dropdown-item" (click)='onArchiveProject()'>Archive Project</a>
           <a class="dropdown-item" (click)='onEditEvent($event)'>Edit Event</a>
           <a class="dropdown-item" (click)='onDeleteEvent()'>Delete Event</a>
           <div class="dropdown-divider orange"></div>
@@ -59,6 +59,8 @@
             currentView="month"
             [currentDate]="currentDate"
             (onCellClick)="onCellClick($event)"
+            (onCellContextMenu)="onCellContextMenu($event)"
+            (onAppointmentContextMenu)="onAppointmentContextMenu($event)"
             (onAppointmentDblClick)="onAppointmentDblClick($event)"
             (onAppointmentClick)="onAppointmentClick($event)"
             (onOptionChanged)="onOptionChanged($event)"
@@ -71,6 +73,20 @@
             [allowDragging]="false"
           ></dxo-editing>
           </dx-scheduler>
+          <dx-context-menu #contextMenu
+            [dataSource]="dataSource"
+            [disabled]="ctxdisabled"
+            [target]="ctxtarget"
+            (onItemClick)="onContextMenuItemClick($event)"
+            [width]="200"
+            (onHiding)="onContextMenuHiding($event)">
+            <div *dxTemplate="let e of 'item'">
+              <div *ngIf="e.color">
+                  <div class="item-badge" [ngStyle]="{ backgroundColor: e.color}"></div>
+              </div>
+              <div class="item-text">{{e.text}}</div>
+          </div>
+          </dx-context-menu>
         </div>
       </div>
     </vertical-split-pane>

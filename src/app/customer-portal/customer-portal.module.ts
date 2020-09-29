@@ -20,6 +20,7 @@ import {
   DxTabsModule,
   DxTabPanelModule,
   DxMenuModule,
+  DxContextMenuModule,
 } from "devextreme-angular";
 import { SplitPaneModule } from "ng2-split-pane/lib/ng2-split-pane";
 
@@ -80,6 +81,8 @@ import { ViewEmployeeComponent } from './view-employee/view-employee.component';
     DxTabPanelModule,
     DxTemplateModule,
     AnalyticsModule,
+    DxSchedulerModule,
+    DxContextMenuModule
   ],
   providers: [ValidationService],
 })

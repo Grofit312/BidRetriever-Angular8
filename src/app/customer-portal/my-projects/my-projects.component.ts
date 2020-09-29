@@ -1250,13 +1250,13 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
         },
         {
           type: 'normal',
-          text: 'View Project Documents',
-          onItemClick: () => this.toolbarViewProjectDocumentsAction()
+          text: 'Edit Project',
+          onItemClick: () => this.toolbarEditProjectAction()
         },
         {
           type: 'normal',
-          text: 'Edit Project',
-          onItemClick: () => this.toolbarEditProjectAction()
+          text: 'Add Documents To Project',
+          onItemClick: () => this.toolbarAddDocumentsToProjectAction()
         },
         {
           type: 'normal',
@@ -1270,8 +1270,13 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
         },
         {
           type: 'normal',
-          text: 'Add Documents To Project',
-          onItemClick: () => this.toolbarAddDocumentsToProjectAction()
+          text: 'View Project Documents',
+          onItemClick: () => this.toolbarViewProjectDocumentsAction()
+        },
+        {
+          type: 'normal',
+          text: 'View Source Project',
+          onClick: () => this.onViewProjectSourceSystem()
         },
         {
           type: 'normal',

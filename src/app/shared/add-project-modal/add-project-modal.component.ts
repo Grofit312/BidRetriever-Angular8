@@ -21,6 +21,8 @@ import { UserInfoApi } from "app/customer-portal/system-settings/user-setup/user
 import { DestinationSettingsApi } from "app/customer-portal/system-settings/destination-system-settings/destination-system-settings.api.service";
 import { SourceSystemAccountsApi } from "app/customer-portal/system-settings/source-system-accounts/source-system-accounts.api.service";
 import { CompaniesApi } from "app/customer-portal/my-companies/my-companies.api.service";
+import { ContactApi } from 'app/customer-portal/view-company/company-employees/company-employees.component.api.service';
+import DataSource from 'devextreme/data/data_source';
 import { NotesApi } from "app/customer-portal/view-company/notes.api.service";
 const CircularJSON = require("circular-json");
 const moment = require("moment-timezone");
@@ -59,6 +61,16 @@ export class AddProjectModalComponent implements OnInit {
   searchExprOption: any = "company_name";
   searchTimeoutOption: number = 200;
   minSearchLengthOption: number = 0;
+  //Contact selection
+  contactTypeList: any;
+  conSearchModeOption: string = "contains";
+  conSearchExprOption: any = "contact_email";
+  conSearchTimeoutOption: number = 200;
+  conMinSearchLengthOption: number = 0;
+  
+  companyId="";
+  contactId="";
+
   searchExprOptionItems: Array<any> = [
     {
       name: "'company_name'",
@@ -69,7 +81,7 @@ export class AddProjectModalComponent implements OnInit {
       value: ["company_name", "company_id"],
     },
   ];
-
+  
   projectName = "";
   projectDescription = "";
   projectBidDateTime = null;
@@ -110,7 +122,9 @@ export class AddProjectModalComponent implements OnInit {
   sourceSystemTypes: any[];
   customerId: any;
   companyData: any;
+  contactData: any;
   company_email = "";
+  company_domain ="";
   company_website = "";
   source_sys_url = "";
   data: any;
@@ -132,7 +146,8 @@ export class AddProjectModalComponent implements OnInit {
     private validationService: ValidationService,
     private loggerService: Logger,
     private sourceSystemAccountsApi: SourceSystemAccountsApi,
-    private companyApi: CompaniesApi
+    private companyApi: CompaniesApi, 
+    private contactApi: ContactApi
   ) {
     DatePicker.prototype.ngOnInit = function () {
       this.settings = Object.assign(this.defaultSettings, this.settings);
@@ -148,6 +163,7 @@ export class AddProjectModalComponent implements OnInit {
       this.dataStore.authenticationState.subscribe((value) => {
         if (value) {
           this.getCompanyList();
+          
           this.sourceSystemAccounts();
         }
       });
@@ -181,6 +197,7 @@ export class AddProjectModalComponent implements OnInit {
   }
 
   getCompanyList() {
+    
     if (this.dataStore.currentCustomer != null) {
       this.companyApi
         .findCompaniesByCustomerId(
@@ -188,18 +205,77 @@ export class AddProjectModalComponent implements OnInit {
           this.dataStore.currentCustomer["customer_timezone"] || "eastern",
           null
         )
-        .then((sourceSystemTypes: any) => {
-          this.companyTypeList = sourceSystemTypes;
+        .then((res: any) => {
+          this.companyTypeList = new DataSource({store: {data:  res, type:'array', key: 'company_id'}})
+          
         });
     }
   }
+  
+  getContactList(company_id:any) {
+    
+    if (this.dataStore.currentCustomer != null ) {
+      this.contactApi
+        .findCompanyContact(this.dataStore.currentCustomer["customer_id"], company_id)
+        .then((res: any) => {
+          this.contactTypeList = new DataSource({store: {data:  res, type:'array', key: 'contact_id'}});
+        });
+    }
+  }
+  hasNewCompany ="";
 
+  onNewCompanyEntry(event){
+    if(!event.text)
+    {
+      event.customItem =null;
+      return;
+    }
+    const newItem = {
+      company_name: event.text,
+      company_id: uuid()
+
+
+    };
+    this.companyTypeList.store().insert(newItem);
+    this.companyTypeList.load();
+    this.hasNewCompany = "true";
+    event.customItem = newItem;
+    this.companyData = newItem;
+ }
+  hasNewContact ="";
+  onNewContactEntry(event){
+        if(!event.text)
+    {
+      event.customItem =null;
+      return;
+    }
+    const newItem = {
+      contact_email: event.text,
+      contact_id: uuid()
+    };
+    this.contactTypeList.store().insert(newItem);
+    this.contactTypeList.load();
+    this.hasNewContact = "true";
+    event.customItem = newItem;
+    this.contactData = newItem;
+  }
   onCompanySelected(event) {
+    this.hasNewCompany = "";
     this.data = event.itemData;
     this.company_website = event.itemData["company_website"];
+    this.company_domain = event.itemData["company_domain"];
     this.companyData = event.itemData;
-  }
 
+    this.getContactList(event.itemData["company_id"]);
+  }
+  onContactSelected(event) {
+    this.hasNewContact = "";
+    this.data = event.itemData;
+    this.contactFirstName = event.itemData["contact_firstname"];
+    this.contactSecondName = event.itemData["contact_lastname"];
+
+    this.contactData = event.itemData;
+  }
   onEmailDetail(event: any) {
     const params: any = {
       contact_email: event.target.value,
@@ -324,6 +400,54 @@ export class AddProjectModalComponent implements OnInit {
     this.spinner.show();
 
     this.uploadDroppedFiles(submissionId)
+    .then((res) => {
+      this.logTransaction(
+        "Add Project",
+        "Completed",
+        `Successfully created project`,
+        projectId,
+        submissionId,
+        "summary"
+      );
+     if(this.hasNewCompany){
+
+      this.companyId = uuid();
+      return this.companyApi.createCompany({
+            company_id: this.companyId,
+            company_name: this.companyData["company_name"],
+            user_id: this.dataStore.currentUser.user_id,
+            company_website: this.company_website,
+            company_domain: this.company_domain,
+            customer_id: this.dataStore.currentUser['customer_id'],
+          })
+        }
+    })
+    .then((res) => {
+      this.logTransaction(
+        "Add Company",
+        "Completed",
+        `Successfully created company`,
+        projectId,
+        submissionId,
+        "summary"
+      );
+      if(this.hasNewContact){
+
+        this.contactId = uuid();
+        const params: any = {
+          contact_id: this.contactId,
+          company_id: this.companyId? this.companyId : (this.data && this.data.company_id) ? this.data.company_id : null,
+          contact_email: this.contactData["contact_email"]  ,
+          contact_firstname: this.contactFirstName,
+          contact_lastname: this.contactSecondName,
+          contact_display_name: `${this.contactFirstName} ${this.contactSecondName}`,   
+          customer_id: this.offices[0].customer_id,
+        };
+    
+        return this.contactApi.createContact(params);
+      }
+      
+    })
       .then((res) => {
         this.logTransaction(
           "Upload project files",
@@ -389,7 +513,7 @@ export class AddProjectModalComponent implements OnInit {
             ? parseInt(this.projectValue, 10)
             : "",
           project_size: this.projectSize,
-          source_company_id: (this.data && this.data.company_id) ? this.data.company_id : null,
+          source_company_id: this.companyId? this.companyId : (this.data && this.data.company_id) ? this.data.company_id : null,
           project_construction_type: this.constructionType,
           project_award_status: this.awardStatus,
           project_assigned_office_id: projectOffice
@@ -400,7 +524,7 @@ export class AddProjectModalComponent implements OnInit {
 
           auto_update_status: this.autoUpdateStatus ? "active" : "inactive",
           company_website: this.company_website ? this.company_website : "",
-          source_company_contact_id: this.contactEmailDetail
+          source_company_contact_id: this.contactId? this.contactId : this.contactEmailDetail
             ? this.contactEmailDetail.contact_id
             : null,
         });
@@ -607,6 +731,9 @@ export class AddProjectModalComponent implements OnInit {
           "detail"
         );
       });
+
+      this.companyId="";
+      this.contactId="";
   }
 
   onCancel(event) {

@@ -7,6 +7,8 @@ import { ProjectsApi } from 'app/customer-portal/my-projects/my-projects.api.ser
 import { ActivatedRoute } from '@angular/router';
 import { MomentPipe } from 'app/shared/pipes/moment.pipe';
 import { AmazonService } from 'app/providers/amazon.service';
+import DateTimeUtils from 'app/utils/date-time';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-project-overview',
@@ -25,6 +27,8 @@ export class ProjectOverviewComponent implements OnInit {
   @ViewChild('editProjectModal', { static: false }) editProjectModal;
   @ViewChild('addEventModal', { static: false }) addEventModal;
   @ViewChild('editEventModal', { static: false }) editEventModal;
+  @ViewChild('addSubmissionModal', { static: false }) addSubmissionModal;
+  
   destinationId = '';
 
   columnDefs = [
@@ -54,19 +58,6 @@ export class ProjectOverviewComponent implements OnInit {
   lng = 7.809007;
 
   noAddress = false;
-  project_id: any;
-  user_email: any;
-  user_id: any;
-  setting_name: any;
-  project_setting_id: any;
-  customer_id: any;
-  project_name: any;
-  source_sys_type_id: any;
-  source_url: any;
-  source_password: any;
-  source_token: any;
-  destinationTypeId: any;
-  destinationPath: any;
 
   constructor(
     private _momentPipe: MomentPipe,
@@ -76,7 +67,8 @@ export class ProjectOverviewComponent implements OnInit {
     private projectsApi: ProjectsApi,
     private notificationService: NotificationsService,
     public route: ActivatedRoute,
-    private amazonService: AmazonService
+    private amazonService: AmazonService,
+    private spinner: NgxSpinnerService,
   ) {
   }
 
@@ -189,44 +181,46 @@ export class ProjectOverviewComponent implements OnInit {
   }
 
   onUpdateProject() {
-      
+    this.spinner.show();
 
-    this.user_email = this.dataStore.currentProject.user_email;
-    this.customer_id = this.dataStore.currentProject.customer_id;
-    this.project_id = this.dataStore.currentProject.project_id;
-    this.project_name  = this.dataStore.currentProject.project_name;
-    this.source_sys_type_id   = this.dataStore.currentProject.source_sys_type_id;
-    this.source_url   = this.dataStore.currentProject.source_url ;
-    this.source_token  = this.dataStore.currentProject.source_token;
-    this.source_password = this.dataStore.currentProject.source_password;
-    this.viewProjectApi.getProjectSettings(this.project_id)
+    const projectId = this.dataStore.currentProject.project_id;
+
+    this.viewProjectApi.getProjectSettings(projectId)
       .then((res: any[]) => {
-        
-        this.destinationTypeId = res.find(setting => setting.setting_name === 'PROJECT_DESTINATION_TYPE_ID');
-        this.destinationPath = res.find(setting => setting.setting_name === 'PROJECT_DESTINATION_PATH');
-        this.destinationId = res.find(setting => setting.setting_name === 'PROJECT_DESTINATION_ID'); 
-        
-      }).then(res => {        
-        if ((this.destinationId == '' || this.destinationId  == undefined || this.destinationId  == null)
-          || (this.destinationTypeId  == '' || this.destinationTypeId == undefined || this.destinationTypeId == null)
+        const destinationTypeId = res.find(setting => setting.setting_name === 'PROJECT_DESTINATION_TYPE_ID');
+        const destinationPath = res.find(setting => setting.setting_name === 'PROJECT_DESTINATION_PATH');
+        const destinationId = res.find(setting => setting.setting_name === 'PROJECT_DESTINATION_ID'); 
+        return {
+          destinationTypeId,
+          destinationPath,
+          destinationId,
+        };
+      }).then(({ destinationId, destinationPath, destinationTypeId }) => {        
+        if ((destinationId == '' || destinationId  == undefined || destinationId  == null)
+          || (destinationTypeId  == '' || destinationTypeId == undefined || destinationTypeId == null)
         ) {
           const message = 'We are sorry, but the Create920 function cannot be used because required parameters for the project have not been defined. Make sure that the following values have been defined: <list of missing parameter>. And try again'
           this.notificationService.error('Error', message, { timeOut: 3000, showProgressBar: false });
         } else {
           const params: any = {
-          submission_type: "user_requested",
-          submitter_email: this.user_email,
-          customer_id: this.customer_id,
-          process_status: "queued",
-          destination_sys_type: this.destinationTypeId,
-          destination_path: this.destinationPath,
-          destination_id: this.destinationId,
-          project_name:this.project_name,
-          source_sys_type_id:this.source_sys_type_id,
-          source_url:this.source_url,
-          source_token:this.source_token,
-          source_password:this.source_password,
-        }
+            submission_type: 'user',
+            submitter_email: this.dataStore.currentUser.user_email,
+            submission_datetime: DateTimeUtils.getTimestamp(),
+            user_id: this.dataStore.currentUser.user_id,
+            user_timezone: (this.dataStore.currentCustomer ? this.dataStore.currentCustomer['customer_timezone'] : 'eastern') || 'eastern',
+            customer_id:  this.dataStore.currentProject.customer_id,
+            process_status: 'queued',
+            destination_sys_type: destinationTypeId,
+            destination_path: destinationPath,
+            destination_id: destinationId,
+            project_id: projectId,
+            project_name: this.dataStore.currentProject.project_name,
+            source_sys_type_id: this.dataStore.currentProject.source_sys_type_id,
+            source_url: this.dataStore.currentProject.source_url,
+            source_token: this.dataStore.currentProject.source_token,
+            source_password: this.dataStore.currentProject.source_password,
+          }
+
           this.amazonService.updateProject(params)
           .then((result: any[]) => {
             if (result) {
@@ -234,13 +228,15 @@ export class ProjectOverviewComponent implements OnInit {
             } else {
               this.notificationService.error('Error', 'This Record has been not created.', { timeOut: 3000, showProgressBar: false });
             }
-
           });
         }
       })
       .catch(err => {
         console.log(err);
-      });
+      })
+      .finally(() => {
+        this.spinner.hide();
+      })
   }
 
   onViewDocuments() {
@@ -319,6 +315,11 @@ export class ProjectOverviewComponent implements OnInit {
       );
     }
   }
+  onAddDocsToProjectEvent()
+  {
+    this.addSubmissionModal.initialize(this, this.dataStore.currentProject); 
+  }
+  
 
   onViewTransactionLogs() {
     this.transactionLogsModal.initialize(this.dataStore.currentProject);
