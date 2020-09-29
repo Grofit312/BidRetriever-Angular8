@@ -84,13 +84,13 @@ export class SharedProjectsComponent implements OnInit, AfterViewInit{
     private amazonService: AmazonService,
     private spinner: NgxSpinnerService,
   ) { 
-      this.filterOptions = [
-        { "view_id": "my-user", "view_name": "My Shared Projects" },
-        { "view_id": "my-office", "view_name": "My Office Shared Projects" },
-        { "view_id": "my-company", "view_name": "My Company Shared Projects" },
-        { "view_id": "archived", "view_name": "Archived Shared Projects" },
-        { "view_id": "public", "view_name": "Public Shared Projects" }
-      ];
+this.filterOptions = [
+  { "view_id": "my-user", "view_name": "My Shared Projects" },
+  { "view_id": "my-office", "view_name": "My Office Shared Projects" },
+  { "view_id": "my-company", "view_name": "My Company Shared Projects" },
+  { "view_id": "archived", "view_name": "Archived Shared Projects" },
+  { "view_id": "public", "view_name": "Public Shared Projects" }
+];
 
 
     this.toolbarConfig = {

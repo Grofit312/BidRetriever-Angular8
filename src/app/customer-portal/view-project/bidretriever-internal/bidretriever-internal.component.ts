@@ -290,7 +290,16 @@ export class BidretrieverInternalComponent implements OnInit {
     }
 
     const tasks: Promise<any>[] = selectedRecords.map(record => {
-      const { table_name: tableName, record_key: recordKey } = record;
+      const { table_name: tableName, record_key: recordKey, description } = record;
+
+      if (tableName === '940') {
+        const { sheet_number: sheetNumber } = JSON.parse(description);
+
+        if (sheetNumber) {
+          return this.amazonService.updateWipRecordStatus(tableName, recordKey, 'processing', true);
+        }
+      }
+      
       return this.amazonService.updateWipRecordStatus(tableName, recordKey, 'queued', true);
     }).filter(task => !_.isNil(task));
 
