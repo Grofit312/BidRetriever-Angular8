@@ -69,7 +69,24 @@
                 </select>
               </div>
               <h4>Description</h4>
-              <ckeditor [editor]="Editor" [(ngModel)]="description" [ngModelOptions]="{standalone: true}" required>
+              <ckeditor [editor]="Editor" 
+                        [config]="{ 
+                          toolbar: [
+                            'heading','|',
+                            'bold',
+                            'italic',
+                            'link',
+                            'bulletedList',
+                            'numberedList','|',
+                            'indnt',
+                            'outdent','|',
+                            'imageUpload',
+                            'blockQuote',
+                            'insertTable',
+                            'undo',
+                            'redo',
+                            'mediaEmbed']}" 
+                        [(ngModel)]="description" [ngModelOptions]="{standalone: true}" required>
               </ckeditor>
             </div>
           </div>
