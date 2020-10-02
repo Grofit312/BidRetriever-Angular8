@@ -3,7 +3,6 @@ import { DataStore } from 'app/providers/datastore';
 import { ProjectsApi } from 'app/customer-portal/my-projects/my-projects.api.service';
 import { NotificationsService } from 'angular2-notifications';
 import { ActivatedRoute } from '@angular/router';
-import { ViewProjectApi } from '../view-project.api.service';
 import { Logger } from 'app/providers/logger.service';
 import { ValidationService } from 'app/providers/validation.service';
 import { ProjectFilesApi } from '../project-files/project-files.api.service';
@@ -124,7 +123,6 @@ export class ProjectSubmissionsComponent implements OnInit {
   constructor(
     public dataStore: DataStore,
     private apiService: ProjectsApi,
-    private viewProjectApiService: ViewProjectApi,
     private notificationService: NotificationsService,
     private activatedRoute: ActivatedRoute,
     private loggerService: Logger,
@@ -134,16 +132,17 @@ export class ProjectSubmissionsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-
-    const projectId = this.activatedRoute.parent.snapshot.params['project_id'];
-    this.viewProjectApiService.getProject(projectId, this.dataStore.currentCustomer ? (this.dataStore.currentCustomer['customer_timezone'] || 'eastern') : 'eastern')
-      .then(res => {
-        this.currentProject = res;
-        this.loadSubmissions();
-      })
-      .catch(err => {
-        this.notificationService.error('Error', err, { timeOut: 3000, showProgressBar: false });
+    if (this.dataStore.currentProject) {
+      this.currentProject = this.dataStore.currentProject;
+      this.loadSubmissions();
+    } else {
+      this.dataStore.getProjectState.subscribe(value => {
+        if (value) {
+          this.currentProject = this.dataStore.currentProject;
+          this.loadSubmissions();
+        }
       });
+    }
   }
 
   loadSubmissions() {
