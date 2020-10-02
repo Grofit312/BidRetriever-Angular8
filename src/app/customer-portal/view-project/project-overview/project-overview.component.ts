@@ -317,7 +317,7 @@ export class ProjectOverviewComponent implements OnInit {
   }
   onAddDocsToProjectEvent()
   {
-    this.addSubmissionModal.initialize(this, this.dataStore.currentProject); 
+    this.addSubmissionModal.initialize(this.dataStore.currentProject, this); 
   }
   
 
