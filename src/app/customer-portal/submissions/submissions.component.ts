@@ -68,12 +68,15 @@ export class SubmissionsComponent implements OnInit {
 
     this.columnDefs = [
       {
+        checkboxSelection: true,
+        width: 40,
+      },
+      {
         headerName: 'Project Name',
         field: 'project_name',
         sortable: true,
         filter: true,
         resizable: true,
-        checkboxSelection: true,
         rowDrag: true,
         width: 400,
         minWidth: 250,
