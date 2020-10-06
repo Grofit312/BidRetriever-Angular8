@@ -68,3 +68,8 @@
 .dx-dropdownlist-popup-wrapper .dx-list:not(.dx-list-select-decorator-enabled) .dx-list-item-content {
   padding: 3px 9px;
 }
+
+.data-view-details-content {
+  height: 65vh;
+  overflow-y: scroll;
+}
