@@ -10,7 +10,6 @@ import { SystemAnalyticsComponent } from "app/customer-portal/system-analytics/s
 import { NotificationViewerComponent } from "app/customer-portal/notification-viewer/notification-viewer.component";
 import { SubmissionsComponent } from "app/customer-portal/submissions/submissions.component";
 
-import { DocViewerComponent } from "./doc-viewer/doc-viewer.component";
 import { MyCalendarComponent } from "./my-calendar/my-calendar.component";
 import { SharedProjectsComponent } from "./shared-projects/shared-projects.component";
 const routes: Routes = [
@@ -79,11 +78,6 @@ const routes: Routes = [
         path: "notification-viewer",
         component: NotificationViewerComponent,
       },
-      {
-        path: "doc-viewer/:project_id/:folder_id/:doc_id/:comparison",
-        component: DocViewerComponent,
-      },
-
       {
         path: "",
         redirectTo: "my-projects",

@@ -47,9 +47,11 @@
   <div class='table-header'>
     <div class='font-weight-bold'>Non-Completed Records:</div>
     <div class='buttons'>
-      <button class='btn btn-danger' (click)='onResubmitRecord()'>Resubmit</button>
       <button class='btn btn-light' (click)='onViewRecordLog()'>View Log</button>
-      <button class='btn btn-light' (click)='onRefresh()'>Refresh</button>
+      <button class='btn btn-light' (click)='onViewDocument()'>View Document</button>
+      <button class='btn btn-light' (click)='onDownloadFile()'>Download File</button>
+      <button class='btn btn-danger' (click)='onResubmitRecord()'>Resubmit</button>
+      <button class='btn btn-primary' (click)='onRefresh()'>Refresh</button>
     </div>
   </div>
   <div class="table-meta">
@@ -105,3 +107,6 @@
                       [primaryKey]="selectedPrimaryKey">
     </app-record-logs>
 </dx-popup>
+
+<!-- Document View popup -->
+<document-detail-modal #documentDetailModal></document-detail-modal>

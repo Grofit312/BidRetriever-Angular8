@@ -68,6 +68,62 @@ export class ProjectFilesApi {
     });
   }
 
+  public getDocumentDetails(doc_id: string) {
+    return new Promise((resolve, reject) => {
+      axios.get(`${window['env'].apiBaseUrl}/GetDocumentDetails?doc_id=${doc_id}`)
+        .then(res => {
+          resolve(res.data);
+        })
+        .catch(err => {
+          console.log(err);
+          reject(err);
+        });
+    });
+  }
+
+  public findUserFavorites(user_id: string, project_id: string, favorite_type: string) {
+    return new Promise((resolve, reject) => {
+      axios.get(`${window['env'].apiBaseUrl}/FindUserFavorites?user_id=${user_id}&project_id=${project_id}&favorite_type=${favorite_type}`)
+        .then(res => {
+          resolve(res.data);
+        })
+        .catch(err => {
+          console.log(err);
+          reject(err);
+        });
+    });
+  }
+
+  public createUserFavorite(params: any) {
+    return new Promise((resolve, reject) => {
+      axios.post(`${window['env'].apiBaseUrl}/CreateUserFavorite`, queryString.stringify(params))
+        .then(res => {
+          resolve(res.data['user_favorite_id']);
+        })
+        .catch(err => {
+          console.log(err);
+          reject(err);
+        });
+    });
+  }
+
+  public removeUserFavorite(user_favorite_id: string) {
+    return new Promise((resolve, reject) => {
+      const params = {
+        user_favorite_id,
+      };
+
+      axios.post(`${window['env'].apiBaseUrl}/RemoveUserFavorite`, queryString.stringify(params))
+        .then(res => {
+          resolve();
+        })
+        .catch(err => {
+          console.log(err);
+          reject(err);
+        });
+    });
+  }
+
   public convertToTimeZoneString(timestamp: string, timezone: string, withSeconds: boolean = false) {
     const datetime = moment(timestamp);
     let timezonedDateTime = null;

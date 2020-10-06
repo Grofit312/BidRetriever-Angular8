@@ -10,6 +10,8 @@ import { ViewProjectApi } from 'app/customer-portal/view-project/view-project.ap
 import { AmazonService } from 'app/providers/amazon.service';
 import { SourceSystemAccountsApi } from 'app/customer-portal/system-settings/source-system-accounts/source-system-accounts.api.service';
 import { Logger } from 'app/providers/logger.service';
+import { ProjectFilesApi } from '../project-files/project-files.api.service';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 const CircularJSON = require('circular-json');
 const moment = require('moment');
@@ -18,11 +20,12 @@ const moment = require('moment');
   selector: 'app-bidretriever-internal',
   templateUrl: './bidretriever-internal.component.html',
   styleUrls: ['./bidretriever-internal.component.scss'],
-  providers: [SourceSystemAccountsApi]
+  providers: [SourceSystemAccountsApi, ProjectFilesApi]
 })
 export class BidretrieverInternalComponent implements OnInit {
 
   @ViewChild('grid', { static: false }) grid;
+  @ViewChild('documentDetailModal', { static: true }) documentDetailModal;
 
   projectSubmissionIds = '';
   destinationId = '';
@@ -177,13 +180,14 @@ export class BidretrieverInternalComponent implements OnInit {
 
   constructor(
     public dataStore: DataStore,
-    private router: Router,
     private activatedRoute: ActivatedRoute,
     private projectsApi: ProjectsApi,
     private viewProjectApi: ViewProjectApi,
     private sourceSystemApi: SourceSystemAccountsApi,
+    private projectFilesApi: ProjectFilesApi,
     private amazonService: AmazonService,
     private notificationService: NotificationsService,
+    private spinner: NgxSpinnerService,
     private loggerService: Logger
   ) {
   }
@@ -335,6 +339,65 @@ export class BidretrieverInternalComponent implements OnInit {
 
   onRefresh() {
     this.loadUnCompleteRecords();
+  }
+
+  async onViewDocument() {
+    const selectedRecord = this.selectedRecord;
+
+    if (!selectedRecord) {
+      this.notificationService.error('No Selection', 'Please select a record', { timeOut: 3000, showProgressBar: false });
+      return;
+    }
+
+    if (!selectedRecord['doc_id']) {
+      this.notificationService.error('No Document', 'This record is not associated with a document', { timeOut: 3000, showProgressBar: false });
+      return;
+    }
+
+    try {
+      this.spinner.show();
+
+      const doc = await this.projectFilesApi.getDocumentDetails(selectedRecord['doc_id']);
+      this.documentDetailModal.initialize(this.dataStore.currentProject, {}, doc, false);
+    } catch (err) {
+      this.notificationService.error('Error', 'Failed to read document detail', { timeOut: 3000, showProgressBar: false });
+    } finally {
+      this.spinner.hide();
+    }
+  }
+
+  async onDownloadFile() {
+    const selectedRecord = this.selectedRecord;
+
+    if (!selectedRecord) {
+      this.notificationService.error('No Selection', 'Please select a record', { timeOut: 3000, showProgressBar: false });
+      return;
+    }
+
+    if (!selectedRecord['doc_id'] && selectedRecord['table_name'] !== '922') {
+      this.notificationService.error('No Document', 'This record is not associated with a document', { timeOut: 3000, showProgressBar: false });
+      return;
+    } 
+
+    try {
+      this.spinner.show();
+
+      let url = null;
+
+      if (selectedRecord['doc_id']) {
+        const doc = await this.projectsApi.getDocument(selectedRecord['doc_id']);
+        url = await this.amazonService.getPresignedUrl(doc['bucket_name'], doc['file_key']);
+      } else {
+        const { temp_bucket_name, temp_vault_key } = JSON.parse(selectedRecord['description']);
+        url = await this.amazonService.getPresignedUrl(temp_bucket_name, temp_vault_key);
+      }
+
+      window.open(url, '_blank');
+    } catch (err) {
+      this.notificationService.error('Error', err, { timeOut: 3000, showProgressBar: false });
+    } finally {
+      this.spinner.hide();
+    }
   }
 
   logTransaction(operation: string, status: string, description: string, transaction_level: string) {

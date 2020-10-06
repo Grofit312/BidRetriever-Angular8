@@ -36,7 +36,6 @@ import { SubmissionsComponent } from "app/customer-portal/submissions/submission
 import { SharedModule } from "app/shared/shared.module";
 import { AnalyticsModule } from "app/analytics/analytics.module";
 
-import { DocViewerComponent } from "./doc-viewer/doc-viewer.component";
 import { MyCalendarComponent } from "./my-calendar/my-calendar.component";
 import { SharedProjectsComponent } from "./shared-projects/shared-projects.component";
 import { SystemAnalyticsComponent } from "./system-analytics/system-analytics.component";
@@ -51,7 +50,6 @@ import { ViewEmployeeComponent } from './view-employee/view-employee.component';
     MyCompaniesComponent,
     NotificationViewerComponent,
     SubmissionsComponent,
-    DocViewerComponent,
     MyCalendarComponent,
     SharedProjectsComponent,
     SystemAnalyticsComponent,
