@@ -7,7 +7,6 @@ import { IActionMapping, TREE_ACTIONS } from 'angular-tree-component';
 import { ProjectsApi } from 'app/customer-portal/my-projects/my-projects.api.service';
 import { AmazonService } from 'app/providers/amazon.service';
 import { DataStore } from 'app/providers/datastore';
-import { DocViewerApi } from 'app/customer-portal/doc-viewer/doc-viewer.api.service';
 import { Logger } from 'app/providers/logger.service';
 const moment = require('moment');
 
@@ -16,7 +15,6 @@ const moment = require('moment');
   selector: 'app-project-files',
   templateUrl: './project-files.component.html',
   styleUrls: ['./project-files.component.scss'],
-  providers: [DocViewerApi],
 })
 export class ProjectFilesComponent implements OnInit {
 
@@ -164,7 +162,6 @@ export class ProjectFilesComponent implements OnInit {
     private projectApiService: ProjectsApi,
     private notificationService: NotificationsService,
     private viewProjectApiService: ViewProjectApi,
-    private docViewerApiService: DocViewerApi,
     private amazonService: AmazonService,
     private logger: Logger,
     public dataStore: DataStore
@@ -207,7 +204,7 @@ export class ProjectFilesComponent implements OnInit {
   initialize() {
     const projectId = this.activatedRoute.parent.snapshot.params['project_id'];
     if (this.dataStore.currentUser['user_id'] != null) {
-      this.docViewerApiService.findUserFavorites(this.dataStore.currentUser['user_id'], projectId, 'document')
+      this.apiService.findUserFavorites(this.dataStore.currentUser['user_id'], projectId, 'document')
         .then((favorites: any[]) => {
           this.favorites = favorites;
           return this.viewProjectApiService.getProject(projectId, 'eastern');
@@ -364,7 +361,7 @@ onViewDocumentDetails(docId ?: string) {
 
     this.documentDetailModal.initialize(this.currentProject, submission, selectedDocuments[0], false);
   } else {
-    this.docViewerApiService.getDocumentDetails(docId)
+    this.apiService.getDocumentDetails(docId)
       .then((res) => {
         this.documentDetailModal.initialize(this.currentProject, {}, res, false);
         return;
@@ -443,7 +440,7 @@ onToggleFavorite() {
     const favoriteIndex = this.favorites.findIndex(favorite => favorite['favorite_id'] === docId);
     const favorite = this.favorites[favoriteIndex];
 
-    this.docViewerApiService.removeUserFavorite(favorite['user_favorite_id'])
+    this.apiService.removeUserFavorite(favorite['user_favorite_id'])
       .then(_ => {
         this.favorites.splice(favoriteIndex, 1);
         this.notificationService.success('Success', 'Removed from favorites', { timeOut: 3000, showProgressBar: false });
@@ -452,7 +449,7 @@ onToggleFavorite() {
         this.notificationService.error('Error', err, { timeOut: 3000, showProgressBar: false });
       });
   } else {
-    this.docViewerApiService.createUserFavorite({
+    this.apiService.createUserFavorite({
       favorite_id: docId,
       favorite_type: 'document',
       user_id: this.dataStore.currentUser['user_id'],

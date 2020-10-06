@@ -1,5 +1,5 @@
 import { Component, OnInit, ElementRef, ViewChild, AfterViewInit } from "@angular/core";
-import * as ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import * as ClassicEditor from "@app/../assets/ckeditor/build/ckeditor";
 import { NotificationsService } from "angular2-notifications";
 import { ActivatedRoute, ParamMap, Router } from "@angular/router";
 import { NgxSpinnerService } from "ngx-spinner";
@@ -22,6 +22,7 @@ export class ProjectNotesComponent implements OnInit,AfterViewInit {
   @ViewChild("folderTree", { static: true }) folderTree;
 
   public Editor = ClassicEditor;
+
   project_id: any;
   editType: EditType;
   editModalTitle = "";
@@ -108,11 +109,13 @@ export class ProjectNotesComponent implements OnInit,AfterViewInit {
     ;
     this.spinner.show();
     //this.project_id = this.activatedRoute.snapshot.queryParams["project_id"];
+    
     this.project_id = this.dataStore.currentProject.project_id;
 
     this.notesApi
-      .getNotesByProjectId(this.project_id)
+      .getNotesByProjectIds(this.project_id)
       .then((res: any[]) => {
+        
         this.notes = res;
         this.folderNodes = res;
         this.spinner.hide();      
@@ -195,6 +198,7 @@ export class ProjectNotesComponent implements OnInit,AfterViewInit {
     }
     this.note_parent_type="Project"
     const created_user_id = this.dataStore.currentUser.user_id;
+    const note_company_id= this.dataStore.currentProject.source_company_id;
     let note_parent_id = null;
     if (!this.isComment) {
       note_parent_id = this.activeFolderNode
@@ -205,13 +209,14 @@ export class ProjectNotesComponent implements OnInit,AfterViewInit {
         ? this.activeFolderNode.data.id
         : this.project_id;
     }
+
     const params: any = {
       created_user_id: created_user_id,
-      note_company_id: this.project_id,
+      note_company_id: note_company_id,
       note_desc: this.description,
       note_parent_type:this.note_parent_type,
       note_type: this.noteType,
-      note_parent_id: note_parent_id,
+      note_parent_id: note_parent_id?note_parent_id:this.dataStore.currentProject.project_id,
       note_priority: "High",
       note_relevance_number: 0,
       note_vote_count: 0,

@@ -1,5 +1,5 @@
 import { Component, OnInit, ElementRef, ViewChild, AfterViewInit } from "@angular/core";
-import * as ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import * as ClassicEditor from "@app/../assets/ckeditor/build/ckeditor";
 import { NotificationsService } from "angular2-notifications";
 import { NotesApi } from "../notes.api.service";
 import { ActivatedRoute, ParamMap, Router } from "@angular/router";
@@ -23,8 +23,9 @@ enum EditType {
 export class CompanyNotesComponent implements OnInit, AfterViewInit {
   @ViewChild("editModal", { static: false }) editModal: ElementRef;
   @ViewChild("folderTree", { static: true }) folderTree;
-
+     
   public Editor = ClassicEditor;
+   
   myTitle = 'floarla';
   model: any;
   FroalaEditor:any;

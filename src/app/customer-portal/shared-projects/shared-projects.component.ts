@@ -106,14 +106,7 @@ this.filterOptions = [
         showClearButton: true,
         valueExpr: 'view_id',
         displayExpr: 'view_name',
-        onValueChanged: (event) => {
-          if (event.value === 'manage_project_views') {
-            this.projectToolbarViewType.value = event.previousValue;
-            this.projectViewTypeSelected = event.previousValue;
-            //this.isProjectDataViewModalShown = true;
-            return;
-          }
-
+        onValueChanged: (event) => {          
           if (this.projectViewTypeSelected !== event.value) {
             this.projectViewTypeSelected = event.value;
             localStorage.setItem(this.PROJECT_TOOLBAR_INITIAL_VIEW, this.projectViewTypeSelected == null ? '' : this.projectViewTypeSelected);
@@ -236,15 +229,15 @@ this.filterOptions = [
 
       const params = { detail_level: 'admin' };
 
-      if (this.projectViewMode === 'my-user') {
+      if (this.projectViewTypeSelected === 'my-user') {
         params['share_user_id'] = this.dataStore.currentUser['user_id'];
-      } else if (this.projectViewMode === 'my-office') {
+      } else if (this.projectViewTypeSelected === 'my-office') {
         params['share_office_id'] = this.dataStore.currentUser['customer_office_id'];
-      } else if (this.projectViewMode === 'my-company') {
+      } else if (this.projectViewTypeSelected === 'my-company') {
         params['share_company_id'] = this.dataStore.currentUser['customer_id'];
-      } else if (this.projectViewMode === 'public') {
+      } else if (this.projectViewTypeSelected === 'public') {
         params['is_public'] = true;
-      } else if (this.projectViewMode === 'archived') {
+      } else if (this.projectViewTypeSelected === 'archived') {
         params['share_user_id'] = this.dataStore.currentUser['user_id'];
         params['status'] = 'archived';
       }
@@ -297,8 +290,16 @@ this.filterOptions = [
     });
   }
   getGridProjectContentByLoadOption(loadOptions: any) {
-    //TODO
-    return this.projectGridContent;
+    let sharedProjects = this.projectGridContent;
+    
+    if(this.searchWord)
+    {
+      sharedProjects = sharedProjects.filter((project) => {
+        const isMatched = Object.keys(project).map(key => project[key]).some(item => item.toString().toLowerCase().includes(this.searchWord));
+        return isMatched;
+      });
+    }
+    return sharedProjects;
   }
   
   /* Delete Project(s) */
