@@ -3,7 +3,6 @@ import { Routes, RouterModule } from "@angular/router";
 
 import { CustomerPortalComponent } from "app/customer-portal/customer-portal.component";
 import { AuthenticationGuard } from "app/providers/auth.guard";
-import { MySettingsComponent } from "app/customer-portal/my-settings/my-settings.component";
 import { MyProjectsComponent } from "app/customer-portal/my-projects/my-projects.component";
 import { MyCompaniesComponent } from "app/customer-portal/my-companies/my-companies.component";
 import { SystemAnalyticsComponent } from "app/customer-portal/system-analytics/system-analytics.component";
@@ -12,6 +11,7 @@ import { SubmissionsComponent } from "app/customer-portal/submissions/submission
 
 import { MyCalendarComponent } from "./my-calendar/my-calendar.component";
 import { SharedProjectsComponent } from "./shared-projects/shared-projects.component";
+import { MySettingsModule } from "./my-settings/my-settings.module";
 const routes: Routes = [
   {
     path: "",
@@ -36,7 +36,11 @@ const routes: Routes = [
       },
       {
         path: "my-settings",
-        component: MySettingsComponent,
+        loadChildren: () =>
+        import("./my-settings/my-settings.module").then(
+          (m) => m.MySettingsModule
+        ),
+        
       },
       {
         path: "system-settings",

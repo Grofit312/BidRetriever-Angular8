@@ -1,4 +1,16 @@
 .my-settings-content {
+  display: flex;
+  flex-direction: row;
   padding: 30px 50px;
+  flex-grow: 1;
 
+  .my-settings-menu {
+    width: 25%;
+    margin-right: 30px;
+  }
+
+  .my-settings-board {
+    width: 75%;
+    margin-left: 30px;
+  }
 }
