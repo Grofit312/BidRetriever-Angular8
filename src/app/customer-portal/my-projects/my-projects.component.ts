@@ -156,7 +156,8 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
         onInitialized: (args: any) => {
           this.toolbarUsersSelectBox = args.component;
           if (this.dataStore.originUserEmail) {
-            this.toolbarUsersSelectBox.getDataSource().load().done((data) => {
+            this.toolbarUsersSelectBox.getDataSource().load()
+            .done((data) => {
               console.log('Users Data Loaded onInitialized');
             });
           }
@@ -716,50 +717,55 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
         if ('project_name' in values) {
           const validProjectName = this.validationService.validateProjectName(values['project_name']);
           if (validProjectName.length === 0) {
-            return reject('Project name cannot be empty.');
+            return reject('Project Name cannot be empty.');
           } else {
-            this.apiService.updateProject(key, {
-              project_name: validProjectName
-            }).then((res) => {
-              this.notificationService.success('Success', 'Project has been updated', { timeOut: 3000, showProgressBar: false });
-              this.projectGridContent[updateIndex]['project_name'] = validProjectName;
-              return resolve(true);
-            }).catch((error) => {
-              return reject('Failed to update the project name');
-            });
+            this.apiService
+            .updateProject(key, {project_name: validProjectName})
+            .then((res) => {
+                this.notificationService
+                  .success('Success', 'Project has been updated', { timeOut: 3000, showProgressBar: false });
+                this.projectGridContent[updateIndex]['project_name'] 
+                  = values['project_name'];
+                return resolve();
+              }).catch((error) => {
+                return reject('Failed to update the project name');
+              });
           }
         } else if ('project_admin_user_email' in values) {
-          const matchedUser = this.projectGridEditorTemplateSource.adminUserEmail.find(({ user_email }) => user_email === values['project_admin_user_email']);
-          this.apiService.updateProject(key, {
-            project_admin_user_id: matchedUser['user_id']
-          }).then((res) => {
-            this.notificationService.success('Success', 'Project Admin User Email has been updated', { timeOut: 3000, showProgressBar: false });
-            this.projectGridContent[updateIndex]['project_admin_user_email'] = values['project_admin_user_email'];
-            return resolve(true);
-          }).catch((error) => {
-            return reject('Failed to update the status');
-          });
+          const matchedUser 
+            = this.projectGridEditorTemplateSource
+                  .adminUserEmail
+                  .find(({ user_email }) => user_email === values['project_admin_user_email']);
+          this.apiService
+            .updateProject(key, {project_admin_user_id: matchedUser['user_id']})
+            .then((res) => {
+              this.notificationService.success('Success', 'Project Admin User Email has been updated', { timeOut: 3000, showProgressBar: false });
+              this.projectGridContent[updateIndex]['project_admin_user_email'] = values['project_admin_user_email'];
+              return resolve();
+            }).catch((error) => {
+              return reject('Failed to update the status');
+            });
         } else if ('project_bid_datetime' in values) {
           const updatedValue = moment(values['project_bid_datetime']).utc().format('YYYY-MM-DDTHH:mm:ss.SSSSSS') + 'Z';
-          this.apiService.updateProject(key, {
-            project_bid_datetime: updatedValue
-          }).then((res) => {
-            this.notificationService.success('Success', 'Project Bid DateTime has been updated', { timeOut: 3000, showProgressBar: false });
-            this.projectGridContent[updateIndex]['project_bid_datetime'] = updatedValue;
-            return resolve(true);
-          }).catch((error) => {
-            return reject('Failed to update the status');
-          });
+          this.apiService
+            .updateProject(key, {project_bid_datetime: updatedValue})
+            .then((res) => {
+              this.notificationService.success('Success', 'Project Bid DateTime has been updated', { timeOut: 3000, showProgressBar: false });
+              this.projectGridContent[updateIndex]['project_bid_datetime'] = updatedValue;
+              return resolve();
+            }).catch((error) => {
+              return reject('Failed to update the status');
+            });
         } else if ('auto_update_status' in values) {
-          this.apiService.updateProject(key, {
-            auto_update_status: values['auto_update_status']
-          }).then((res) => {
-            this.notificationService.success('Success', 'Auto-Update-Status has been updated', { timeOut: 3000, showProgressBar: false });
-            this.projectGridContent[updateIndex]['auto_update_status'] = values['auto_update_status'];
-            return resolve(true);
-          }).catch((error) => {
-            return reject('Failed to update the status');
-          });
+          this.apiService
+            .updateProject(key, {auto_update_status: values['auto_update_status']})
+            .then((res) => {
+              this.notificationService.success('Success', 'Auto-Update-Status has been updated', { timeOut: 3000, showProgressBar: false });
+              this.projectGridContent[updateIndex]['auto_update_status'] = values['auto_update_status'];
+              return resolve();
+            }).catch((error) => {
+              return reject('Failed to update the status');
+            });
         } else if ('status' in values) {
           const isPlatformAdmin = this.dataStore.originUserEmail.includes('bidretriever.net');
 
@@ -767,156 +773,156 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
             || (this.projectGridContent[updateIndex]['status'] === 'archived' && !this.isSysAdmin)) {
             return reject('You are not authorized to perform this action');
           } else {
-            this.apiService.updateProject(key, {
-              status: values['status']
-            }).then((res) => {
-              this.notificationService.success('Success', 'Status has been updated', { timeOut: 3000, showProgressBar: false });
-              this.projectGridContent[updateIndex]['status'] = values['status'];
-              return resolve(true);
+            this.apiService
+              .updateProject(key, { status: values['status']})
+              .then((res) => {
+                this.notificationService.success('Success', 'Status has been updated', { timeOut: 3000, showProgressBar: false });
+                this.projectGridContent[updateIndex]['status'] = values['status'];
+                return resolve();
+              }).catch((error) => {
+                return reject('Failed to update the status');
+              });
+          }
+        } else if ('project_assigned_office_name' in values) {
+          this.apiService
+            .updateProject(key, {project_assigned_office_name: values['project_assigned_office_name']})
+              .then((res) => {
+                this.notificationService.success('Success', 'Project assigned office name has been updated', { timeOut: 3000, showProgressBar: false });
+                this.projectGridContent[updateIndex]['project_assigned_office_name'] = values['project_assigned_office_name'];
+                return resolve();
+              }).catch((error) => {
+                return reject('Failed to update the project assigned office name');
+              })
+        } else if ('project_notes' in values) {
+          this.apiService
+            .updateProject(key, {project_notes: values['project_notes']})
+            .then((res) => {
+              this.notificationService.success('Success', 'Project Note has been updated', { timeOut: 3000, showProgressBar: false });
+              this.projectGridContent[updateIndex]['project_notes'] = values['project_notes'];
+              return resolve();
+            }).catch((error) => {
+              return reject('Failed to update the project notes');
+            });
+        } else if ('project_stage' in values) {
+          this.apiService
+            .updateProject(key, {project_stage: values['project_stage']})
+            .then((res) => {
+              this.notificationService.success('Success', 'Project-Stage has been updated', { timeOut: 3000, showProgressBar: false });
+              this.projectGridContent[updateIndex]['project_stage'] = values['project_stage'];
+              return resolve();
             }).catch((error) => {
               return reject('Failed to update the status');
             });
-          }
-        } else if ('project_assigned_office_name' in values) {
-          this.apiService.updateProject(key, {
-            project_assigned_office_name: values['project_assigned_office_name']
-          }).then((res) => {
-            this.notificationService.success('Success', 'Project assigned office name has been updated', { timeOut: 3000, showProgressBar: false });
-            this.projectGridContent[updateIndex]['project_assigned_office_name'] = values['project_assigned_office_name'];
-            return resolve(true);
-          }).catch((error) => {
-            return reject('Failed to update the project assigned office name');
-          })
-        } else if ('project_notes' in values) {
-          this.apiService.updateProject(key, {
-            project_notes: values['project_notes']
-          }).then((res) => {
-            this.notificationService.success('Success', 'Project Note has been updated', { timeOut: 3000, showProgressBar: false });
-            this.projectGridContent[updateIndex]['project_notes'] = values['project_notes'];
-            return resolve(true);
-          }).catch((error) => {
-            return reject('Failed to update the project notes');
-          });
-        } else if ('project_stage' in values) {
-          this.apiService.updateProject(key, {
-            project_stage: values['project_stage']
-          }).then((res) => {
-            this.notificationService.success('Success', 'Project-Stage has been updated', { timeOut: 3000, showProgressBar: false });
-            this.projectGridContent[updateIndex]['project_stage'] = values['project_stage'];
-            return resolve(true);
-          }).catch((error) => {
-            return reject('Failed to update the status');
-          });
         } else if ('project_process_status' in values) {
-          this.apiService.updateProject(key, {
-            project_process_status: values['project_process_status']
-          }).then((res) => {
-            this.notificationService.success('Success', 'project_Process_Status has been updated', { timeOut: 3000, showProgressBar: false });
-            this.projectGridContent[updateIndex]['project_process_status'] = values['project_process_status'];
-            return resolve(true);
-          }).catch((error) => {
-            return reject('Failed to update the status');
-          });
+          this.apiService
+            .updateProject(key, {project_process_status: values['project_process_status']})
+            .then((res) => {
+              this.notificationService.success('Success', 'project_Process_Status has been updated', { timeOut: 3000, showProgressBar: false });
+              this.projectGridContent[updateIndex]['project_process_status'] = values['project_process_status'];
+              return resolve();
+            }).catch((error) => {
+              return reject('Failed to update the status');
+            });
         } else if ('project_timezone' in values) {
-          this.apiService.updateProject(key, {
-            project_timezone: values['project_timezone']
-          }).then((res) => {
-            this.notificationService.success('Success', 'Project Timezone has been updated', { timeOut: 3000, showProgressBar: false });
-            this.projectGridContent[updateIndex]['project_timezone'] = values['project_timezone'];
-            return resolve(true);
-          }).catch((error) => {
-            return reject('Failed to update the status');
-          });
+          this.apiService
+            .updateProject(key, {project_timezone: values['project_timezone']})
+            .then((res) => {
+              this.notificationService.success('Success', 'Project Timezone has been updated', { timeOut: 3000, showProgressBar: false });
+              this.projectGridContent[updateIndex]['project_timezone'] = values['project_timezone'];
+              return resolve();
+            }).catch((error) => {
+              return reject('Failed to update the status');
+            });
         } else if ('project_contract_type' in values) {
-          this.apiService.updateProject(key, {
-            project_contract_type: values['project_contract_type']
-          }).then((res) => {
-            this.notificationService.success('Success', 'Project Contract Type has been updated', { timeOut: 3000, showProgressBar: false });
-            this.projectGridContent[updateIndex]['project_contract_type'] = values['project_contract_type'];
-            return resolve(true);
-          }).catch((error) => {
-            return reject('Failed to update the status');
-          })
+          this.apiService
+            .updateProject(key, {project_contract_type: values['project_contract_type']})
+            .then((res) => {
+              this.notificationService.success('Success', 'Project Contract Type has been updated', { timeOut: 3000, showProgressBar: false });
+              this.projectGridContent[updateIndex]['project_contract_type'] = values['project_contract_type'];
+              return resolve();
+            }).catch((error) => {
+              return reject('Failed to update the status');
+            })
         } else if ('project_segment' in values) {
-          this.apiService.updateProject(key, {
-            project_segment: values['project_segment']
-          }).then((res) => {
-            this.notificationService.success('Success', 'Project Segment has been updated', { timeOut: 3000, showProgressBar: false });
-            this.projectGridContent[updateIndex]['project_segment'] = values['project_segment'];
-            return resolve(true);
-          }).catch((error) => {
-            return reject('Failed to update the status');
-          });
+          this.apiService
+            .updateProject(key, {project_segment: values['project_segment']})
+            .then((res) => {
+              this.notificationService.success('Success', 'Project Segment has been updated', { timeOut: 3000, showProgressBar: false });
+              this.projectGridContent[updateIndex]['project_segment'] = values['project_segment'];
+              return resolve();
+            }).catch((error) => {
+              return reject('Failed to update the status');
+            });
         } else if ('project_building_type' in values) {
-          this.apiService.updateProject(key, {
-            project_building_type: values['project_building_type']
-          }).then((res) => {
-            this.notificationService.success('Success', 'Project Building Type has been updated', { timeOut: 3000, showProgressBar: false });
-            this.projectGridContent[updateIndex]['project_building_type'] = values['project_building_type'];
-            return resolve(true);
-          }).catch((error) => {
-            return reject('Failed to update the status');
-          });
+          this.apiService
+            .updateProject(key, {project_building_type: values['project_building_type']})
+            .then((res) => {
+              this.notificationService.success('Success', 'Project Building Type has been updated', { timeOut: 3000, showProgressBar: false });
+              this.projectGridContent[updateIndex]['project_building_type'] = values['project_building_type'];
+              return resolve();
+            }).catch((error) => {
+              return reject('Failed to update the status');
+            });
         } else if ('project_labor_requirement' in values) {
-          this.apiService.updateProject(key, {
-            project_labor_requirement: values['project_labor_requirement']
-          }).then((res) => {
-            this.notificationService.success('Success', 'Project Labor Requirement has been updated', { timeOut: 3000, showProgressBar: false });
-            this.projectGridContent[updateIndex]['project_labor_requirement'] = values['project_labor_requirement'];
-            return resolve(true);
-          }).catch((error) => {
-            return reject('Failed to update the status');
-          });
+          this.apiService
+            .updateProject(key, {project_labor_requirement: values['project_labor_requirement']})
+            .then((res) => {
+              this.notificationService.success('Success', 'Project Labor Requirement has been updated', { timeOut: 3000, showProgressBar: false });
+              this.projectGridContent[updateIndex]['project_labor_requirement'] = values['project_labor_requirement'];
+              return resolve();
+            }).catch((error) => {
+              return reject('Failed to update the status');
+            });
         } else if ('project_value' in values) {
-          this.apiService.updateProject(key, {
-            project_value: values['project_value']
-          }).then((res) => {
-            this.notificationService.success('Success', 'Project Value has been updated', { timeOut: 3000, showProgressBar: false });
-            this.projectGridContent[updateIndex]['project_value'] = values['project_value'];
-            return resolve(true);
-          }).catch((error) => {
-            return reject('Failed to update the status');
-          });
+          this.apiService
+            .updateProject(key, {project_value: values['project_value']})
+            .then((res) => {
+              this.notificationService.success('Success', 'Project Value has been updated', { timeOut: 3000, showProgressBar: false });
+              this.projectGridContent[updateIndex]['project_value'] = values['project_value'];
+              return resolve();
+            }).catch((error) => {
+              return reject('Failed to update the status');
+            });
         } else if ('project_size' in values) {
-          this.apiService.updateProject(key, {
-            project_size: values['project_size']
-          }).then((res) => {
-            this.notificationService.success('Success', 'Project Size has been updated', { timeOut: 3000, showProgressBar: false });
-            this.projectGridContent[updateIndex]['project_size'] = values['project_size'];
-            return resolve(true);
-          }).catch((error) => {
-            return reject('Failed to update the status');
-          });
+          this.apiService
+            .updateProject(key, {project_size: values['project_size']})
+            .then((res) => {
+              this.notificationService.success('Success', 'Project Size has been updated', { timeOut: 3000, showProgressBar: false });
+              this.projectGridContent[updateIndex]['project_size'] = values['project_size'];
+              return resolve();
+            }).catch((error) => {
+              return reject('Failed to update the status');
+            });
         } else if ('project_number' in values) {
-          this.apiService.updateProject(key, {
-            project_number: values['project_number']
-          }).then((res) => {
-            this.notificationService.success('Success', 'Project number has been updated', { timeOut: 3000, showProgressBar: false });
-            this.projectGridContent[updateIndex]['project_number'] = values['project_number'];
-            return resolve(true);
-          }).catch((error) => {
-            return reject('Failed to update the status');
-          });
+          this.apiService
+            .updateProject(key, {project_number: values['project_number']})
+            .then((res) => {
+              this.notificationService.success('Success', 'Project number has been updated', { timeOut: 3000, showProgressBar: false });
+              this.projectGridContent[updateIndex]['project_number'] = values['project_number'];
+              return resolve();
+            }).catch((error) => {
+              return reject('Failed to update the status');
+            });
         } else if ('project_construction_type' in values) {
-          this.apiService.updateProject(key, {
-            project_construction_type: values['project_construction_type']
-          }).then((res) => {
-            this.notificationService.success('Success', 'Project Construction Type has been updated', { timeOut: 3000, showProgressBar: false });
-            this.projectGridContent[updateIndex]['project_construction_type'] = values['project_construction_type'];
-            return resolve(true);
-          }).catch((error) => {
-            return reject('Failed to update the status');
-          });
+          this.apiService
+            .updateProject(key, {project_construction_type: values['project_construction_type']})
+            .then((res) => {
+              this.notificationService.success('Success', 'Project Construction Type has been updated', { timeOut: 3000, showProgressBar: false });
+              this.projectGridContent[updateIndex]['project_construction_type'] = values['project_construction_type'];
+              return resolve();
+            }).catch((error) => {
+              return reject('Failed to update the status');
+            });
         } else if ('project_award_status' in values) {
-          this.apiService.updateProject(key, {
-            project_award_status: values['project_award_status']
-          }).then((res) => {
-            this.notificationService.success('Success', 'Project Award Status has been updated', { timeOut: 3000, showProgressBar: false });
-            this.projectGridContent[updateIndex]['project_award_status'] = values['project_award_status'];
-            return resolve(true);
-          }).catch((error) => {
-            return reject('Failed to update the status');
-          });
+          this.apiService
+            .updateProject(key, {project_award_status: values['project_award_status']})
+            .then((res) => {
+              this.notificationService.success('Success', 'Project Award Status has been updated', { timeOut: 3000, showProgressBar: false });
+              this.projectGridContent[updateIndex]['project_award_status'] = values['project_award_status'];
+              return resolve();
+            }).catch((error) => {
+              return reject('Failed to update the status');
+            });
         } else {
           return reject('You are not able to edit this value');
         }
