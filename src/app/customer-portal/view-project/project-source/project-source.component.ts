@@ -106,25 +106,35 @@ export class ProjectSourceComponent implements OnInit, AfterViewInit {
           text: 'View Project',
           onClick: () => this.toolbarViewProjectAction()
         },
+        addProject: {
+          type: 'normal',
+          text: 'Add Project',
+          onClick: () => this.toolbarAddProjectAction()
+        },
         addSource: {
           type: 'normal',
           text: 'Select Source Project',
           onClick: () => this.toolbarAddSourceAction()
+        },
+        viewCompany: {
+          type: 'normal',          
+          text: 'View Source Company',
+          onClick: () => this.toolbarViewCompanyAction()
         },
         removeSource: {
           type: 'normal',
           text: 'Remove Source',
           onClick: () => this.toolbarRemoveSourceAction()
         },
-        addProject: {
-          type: 'normal',          
-          text: 'Add Project',
-          onClick: () => this.toolbarAddProjectAction()
+        refreshGrid: {
+          type: 'normal',
+          text: 'Refresh Grid',
+          onClick: () => this.toolbarRefreshGridAction(),
         },
-        viewCompany: {
-          type: 'normal',          
-          text: 'View Comapny',
-          onClick: () => this.toolbarViewCompanyAction()
+        help: {
+          type: 'normal',
+          text: 'Help',
+          onClick: () => this.toolbarHelpAction(),
         },
       }
     };
@@ -179,6 +189,9 @@ export class ProjectSourceComponent implements OnInit, AfterViewInit {
         }
       })
     });
+  }
+  toolbarHelpAction() {
+     
   }
 
   ngOnInit() {
@@ -376,26 +389,37 @@ export class ProjectSourceComponent implements OnInit, AfterViewInit {
             text: 'View Project',
             onClick: () => this.toolbarViewProjectAction()
           },
+          {
+            type: 'normal',          
+            text: 'Add Project',
+            onClick: () => this.toolbarAddProjectAction()
+          },
            {
             type: 'normal',
             text: 'Select Source Project',
             onClick: () => this.toolbarAddSourceAction()
+          },
+          {
+            type: 'normal',          
+            text: 'View Source Company',
+            onClick: () => this.toolbarViewCompanyAction()
           },
            {
             type: 'normal',
             text: 'Remove Source',
             onClick: () => this.toolbarRemoveSourceAction()
           },
-           {
-            type: 'normal',          
-            text: 'Add Project',
-            onClick: () => this.toolbarAddProjectAction()
+          {
+            type: 'normal',
+            text: 'Refresh Grid',
+            onClick: () => this.toolbarRefreshGridAction(),
           },
-           {
-            type: 'normal',          
-            text: 'View Comapny',
-            onClick: () => this.toolbarViewCompanyAction()
-          },
+          {
+            type: 'normal',
+            text: 'Help',
+            onClick: () => this.toolbarHelpAction(),
+          }
+        
        );
     }
     return e;
