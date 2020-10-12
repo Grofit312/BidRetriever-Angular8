@@ -20,7 +20,7 @@
     <ng-template #tree let-node="node">
       <div class="desc" *ngIf="isVisible(node)">
         <div class="desc-header">
-          <h5><span>Auther Name</span> : {{node.firstName}} {{node.lastName}}</h5>
+          <h5><span>Author Name</span> : {{node.firstName}} {{node.lastName}}</h5>
         <h5><span>Created Date</span> : {{node.createdDate | date: 'MM-dd-yyyy' }}</h5>
         </div> 
         <h4>{{node.subject}}</h4>
