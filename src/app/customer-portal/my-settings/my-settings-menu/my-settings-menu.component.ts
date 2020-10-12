@@ -1,15 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { DataStore } from 'app/providers/datastore';
-
 import { NotificationsService } from 'angular2-notifications';
 import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
-  selector: 'app-my-settings',
-  templateUrl: './my-settings.component.html',
-  styleUrls: ['./my-settings.component.scss']
+  selector: 'app-my-settings-menu',
+  templateUrl: './my-settings-menu.component.html',
+  styleUrls: ['./my-settings-menu.component.scss']
 })
-export class MySettingsComponent implements OnInit {
+export class MySettingsMenuComponent implements OnInit {
 
   
   currentMenu = 1;
@@ -35,6 +34,7 @@ export class MySettingsComponent implements OnInit {
   }
 
   onClickMenu(index: number) {
+    debugger
     this.currentMenu = index;
 
     const newLoad = this.newLoad;

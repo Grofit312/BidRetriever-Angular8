@@ -1,0 +1,52 @@
+<div class='notification-settings-container'>
+    <div class='notification-setting'>
+      <div class='notification-setting-selector'>
+        <div>{{ DAILY_DOCUMENT_DIGEST_NAME }}</div>
+        <select name='daily_document_digest' [(ngModel)]='dailyDocumentDigest' (change)='onChangeDailyDocumentDigestSetting()'>
+          <option value="Diabled">Disabled</option>
+          <option selected value="User">User</option>
+          <option value="Office">Office</option>
+          <option value="Customer">Customer</option>
+        </select>
+      </div>
+      <div class='notification-setting-description'>
+        {{ DAILY_DOCUMENT_DIGEST_DESCRIPTION }}
+      </div>
+    </div>
+    <div class='notification-setting'>
+        <div class='notification-setting-selector'>
+          <div>{{ NEW_PROJECT_CONFIRMATION_NAME }}</div>
+          <select name='new_project_confirmation' [(ngModel)]='newProjectConfirmation' (change)='onChangeNewProjectConfirmationSetting()'>
+            <option value="Enabled">Enabled</option>
+            <option selected value="Diabled">Disabled</option>
+          </select>
+        </div>
+        <div class='notification-setting-description'>
+          {{ NEW_PROJECT_CONFIRMATION_DESCRIPTION }}
+        </div>
+      </div>
+      <div class='notification-setting'>
+        <div class='notification-setting-selector'>
+          <div>{{ NEW_PROJECT_COMPLETE_NAME }}</div>
+          <select name='new_project_confirmation' [(ngModel)]='newProjectComplete' (change)='onChangeNewProjectCompleteSetting()'>
+            <option selected value="Enabled">Enabled</option>
+            <option value="Diabled">Disabled</option>
+        </select>
+        </div>
+        <div class='notification-setting-description'>
+          {{ NEW_PROJECT_COMPLETE_DESCRIPTION }}
+        </div>
+      </div>
+      <div class='notification-setting'>
+        <div class='notification-setting-selector'>
+          <div>{{ NEW_PROJECT_QUICK_REVIEW_NAME }}</div>
+          <select name='new_project_quick_review' [(ngModel)]='newProjectQuickReview' (change)='onChangeNewProjectQuickReviewSetting()'>
+            <option selected value="Enabled">Enabled</option>
+            <option value="Diabled">Disabled</option>
+        </select>
+        </div>
+        <div class='notification-setting-description'>
+          {{ NEW_PROJECT_QUICK_REVIEW_DESCRIPTION }}
+        </div>
+      </div>
+</div>

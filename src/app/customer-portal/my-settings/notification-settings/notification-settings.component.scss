@@ -1,0 +1,23 @@
+.notification-settings-container {
+    .notification-setting {
+      margin-bottom: 60px;
+      display: flex;
+      flex-direction: row;
+  
+      .notification-setting-selector {
+        select {
+          margin-top: 5px;
+          width: 350px;
+          height: 40px;
+        }
+      }
+  
+      .notification-setting-description {
+        max-width: 800px;
+        margin-top: 25px;
+        margin-left: 50px;
+      }
+    }
+  }
+  
+  

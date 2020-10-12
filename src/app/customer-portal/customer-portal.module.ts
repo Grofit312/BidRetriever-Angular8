@@ -28,7 +28,6 @@ import { CustomerPortalComponent } from "app/customer-portal/customer-portal.com
 import { customerPortalRouting } from "app/customer-portal/customer-portal.routes";
 import { MyProjectsComponent } from "app/customer-portal/my-projects/my-projects.component";
 import { MyCompaniesComponent } from "app/customer-portal/my-companies/my-companies.component";
-import { MySettingsComponent } from "app/customer-portal/my-settings/my-settings.component";
 import { TabsComponent } from "app/customer-portal/tabs/tabs.component";
 import { ValidationService } from "app/providers/validation.service";
 import { NotificationViewerComponent } from "app/customer-portal/notification-viewer/notification-viewer.component";
@@ -41,11 +40,11 @@ import { SharedProjectsComponent } from "./shared-projects/shared-projects.compo
 import { SystemAnalyticsComponent } from "./system-analytics/system-analytics.component";
 import { ViewEmployeeComponent } from './view-employee/view-employee.component';
 
+
 @NgModule({
   declarations: [
     CustomerPortalComponent,
     TabsComponent,
-    MySettingsComponent,
     MyProjectsComponent,
     MyCompaniesComponent,
     NotificationViewerComponent,
@@ -53,7 +52,7 @@ import { ViewEmployeeComponent } from './view-employee/view-employee.component';
     MyCalendarComponent,
     SharedProjectsComponent,
     SystemAnalyticsComponent,
-    ViewEmployeeComponent,
+    ViewEmployeeComponent, 
   ],
   imports: [
     customerPortalRouting,
