@@ -19,6 +19,7 @@ const WIP_TABLE_KEYS = {
   9414: 'compare_id',
   9418: 'manual_plan_processing_id',
   964: 'publish_files_id',
+  966: 'revision_removal_id',
   970: 'user_notifications_id'
 };
 
@@ -303,7 +304,7 @@ public getPresignedUrlWithOriginalFileName(bucket_name: string, file_key: string
 
       try {
         const routineNames = [
-          '922', '923', '925', '940', '941', '94111', '94114', '9414', '9418', '964', '970'
+          '922', '923', '925', '940', '941', '94111', '94114', '9414', '9418', '964', '966', '970'
         ];
 
         const tasks = [];
