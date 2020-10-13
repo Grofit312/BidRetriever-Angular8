@@ -27,6 +27,11 @@ export class SubmissionDetailModalComponent implements OnInit {
 
   columnDefs = [
     {
+      checkboxSelection: true,
+      rowDrag: true,
+      width: 40,
+    },
+    {
       headerName: 'Original Filename',
       field: 'project_doc_original_filename',
       sortable: true,
@@ -34,8 +39,6 @@ export class SubmissionDetailModalComponent implements OnInit {
       resizable: true,
       editable: false,
       minWidth: 200,
-      checkboxSelection: true,
-      rowDrag: true,
     },
     {
       headerName: 'Document Name',
@@ -255,6 +258,14 @@ export class SubmissionDetailModalComponent implements OnInit {
   }
 
   onDownloadSubmission() {
+    this.apiService.getPublishedLink(this.dataStore.currentProject['project_id'])
+    .then((url: string) => {
+      const downloadUrl = url.replace('dl=0', 'dl=1');
+      window.open(downloadUrl, '_blank');
+    })
+    .catch(err => {
+      this.notificationService.error('Error', err, { timeOut: 3000, showProgressBar: false });
+    });
   }
 
   onViewTransactionLogs() {

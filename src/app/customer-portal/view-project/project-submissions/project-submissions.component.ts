@@ -166,7 +166,16 @@ export class ProjectSubmissionsComponent implements OnInit {
       this.submissionDetailModal.initialize(this.currentProject, submission, false);
     }
   }
-
+  onDownloadProject() {
+    this.apiService.getPublishedLink(this.dataStore.currentProject['project_id'])
+      .then((url: string) => {
+        const downloadUrl = url.replace('dl=0', 'dl=1');
+        window.open(downloadUrl, '_blank');
+      })
+      .catch(err => {
+        this.notificationService.error('Error', err, { timeOut: 3000, showProgressBar: false });
+      });
+  }
   onAddSubmission() {
     const currentProjectStatus = this.currentProject['status'];
 

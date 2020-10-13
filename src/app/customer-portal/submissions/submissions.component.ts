@@ -76,10 +76,10 @@ this.submissionGridDataSource = new CustomStore({
 
 this.submissionGridColumns  = [
   { dataField: 'project_name', caption: 'Project Name', width: 400, visible: true, allowEditing: false },
-  { dataField: 'source_sys_name', caption: 'Source', width: 100, visible: true, allowEditing: false },
-  { dataField: 'source_company_name', caption: 'Source Company', width: 100, visible: true, allowEditing: false },
-  { dataField: 'submission_name', caption: 'Submission Name', width: 50, visible: true, allowEditing: false },
-  { dataField: 'submission_type', caption: 'Submission Type', width: 50, visible: true, allowEditing: false },
+  { dataField: 'source_sys_name', caption: 'Source', width: 200, visible: true, allowEditing: false },
+  { dataField: 'source_company_name', caption: 'Source Company', width: 200, visible: true, allowEditing: false },
+  { dataField: 'submission_name', caption: 'Submission Name', width: 200, visible: true, allowEditing: false },
+  { dataField: 'submission_type', caption: 'Submission Type', width: 200, visible: true, allowEditing: false },
   { dataField: 'submitter_email', caption: 'Submitter Email', width: 100, visible: true, allowEditing: false },
   { dataField: 'submission_date', caption: 'Submission Date/Time', width: 100, visible: true, allowEditing: false },
   { dataField: 'submission_process_status', caption: 'Processing Status', width: 100, 
@@ -88,10 +88,10 @@ this.submissionGridColumns  = [
       visible: this.isBidRetrieverAdmin, allowEditing: false,  },//TODO --tooltip: params => { return params.value; }
 
   { dataField: 'submission_file_count', caption: '# Files', width: 100, visible: true, allowEditing: false },
-  { dataField: 'submission_pending_file_count', caption: '# Files Pending', width: 150, visible: true, allowEditing: false },
+  { dataField: 'submission_pending_file_count', caption: '# Files Pending', width: 100, visible: true, allowEditing: false },
   { dataField: 'submission_plan_count', caption: '# Plans', width: 100, visible: true, allowEditing: false },
-  { dataField: 'total_processing_time', caption: 'Total Processing Time', width: 180, visible: true, allowEditing: false },
-  { dataField: 'submission_id', caption: 'Submission ID', width: 150, visible: true, allowEditing: false },
+  { dataField: 'total_processing_time', caption: 'Total Processing Time', width: 100, visible: false, allowEditing: false },
+  { dataField: 'submission_id', caption: 'Submission ID', width: 100, visible: false, allowEditing: false },
 
 ];
   
@@ -129,12 +129,15 @@ gridSubmissionLoadAction(loadOptions: any) {
     this.apiService.getSubmissions(params, userTimezone)
     .then((submissions: any) => {
 
-     // this.rowData = _.uniqBy(submissions, ({ project_id }) => project_id);
-  
       console.log("Submissions",submissions);
-      this.submissionGridContent = submissions as any[];
+      
       this.submissionGridContentLoaded = true;
      
+      if (this.isBidRetrieverAdmin) {
+        this.submissionGridContent = submissions as any[];
+      } else {
+        this.submissionGridContent = submissions.filter(({ submission_file_count }) => Number(submission_file_count) > 0)  as any[];
+      }
 
       const filteredSubmissions = this.getGridSubmissionContentByLoadOption(loadOptions);
       return resolve({
@@ -208,14 +211,13 @@ gridSubmissionLoadAction(loadOptions: any) {
     .then((submissions: any) => {
       console.log("Submissions",submissions);
 
-     // this.submissionGridContent = submissions as any[];
-      this.submissionGridContentLoaded = true;
-     
       if (this.isBidRetrieverAdmin) {
         this.submissionGridContent = submissions as any[];
       } else {
         this.submissionGridContent = submissions.filter(({ submission_file_count }) => Number(submission_file_count) > 0)  as any[];
       }
+      this.submissionGridContentLoaded = true;
+
     })
       .catch(err => {
         this.notificationService.error('Error', err, { timeOut: 3000, showProgressBar: false });
@@ -315,12 +317,12 @@ gridSubmissionLoadAction(loadOptions: any) {
     }
     const selectedRows = this.submissionGridContent.filter(({ submission_id: sId }) => selectedRowKeys.includes(sId));
     this.projectsApi.getPublishedLink(selectedRows[0]['project_id'], selectedRows[0]['submission_id'])
-      .then((url: string) => {
-        window.open(url, '_blank');
-      })
-      .catch(err => {
-        this.notificationService.error('Error', err, { timeOut: 3000, showProgressBar: false });
-      });
+    .then((url: string) => {
+      window.open(url, '_blank');
+    })
+    .catch(err => {
+      this.notificationService.error('Error', err, { timeOut: 3000, showProgressBar: false });
+    });
   }
 
   /* View submission email  */

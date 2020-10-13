@@ -21,7 +21,7 @@
         <div class="dropdown-divider"></div>
         <a class="dropdown-item" (click)="onUpdateProject()">Update Project From Source </a>
         <a class="dropdown-item" (click)="onViewProjectSourceSystem()">View Project Source System</a>
-        <a class='dropdown-item' (click)='onDownloadProject()'>Download Project</a>
+        <a class='dropdown-item' (click)='onDownloadProject()'>Download All Files</a>
         <a class="dropdown-item" (click)='onViewPublishedProject()'>{{ dataStore.isSharedProject ? 'Download ' : 'View Published ' }}Project</a>
         <div class="dropdown-divider orange"></div>
         <a *ngIf='!dataStore.isSharedProject' class="dropdown-item" (click)='onViewTransactionLogs()'>View Transaction Log</a>
