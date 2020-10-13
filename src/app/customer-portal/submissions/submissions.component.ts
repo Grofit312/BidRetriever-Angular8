@@ -314,7 +314,7 @@ gridSubmissionLoadAction(loadOptions: any) {
       return;
     }
     const selectedRows = this.submissionGridContent.filter(({ submission_id: sId }) => selectedRowKeys.includes(sId));
-    this.projectsApi.getPublishedLink(selectedRows[0]['project_id'])
+    this.projectsApi.getPublishedLink(selectedRows[0]['project_id'], selectedRows[0]['submission_id'])
       .then((url: string) => {
         window.open(url, '_blank');
       })
