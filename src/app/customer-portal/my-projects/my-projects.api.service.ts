@@ -97,9 +97,9 @@ export class ProjectsApi {
     });
   }
 
-  public getPublishedLink(project_id: string) {
+  public getPublishedLink(project_id: string, submission_id: string = '') {
     return new Promise((resolve, reject) => {
-      axios.get(`${window['env'].apiBaseUrl}/GetPublishedLink?project_id=${project_id}`, {
+      axios.get(`${window['env'].apiBaseUrl}/GetPublishedLink?project_id=${project_id}&submission_id=${submission_id}`, {
         validateStatus: (status) => {
           return status === 200 || status === 400;
         }

@@ -317,7 +317,7 @@ export class SubmissionsComponent implements OnInit {
       return;
     }
 
-    this.projectsApi.getPublishedLink(selectedSubmissions[0]['project_id'])
+    this.projectsApi.getPublishedLink(selectedSubmissions[0]['project_id'], selectedSubmissions[0]['submission_id'])
       .then((url: string) => {
         window.open(url, '_blank');
       })
