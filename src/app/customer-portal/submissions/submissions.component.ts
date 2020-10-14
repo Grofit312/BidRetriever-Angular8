@@ -275,8 +275,9 @@ gridSubmissionLoadAction(loadOptions: any) {
       );
       return;
     }
+
     const selectedRows = this.submissionGridContent.filter(({ submission_id: sId }) => selectedRowKeys.includes(sId));
-    window.open(`/#/customer-portal/view-project/${selectedRows[0]['project_id']}`, '_blank');
+    window.open(`/customer-portal/view-project/${selectedRows[0]['project_id']}`, '_blank');
   }
 
   /* View Submission */
@@ -327,17 +328,17 @@ gridSubmissionLoadAction(loadOptions: any) {
 
   /* Download submission (source files) */
   onDownloadSubmission() {
-    const selectedSubmissions = this.grid.api.getSelectedRows();
+    const { selectedRowKeys }= this.submissionGrid;
 
-    if (selectedSubmissions.length === 0) {
+    if (selectedRowKeys.length === 0) {
       this.notificationService.error('No Selection', 'Please select one submission!', { timeOut: 3000, showProgressBar: false });
       return;
-    } else if (selectedSubmissions.length > 1) {
+    } else if (selectedRowKeys.length > 1) {
       this.notificationService.error('Multiple Selection', 'Please select just one submission!', { timeOut: 3000, showProgressBar: false });
       return;
     }
-
-    this.projectsApi.getPublishedLink(selectedSubmissions[0]['project_id'], selectedSubmissions[0]['submission_id'])
+    const selectedRows = this.submissionGridContent.filter(({ submission_id: sId }) => selectedRowKeys.includes(sId));
+    this.projectsApi.getPublishedLink(selectedRows[0]['project_id'], selectedRows[0]['submission_id'])
       .then((url: string) => {
         const downloadUrl = url.replace('dl=0', 'dl=1');
         window.open(downloadUrl, '_blank');
@@ -364,7 +365,7 @@ gridSubmissionLoadAction(loadOptions: any) {
     const fileKey = selectedRows[0]['submission_email_file_key'];
 
     if (bucketName && fileKey) {
-      window.open(`/#/email-viewer?bucket_name=${bucketName}&file_key=${fileKey}`, '_blank');
+      window.open(`/email-viewer?bucket_name=${bucketName}&file_key=${fileKey}`, '_blank');
     } else {
       this.notificationService.error('Not Found', 'Email file not found.', { timeOut: 3000, showProgressBar: false });
     }
@@ -434,7 +435,7 @@ gridSubmissionLoadAction(loadOptions: any) {
       return;
     }
     const selectedRows = this.submissionGridContent.filter(({ project_id: projectId }) => selectedRowKeys.includes(projectId));
-    window.open(`/#/customer-portal/view-project/${selectedRows[0].project_id}/overview`, '_blank');
+    window.open(`/customer-portal/view-project/${selectedRows[0].project_id}/overview`, '_blank');
  
   }
 

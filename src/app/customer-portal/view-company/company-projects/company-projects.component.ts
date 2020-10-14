@@ -1025,7 +1025,7 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
       return;
     }
     const selectedRows = this.projectGridContent.filter(({ project_id: projectId }) => selectedRowKeys.includes(projectId));
-    window.open(`/#/customer-portal/view-project/${selectedRows[0].project_id}`, '_blank');
+    window.open(`/customer-portal/view-project/${selectedRows[0].project_id}`, '_blank');
   }
 
   /* View Project Documents through doc viewer */
@@ -1190,7 +1190,7 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
    * @param event
    */
   onRowDoubleClicked(event: any) {
-    window.open(`/#/customer-portal/view-project/${event['data']['project_id']}`, '_blank');
+    window.open(`/customer-portal/view-project/${event['data']['project_id']}`, '_blank');
   }
 
   onRefresh() {
@@ -1303,11 +1303,8 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
       this.notificationService.error('No Selection', 'Please select one project!', { timeOut: 3000, showProgressBar: false });
       return;
     } else if (selectedRowKeys.length == 1) {
-
       const selectedRows = this.projectGridContent.filter(({ project_id: projectId }) => selectedRowKeys.includes(projectId));
 
-      // const { currentUser: { user_id: userId } } = this.dataStore;
-      // window.open(`/#/customer-portal/view-project/${selectedRows[0].project_id}`, '_blank');
       if (selectedRows && selectedRows[0]['source_url']) {
 
         window.open(selectedRows[0]['source_url'], '_blank');

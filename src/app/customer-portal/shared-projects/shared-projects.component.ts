@@ -543,7 +543,7 @@ this.filterOptions = [
       return;
     }
     const selectedRows = this.projectGridContent.filter(({ project_id: projectId }) => selectedRowKeys.includes(projectId));
-    window.open(`/#/customer-portal/view-project/${selectedRows[0].project_id}/overview`, '_blank');
+    window.open(`/customer-portal/view-project/${selectedRows[0].project_id}/overview`, '_blank');
   }
 
   /* Create Project */

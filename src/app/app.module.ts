@@ -5,7 +5,7 @@ import { DatePipe } from "@angular/common";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { HashLocationStrategy, LocationStrategy } from "@angular/common";
+import { PathLocationStrategy, LocationStrategy } from "@angular/common";
 
 import { NgxSpinnerModule } from "ngx-spinner";
 import { SimpleNotificationsModule } from "angular2-notifications";
@@ -60,7 +60,7 @@ import { EmailViewerComponent } from "./email-viewer/email-viewer.component";
     AmazonService,
 
     DatePipe,
-    { provide: LocationStrategy, useClass: HashLocationStrategy },
+    { provide: LocationStrategy, useClass: PathLocationStrategy },
   ],
   bootstrap: [AppComponent],
 })

@@ -126,9 +126,5 @@ export class ViewCompanyComponent implements OnInit {
 
   btnCloseAction() {
     window.close();
-    // window.open(`/#/customer-portal`, '_blank');
   }
-  // btnCloseAction() {
-  //   this.router.navigate(['/customer-portal']);
-  // }
 }

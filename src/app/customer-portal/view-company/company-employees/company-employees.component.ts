@@ -1030,7 +1030,7 @@ export class CompanyEmployeesComponent implements OnInit {
       return;
     }
     const selectedRows = this.projectGridContent.filter(({ contact_id: contactId }) => selectedRowKeys.includes(contactId));
-    window.open(`/#/customer-portal/view-employee/${selectedRows[0].contact_id}/overview`, '_blank');
+    window.open(`/customer-portal/view-employee/${selectedRows[0].contact_id}/overview`, '_blank');
   }
 
   
@@ -1195,7 +1195,7 @@ export class CompanyEmployeesComponent implements OnInit {
    * @param event
    */
   onRowDoubleClicked(event: any) {
-    window.open(`/#/customer-portal/view-project/${event['data']['contact_id']}`, '_blank');
+    window.open(`/customer-portal/view-project/${event['data']['contact_id']}`, '_blank');
   }
 
   onRefresh() {
@@ -1300,11 +1300,8 @@ export class CompanyEmployeesComponent implements OnInit {
       this.notificationService.error('No Selection', 'Please select one project!', { timeOut: 3000, showProgressBar: false });
       return;
     } else if (selectedRowKeys.length == 1) {
-
       const selectedRows = this.projectGridContent.filter(({ contact_id: projectId }) => selectedRowKeys.includes(projectId));
 
-      // const { currentUser: { user_id: userId } } = this.dataStore;
-      // window.open(`/#/customer-portal/view-project/${selectedRows[0].contact_id}`, '_blank');
       if (selectedRows && selectedRows[0]['source_url']) {
 
         window.open(selectedRows[0]['source_url'], '_blank');

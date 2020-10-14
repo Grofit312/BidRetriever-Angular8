@@ -255,7 +255,7 @@ export class ProjectSourceComponent implements OnInit, AfterViewInit {
       return;
     }
     const selectedRows = this.sourceGridContent.filter(({project_source_id: projectSourceId}) => selectedRowKeys.includes(projectSourceId));
-    window.open(`/#/customer-portal/view-project/${selectedRows[0].secondary_project_id}`, '_blank');
+    window.open(`/customer-portal/view-project/${selectedRows[0].secondary_project_id}`, '_blank');
   }
 
   toolbarViewCompanyAction() {
@@ -271,7 +271,7 @@ export class ProjectSourceComponent implements OnInit, AfterViewInit {
       return;
     }
     //const selectedRows = this.sourceGridContent.filter(({ project_source_id: projectSourceId }) => selectedRowKeys.includes(projectSourceId));
-      window.open(`/#/customer-portal/view-company/${this.company_Id}/overview`,
+      window.open(`/customer-portal/view-company/${this.company_Id}/overview`,
       "_blank")
   }
 
