@@ -282,10 +282,7 @@ export class SubmissionDetailModalComponent implements OnInit {
     this.transactionLogsModal.initialize(this.currentProject, this.currentSubmission, selectedDocuments[0]);
   }
 
-  onViewSubmissionDetails() {
-
-  }
-
+  
   onExport() {
     this.grid.gridOptions.api.exportDataAsCsv({
       fileName: `${this.currentProject['project_name']}_submission_files_${moment().format('YYYY-MM-DD_HH-mm')}`,

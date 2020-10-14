@@ -41,7 +41,7 @@
               <div class="dropdown-divider orange"></div>
               <a class="dropdown-item" (click)='onExport()'>Export List To CSV</a>
               <a class="dropdown-item" (click)='onViewTransactionLogs()'>View Transaction Log</a>
-              <a *ngIf="dataStore.currentUser && dataStore.currentUser.user_role !== 'submitter'" class="dropdown-item" (click)='onViewSubmissionDetails()'>View Submission Details</a>
+
               <a class="dropdown-item" (click)='onRefresh()'>Refresh Grid</a>
               <a class="dropdown-item orange" (click)='onHelp()'>Help</a>
             </div>
