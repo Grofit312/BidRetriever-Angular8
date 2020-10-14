@@ -1,4 +1,10 @@
-import { Component, OnInit, ElementRef, ViewChild, AfterViewInit } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  ElementRef,
+  ViewChild,
+  AfterViewInit,
+} from "@angular/core";
 import * as ClassicEditor from "@app/../assets/ckeditor/build/ckeditor";
 import { NotificationsService } from "angular2-notifications";
 import { ActivatedRoute, ParamMap, Router } from "@angular/router";
@@ -17,7 +23,7 @@ enum EditType {
   templateUrl: "./project-notes.component.html",
   styleUrls: ["./project-notes.component.scss"],
 })
-export class ProjectNotesComponent implements OnInit,AfterViewInit {
+export class ProjectNotesComponent implements OnInit, AfterViewInit {
   @ViewChild("editModal", { static: false }) editModal: ElementRef;
   @ViewChild("folderTree", { static: true }) folderTree;
 
@@ -40,7 +46,7 @@ export class ProjectNotesComponent implements OnInit,AfterViewInit {
   selectedNode: any;
   isComment = false;
   ischildVisible = false;
-  note_parent_type:any;
+  note_parent_type: any;
   divStyle = "";
   noteTypes = [
     {
@@ -63,11 +69,13 @@ export class ProjectNotesComponent implements OnInit,AfterViewInit {
   actionMapping: IActionMapping = {
     mouse: {
       click: (tree, node, event) => {
-        node.setIsActive(true);
-        TREE_ACTIONS.TOGGLE_SELECTED(tree, node, event);
-        if (node !== this.activeFolderNode) {
-          this.activeFolderNode = node;
-          this.currentNote = node.data;
+        if (node) {
+          node.setIsActive(true);
+          TREE_ACTIONS.TOGGLE_SELECTED(tree, node, event);
+          if (node !== this.activeFolderNode) {
+            this.activeFolderNode = node;
+            this.currentNote = node.data;
+          }
         }
       },
     },
@@ -87,12 +95,21 @@ export class ProjectNotesComponent implements OnInit,AfterViewInit {
   ) {}
 
   ngOnInit() {
+    console.log(this.router.url);
     if (this.dataStore.currentProject) {
       this.load();
+
+      if (this.router.url.endsWith("/add-note")) {
+        this.onAdd();
+      }
     } else {
-      this.dataStore.getProjectState.subscribe(value => {
+      this.dataStore.getProjectState.subscribe((value) => {
         if (value) {
           this.load();
+
+          if (this.router.url.endsWith("/add-note")) {
+            this.onAdd();
+          }
         }
       });
     }
@@ -116,17 +133,16 @@ export class ProjectNotesComponent implements OnInit,AfterViewInit {
   load() {
     this.spinner.show();
     //this.project_id = this.activatedRoute.snapshot.queryParams["project_id"];
-    
+
     this.project_id = this.dataStore.currentProject.project_id;
 
     this.notesApi
       .getNotesByProjectIds(this.project_id)
       .then((res: any[]) => {
-        
         this.notes = res;
         this.folderNodes = res;
-        this.spinner.hide();      
-        setTimeout(() => this.folderTree.treeModel.expandAll(), 500)
+        this.spinner.hide();
+        setTimeout(() => this.folderTree.treeModel.expandAll(), 500);
       })
       .catch((err) => {
         this.notificationService.error("Error", err, {
@@ -173,21 +189,20 @@ export class ProjectNotesComponent implements OnInit,AfterViewInit {
     this.editModal.nativeElement.style.display = "none";
   }
   ngAfterViewInit() {
-    setTimeout(() => this.setNodeActiveOnLaodTree(), 500)
+    setTimeout(() => this.setNodeActiveOnLaodTree(), 500);
   }
 
-  setNodeActiveOnLaodTree(){
-   this.folderTree.treeModel.expandAll();
-   const node =  this.folderTree.treeModel.getFirstRoot();
-   TREE_ACTIONS.TOGGLE_SELECTED(this.folderTree, node, event);
-   TREE_ACTIONS.ACTIVATE(this.folderTree, node, event);
-   TREE_ACTIONS.SELECT(this.folderTree, node, event);
-   this.activeFolderNode = node;
-   this.currentNote = node.data; 
+  setNodeActiveOnLaodTree() {
+    this.folderTree.treeModel.expandAll();
+    const node = this.folderTree.treeModel.getFirstRoot();
+    TREE_ACTIONS.TOGGLE_SELECTED(this.folderTree, node, event);
+    TREE_ACTIONS.ACTIVATE(this.folderTree, node, event);
+    TREE_ACTIONS.SELECT(this.folderTree, node, event);
+    this.activeFolderNode = node;
+    this.currentNote = node.data;
   }
 
   saveNotes() {
-    ;
     if (!this.subject || !this.subject.trim()) {
       return this.notificationService.error(
         "Error",
@@ -202,9 +217,9 @@ export class ProjectNotesComponent implements OnInit,AfterViewInit {
         { timeOut: 3000, showProgressBar: false }
       );
     }
-    this.note_parent_type="Project"
+    this.note_parent_type = "Project";
     const created_user_id = this.dataStore.currentUser.user_id;
-    const note_company_id= this.dataStore.currentProject.source_company_id;
+    const note_company_id = this.dataStore.currentProject.source_company_id;
     let note_parent_id = null;
     if (!this.isComment) {
       note_parent_id = this.activeFolderNode
@@ -220,9 +235,11 @@ export class ProjectNotesComponent implements OnInit,AfterViewInit {
       created_user_id: created_user_id,
       note_company_id: note_company_id,
       note_desc: this.description,
-      note_parent_type:this.note_parent_type,
+      note_parent_type: this.note_parent_type,
       note_type: this.noteType,
-      note_parent_id: note_parent_id?note_parent_id:this.dataStore.currentProject.project_id,
+      note_parent_id: note_parent_id
+        ? note_parent_id
+        : this.dataStore.currentProject.project_id,
       note_priority: "High",
       note_relevance_number: 0,
       note_vote_count: 0,
@@ -257,7 +274,6 @@ export class ProjectNotesComponent implements OnInit,AfterViewInit {
         (data) => {
           this.spinner.hide();
           this.load();
-          ;
           this.folderTree.treeModel.update();
           this.reset();
           this.editModal.nativeElement.style.display = "none";
@@ -308,7 +324,6 @@ export class ProjectNotesComponent implements OnInit,AfterViewInit {
   }
 
   onDelete(id) {
-    ;
     Swal.fire({
       title: "Are you sure?",
       text: "Once deleted, you will not be able to recover this Notes!",
@@ -346,22 +361,22 @@ export class ProjectNotesComponent implements OnInit,AfterViewInit {
   }
 
   isVisible(note: any) {
-    if(this.dataStore.currentProject != null){
-    const user_id = this.dataStore.currentUser.user_id;
-    const project_id = this.dataStore.currentProject.project_id;
-    if (note.noteType == "public") {
-      this.ischildVisible = true;
-      return true;
-    } else if (note.noteType == "personal" && note.userId == user_id) {
-      this.ischildVisible = true;
-      return true;
-    } else if (note.noteType == "company" && note.companyId == project_id) {
-      this.ischildVisible = true;
-      return true;
-    } else if (note.noteType == "" && note.companyId == project_id) {
-      this.ischildVisible = true;
-      return true;
+    if (this.dataStore.currentProject != null) {
+      const user_id = this.dataStore.currentUser.user_id;
+      const project_id = this.dataStore.currentProject.project_id;
+      if (note.noteType == "public") {
+        this.ischildVisible = true;
+        return true;
+      } else if (note.noteType == "personal" && note.userId == user_id) {
+        this.ischildVisible = true;
+        return true;
+      } else if (note.noteType == "company" && note.companyId == project_id) {
+        this.ischildVisible = true;
+        return true;
+      } else if (note.noteType == "" && note.companyId == project_id) {
+        this.ischildVisible = true;
+        return true;
+      }
     }
-  }
   }
 }

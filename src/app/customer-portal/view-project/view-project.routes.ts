@@ -13,50 +13,54 @@ import { ModuleWithProviders } from '@angular/core';
 
 const routes: Routes = [
   {
-    path: '',
+    path: "",
     component: ViewProjectComponent,
     children: [
       {
-        path: 'overview',
-        component: ProjectOverviewComponent
+        path: "overview",
+        component: ProjectOverviewComponent,
       },
       {
-        path: 'files',
-        component: ProjectFilesComponent
+        path: "files",
+        component: ProjectFilesComponent,
       },
       {
-        path: 'view-submission',
-        component: ProjectSubmissionsComponent
+        path: "view-submission",
+        component: ProjectSubmissionsComponent,
       },
       {
-        path: 'notifications',
-        component: ProjectNotificationsComponent
+        path: "notifications",
+        component: ProjectNotificationsComponent,
       },
       {
-        path: 'source',
-        component: ProjectSourceComponent
+        path: "source",
+        component: ProjectSourceComponent,
       },
       {
-        path: 'sharing',
-        component: ProjectSharingComponent
+        path: "sharing",
+        component: ProjectSharingComponent,
       },
       {
-        path: 'administration',
-        component: ProjectAdministrationComponent
+        path: "administration",
+        component: ProjectAdministrationComponent,
       },
       {
-        path: 'internal',
-        component: BidretrieverInternalComponent
+        path: "internal",
+        component: BidretrieverInternalComponent,
       },
       {
-        path: 'project-notes',
-        component: ProjectNotesComponent
+        path: "project-notes",
+        component: ProjectNotesComponent,
       },
       {
-        path: '',
-        redirectTo: 'overview'
-      }
-    ]
-  }
+        path: "project-notes/add-note",
+        component: ProjectNotesComponent,
+      },
+      {
+        path: "",
+        redirectTo: "overview",
+      },
+    ],
+  },
 ];
 export const viewProjectRouting: ModuleWithProviders = RouterModule.forChild(routes);
