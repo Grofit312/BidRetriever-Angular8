@@ -59,43 +59,71 @@ export class TabsComponent implements OnInit {
 
     switch (index) {
       case 1:
-        this._router.navigate([`/customer-portal/view-project/${projectId}/overview`], { queryParams });
+        this._router.navigate(
+          [`/customer-portal/view-project/${projectId}/overview`],
+          { queryParams }
+        );
         break;
 
       case 2:
-        this._router.navigate([`/customer-portal/view-project/${projectId}/files`], { queryParams });
+        this._router.navigate(
+          [`/customer-portal/view-project/${projectId}/files`],
+          { queryParams }
+        );
         break;
 
       case 3:
-        this._router.navigate([`/customer-portal/view-project/${projectId}/view-submission`], { queryParams });
+        this._router.navigate(
+          [`/customer-portal/view-project/${projectId}/view-submission`],
+          { queryParams }
+        );
         break;
 
       case 4:
-        this._router.navigate([`/customer-portal/view-project/${projectId}/notifications`], { queryParams });
+        this._router.navigate(
+          [`/customer-portal/view-project/${projectId}/notifications`],
+          { queryParams }
+        );
         break;
 
       case 5:
-        this._router.navigate([`/customer-portal/view-project/${projectId}/source`], { queryParams });
+        this._router.navigate(
+          [`/customer-portal/view-project/${projectId}/source`],
+          { queryParams }
+        );
         break;
 
       case 6:
-        this._router.navigate([`/customer-portal/view-project/${projectId}/sharing`], { queryParams });
+        this._router.navigate(
+          [`/customer-portal/view-project/${projectId}/sharing`],
+          { queryParams }
+        );
         break;
 
       case 7:
-        this._router.navigate([`/customer-portal/view-project/${projectId}/administration`]);
+        this._router.navigate([
+          `/customer-portal/view-project/${projectId}/administration`,
+        ]);
         break;
 
       case 8:
-        this._router.navigate([`/customer-portal/view-project/${projectId}/project-notes`]);
+        this._router.navigate([
+          `/customer-portal/view-project/${projectId}/project-notes${
+            this._router.url.endsWith("/add-note") ? "/add-note" : ""
+          }`,
+        ]);
         break;
 
       case 9:
-        this._router.navigate([`/customer-portal/view-project/${projectId}/internal`]);
+        this._router.navigate([
+          `/customer-portal/view-project/${projectId}/internal`,
+        ]);
         break;
 
       default:
-        this._router.navigate([`/customer-portal/view-project/${projectId}/overview`]);
+        this._router.navigate([
+          `/customer-portal/view-project/${projectId}/overview`,
+        ]);
         break;
     }
   }
