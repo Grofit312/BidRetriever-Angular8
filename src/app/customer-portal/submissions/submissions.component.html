@@ -31,6 +31,7 @@
           <a class="dropdown-item" (click)='onViewSubmission()'>View Project Submission</a>
           <div class="dropdown-divider orange"></div>
           <a class='dropdown-item' (click)='onViewPublishedSubmission()'>View Published Submission</a>
+          <a class='dropdown-item' (click)='onDownloadSubmission()'>Download Submission</a>
           <a class='dropdown-item' (click)='onViewSubmissionEmail()'>View Submission Email</a>
           <div *ngIf='isBidRetrieverAdmin' class="dropdown-divider orange"></div>
           <a *ngIf='isBidRetrieverAdmin' class="dropdown-item text-danger" (click)='onDeleteSubmission()'>Delete Submission</a>
