@@ -325,6 +325,28 @@ gridSubmissionLoadAction(loadOptions: any) {
     });
   }
 
+  /* Download submission (source files) */
+  onDownloadSubmission() {
+    const selectedSubmissions = this.grid.api.getSelectedRows();
+
+    if (selectedSubmissions.length === 0) {
+      this.notificationService.error('No Selection', 'Please select one submission!', { timeOut: 3000, showProgressBar: false });
+      return;
+    } else if (selectedSubmissions.length > 1) {
+      this.notificationService.error('Multiple Selection', 'Please select just one submission!', { timeOut: 3000, showProgressBar: false });
+      return;
+    }
+
+    this.projectsApi.getPublishedLink(selectedSubmissions[0]['project_id'], selectedSubmissions[0]['submission_id'])
+      .then((url: string) => {
+        const downloadUrl = url.replace('dl=0', 'dl=1');
+        window.open(downloadUrl, '_blank');
+      })
+      .catch(err => {
+        this.notificationService.error('Error', err, { timeOut: 3000, showProgressBar: false });
+      });
+  }
+
   /* View submission email  */
   onViewSubmissionEmail() {
     const { selectedRowKeys }= this.submissionGrid;
