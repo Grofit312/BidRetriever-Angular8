@@ -118,7 +118,7 @@ export class ProjectNotificationsComponent implements OnInit {
       this.notificationService.error('Multiple Selection', 'Please select just one notification!', { timeOut: 3000, showProgressBar: false });
       return;
     }
-        window.open(`/#/customer-portal/notification-viewer`, '_blank');
+        window.open(`/customer-portal/notification-viewer`, '_blank');
   }
 
   onNewNotification() {

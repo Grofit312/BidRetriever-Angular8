@@ -1053,7 +1053,7 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
       return;
     }
     const selectedRows = this.projectGridContent.filter(({ project_id: projectId }) => selectedRowKeys.includes(projectId));
-    window.open(`/#/customer-portal/view-project/${selectedRows[0].project_id}`, '_blank');
+    window.open(`/customer-portal/view-project/${selectedRows[0].project_id}`, '_blank');
   }
 
   /* View Project Documents through doc viewer */
@@ -1218,7 +1218,7 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
    * @param event
    */
   onRowDoubleClicked(event: any) {
-    window.open(`/#/customer-portal/view-project/${event['data']['project_id']}`, '_blank');
+    window.open(`/customer-portal/view-project/${event['data']['project_id']}`, '_blank');
   }
 
   onRefresh() {
@@ -1328,7 +1328,6 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
     } else if (selectedRowKeys.length == 1) {
       const selectedRows = this.projectGridContent.filter(({ project_id: projectId }) => selectedRowKeys.includes(projectId));
 
-      // window.open(`/#/customer-portal/view-project/${selectedRows[0].project_id}`, '_blank');
       if (selectedRows && selectedRows[0]['source_url']) {
 
         window.open(selectedRows[0]['source_url'], '_blank');

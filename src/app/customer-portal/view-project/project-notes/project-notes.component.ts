@@ -87,7 +87,15 @@ export class ProjectNotesComponent implements OnInit,AfterViewInit {
   ) {}
 
   ngOnInit() {
-    this.load();
+    if (this.dataStore.currentProject) {
+      this.load();
+    } else {
+      this.dataStore.getProjectState.subscribe(value => {
+        if (value) {
+          this.load();
+        }
+      });
+    }
   }
 
   onEditNotes() {
@@ -106,7 +114,6 @@ export class ProjectNotesComponent implements OnInit,AfterViewInit {
   }
 
   load() {
-    ;
     this.spinner.show();
     //this.project_id = this.activatedRoute.snapshot.queryParams["project_id"];
     
@@ -130,7 +137,6 @@ export class ProjectNotesComponent implements OnInit,AfterViewInit {
   }
 
   onAdd() {
-    ;
     this.description = "";
     this.editModalTitle = `Add Notes`;
     this.subject = "";
@@ -340,7 +346,7 @@ export class ProjectNotesComponent implements OnInit,AfterViewInit {
   }
 
   isVisible(note: any) {
-    if(this.dataStore != null){
+    if(this.dataStore.currentProject != null){
     const user_id = this.dataStore.currentUser.user_id;
     const project_id = this.dataStore.currentProject.project_id;
     if (note.noteType == "public") {

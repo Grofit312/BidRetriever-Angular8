@@ -1491,8 +1491,8 @@ export class MyCompaniesComponent implements OnInit, AfterViewInit {
       const selectedRows = this.companyGridContent.filter(
         ({ company_id: companyId }) => selectedRowKeys.includes(companyId)
       );
-      // window.open(`/#/customer-portal/view-company/companydetails/${selectedRows[0].company_id}`, '_blank');
-      window.open(`/#/customer-portal/view-company/${selectedRows[0].company_id}/overview`, '_blank');
+
+      window.open(`/customer-portal/view-company/${selectedRows[0].company_id}/overview`, '_blank');
     } else if (selectedRowKeys.length > 1 && selectedRowKeys.length <= 20) {
       Swal.fire({
         title:
@@ -1511,7 +1511,7 @@ export class MyCompaniesComponent implements OnInit, AfterViewInit {
               ({ company_id: companyId }) =>
                 selectedRowKeys[i].includes(companyId)
             );
-            // window.open(`/#/customer-portal/view-company/companydetails/${selectedRows[0].company_id}`, '_blank');
+           
             window.open(
               `/customer-portal/view-company/${selectedRows[0].company_id}/overview`,
               '_blank'
@@ -1779,7 +1779,7 @@ export class MyCompaniesComponent implements OnInit, AfterViewInit {
    * @param event
    */
   onRowDoubleClicked(event: any) {
-    window.open(`/#/customer-portal/view-company/${event['data']['company_id']}`,
+    window.open(`/customer-portal/view-company/${event['data']['company_id']}`,
       '_blank'
     );
   }

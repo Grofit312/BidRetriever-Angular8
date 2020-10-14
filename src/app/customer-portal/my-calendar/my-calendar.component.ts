@@ -451,7 +451,7 @@ onItemClick(ctxEvent: any): any {
   onViewProject() {
     if (this.selectedEvent) {
       if (this.selectedEvent.event.project_id) {
-        window.open(`/#/customer-portal/view-project/${this.selectedEvent.event.project_id}`, '_blank');
+        window.open(`/customer-portal/view-project/${this.selectedEvent.event.project_id}`, '_blank');
       } else {
         this.notificationService.error('Error', 'This is not a project event', { timeOut: 3000, showProgressBar: false });
       }
