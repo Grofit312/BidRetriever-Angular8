@@ -619,14 +619,14 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
               { dataField: 'last_change_date', caption: 'Last Change Date', width: 180, minWidth: 150, dataType: 'datetime', cellTemplate: 'dateCell', allowEditing: false },
               { dataField: 'status', caption: 'Status', width: 100, minWidth: 100, allowEditing: true, editCellTemplate: 'statusEditor' },
               { dataField: 'project_notes', caption: 'Notes', minWidth: 100, allowEditing: true },
-              { dataField: 'project_process_status', caption: 'Processing Status', minWidth: 100, allowEditing: true,editCellTemplate: 'updateStatusEditor' },
+              { dataField: 'project_process_status', caption: 'Processing Status', minWidth: 100, allowEditing: false,editCellTemplate: 'updateStatusEditor' },
               { dataField: 'project_process_message', caption: 'Processing Message', minWidth: 100, allowEditing: false }
             ];
           } else {
             const newGridColumnList = [];
             const editingAllowedColumns = [
               'project_name', 'project_admin_user_email', 'project_bid_datetime', 'auto_update_status', 'project_notes',
-              'project_stage', 'project_process_status','project_timezone', 'project_contract_type', 'project_segment', 'project_building_type', 'project_labor_requirement',
+              'project_stage','project_timezone', 'project_contract_type', 'project_segment', 'project_building_type', 'project_labor_requirement',
               'project_value', 'project_size', 'project_construction_type', 'project_award_status', 'project_assigned_office_name',
               'project_number'
             ];
@@ -675,7 +675,7 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
                 case 'project_assigned_office_name': newGridColumn['editCellTemplate'] = 'projectAssignedOfficeNameEditor'; break;
                 case 'auto_update_status': newGridColumn['editCellTemplate'] = 'autoUpdateStatusEditor'; break;
                 case 'project_stage': newGridColumn['editCellTemplate'] = 'projectStageEditor'; break;
-                case 'project_process_status': newGridColumn['editCellTemplate'] = 'updateStatusEditor'; break;
+
                 case 'project_timezone': newGridColumn['editCellTemplate'] = 'projectTimezoneEditor'; break;
                 case 'project_contract_type': newGridColumn['editCellTemplate'] = 'projectContractTypeEditor'; break;
                 case 'project_segment': newGridColumn['editCellTemplate'] = 'projectSegmentEditor'; break;
@@ -809,16 +809,6 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
             .then((res) => {
               this.notificationService.success('Success', 'Project-Stage has been updated', { timeOut: 3000, showProgressBar: false });
               this.projectGridContent[updateIndex]['project_stage'] = values['project_stage'];
-              return resolve();
-            }).catch((error) => {
-              return reject('Failed to update the status');
-            });
-        } else if ('project_process_status' in values) {
-          this.apiService
-            .updateProject(key, {project_process_status: values['project_process_status']})
-            .then((res) => {
-              this.notificationService.success('Success', 'project_Process_Status has been updated', { timeOut: 3000, showProgressBar: false });
-              this.projectGridContent[updateIndex]['project_process_status'] = values['project_process_status'];
               return resolve();
             }).catch((error) => {
               return reject('Failed to update the status');
