@@ -574,9 +574,9 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
 
     if (this.searchText) {
       projects = projects.filter((project) => {
-        const isMatched = Object.keys(project).map(key => project[key]).some(item => item.toString().toLowerCase().includes(this.searchText));
+        const isMatched = Object.keys(project).map(key => project[key]).some(item => (item?item:'').toString().toLowerCase().includes(this.searchText));
         return isMatched;
-      });
+      });     
     }
 
     return projects;
