@@ -521,13 +521,20 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
   private getGridProjectContentByLoadOption(loadOptions) {
     
     let projects = this.projectGridContent;
-         //this.sortName = loadOptions.sort[0].selector;
+         
     if (loadOptions.sort && loadOptions.sort.length > 0) {
-      projects = projects.sort((first, second) => {
-        const sortColumnOption = this.projectGridColumns.find((column) => column.dataField === loadOptions.sort[0].selector);
+      this.sortName = loadOptions.sort[0].selector;
+    }
+    else 
+    {
+      this.sortName = 'project_bid_datetime';
+    }
 
-        let firstValue = first[loadOptions.sort[0].selector];
-        let secondValue = second[loadOptions.sort[0].selector];
+      projects = projects.sort((first, second) => {
+        const sortColumnOption = this.projectGridColumns.find((column) => column.dataField === this.sortName);
+
+        let firstValue = first[this.sortName];
+        let secondValue = second[this.sortName];
 
         if (sortColumnOption) {
           if (sortColumnOption.dataType === 'date' || sortColumnOption.dataType === 'datetime') {
@@ -537,6 +544,15 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
             secondValue = secondValue.toString().toLowerCase();
           }
         }
+
+        if(!loadOptions.sort)
+        {
+          if (firstValue < secondValue ) {
+            return -1;
+          }
+          else return 1;
+        }
+
         let loadOptionIndex = 0;
         while (loadOptionIndex < loadOptions.sort.length) {
           if (firstValue > secondValue && loadOptions.sort[loadOptionIndex].desc) {
@@ -551,9 +567,10 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
           }
           return 1;
         }
+
         return 1;
       });
-    }
+    
 
     if (this.searchText) {
       projects = projects.filter((project) => {
@@ -612,6 +629,7 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
               { dataField: 'source_sys_type_name', caption: 'Source', minWidth: 150, allowEditing: false },
               { dataField: 'source_company_name', caption: 'Source Company', minWidth: 150, allowEditing: false },
               { dataField: 'project_bid_datetime', caption: 'Bid Date/Time', minWidth: 150, cellTemplate: 'dateCell', editCellTemplate: 'dateTimeEditor', allowEditing: true },
+              { dataField: 'project_stage', caption: 'Stage', minWidth: 150,editCellTemplate: 'projectStageEditor', allowEditing: true },
               { dataField: 'project_city_state', caption: 'City/State', width: 150, minWidth: 100, allowEditing: false },
               { dataField: 'project_assigned_office_name', caption: 'Office', width: 150, minWidth: 100, editCellTemplate: 'projectAssignedOfficeNameEditor', allowEditing: true },
               { dataField: 'auto_update_status', caption: 'Automatic Updates', width: 180, minWidth: 150, allowEditing: true, editCellTemplate: 'autoUpdateStatusEditor' },
