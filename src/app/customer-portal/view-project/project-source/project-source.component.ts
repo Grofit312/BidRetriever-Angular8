@@ -106,25 +106,35 @@ export class ProjectSourceComponent implements OnInit, AfterViewInit {
           text: 'View Project',
           onClick: () => this.toolbarViewProjectAction()
         },
+        addProject: {
+          type: 'normal',
+          text: 'Add Project',
+          onClick: () => this.toolbarAddProjectAction()
+        },
         addSource: {
           type: 'normal',
           text: 'Select Source Project',
           onClick: () => this.toolbarAddSourceAction()
+        },
+        viewCompany: {
+          type: 'normal',          
+          text: 'View Source Company',
+          onClick: () => this.toolbarViewCompanyAction()
         },
         removeSource: {
           type: 'normal',
           text: 'Remove Source',
           onClick: () => this.toolbarRemoveSourceAction()
         },
-        addProject: {
-          type: 'normal',          
-          text: 'Add Project',
-          onClick: () => this.toolbarAddProjectAction()
+        refreshGrid: {
+          type: 'normal',
+          text: 'Refresh Grid',
+          onClick: () => this.toolbarRefreshGridAction(),
         },
-        viewCompany: {
-          type: 'normal',          
-          text: 'View Comapny',
-          onClick: () => this.toolbarViewCompanyAction()
+        help: {
+          type: 'normal',
+          text: 'Help',
+          onClick: () => this.toolbarHelpAction(),
         },
       }
     };
@@ -179,6 +189,9 @@ export class ProjectSourceComponent implements OnInit, AfterViewInit {
         }
       })
     });
+  }
+  toolbarHelpAction() {
+     
   }
 
   ngOnInit() {
@@ -314,21 +327,21 @@ export class ProjectSourceComponent implements OnInit, AfterViewInit {
   }
 
   private _loadProjectSourceInfo(projectId) {
-    this.viewProjectsApi.getProject(projectId, 'eastern')
+     this.viewProjectsApi.getProject(projectId, 'eastern')
       .then(res => {
         this.currentProject = res;
 
         if (this.currentProject.source_company_id) {
-          return this.authApi.getCustomer(this.currentProject.source_company_id);
+          return this.authApi.getCompanybyID(this.currentProject.source_company_id);
         } else {
           return new Promise(resolve => resolve());
         }
       })
       .then((res: any) => {
         if (res) {
-          this.currentProject.source_company_address = `${res.customer_address1} ${res.customer_address2} ${res.customer_city} ${res.customer_state} ${res.customer_zip} ${res.customer_country}`.trim();
-          this.currentProject.source_company_website = res.company_website;
-          this.currentProject.source_company_phone = res.customer_phone;
+          this.currentProject.source_company_address = `${res[0].company_address1} ${res[0].company_address2} ${res[0].company_city} ${res[0].company_state} ${res[0].company_zip} ${res[0].company_country}`.trim();
+          this.currentProject.source_company_website = res[0].company_website;
+          this.currentProject.source_company_phone = res[0].company_phone;
         }
 
         if (this.currentProject.source_user_id) {
@@ -376,26 +389,37 @@ export class ProjectSourceComponent implements OnInit, AfterViewInit {
             text: 'View Project',
             onClick: () => this.toolbarViewProjectAction()
           },
+          {
+            type: 'normal',          
+            text: 'Add Project',
+            onClick: () => this.toolbarAddProjectAction()
+          },
            {
             type: 'normal',
             text: 'Select Source Project',
             onClick: () => this.toolbarAddSourceAction()
+          },
+          {
+            type: 'normal',          
+            text: 'View Source Company',
+            onClick: () => this.toolbarViewCompanyAction()
           },
            {
             type: 'normal',
             text: 'Remove Source',
             onClick: () => this.toolbarRemoveSourceAction()
           },
-           {
-            type: 'normal',          
-            text: 'Add Project',
-            onClick: () => this.toolbarAddProjectAction()
+          {
+            type: 'normal',
+            text: 'Refresh Grid',
+            onClick: () => this.toolbarRefreshGridAction(),
           },
-           {
-            type: 'normal',          
-            text: 'View Comapny',
-            onClick: () => this.toolbarViewCompanyAction()
-          },
+          {
+            type: 'normal',
+            text: 'Help',
+            onClick: () => this.toolbarHelpAction(),
+          }
+        
        );
     }
     return e;

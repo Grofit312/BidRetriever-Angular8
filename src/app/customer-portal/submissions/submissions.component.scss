@@ -30,9 +30,18 @@
   }
 
   .submissions-table {
+    flex: 1 1 auto;
+    flex-direction: column;
     margin-top: 20px;
     flex-grow: 1;
     display: flex;
-    overflow: scroll;
+    overflow: hidden;
+
+    .total-number-of-rows {
+      font-size: 16px;
+      margin: 5px 2px;
+  
   }
+ 
+}
 }

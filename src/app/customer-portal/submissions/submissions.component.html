@@ -1,7 +1,6 @@
 <div class='submissions-content'>
-  <div class='submissions-header'>
-    <div>
-      <select *ngIf='isBidRetrieverAdmin' class='submissions-view-mode' [(ngModel)]='submissionViewMode' (change)='onChangeSubmissionViewMode()'>
+  <div class="submissions-header" >
+    <select *ngIf='isBidRetrieverAdmin' class='submissions-view-mode' [(ngModel)]='submissionViewMode' (change)='onChangeSubmissionViewMode()'>
         <option value="all">All Submissions</option>
         <option value="open">Open Submissions</option>
         <option value="queued">Queued Submissions</option>
@@ -9,16 +8,13 @@
         <option value="errored">Error Submissions</option>
         <option value="completed">Completed Submissions</option>
         <option value="deleted">Terminated Submissions</option>
-      </select>
-      <select *ngIf='!isBidRetrieverAdmin' class='submissions-view-mode' [(ngModel)]='submissionViewMode' (change)='onChangeSubmissionViewMode()'>
-        <option value="my">My Projects</option>
-        <option *ngIf='currentOffice' value="office">My {{ currentOffice.company_office_name }} Projects</option>
-        <option value="all">All Projects</option>
-      </select>
-    </div>
-
+    </select>
+    <select *ngIf='!isBidRetrieverAdmin' class='submissions-view-mode' [(ngModel)]='submissionViewMode' (change)='onChangeSubmissionViewMode()'>
+      <option value="my">My Projects</option>
+      <option *ngIf='currentOffice' value="office">My {{ currentOffice.company_office_name }} Projects</option>
+      <option value="all">All Projects</option>
+    </select>
     <input class='submissions-search' type='text' placeholder='Search' (input)="onSearchChange($event.target.value)"/>
-
     <div class='buttons-group'>
       <button class="btn btn-light" (click)='onViewProject()'>View Project</button>
       <button class="btn btn-light" (click)='onViewSubmission()'>View Submission</button>
@@ -53,20 +49,31 @@
     </div>
   </div>
 
-  <div class='submissions-table'>
-    <ag-grid-angular
-      #grid
-      style="width: 100%;"
-      class="ag-theme-balham"
-      [rowData]="rowData"
-      [columnDefs]="columnDefs"
-      rowSelection="multiple"
-      rowDragManaged=true
-      (rowDoubleClicked)="onRowDoubleClicked($event)"
-      (gridReady)="onGridReady($event)"
-      >
-    </ag-grid-angular>
+
+  <div class="submissions-table" #submissionContent>
+  
+    <dx-data-grid #submissionGrid id="selectedRowKeys" [allowColumnReordering]="true" [allowColumnResizing]="true"
+    columnResizingMode="widget" [columns]="submissionGridColumns" [dataSource]="submissionGridDataSource"
+    [showColumnLines]="true" [showRowLines]="true" 
+    [showBorders]="true" [rowAlternationEnabled]="true" [columnAutoWidth]="true" [remoteOperations]="true"
+    width="100%" height="100%" 
+    (onContextMenuPreparing)='addSubmissionGridMenuItems($event)' 
+    (onRowDblClick)='onViewSubmission()' 
+    >
+    <dxo-column-fixing [enabled]="true"></dxo-column-fixing>
+    <dxo-header-filter [visible]="false"></dxo-header-filter>
+    <dxo-paging [enabled]="false"></dxo-paging>
+    <dxo-scrolling mode="vertical"></dxo-scrolling>
+    <dxo-selection mode="multiple"></dxo-selection>
+    <dxo-sorting mode="multiple"></dxo-sorting>
+
+    <div *dxTemplate="let cell of 'dateCell'">
+      {{ cell.value | moment: 'YYYY-MM-DD hh:mm a z' }}
+    </div>
+    </dx-data-grid>
+    
   </div>
+  <div class="total-number-of-rows">Total: {{submissionGridContent.length}} rows</div>
 
 </div>
 

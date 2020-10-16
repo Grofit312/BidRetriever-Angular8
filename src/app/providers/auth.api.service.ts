@@ -155,6 +155,26 @@ export class AuthApi {
       });
     });
   }
+  public getCompanybyID(company_id: string) {
+    return new Promise((resolve, reject) => {
+      axios.get(`${window['env'].apiBaseUrl}/GetCompany?company_id=${company_id}`, {
+        validateStatus: (status) => {
+          return status === 200 || status === 400
+        }
+      })
+        .then(res => {
+          if (res.status === 200) {
+            resolve(res.data);
+          } else {
+            reject(res.data.status);
+          }
+        })
+        .catch(err => {
+          console.log(err);
+          reject(err);
+        });
+    });
+  }
 
   public getCustomer(customer_id: string) {
     return new Promise((resolve, reject) => {

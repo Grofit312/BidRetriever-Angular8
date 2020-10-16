@@ -22,6 +22,7 @@
           <a *ngIf='!dataStore.isSharedProject' class="dropdown-item" (click)='onRemoveSubmission()'>Remove Submission</a>
           <a *ngIf='!dataStore.isSharedProject' class="dropdown-item" (click)='onRenameSubmission()'>Rename Submission</a>
           <div class="dropdown-divider orange"></div>
+          <a class='dropdown-item' (click)='onDownloadProject()'>Download All Files</a>
           <a class="dropdown-item" (click)='onExport()'>Export List To CSV</a>
           <a class="dropdown-item" (click)='onViewTransactionLogs()'>View Transaction Log</a>
           <a class="dropdown-item" (click)='onRefresh()'>Refresh Grid</a>
