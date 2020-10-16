@@ -547,7 +547,7 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
 
         if(!loadOptions.sort)
         {
-          if (firstValue < secondValue ) {
+          if (firstValue > secondValue ) {
             return -1;
           }
           else return 1;
