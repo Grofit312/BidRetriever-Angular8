@@ -27,6 +27,9 @@ export class ProjectsApi {
               project['project_city_state'] = `${project['project_state']}, ${project['project_city']}`;
               project['last_change_date'] = this.convertToTimeZoneString(project['last_change_date'], timezone);
               project['create_datetime'] = this.convertToTimeZoneString(project['create_datetime'], timezone);
+              if (project['time_till_bid'] === 0) {
+                project['time_till_bid'] = Number.MAX_SAFE_INTEGER;
+              }
               return project;
             });
 
@@ -53,14 +56,15 @@ export class ProjectsApi {
       })
         .then(res => {
           if (res.status === 200) {
-            if (data_view_id == null) {
-              res.data = res.data.map((project) => {
-                project['project_city_state'] = `${project['project_state']}, ${project['project_city']}`;
-                project['last_change_date'] = this.convertToTimeZoneString(project['last_change_date'], timezone);
-                project['create_datetime'] = this.convertToTimeZoneString(project['create_datetime'], timezone);
-                return project;
-              });
-            }
+            res.data = res.data.map((project) => {
+              project['project_city_state'] = `${project['project_state']}, ${project['project_city']}`;
+              project['last_change_date'] = this.convertToTimeZoneString(project['last_change_date'], timezone);
+              project['create_datetime'] = this.convertToTimeZoneString(project['create_datetime'], timezone);
+              if (project['time_till_bid'] === 0) {
+                project['time_till_bid'] = Number.MAX_SAFE_INTEGER;
+              }
+              return project;
+            });
 
             resolve(res.data);
           } else {

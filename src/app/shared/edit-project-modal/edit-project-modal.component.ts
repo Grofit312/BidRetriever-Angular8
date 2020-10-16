@@ -255,16 +255,12 @@ sourceSystemAccounts(){
   }
 
   initialize(parent: any, project: any) {
-    
     this.parent = parent;
     this.editProjectModal.nativeElement.style.display = 'block';
 
-    if (!project['project_bid_datetime'] || project['project_bid_datetime'] === 'Invalid date') {
-      project['project_bid_datetime'] = new Date();
-    }
-
     this.currentProject = project;
     this.currentProject['project_auto_update_status'] = project['auto_update_status'] === 'active';
+    this.currentProject['project_bid_datetime'] = project['project_bid_datetime'] === 'Invalid date' ? null : project['project_bid_datetime'];
     this.company_name=this.currentProject['source_company_name'];
 
     this.userApiService.findUsers(this.dataStore.currentUser['customer_id'])
@@ -377,8 +373,8 @@ sourceSystemAccounts(){
       { project_name: projectName },     
       { source_company_id: this.companyId? this.companyId : (this.data && this.data.company_id) ? this.data.company_id : this.currentProject.source_company_id },
       { source_company_contact_id: this.contactId? this.contactId : this.contactEmailDetail ? this.contactEmailDetail.contact_id : ""},     
-      {company_website: this.company_website?this.company_website:""},
-      { project_bid_datetime: this.currentProject['project_bid_datetime'] ? this.formatDateTime(this.currentProject['project_bid_datetime']) : "" },
+      { company_website: this.company_website?this.company_website:""},
+      { project_bid_datetime: this.currentProject['project_bid_datetime'] ? this.formatDateTime(this.currentProject['project_bid_datetime']) : "NULL" },
       { project_assigned_office_name: projectOffice ? projectOffice['company_office_name'] : '' },
       { auto_update_status: this.currentProject['project_auto_update_status'] ? 'active' : 'inactive' }
     );

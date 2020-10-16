@@ -78,10 +78,14 @@
       <dxo-paging [enabled]="false"></dxo-paging>
       <dxo-scrolling mode="vertical"></dxo-scrolling>
       <dxo-selection mode="multiple"></dxo-selection>
-      <dxo-sorting mode="multiple"></dxo-sorting>
+      <dxo-sorting mode="single"></dxo-sorting>
 
       <div *dxTemplate="let cell of 'dateCell'">
         {{ cell.value | moment: 'YYYY-MM-DD hh:mm a z' }}
+      </div>
+
+      <div *dxTemplate="let cell of 'ttbCell'" [ngStyle]="(cell.value < 3600 * 24* 2) && {'color': 'red'}">
+        {{ cell.value | timeTillBid }}
       </div>
 
       <div *dxTemplate="let cell of 'dateTimeEditor'">
