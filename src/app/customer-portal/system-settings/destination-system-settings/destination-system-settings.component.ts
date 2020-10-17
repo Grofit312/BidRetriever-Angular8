@@ -5,6 +5,7 @@ import { ValidationService } from 'app/providers/validation.service';
 import { DestinationSettingsApi } from 'app/customer-portal/system-settings/destination-system-settings/destination-system-settings.api.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Logger } from 'app/providers/logger.service';
+import { split } from 'lodash';
 const CircularJSON = require('circular-json');
 
 @Component({
@@ -19,9 +20,17 @@ export class DestinationSystemSettingsComponent implements OnInit {
 
   destinationTypes = [];
   destinationSettings = {};
-
+  readonly SHAREPOINT_DESTINATION_TYPEID = 'microsoft_sharepoint';
+  readonly DROPBOX_DESTINATION_TYPEID = 'dropbox';
+  
   destinationSystemName = '';
   destinationSystemType = '';
+  
+  destinationURL='';
+  destinationSiteName='';
+  destinationLibraryName='';
+  destinationRootPath='';
+
   destinationSystemUsername = '';
   destinationSystemPassword = '';
   destinationSystemPathPrefix = '';
@@ -67,14 +76,41 @@ export class DestinationSystemSettingsComponent implements OnInit {
 
   onChangeInput() {
     this.settingChanged = true;
+    this.setSharepointCustomPanel();
   }
 
+  setSharepointCustomPanel() {
+    
+    if(this.destinationSystemType === this.SHAREPOINT_DESTINATION_TYPEID)
+    {
+      document.getElementById("divSharePointURL").style.display = "";
+      document.getElementById("divSharePointSiteName").style.display = "";
+      document.getElementById("divSharePointLibraryName").style.display = "";
+    }
+    else {
+      document.getElementById("divSharePointURL").style.display = "none"
+      this.destinationURL='';
+      document.getElementById("divSharePointSiteName").style.display = "none";
+      this.destinationSiteName='';
+      document.getElementById("divSharePointLibraryName").style.display = "none";
+      this.destinationLibraryName='';
+    }
+  }
+  getDestinationAbbrev() {
+    
+    if(this.destinationSystemType === this.SHAREPOINT_DESTINATION_TYPEID)
+    {
+      return "Sharepoint";
+    }
+    return "Dropbox";
+  }
   onDropboxLogin() {
     if (this.settingChanged) {
       this.saveCustomerSettings()
         .then((res: string) => {
           this.logTransaction('Completed', 'Successfully updated customer settings', 'summary');
-          this.dropboxLogin(false);
+          if(this.destinationSystemType === this.DROPBOX_DESTINATION_TYPEID)
+            { this.dropboxLogin(false); } 
         })
         .catch((err: string) => {
           this.notificationService.error('Error', err, { timeOut: 3000, showProgressBar: false });
@@ -168,7 +204,27 @@ export class DestinationSystemSettingsComponent implements OnInit {
         this.destinationSystemType = res['destination_type_id'];
         this.destinationSystemUsername = res['destination_username'];
         this.destinationSystemPassword = res['destination_password'];
-        this.destinationSystemPathPrefix = res['destination_root_path'];
+        this.destinationURL = res['destination_url'];
+        
+        if(this.destinationSystemType=== this.SHAREPOINT_DESTINATION_TYPEID)
+        {
+          let threeParts = [];
+        
+          threeParts = split(res['destination_root_path'], "\\");
+
+          if(threeParts.length === 3)
+          {
+            this.destinationSiteName = threeParts[0];
+            this.destinationLibraryName  = threeParts[1];
+            this.destinationSystemPathPrefix = threeParts[2];
+          }
+        }
+        else 
+        {
+          this.destinationSystemPathPrefix = res['destination_root_path'];
+        }
+        this.setSharepointCustomPanel();
+
         this.destinationSystemToken = res['destination_access_token'];
       })
       .catch(err => {
@@ -207,12 +263,21 @@ export class DestinationSystemSettingsComponent implements OnInit {
       } else if (destinationPathPrefix.length === 0) {
         this.notificationService.error('Error', 'Failed to save destination path, cannot be empty string', { timeOut: 3000, showProgressBar: false });
       } else {
+          if(this.destinationSystemType===this.SHAREPOINT_DESTINATION_TYPEID)
+          {
+            let threeParts = [];
+            params['destination_url'] = this.destinationURL;
+            threeParts[0] = this.destinationSiteName;
+            threeParts[1] = this.destinationLibraryName;
+            params['destination_root_path'] = threeParts[0]+ "\\"+ threeParts[1] + "\\" + destinationPathPrefix;
+          } else {
         params['destination_root_path'] = destinationPathPrefix;
-      }
+          }
+        }
 
       this.destinationSystemToken = this.destinationSystemToken.trim();
 
-      if (this.destinationSystemToken) {
+      if (this.destinationSystemToken && this.destinationSystemType === this.DROPBOX_DESTINATION_TYPEID) {
         this.verifyToken()
           .then(res => {
             if (res) {

@@ -68,10 +68,6 @@ export class CompanyNotesComponent implements OnInit, AfterViewInit {
       text: "Public",
       value: "Public",
     },
-    {
-      text: "ACL",
-      value: "Contract",
-    },
   ];
   actionMapping: IActionMapping = {
     mouse: {

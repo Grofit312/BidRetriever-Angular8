@@ -58,7 +58,8 @@
     [showBorders]="true" [rowAlternationEnabled]="true" [columnAutoWidth]="true" [remoteOperations]="true"
     width="100%" height="100%" 
     (onContextMenuPreparing)='addSubmissionGridMenuItems($event)' 
-    (onRowDblClick)='onViewSubmission()' 
+
+    (onRowDblClick)='onViewProject()' 
     >
     <dxo-column-fixing [enabled]="true"></dxo-column-fixing>
     <dxo-header-filter [visible]="false"></dxo-header-filter>

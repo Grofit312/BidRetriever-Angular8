@@ -729,7 +729,7 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
             return reject('Failed to update the status');
           });
         } else if ('project_bid_datetime' in values) {
-          const updatedValue = moment(values['project_bid_datetime']).utc().format('YYYY-MM-DDTHH:mm:ss.SSSSSS') + 'Z';
+          const updatedValue = values['project_bid_datetime'] ? moment(values['project_bid_datetime']).utc().format('YYYY-MM-DDTHH:mm:ss.SSSSSS') + 'Z' : 'NULL';
           this.apiService.updateProject(key, {
             project_bid_datetime: updatedValue
           }).then((res) => {

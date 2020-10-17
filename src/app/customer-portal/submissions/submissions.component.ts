@@ -493,6 +493,14 @@ gridSubmissionLoadAction(loadOptions: any) {
         },
         {
           type: 'normal',
+
+          text: 'Download Submission',
+          onClick: () => this.onDownloadSubmission()
+        },
+        
+        {
+          type: 'normal',
+
           text: 'View Submission Email',
           onClick: () => this.onViewSubmissionEmail()
         },

@@ -86,7 +86,7 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
   toolbarConfig: any = {};
   toolbarUsersSelectBox: any = null;
   toolbarUsersContent = [];
-  sortName:any
+
   // Modal Flags
   isProjectDataViewModalShown = false;
 
@@ -519,16 +519,17 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
   }
 
   private getGridProjectContentByLoadOption(loadOptions) {
-    
     let projects = this.projectGridContent;
-         //this.sortName = loadOptions.sort[0].selector;
+
     if (loadOptions.sort && loadOptions.sort.length > 0) {
+      const sortName = loadOptions.sort[0].selector;
+
       projects = projects.sort((first, second) => {
-        const sortColumnOption = this.projectGridColumns.find((column) => column.dataField === loadOptions.sort[0].selector);
-
-        let firstValue = first[loadOptions.sort[0].selector];
-        let secondValue = second[loadOptions.sort[0].selector];
-
+        const sortColumnOption = this.projectGridColumns.find((column) => column.dataField === sortName);
+  
+        let firstValue = first[sortName];
+        let secondValue = second[sortName];
+  
         if (sortColumnOption) {
           if (sortColumnOption.dataType === 'date' || sortColumnOption.dataType === 'datetime') {
             firstValue = new Date(firstValue).getTime();
@@ -537,6 +538,15 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
             secondValue = secondValue.toString().toLowerCase();
           }
         }
+  
+        if(!loadOptions.sort)
+        {
+          if (firstValue < secondValue ) {
+            return -1;
+          }
+          else return 1;
+        }
+  
         let loadOptionIndex = 0;
         while (loadOptionIndex < loadOptions.sort.length) {
           if (firstValue > secondValue && loadOptions.sort[loadOptionIndex].desc) {
@@ -551,15 +561,16 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
           }
           return 1;
         }
+  
         return 1;
       });
     }
 
     if (this.searchText) {
       projects = projects.filter((project) => {
-        const isMatched = Object.keys(project).map(key => project[key]).some(item => item.toString().toLowerCase().includes(this.searchText));
+        const isMatched = Object.keys(project).map(key => project[key]).some(item => (item?item:'').toString().toLowerCase().includes(this.searchText));
         return isMatched;
-      });
+      });     
     }
 
     return projects;
@@ -603,7 +614,7 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
         .then(([projects, dataViewFieldSettings]) => {
           this.projectGridContent = projects as any[];
           this.projectGridContentLoaded = true;
-
+          console.log(projects);
           if (!this.projectViewTypeSelected) {
             this.projectGridColumns = [
               { dataField: 'project_id', dataType: 'number', caption: 'Project Id', width: 250, visible: false, allowEditing: false },
@@ -612,6 +623,8 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
               { dataField: 'source_sys_type_name', caption: 'Source', minWidth: 150, allowEditing: false },
               { dataField: 'source_company_name', caption: 'Source Company', minWidth: 150, allowEditing: false },
               { dataField: 'project_bid_datetime', caption: 'Bid Date/Time', minWidth: 150, cellTemplate: 'dateCell', editCellTemplate: 'dateTimeEditor', allowEditing: true },
+              { dataField: 'time_till_bid', caption: 'Time Till Bid', minWidth: 150, allowEditing: false, sortOrder: 'asc', cellTemplate: 'ttbCell' },
+              { dataField: 'project_stage', caption: 'Stage', minWidth: 150,editCellTemplate: 'projectStageEditor', allowEditing: true },
               { dataField: 'project_city_state', caption: 'City/State', width: 150, minWidth: 100, allowEditing: false },
               { dataField: 'project_assigned_office_name', caption: 'Office', width: 150, minWidth: 100, editCellTemplate: 'projectAssignedOfficeNameEditor', allowEditing: true },
               { dataField: 'auto_update_status', caption: 'Automatic Updates', width: 180, minWidth: 150, allowEditing: true, editCellTemplate: 'autoUpdateStatusEditor' },
@@ -619,14 +632,14 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
               { dataField: 'last_change_date', caption: 'Last Change Date', width: 180, minWidth: 150, dataType: 'datetime', cellTemplate: 'dateCell', allowEditing: false },
               { dataField: 'status', caption: 'Status', width: 100, minWidth: 100, allowEditing: true, editCellTemplate: 'statusEditor' },
               { dataField: 'project_notes', caption: 'Notes', minWidth: 100, allowEditing: true },
-              { dataField: 'project_process_status', caption: 'Processing Status', minWidth: 100, allowEditing: true,editCellTemplate: 'updateStatusEditor' },
+              { dataField: 'project_process_status', caption: 'Processing Status', minWidth: 100, allowEditing: false,editCellTemplate: 'updateStatusEditor' },
               { dataField: 'project_process_message', caption: 'Processing Message', minWidth: 100, allowEditing: false }
             ];
           } else {
             const newGridColumnList = [];
             const editingAllowedColumns = [
               'project_name', 'project_admin_user_email', 'project_bid_datetime', 'auto_update_status', 'project_notes',
-              'project_stage', 'project_process_status','project_timezone', 'project_contract_type', 'project_segment', 'project_building_type', 'project_labor_requirement',
+              'project_stage','project_timezone', 'project_contract_type', 'project_segment', 'project_building_type', 'project_labor_requirement',
               'project_value', 'project_size', 'project_construction_type', 'project_award_status', 'project_assigned_office_name',
               'project_number'
             ];
@@ -675,7 +688,6 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
                 case 'project_assigned_office_name': newGridColumn['editCellTemplate'] = 'projectAssignedOfficeNameEditor'; break;
                 case 'auto_update_status': newGridColumn['editCellTemplate'] = 'autoUpdateStatusEditor'; break;
                 case 'project_stage': newGridColumn['editCellTemplate'] = 'projectStageEditor'; break;
-                case 'project_process_status': newGridColumn['editCellTemplate'] = 'updateStatusEditor'; break;
                 case 'project_timezone': newGridColumn['editCellTemplate'] = 'projectTimezoneEditor'; break;
                 case 'project_contract_type': newGridColumn['editCellTemplate'] = 'projectContractTypeEditor'; break;
                 case 'project_segment': newGridColumn['editCellTemplate'] = 'projectSegmentEditor'; break;
@@ -686,6 +698,9 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
               }
 
               newGridColumnList.push(newGridColumn);
+              if (viewFieldSetting.data_view_field_name === 'project_bid_datetime') {
+                newGridColumnList.push({ visibleIndex: viewFieldSetting.data_view_field_sequence, dataField: 'time_till_bid', caption: 'Time Till Bid', minWidth: 150, allowEditing: false, sortOrder: 'asc', cellTemplate: 'ttbCell' });
+              }
             });
 
             this.projectGridColumns = newGridColumnList;
@@ -746,7 +761,7 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
               return reject('Failed to update the status');
             });
         } else if ('project_bid_datetime' in values) {
-          const updatedValue = moment(values['project_bid_datetime']).utc().format('YYYY-MM-DDTHH:mm:ss.SSSSSS') + 'Z';
+          const updatedValue = values['project_bid_datetime'] ? moment(values['project_bid_datetime']).utc().format('YYYY-MM-DDTHH:mm:ss.SSSSSS') + 'Z' : 'NULL';
           this.apiService
             .updateProject(key, {project_bid_datetime: updatedValue})
             .then((res) => {
@@ -809,16 +824,6 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
             .then((res) => {
               this.notificationService.success('Success', 'Project-Stage has been updated', { timeOut: 3000, showProgressBar: false });
               this.projectGridContent[updateIndex]['project_stage'] = values['project_stage'];
-              return resolve();
-            }).catch((error) => {
-              return reject('Failed to update the status');
-            });
-        } else if ('project_process_status' in values) {
-          this.apiService
-            .updateProject(key, {project_process_status: values['project_process_status']})
-            .then((res) => {
-              this.notificationService.success('Success', 'project_Process_Status has been updated', { timeOut: 3000, showProgressBar: false });
-              this.projectGridContent[updateIndex]['project_process_status'] = values['project_process_status'];
               return resolve();
             }).catch((error) => {
               return reject('Failed to update the status');
@@ -1193,34 +1198,6 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
   toolbarHelpAction() {
   }
 
-  /* Table Event: Cell Changed */
-  onCellValueChanged(event: any) {
-    if (event['newValue'] === event['oldValue'] || !event['newValue']) {
-      return;
-    }
-
-    const columnName = event['colDef']['field'];
-    const projectId = event['data']['project_id'];
-    const newValue = event['newValue'];
-
-    // update project
-    this.apiService.updateProject(projectId, { [columnName]: newValue })
-      .then(res => {
-        this.notificationService.success('Success', 'Project has been updated', { timeOut: 3000, showProgressBar: false });
-      })
-      .catch(err => {
-        this.notificationService.error('Error', err, { timeOut: 3000, showProgressBar: false });
-      });
-  }
-
-  /**
-   * Table Event: Row double clicked
-   * @param event
-   */
-  onRowDoubleClicked(event: any) {
-    window.open(`/customer-portal/view-project/${event['data']['project_id']}`, '_blank');
-  }
-
   onRefresh() {
     this.toolbarRefreshGridAction();
   }
@@ -1338,7 +1315,5 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
     } else {
       this.notificationService.error('Error', 'Multiple Selection', 'Please select just one project!', { timeOut: 3000, showProgressBar: false });
     }
-
   }
-
 }

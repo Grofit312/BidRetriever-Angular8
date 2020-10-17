@@ -45,6 +45,7 @@ import {
   DxLoadPanelModule,
 } from 'devextreme-angular';
 import { MomentPipe } from './pipes/moment.pipe';
+import { TimeTillBidPipe } from './pipes/time-till-bid.pipe';
 import { CustomDatetimeComponent } from './custom-datetime/custom-datetime.component';
 import { ProjectDataViewModalComponent } from './project-data-view-modal/project-data-view-modal.component';
 import { ProjectDataViewDetailsModalComponent } from './project-data-view-details-modal/project-data-view-details-modal.component';
@@ -107,6 +108,7 @@ import { RecordLogsComponent } from './record-logs/record-logs.component';
     AddProjectSourceModalComponent,
 
     MomentPipe,
+    TimeTillBidPipe,
 
     CustomDatetimeComponent,
 
@@ -147,6 +149,7 @@ import { RecordLogsComponent } from './record-logs/record-logs.component';
     AddProjectSourceModalComponent,
     AddCompanyModalComponent,
     MomentPipe,
+    TimeTillBidPipe,
     CustomDatetimeComponent,
     ProjectDataViewModalComponent,
     ProjectSourceModalComponent,

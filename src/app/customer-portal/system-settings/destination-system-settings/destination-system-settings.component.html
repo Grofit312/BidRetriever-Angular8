@@ -21,6 +21,34 @@
     </div>
   </div>
 
+
+  <div class='destination-system-setting' id="divSharePointURL">
+    <div class='destination-system-setting-selector'>
+      <div>SharePoint Site URL (including Tenant Prefix) </div>
+      <input type='text' [(ngModel)]='destinationURL' (change)='onChangeInput()'/>
+    </div>
+    <div class='destination-system-setting-description'>
+      The full URL that BidRetriever will use to access the sharepoint system. This should include the tenant prefix. Ex. "https://BidRetriever.sharepoint.com"
+    </div>
+  </div>
+  <div class='destination-system-setting' id="divSharePointSiteName">
+    <div class='destination-system-setting-selector'>
+      <div>SharePoint Site Name</div>
+      <input type='text' [(ngModel)]='destinationSiteName' (change)='onChangeInput()'/>
+    </div>
+    <div class='destination-system-setting-description'>
+      The name of the SharePoint Site that will contain all projects published by the Bid Retriever system.
+    </div>
+  </div>
+  <div class='destination-system-setting' id="divSharePointLibraryName">
+    <div class='destination-system-setting-selector'>
+      <div>SharePoint Library Name</div>
+      <input type='text' [(ngModel)]='destinationLibraryName' (change)='onChangeInput()'/>
+    </div>
+    <div class='destination-system-setting-description'>
+      The SharePoint Library name where the projects folders will be created. Thelibrary must eist nder the SharePoint Site defined in the settings above.
+    </div>
+  </div>
   <div class='destination-system-setting'>
     <div class='destination-system-setting-selector'>
       <div>Destination Root Path</div>
@@ -56,7 +84,7 @@
       <div>Destination System Token</div>
       <div><input type='text' [(ngModel)]='destinationSystemToken' (change)='onChangeInput()'/></div>
       <div>
-        <button class="btn btn-primary" (click)='onDropboxLogin()'>Login With Dropbox</button>
+        <button class="btn btn-primary" (click)='onDropboxLogin()'>Login With {{this.getDestinationAbbrev()}}</button>
         <button class="btn btn-info" (click)='onVerifyToken()'>Verify</button>
       </div>
     </div>
