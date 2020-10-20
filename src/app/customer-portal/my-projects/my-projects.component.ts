@@ -275,11 +275,12 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
         { id: 'inactive', name: 'inactive' },       
       ],
       stage: [
+        { id: 'Unassigned', name: 'Unassigned' },
         { id: 'Prospect', name: 'Prospect' },
         { id: 'Lead', name: 'Lead' },
         { id: 'Opportunity', name: 'Opportunity' },
         { id: 'Proposal', name: 'Proposal' },
-        { id: 'Bid', name: 'Bid' },
+        { id: 'Bidding', name: 'Bidding' },
         { id: 'Awarded', name: 'Awarded' },
         { id: 'Contract', name: 'Contract' },
         { id: 'Completed', name: 'Completed' },
