@@ -121,20 +121,23 @@ export class ProjectNotesComponent implements OnInit, AfterViewInit {
       );
     }
     this.editModalTitle = `Add Comment`;
-    this.subject = "Re:" + this.activeFolderNode.data.subject;
+    this.subject = "Re:" + this.activeFolderNode.data.note_subject;
     this.editModal.nativeElement.style.display = "block";
     this.editType = EditType.UPDATE;
   }
 
   load() {
     this.spinner.show();
-    //this.project_id = this.activatedRoute.snapshot.queryParams["project_id"];
-
     this.project_id = this.dataStore.currentProject.project_id;
 
+    const params: any = {
+      project_id: this.project_id,
+      return_child_notes: true,
+    }; 
     this.notesApi
-      .getNotesByProjectIds(this.project_id)
+      .findNotes(params)
       .then((res: any[]) => {
+        
         this.notes = res;
         this.folderNodes = res;
         this.spinner.hide();
@@ -171,10 +174,10 @@ export class ProjectNotesComponent implements OnInit, AfterViewInit {
       );
     }
     this.editModalTitle = `Add Comment`;
-    if (this.activeFolderNode.data.subject.indexOf("Re:") !== -1) {
-      this.subject = this.activeFolderNode.data.subject;
+    if (this.activeFolderNode.data.note_subject.indexOf("Re:") !== -1) {
+      this.subject = this.activeFolderNode.data.note_subject;
     } else {
-      this.subject = "Re:" + this.activeFolderNode.data.subject;
+      this.subject = "Re:" + this.activeFolderNode.data.note_subject;
     }
     this.editModal.nativeElement.style.display = "block";
     this.editType = EditType.CREATE;
@@ -219,11 +222,11 @@ export class ProjectNotesComponent implements OnInit, AfterViewInit {
     let note_parent_id = null;
     if (!this.isComment) {
       note_parent_id = this.activeFolderNode
-        ? this.activeFolderNode.data.parent_id
+        ? this.activeFolderNode.data.note_parent_id
         : this.project_id;
     } else {
       note_parent_id = this.activeFolderNode
-        ? this.activeFolderNode.data.id
+        ? this.activeFolderNode.data.note_id
         : this.project_id;
     }
 
@@ -310,13 +313,13 @@ export class ProjectNotesComponent implements OnInit, AfterViewInit {
         { timeOut: 3000, showProgressBar: false }
       );
     }
-    this.note_id = node.id;
+    this.note_id = node.note_id;
     this.editModalTitle = `Edit Note`;
-    this.subject = node.subject;
+    this.subject = node.note_subject;
     this.editModal.nativeElement.style.display = "block";
-    this.description = node.description;
+    this.description = node.note_desc;
     this.editType = EditType.UPDATE;
-    this.noteType = node.noteType;
+    this.noteType = node.note_type;
   }
 
   onDelete(id) {
@@ -360,16 +363,16 @@ export class ProjectNotesComponent implements OnInit, AfterViewInit {
     if (this.dataStore.currentProject != null) {
       const user_id = this.dataStore.currentUser.user_id;
       const project_id = this.dataStore.currentProject.project_id;
-      if (note.noteType == "public") {
+      if (note.note_type == "public") {
         this.ischildVisible = true;
         return true;
-      } else if (note.noteType == "personal" && note.userId == user_id) {
+      } else if (note.note_type == "personal" /*TODO: && note.userId == user_id*/) {
         this.ischildVisible = true;
         return true;
-      } else if (note.noteType == "company" && note.companyId == project_id) {
+      } else if (note.note_type == "company" /*&& note.companyId == project_id*/) {
         this.ischildVisible = true;
         return true;
-      } else if (note.noteType == "" && note.companyId == project_id) {
+      } else if (note.note_type == "") {
         this.ischildVisible = true;
         return true;
       }
