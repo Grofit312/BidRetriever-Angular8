@@ -7,8 +7,15 @@ import { Logger } from 'app/providers/logger.service';
 import { ValidationService } from 'app/providers/validation.service';
 import { ProjectFilesApi } from '../project-files/project-files.api.service';
 import { NgxSpinnerService } from 'ngx-spinner';
+import CustomStore from 'devextreme/data/custom_store';
+import DataSource from 'devextreme/data/data_source';
+
+import { DxDataGridComponent, DxToolbarComponent, DxSelectBoxComponent } from 'devextreme-angular';
+import { LoadOptions } from 'devextreme/data/load_options';
+
 const CircularJSON = require('circular-json');
 const moment = require('moment');
+const _ = require('lodash');
 
 @Component({
   selector: 'app-project-submissions',
@@ -17,6 +24,7 @@ const moment = require('moment');
   providers: [ProjectFilesApi],
 })
 export class ProjectSubmissionsComponent implements OnInit {
+  @ViewChild('submissionGrid', { static: false }) submissionGrid: DxDataGridComponent;
   @ViewChild('addSubmissionModal', { static: false }) addSubmissionModal;
   @ViewChild('submissionDetailModal', { static: false }) submissionDetailModal;
   @ViewChild('submissionRenameModal', { static: false }) submissionRenameModal;
@@ -28,97 +36,12 @@ export class ProjectSubmissionsComponent implements OnInit {
   currentProject: any = {};
   selectedSubmission: any = {};
 
-  columnDefs = [
-    {
-      headerName: 'Submission Name',
-      field: 'submission_name',
-      sortable: true,
-      filter: true,
-      resizable: true,
-      editable: true,
-      minWidth: 200,
-      checkboxSelection: true,
-      rowDrag: true,
-    },
-    {
-      headerName: 'Submission Type',
-      field: 'submission_type',
-      sortable: true,
-      filter: true,
-      resizable: true,
-      editable: false,
-      minWidth: 150,
-    },
-    {
-      headerName: 'Submission Date',
-      field: 'submission_date',
-      sortable: true,
-      filter: true,
-      resizable: true,
-      editable: false,
-      minWidth: 100,
-    },
-    {
-      headerName: 'Submitter Email',
-      field: 'submitter_email',
-      sortable: true,
-      filter: true,
-      resizable: true,
-      editable: false,
-      minWidth: 200,
-    },
-    {
-      headerName: 'Source',
-      field: 'source_sys_name',
-      sortable: true,
-      resizable: true,
-      editable: false,
-      width: 150,
-      minWidth: 100,
-    },
-    {
-      headerName: '# Files',
-      field: 'submission_file_count',
-      sortable: true,
-      filter: true,
-      resizable: true,
-      editable: false,
-      width: 150,
-      minWidth: 150,
-    },
-    {
-      headerName: '# Plans',
-      field: 'submission_plan_count',
-      sortable: true,
-      filter: true,
-      resizable: true,
-      editable: false,
-      width: 150,
-      minWidth: 100,
-    },
-    {
-      headerName: 'Processing Status',
-      field: 'submission_process_status',
-      sortable: true,
-      filter: true,
-      resizable: true,
-      editable: false,
-      width: 150,
-      minWidth: 100,
-    },
-    {
-      headerName: 'Processing Message',
-      field: 'submission_process_message',
-      sortable: true,
-      filter: true,
-      resizable: true,
-      editable: false,
-      width: 150,
-      minWidth: 100,
-    },
-  ];
-
-  rowData = null;
+  submissionGridColumns: any[];
+  submissionGridDataSource: any;
+  submissionGridContent = [];
+  submissionGridContentLoaded = false;
+  searchWord ='';
+  
 
   constructor(
     public dataStore: DataStore,
@@ -129,7 +52,95 @@ export class ProjectSubmissionsComponent implements OnInit {
     private validationService: ValidationService,
     private filesApiService: ProjectFilesApi,
     private spinner: NgxSpinnerService
-  ) { }
+  ) { 
+
+    
+    this.submissionGridDataSource = new CustomStore({
+      key: 'submission_id',
+      load: (loadOptions) => this.gridSubmissionLoadAction(loadOptions)
+    });
+
+  }
+  gridSubmissionLoadAction(loadOptions: any){
+    
+    return new Promise((resolve, reject) => {
+      debugger
+      if (this.submissionGridContentLoaded) {
+        const filteredSubmissions = this.getGridSubmissionContentByLoadOption(loadOptions);
+        return resolve({
+          data: filteredSubmissions,
+          totalCount: filteredSubmissions.length
+        });
+      }
+
+      if (!this.dataStore.currentUser || !this.dataStore.currentCustomer) {
+        this.submissionGridContent = [];
+        this.submissionGridContentLoaded = false;
+
+        const filteredSubmissions = this.getGridSubmissionContentByLoadOption(loadOptions);
+        return resolve({
+          data: filteredSubmissions,
+          totalCount: filteredSubmissions.length
+        });
+      }
+
+      
+      const findSubmissions= this.apiService.getProjectSubmissions(this.currentProject['project_id'], this.submissionsViewMode, this.dataStore.currentCustomer ? (this.dataStore.currentCustomer['customer_timezone'] || 'eastern') : 'eastern')
+
+      Promise.all([findSubmissions])
+        .then(([submissions, dataViewFieldSettings]) =>  {
+          
+          //this.rowData = _.uniqBy(submissions, ({ submission_id }) => submission_id);
+  
+          console.log("Submissions",submissions);
+          this.submissionGridContent = submissions as any[];
+          this.submissionGridContentLoaded = true;
+         
+            this.submissionGridColumns = [
+              { dataField: 'submission_id', dataType: 'number', caption: 'Submission Id', width: 250, visible: false, allowEditing: false },
+              { dataField: 'submission_name', caption: 'Submission Name', minWidth: 200, allowEditing: false },
+              { dataField: 'submission_type', caption: 'Submission Type', minWidth: 150, allowEditing: false },
+              { dataField: 'submission_date', caption: 'Submission Date', minWidth: 100, allowEditing: false },
+              { dataField: 'submitter_email', caption: 'Submission Email', minWidth: 200, cellTemplate: 'dateCell', editCellTemplate: 'dateTimeEditor', allowEditing: false },
+              { dataField: 'source_sys_name', caption: 'Source', width: 150, minWidth: 100, allowEditing: false },
+              { dataField: 'submission_file_count', caption: '# Files', width: 150, minWidth: 150, allowEditing: false },
+              { dataField: 'submission_plan_count', caption: '# Plans', width: 150, minWidth: 100, allowEditing: false },
+              { dataField: 'submission_process_status', caption: 'Processing Status', width: 150, minWidth: 100, allowEditing: false},
+              { dataField: 'submission_process_message', caption: 'Processing Message', width: 150, minWidth: 100, allowEditing: false},
+            ];
+         
+
+          const filteredSubmissions = this.getGridSubmissionContentByLoadOption(loadOptions);
+          return resolve({
+            data: filteredSubmissions,
+            totalCount: filteredSubmissions.length
+          });
+        })
+        .catch((error) => {
+          console.log('Load Error', error);
+          this.notificationService.error('Error', error, { timeOut: 3000, showProgressBar: false });
+          this.submissionGridContent = [];
+          this.submissionGridContentLoaded = false;
+          return resolve({
+            data: this.submissionGridContent,
+            totalCount: this.submissionGridContent.length
+          });
+        });
+    });
+  }
+  getGridSubmissionContentByLoadOption(loadOptions: any) {
+    
+    let submissions = this.submissionGridContent;
+    
+    if(this.searchWord)
+    {
+      submissions = submissions.filter((project) => {
+        const isMatched = Object.keys(project).map(key => project[key]).some(item => item.toString().toLowerCase().includes(this.searchWord));
+        return isMatched;
+      });
+    }
+    return submissions;
+  }
 
   ngOnInit() {
     if (this.dataStore.currentProject) {
@@ -146,26 +157,26 @@ export class ProjectSubmissionsComponent implements OnInit {
   }
 
   loadSubmissions() {
-    this.rowData = null;
+    // this.rowData = null;
 
-    this.apiService.getProjectSubmissions(this.currentProject['project_id'], this.submissionsViewMode, this.dataStore.currentCustomer ? (this.dataStore.currentCustomer['customer_timezone'] || 'eastern') : 'eastern').then((submissions: any) => {
-      this.rowData = submissions;
+    // this.apiService.getProjectSubmissions(this.currentProject['project_id'], this.submissionsViewMode, this.dataStore.currentCustomer ? (this.dataStore.currentCustomer['customer_timezone'] || 'eastern') : 'eastern').then((submissions: any) => {
+    //   this.rowData = submissions;
 
-      this.showInitialSubmission();
-    })
-      .catch(err => {
-        this.notificationService.error('Error', err, { timeOut: 3000, showProgressBar: false });
-      });
+    //   this.showInitialSubmission();
+    // })
+    //   .catch(err => {
+    //     this.notificationService.error('Error', err, { timeOut: 3000, showProgressBar: false });
+    //   });
   }
 
-  showInitialSubmission() {
-    const initialSubmissionId = this.activatedRoute.snapshot.queryParamMap.get('submission_id');
-    const submission = this.rowData.find(({ submission_id }) => submission_id === initialSubmissionId);
+  // showInitialSubmission() {
+  //   const initialSubmissionId = this.activatedRoute.snapshot.queryParamMap.get('submission_id');
+  //   const submission = this.rowData.find(({ submission_id }) => submission_id === initialSubmissionId);
 
-    if (submission) {
-      this.submissionDetailModal.initialize(this.currentProject, submission, false);
-    }
-  }
+  //   if (submission) {
+  //     this.submissionDetailModal.initialize(this.currentProject, submission, false);
+  //   }
+  // }
   onDownloadProject() {
     this.apiService.getPublishedLink(this.dataStore.currentProject['project_id'])
       .then((url: string) => {
@@ -187,44 +198,45 @@ export class ProjectSubmissionsComponent implements OnInit {
   }
 
   onViewSubmission() {
-    const selectedSubmissions = this.grid.api.getSelectedRows();
+    const { selectedRowKeys } = this.submissionGrid;
 
-    if (selectedSubmissions.length === 0) {
+    if (selectedRowKeys.length === 0) {
       this.notificationService.error('No Selection', 'Please select one submission!', { timeOut: 3000, showProgressBar: false });
       return;
-    } else if (selectedSubmissions.length > 1) {
+    } else if (selectedRowKeys.length > 1) {
       this.notificationService.error('Multiple Selection', 'The system can only view one submission. Please select a single submission.', { timeOut: 3000, showProgressBar: false });
       return;
     }
-
-    this.submissionDetailModal.initialize(this.currentProject, selectedSubmissions[0], false);
+    const selectedRows = this.submissionGridContent.filter(({ submission_id: submissionId }) => selectedRowKeys.includes(submissionId));
+    this.submissionDetailModal.initialize(this.currentProject, selectedRows[0], false);
   }
 
   onViewSourceSystemLink() {
-    const selectedSubmissions = this.grid.api.getSelectedRows();
+    const { selectedRowKeys } = this.submissionGrid;
 
-    if (selectedSubmissions.length === 0) {
+    if (selectedRowKeys.length === 0) {
       this.notificationService.error('No Selection', 'Please select one submission!', { timeOut: 3000, showProgressBar: false });
       return;
-    } else if (selectedSubmissions.length > 1) {
+    } else if (selectedRowKeys.length > 1) {
       this.notificationService.error('Multiple Selection', 'The system can only view one submission. Please select a single submission.', { timeOut: 3000, showProgressBar: false });
       return;
     }
 
-    if (selectedSubmissions[0]['source_url']) {
-      window.open(selectedSubmissions[0]['source_url'], '_blank');
+    const selectedRows = this.submissionGridContent.filter(({ submission_id: submissionId }) => selectedRowKeys.includes(submissionId));
+    if (selectedRows[0]['source_url']) {
+      window.open(selectedRows[0]['source_url'], '_blank');
     } else {
       this.notificationService.error('Not Found', 'Source system url link not found.', { timeOut: 3000, showProgressBar: false });
     }
   }
 
   onRemoveSubmission() {
-    const selectedSubmissions = this.grid.api.getSelectedRows();
+    const { selectedRowKeys } = this.submissionGrid;
 
-    if (selectedSubmissions.length === 0) {
+    if (selectedRowKeys.length === 0) {
       this.notificationService.error('No Selection', 'Please select one submission!', { timeOut: 3000, showProgressBar: false });
       return;
-    } else if (selectedSubmissions.length > 1) {
+    } else if (selectedRowKeys.length > 1) {
       this.notificationService.error(
         'Multiple Selection',
         'The system can only rename one submission. Please select a single submission.',
@@ -232,52 +244,54 @@ export class ProjectSubmissionsComponent implements OnInit {
       );
       return;
     }
-
-    this.submissionRemoveModal.initialize(selectedSubmissions[0]);
+    const selectedRows = this.submissionGridContent.filter(({ submission_id: submissionId }) => selectedRowKeys.includes(submissionId));
+    this.submissionRemoveModal.initialize(selectedRows[0]);
   }
 
   onRenameSubmission() {
-    const selectedSubmissions = this.grid.api.getSelectedRows();
+    const { selectedRowKeys } = this.submissionGrid;
 
-    if (selectedSubmissions.length === 0) {
+    if (selectedRowKeys.length === 0) {
       this.notificationService.error('No Selection', 'Please select one submission!', { timeOut: 3000, showProgressBar: false });
       return;
-    } else if (selectedSubmissions.length > 1) {
+    } else if (selectedRowKeys.length > 1) {
       this.notificationService.error('Multiple Selection', 'The system can only rename one submission. Please select a single submission.', { timeOut: 3000, showProgressBar: false });
       return;
     }
-
-    this.selectedSubmission = selectedSubmissions[0];
+    
+    const selectedRows = this.submissionGridContent.filter(({ submission_id: submissionId }) => selectedRowKeys.includes(submissionId));
+    this.selectedSubmission = selectedRows[0];
     this.submissionRenameModal.nativeElement.style.display = 'block';
   }
 
   onViewTransactionLogs() {
-    const selectedSubmissions = this.grid.api.getSelectedRows();
+    const { selectedRowKeys } = this.submissionGrid;
 
-    if (selectedSubmissions.length === 0) {
+    if (selectedRowKeys.length === 0) {
       this.notificationService.error('No Selection', 'Please select one submission!', { timeOut: 3000, showProgressBar: false });
       return;
-    } else if (selectedSubmissions.length > 1) {
+    } else if (selectedRowKeys.length > 1) {
       this.notificationService.error('Multiple Selection', 'The system can only rename one submission. Please select a single submission.', { timeOut: 3000, showProgressBar: false });
       return;
     }
-
-    this.transactionLogsModal.initialize(this.currentProject, selectedSubmissions[0]);
+    const selectedRows = this.submissionGridContent.filter(({ submission_id: submissionId }) => selectedRowKeys.includes(submissionId));
+    this.transactionLogsModal.initialize(this.currentProject, selectedRows[0]);
   }
 
   onViewSubmissionEmail() {
-    const selectedSubmissions = this.grid.api.getSelectedRows();
+    const { selectedRowKeys } = this.submissionGrid;
 
-    if (selectedSubmissions.length === 0) {
+    if (selectedRowKeys.length === 0) {
       this.notificationService.error('No Selection', 'Please select one submission!', { timeOut: 3000, showProgressBar: false });
       return;
-    } else if (selectedSubmissions.length > 1) {
+    } else if (selectedRowKeys.length > 1) {
       this.notificationService.error('Multiple Selection', 'Please select just one submission!', { timeOut: 3000, showProgressBar: false });
       return;
     }
 
-    const bucketName = selectedSubmissions[0]['submission_email_file_bucket'];
-    const fileKey = selectedSubmissions[0]['submission_email_file_key'];
+    const selectedRows = this.submissionGridContent.filter(({ submission_id: submissionId }) => selectedRowKeys.includes(submissionId));
+    const bucketName = selectedRows[0]['submission_email_file_bucket'];
+    const fileKey = selectedRows[0]['submission_email_file_key'];
 
     if (bucketName && fileKey) {
       window.open(`/email-viewer?bucket_name=${bucketName}&file_key=${fileKey}`, '_blank');
@@ -287,7 +301,11 @@ export class ProjectSubmissionsComponent implements OnInit {
   }
 
   onRefresh() {
-    this.loadSubmissions();
+    
+    this.submissionGridContentLoaded = false;
+    if (this.submissionGrid && this.submissionGrid.instance) {
+      this.submissionGrid.instance.refresh();
+    }
   }
 
   onHelp() {
@@ -328,7 +346,7 @@ export class ProjectSubmissionsComponent implements OnInit {
       .then(res => {
         this.submissionRenameModal.nativeElement.style.display = 'none';
         this.selectedSubmission['submission_name'] = submissionName;
-        this.grid.api.refreshCells();
+        
 
         this.notificationService.success('Success', 'Submission has been renamed', { timeOut: 3000, showProgressBar: false });
         this.logTransaction(this.selectedSubmission['submission_id'], 'Rename submission', 'Completed',
@@ -341,6 +359,7 @@ export class ProjectSubmissionsComponent implements OnInit {
           CircularJSON.stringify(err), 'summary');
         this.spinner.hide();
       });
+      this.onRefresh();
   }
 
   onCancelRenaming() {
@@ -348,47 +367,97 @@ export class ProjectSubmissionsComponent implements OnInit {
   }
 
   onExport() {
-    this.grid.gridOptions.api.exportDataAsCsv({
-      fileName: `${this.currentProject['project_name']}_submissions_${moment().format('YYYY-MM-DD_HH-mm')}`,
-    });
-  }
-
-  /* Table Event: Cell Changed */
-  onCellValueChanged(event: any) {
-    const newValue = this.validationService.validateProjectName(event['newValue']);
-    const columnName = event['colDef']['field'];
-    const submissionId = event['data']['submission_id'];
-
-    if (!newValue || event['newValue'] === event['oldValue']) {
-      return;
+    if (this.submissionGrid && this.submissionGrid.instance) {
+      this.submissionGrid.instance.exportToExcel(false);
     }
-
-    // update project
-    this.apiService.updateProjectSubmission(submissionId, { [columnName]: newValue })
-      .then(res => {
-        this.notificationService.success('Success', 'Submission has been updated', { timeOut: 3000, showProgressBar: false });
-        this.logTransaction(submissionId, 'Update submission', 'Completed', 'Update submission info', 'summary');
-      })
-      .catch(err => {
-        this.notificationService.error('Error', err, { timeOut: 3000, showProgressBar: false });
-        this.logTransaction(submissionId, 'Update submission', 'Failed', CircularJSON.stringify(err), 'summary');
-      });
   }
 
-  /* Table Event: Grid Ready */
-  onGridReady(event: any) {
-    const defaultSortModel = [
-      { colId: "submission_date", sort: "desc" },
-    ];
-    event.api.setSortModel(defaultSortModel);
-    event.api.sizeColumnsToFit();
-  }
 
   /* Table Event: Global Search */
   onSearchChange(searchWord: string) {
-    this.grid.gridOptions.api.setQuickFilter(searchWord);
+    if(this.submissionGrid && this.submissionGrid.instance){
+      this.submissionGrid.instance.refresh();
+    }
+  }
+  toolbarViewSubmissionAction(){
+    const { selectedRowKeys } = this.submissionGrid;
+    if (selectedRowKeys.length === 0) {
+      this.notificationService.error('No Selection', 'Please select one submission!', { timeOut: 3000, showProgressBar: false });
+      return;
+    } else if (selectedRowKeys.length > 1) {
+      this.notificationService.error('Multiple Selection', 'The system can only view one submission. Please select a single submission.', { timeOut: 3000, showProgressBar: false });
+      return;
+    }
+    const selectedRows = this.submissionGridContent.filter(({ submission_id: submissionId }) => selectedRowKeys.includes(submissionId));
+    this.submissionDetailModal.initialize(this.currentProject, selectedRows[0], false);
   }
 
+  addSubmissionGridMenuItems(e){
+    
+    
+    if (!e.row) { return; }
+    
+    e.component.selectRows([e.row.data.submission_id]);
+
+    if (e.row && e.row.rowType === 'data') {   // e.items can be undefined
+      if (!e.items) { e.items = []; }
+
+      
+      e.items.push(
+        {
+          type: 'normal',
+          text: 'Add Submission',
+          onClick: () => this.onAddSubmission()
+        },
+        {
+          type: 'normal',
+          text: 'View Submission',
+          onClick: () => this.onViewSubmission()
+        },
+        {
+          type: 'normal',
+          text: 'View Source System Link',
+          onClick: () => this.onViewSourceSystemLink()
+        },
+        {
+          type: 'normal',
+          text: 'View Submission Email',
+          onClick: () => this.onViewSubmissionEmail()
+        },
+        {
+          type: 'normal',
+          text: 'Remove Submission',
+          onClick: () => this.onRemoveSubmission()
+        },
+       {
+          type: 'normal',
+          text: 'Download All Files',
+          onClick: () => this.onDownloadProject()
+        }, 
+        {
+          type: 'normal',
+          text: 'Export List To CSV',
+          onClick: () => this.onExport()
+        },
+        {
+          type: 'normal',
+          text: 'View Transaction Log',
+          onClick: () => this.onViewTransactionLogs()
+        },
+        {
+          type: 'normal',
+          text: 'Refresh Grid',
+          onClick: () => this.onRefresh()
+        },
+        {
+          type: 'normal',
+          text: 'Help',
+          onClick: () => this.onHelp()
+        }
+      );
+    }
+    return e;
+  }
   /* Log transaction */
   logTransaction(submission_id: string, operation: string, status: string, description: string, transaction_level: string) {
     this.loggerService.logAppTransaction({
