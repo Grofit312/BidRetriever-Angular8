@@ -479,7 +479,6 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
   /* Switch User */
   onChangeUser(changedEmail) {
     this.searchText = '';
-
     if (changedEmail === 'all-users') {
       this.selectedUserId = changedEmail;
       this.selectedCustomerId = null;
@@ -606,9 +605,28 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
         });
       }
 
-      const findProjects = this.selectedUserId === 'all-users'
-        ? this.apiService.findProjectsByCustomerId(this.dataStore.currentUser['customer_id'], this.dataStore.currentCustomer['customer_timezone'] || 'eastern', this.projectViewTypeSelected)
-        : this.apiService.findProjectsByUserId(this.selectedUserId, this.selectedCustomerId, this.dataStore.currentCustomer['customer_timezone'] || 'eastern', this.projectViewTypeSelected);
+      const findProjects 
+          = this.selectedUserId === 'all-users'
+        ? this.apiService.findProjectsByCustomerId(
+              this.dataStore.currentUser['customer_id'], 
+              this.dataStore.currentCustomer['customer_timezone'] || 'eastern', 
+              this.projectViewTypeSelected
+              )
+        : (
+          !this.selectedCustomerId ? //if customer id exists - load projects based on that 
+                this.apiService.findProjectsByUserId(
+                  this.selectedUserId, 
+                  this.selectedCustomerId, 
+                  this.dataStore.currentCustomer['customer_timezone'] || 'eastern', 
+                  this.projectViewTypeSelected)
+                : 
+                this.apiService.findProjectsByUserEmail( //if no customer id, this means this current user is on product trial , in this case load projects by user_email
+                  this.dataStore.currentUser['user_email'],
+                  this.dataStore.currentCustomer['customer_timezone'] || 'eastern', 
+                  this.projectViewTypeSelected
+                  )
+          )
+        
       const findDataViewFieldSettings = this.apiService.findDataViewFieldSettings(this.projectViewTypeSelected);
       const currentOfficeId = this.dataStore.currentUser['customer_office_id'];
 
