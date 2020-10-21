@@ -31,7 +31,7 @@
           <button
             class=" edit-btn gray action-close dx-button dx-button-danger dx-button-mode-contained dx-widget dx-button-has-text .dx-button-has-text .dx-button-content"
             (click)="onEdit(node)">Edit</button>
-          <button 
+          <button *ngIf="node.note_user_id === this.dataStore.currentUser.user_id"
             class=" del-btn action-close dx-button dx-button-danger dx-button-mode-contained dx-widget dx-button-has-text .dx-button-has-text .dx-button-content"
             (click)="onDelete(node.note_id)">Delete</button>
         </div>

@@ -59,7 +59,7 @@ export class ProjectNotesComponent implements OnInit, AfterViewInit {
     },
     {
       text: "Public",
-      value: "Public",
+      value: "public",
     },
   ];
   actionMapping: IActionMapping = {
@@ -360,22 +360,24 @@ export class ProjectNotesComponent implements OnInit, AfterViewInit {
   }
 
   isVisible(note: any) {
+    this.ischildVisible = false;
     if (this.dataStore.currentProject != null) {
       const user_id = this.dataStore.currentUser.user_id;
-      const project_id = this.dataStore.currentProject.project_id;
-      if (note.note_type == "public") {
+      const company_id = this.dataStore.currentProject.source_company_id
+      if (note.note_type === 'public') {//If public show that note
         this.ischildVisible = true;
         return true;
-      } else if (note.note_type == "personal" /*TODO: && note.userId == user_id*/) {
+      } else if (note.note_type === 'personal' && note.note_user_id === user_id) {//if personal show only when userid matches
         this.ischildVisible = true;
         return true;
-      } else if (note.note_type == "company" /*&& note.companyId == project_id*/) {
+      } else if (note.note_type === 'company' && note.note_company_id === (company_id?company_id :note.note_company_id) ) { 
         this.ischildVisible = true;
         return true;
-      } else if (note.note_type == "") {
+      } else if (note.note_type === ''  && note.note_company_id === (company_id?company_id :note.note_company_id)) {
         this.ischildVisible = true;
         return true;
       }
     }
+    return false;
   }
 }
