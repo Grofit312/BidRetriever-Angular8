@@ -101,7 +101,7 @@ export class ProjectSubmissionsComponent implements OnInit {
               { dataField: 'submission_name', caption: 'Submission Name', minWidth: 200, allowEditing: false },
               { dataField: 'submission_type', caption: 'Submission Type', minWidth: 150, allowEditing: false },
               { dataField: 'submission_date', caption: 'Submission Date', minWidth: 100, allowEditing: false },
-              { dataField: 'submitter_email', caption: 'Submission Email', minWidth: 200, cellTemplate: 'dateCell', editCellTemplate: 'dateTimeEditor', allowEditing: false },
+              { dataField: 'submitter_email', caption: 'Submission Email', minWidth: 200, allowEditing: false },
               { dataField: 'source_sys_name', caption: 'Source', width: 150, minWidth: 100, allowEditing: false },
               { dataField: 'submission_file_count', caption: '# Files', width: 150, minWidth: 150, allowEditing: false },
               { dataField: 'submission_plan_count', caption: '# Plans', width: 150, minWidth: 100, allowEditing: false },
@@ -131,7 +131,51 @@ export class ProjectSubmissionsComponent implements OnInit {
   getGridSubmissionContentByLoadOption(loadOptions: any) {
     
     let submissions = this.submissionGridContent;
+    let sortName = 'submission_date';
+
+    if (loadOptions.sort && loadOptions.sort.length > 0) {
+      sortName = loadOptions.sort[0].selector;
+    }
     
+    submissions = submissions.sort((first, second) => {
+        const sortColumnOption = this.submissionGridColumns.find((column) => column.dataField === sortName);
+
+        let firstValue = first[sortName];
+        let secondValue = second[sortName];
+
+  
+        if (sortColumnOption) {
+          if (sortColumnOption.dataType === 'date' || sortColumnOption.dataType === 'datetime') {
+            firstValue = new Date(firstValue).getTime();
+            secondValue = new Date(secondValue).getTime();
+            firstValue = firstValue.toString().toLowerCase();
+            secondValue = secondValue.toString().toLowerCase();
+          }
+        }
+
+        if(!loadOptions.sort)
+        {
+          if (firstValue > secondValue ) {
+            return -1;
+          }
+          else return 1;
+        }
+        let loadOptionIndex = 0;
+        while (loadOptionIndex < loadOptions.sort.length) {
+          if (firstValue > secondValue && loadOptions.sort[loadOptionIndex].desc) { 
+            return -1;
+          }   
+          if (firstValue < secondValue && !loadOptions.sort[loadOptionIndex].desc) {    
+            return -1;
+          } 
+          if (firstValue === secondValue) {
+            loadOptionIndex++;   
+            continue;
+          }   
+          return 1;
+        }
+        return 1;
+      });
     if(this.searchWord)
     {
       submissions = submissions.filter((project) => {
