@@ -1,7 +1,7 @@
 
 <div class="my-contacts">
   <dx-toolbar class="header" #projectToolbar>
-    <dxi-item location="before">
+    <!-- <dxi-item location="before">
       <div *dxTemplate>
         <dx-select-box #projectToolbarViewType [width]="toolbarConfig.projectViewType.width"
           [dataSource]="toolbarConfig.projectViewType.dataSource"
@@ -18,12 +18,12 @@
         </dx-select-box>
       </div>
     </dxi-item>
-    <dxi-item location="before" widget="dxLookup" [options]="toolbarConfig.users"></dxi-item>
+    <dxi-item location="before" widget="dxLookup" [options]="toolbarConfig.users"></dxi-item> -->
 
     <dxi-item location="center" widget="dxTextBox" [options]="toolbarConfig.search"></dxi-item>
 
     <dxi-item location="after" widget="dxButton" [options]="toolbarConfig.viewProject"></dxi-item>
-    <dxi-item location="after" widget="dxButton" [options]="toolbarConfig.addProject"></dxi-item>
+    <dxi-item location="after" widget="dxButton" [options]="toolbarConfig.addContact"></dxi-item>
 
     <dxi-item locateInMenu="always" widget="dxButton" [options]="toolbarConfig.others.viewProject"></dxi-item>
     <dxi-item locateInMenu="always" widget="dxButton" [options]="toolbarConfig.others.addProject"></dxi-item>
@@ -180,6 +180,8 @@
 <!-- Transaction Logs Modal -->
 <transaction-logs-modal #transactionLogsModal></transaction-logs-modal>
 
+<!-- Add Contact Modal -->
+<add-contact-modal #addContactModal></add-contact-modal>
 
 <dx-popup [closeOnOutsideClick]="true" [dragEnabled]="false" (onHiding)="popupDataViewHidingAction($event)"
   [(visible)]="isProjectDataViewModalShown" [showTitle]="true" title="Manage Views" width="80vw" height="80vh">

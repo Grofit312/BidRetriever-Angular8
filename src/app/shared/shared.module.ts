@@ -56,6 +56,7 @@ import { CompaniesApi } from 'app/customer-portal/my-companies/my-companies.api.
 import { ContactApi } from 'app/customer-portal/view-company/company-employees/company-employees.component.api.service';
 import { SourceSystemAccountsApi } from 'app/customer-portal/system-settings/source-system-accounts/source-system-accounts.api.service';
 import { RecordLogsComponent } from './record-logs/record-logs.component';
+import { AddContactModalComponent } from './add-contact-modal/add-contact-modal.component';
 
 @NgModule({
   imports: [
@@ -106,25 +107,16 @@ import { RecordLogsComponent } from './record-logs/record-logs.component';
     PublicShareModalComponent,
     RemoveShareModalComponent,
     AddProjectSourceModalComponent,
-
     MomentPipe,
     TimeTillBidPipe,
-
     CustomDatetimeComponent,
-
     ProjectDataViewModalComponent,
-
     ProjectDataViewDetailsModalComponent,
-
     ProjectSourceModalComponent,
-
     CompanyDataViewModalComponent,
-
     CompanyDataViewDetailsModalComponent,
-
     RecordLogsComponent,
-
-    
+    AddContactModalComponent,
   ],
   exports: [
     AddProjectModalComponent,
@@ -147,6 +139,7 @@ import { RecordLogsComponent } from './record-logs/record-logs.component';
     PublicShareModalComponent,
     RemoveShareModalComponent,
     AddProjectSourceModalComponent,
+    AddContactModalComponent,
     AddCompanyModalComponent,
     MomentPipe,
     TimeTillBidPipe,

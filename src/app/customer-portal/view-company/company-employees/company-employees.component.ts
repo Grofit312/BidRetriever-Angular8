@@ -80,8 +80,9 @@ export class CompanyEmployeesComponent implements OnInit {
   @ViewChild('editProjectModal', { static: false }) editProjectModal;
   @ViewChild('removeProjectModal', { static: false }) removeProjectModal;
   @ViewChild('transactionLogsModal', { static: false }) transactionLogsModal;
+  @ViewChild('addContactModal', { static: false }) addContactModal;
   
-
+  companyId: any;
   projectViewMode = 'my';
   searchText = '';
   currentOffice = null;
@@ -179,10 +180,10 @@ export class CompanyEmployeesComponent implements OnInit {
           text: 'View Contact',
           onClick: () => this.toolbarViewProjectAction()
         },
-        addProject: {
+        addContact: {
           type: 'normal',
           text: 'Add Contact',
-          // onClick: () => this.toolbarAddProjectAction()
+          onClick: () => this.toolbarAddContactAction()
         },
   
         others: {
@@ -376,6 +377,7 @@ export class CompanyEmployeesComponent implements OnInit {
   }
 
   load() {
+
     this.loadAllUsers();
     this.loadCurrentOffice();
 
@@ -1020,6 +1022,12 @@ export class CompanyEmployeesComponent implements OnInit {
   }
 
 
+toolbarAddContactAction() {
+    this.addContactModal.initialize(this);
+  }
+
+  
+
   toolbarViewProjectAction() {
     const { selectedRowKeys } = this.projectGrid;
     if (selectedRowKeys.length === 0) {
@@ -1314,6 +1322,5 @@ export class CompanyEmployeesComponent implements OnInit {
     }
 
   }
-
 
 }
