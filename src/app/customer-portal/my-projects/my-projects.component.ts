@@ -744,7 +744,16 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
         });
     });
   }
+  getDateDiff_DH(dateSent){
+    let currentDate = new Date();
+    dateSent = new Date(dateSent);
 
+    let b_tick= Date.UTC(dateSent.getFullYear(), dateSent.getMonth(), dateSent.getDate(), dateSent.getHours()) ;
+    let c_tick= Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), currentDate.getHours());
+    
+    let result = (b_tick - c_tick)/1000;
+    return result === 0? Number.MAX_SAFE_INTEGER: result;
+}
   gridProjectUpdateAction(key, values) {
     return new Promise((resolve, reject) => {
       try {
@@ -787,6 +796,7 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
             .then((res) => {
               this.notificationService.success('Success', 'Project Bid DateTime has been updated', { timeOut: 3000, showProgressBar: false });
               this.projectGridContent[updateIndex]['project_bid_datetime'] = updatedValue;
+              this.projectGridContent[updateIndex]['time_till_bid'] = this.getDateDiff_DH(updatedValue) ;
               return resolve();
             }).catch((error) => {
               return reject('Failed to update the status');
