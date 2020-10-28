@@ -62,7 +62,9 @@ export class ProjectNotificationsComponent implements OnInit {
   ngOnInit() {
     
   }
-
+  onChangeNotificationViewMode(){
+    
+  }
   
   onSearchChange(searchText) {
     this.searchWord =searchText;
