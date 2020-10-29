@@ -24,7 +24,7 @@ export class CompaniesApi {
         .then(res => {
           if (res.status === 200) {
             res.data = res.data.map((company) => {
-              company['company_city_state'] = `${company['company_city']}, ${company['company_state']}`;
+              company['company_city_state'] = `${company['company_state']}, ${company['company_city']}`;
               company['last_change_date'] = this.convertToTimeZoneString(company['last_change_date'], timezone);
               company['create_datetime'] = this.convertToTimeZoneString(company['create_datetime'], timezone);
               return company;
@@ -56,7 +56,7 @@ export class CompaniesApi {
           if (res.status === 200) {
             if (data_view_id == null) {
               res.data = res.data.map((company) => {
-                company['company_city_state'] = `${company['company_city']}, ${company['company_state']}`;
+                company['company_city_state'] = `${company['company_state']}, ${company['company_city']}`;
                 company['last_change_date'] = this.convertToTimeZoneString(company['last_change_date'], timezone);
                 company['create_datetime'] = this.convertToTimeZoneString(company['create_datetime'], timezone);
                 return company;
