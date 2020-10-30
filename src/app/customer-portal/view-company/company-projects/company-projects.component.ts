@@ -605,7 +605,7 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
               { dataField: 'project_number', caption: 'Project Number', minWidth: 150, allowEditing: false },
               { dataField: 'project_admin_user_fullname', caption: 'Admin User', minWidth: 150, allowEditing: false },
                { dataField: 'project_bid_datetime', caption: 'Bid Date/Time', minWidth: 150, cellTemplate: 'dateCell', editCellTemplate: 'dateTimeEditor', allowEditing: false },
-              { dataField: 'project_state', caption: 'City/State', width: 150, minWidth: 100, allowEditing: false },
+              { dataField: 'project_city_state', caption: 'State/City', width: 150, minWidth: 100, allowEditing: false },
               { dataField: 'project_assigned_office_name', caption: 'Office', width: 150, minWidth: 100, editCellTemplate: 'projectAssignedOfficeNameEditor', allowEditing: true },
               { dataField: 'create_datetime', caption: 'Create Date', width: 180, minWidth: 150, dataType: 'datetime', cellTemplate: 'dateCell', allowEditing: false },
               { dataField: 'project_stage', caption: 'Stage', width: 100, minWidth: 100, allowEditing: true, editCellTemplate: 'projectStageEditor' },             
@@ -700,6 +700,7 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
 
   gridProjectUpdateAction(key, values) {
     return new Promise((resolve, reject) => {
+      debugger
       try {
         const updateIndex = this.projectGridContent.findIndex((project) => project.project_id === key);
         if ('project_name' in values) {

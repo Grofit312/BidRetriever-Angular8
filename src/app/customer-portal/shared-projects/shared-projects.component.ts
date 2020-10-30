@@ -264,7 +264,7 @@ this.filterOptions = [
               { dataField: 'share_source_user_email', caption: 'Source', minWidth: 150, allowEditing: false },
               { dataField: 'share_source_company_name', caption: 'Source Company', minWidth: 150, allowEditing: false },
               { dataField: 'project_bid_datetime', caption: 'Bid Date/Time', minWidth: 150, cellTemplate: 'dateCell', editCellTemplate: 'dateTimeEditor', allowEditing: false },
-              { dataField: 'project_city_state', caption: 'City/State', width: 150, minWidth: 100, allowEditing: false },
+              { dataField: 'project_city_state', caption: 'State/City', width: 150, minWidth: 100, allowEditing: false },
               { dataField: 'share_user_office_name', caption: 'Office', width: 150, minWidth: 100, editCellTemplate: 'projectAssignedOfficeNameEditor', allowEditing: true },
               { dataField: 'create_datetime', caption: 'Create Date', width: 180, minWidth: 150, dataType: 'datetime', cellTemplate: 'dateCell', allowEditing: false },
               { dataField: 'edit_datetime', caption: 'Last Change Date', width: 100, minWidth: 100, allowEditing: true, editCellTemplate: 'projectStageEditor' },             
