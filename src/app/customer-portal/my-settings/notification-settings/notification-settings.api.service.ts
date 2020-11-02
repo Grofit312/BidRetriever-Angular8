@@ -29,7 +29,7 @@ export class NotificationSettingsApi {
   }
 
   public createUserSetting(params: any) {
-    debugger
+    
     return new Promise((resolve, reject) => {
       axios.post(`${window['env'].apiBaseUrl}/CreateUserSetting`, queryString.stringify(params), {
         validateStatus: (status) => {

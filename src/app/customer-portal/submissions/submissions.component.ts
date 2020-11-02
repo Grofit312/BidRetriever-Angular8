@@ -99,7 +99,7 @@ this.submissionGridColumns  = [
 
   }
 gridSubmissionLoadAction(loadOptions: any) {
-  debugger
+  
   return new Promise((resolve, reject) => {
     if (this.submissionGridContentLoaded) {
         const filteredSubmissions = this.getGridSubmissionContentByLoadOption(loadOptions);
@@ -189,7 +189,7 @@ gridSubmissionLoadAction(loadOptions: any) {
   }
 
   loadSubmissions() {
-    debugger
+    
     this.rowData = null;
 
     const params = {
@@ -261,7 +261,7 @@ gridSubmissionLoadAction(loadOptions: any) {
 
   /* View project */
   onViewProject() {
-    debugger
+    
     const { selectedRowKeys }= this.submissionGrid;
 
     if (selectedRowKeys.length === 0) {

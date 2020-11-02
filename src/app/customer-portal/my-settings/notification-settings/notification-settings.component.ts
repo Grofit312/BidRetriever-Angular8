@@ -95,7 +95,7 @@ export class NotificationSettingsComponent implements OnInit {
   loadCustomerSettings() {
     this.notificationSettingsApi.getUserSettings(this.dataStore.currentUser.user_id)
     .then((userSettings: any[]) => {
-      debugger
+      
       this.userSettings = userSettings;
 
       // initialize model values

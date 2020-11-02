@@ -34,7 +34,7 @@ export class MySettingsMenuComponent implements OnInit {
   }
 
   onClickMenu(index: number) {
-    debugger
+    
     this.currentMenu = index;
 
     const newLoad = this.newLoad;

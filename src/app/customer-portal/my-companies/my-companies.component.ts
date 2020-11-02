@@ -649,7 +649,6 @@ export class MyCompaniesComponent implements OnInit, AfterViewInit {
 
   gridCompanyLoadAction(loadOptions) {
     return new Promise((resolve, reject) => {
-      debugger
       if (this.companyGridContentLoaded) {
         const filteredCompanies = this.getGridCompanyContentByLoadOption(
           loadOptions

@@ -64,7 +64,7 @@ export class ProjectSubmissionsComponent implements OnInit {
   gridSubmissionLoadAction(loadOptions: any){
     
     return new Promise((resolve, reject) => {
-      debugger
+      
       if (this.submissionGridContentLoaded) {
         const filteredSubmissions = this.getGridSubmissionContentByLoadOption(loadOptions);
         return resolve({

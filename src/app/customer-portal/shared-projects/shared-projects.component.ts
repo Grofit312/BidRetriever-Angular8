@@ -199,7 +199,7 @@ this.filterOptions = [
   }
   /* Toolbar Search Action */
   toolbarSearchAction(event) {
-    debugger
+    
     this.searchWord = event.value.toLowerCase();
     if (this.projectGrid && this.projectGrid.instance) {
       this.projectGrid.instance.refresh();
@@ -207,7 +207,7 @@ this.filterOptions = [
   }
   gridSharedProjectLoadAction(loadOptions) {
     return new Promise((resolve, reject) => {
-      debugger
+      
       if (this.projectGridContentLoaded) {
         const filteredProjects = this.getGridProjectContentByLoadOption(loadOptions);
         return resolve({
@@ -327,7 +327,7 @@ this.filterOptions = [
 
   /* Archive Project(s) */
   toolbarArchiveSharedProjectAction()  {
-    debugger
+    
     const sharedProject = this.selectedSharedProject;
     const { selectedRowKeys } = this.projectGrid;
     if (selectedRowKeys.length === 0) {
@@ -548,7 +548,7 @@ this.filterOptions = [
 
   /* Create Project */
   toolbarAddToMyProjectAction() {
-debugger
+
   const { selectedRowKeys } = this.projectGrid;
   if (selectedRowKeys.length === 0) {
     this.notificationService.error('No Selection', 'Please select one project!', { timeOut: 3000, showProgressBar: false });
