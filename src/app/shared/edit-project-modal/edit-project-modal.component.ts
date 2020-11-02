@@ -170,7 +170,7 @@ sourceSystemAccounts(){
     }
   }
   getContactList(company_id:any) {
-    debugger
+    
     if (this.dataStore.currentCustomer != null ) {
       this.contactApi
         .findCompanyContact(this.dataStore.currentCustomer["customer_id"], company_id)
@@ -309,7 +309,7 @@ sourceSystemAccounts(){
   }
 
   onSaveProject() {
-    debugger
+    
     if (!this.currentProject['project_name'] || !this.currentProject['project_name'].trim()) {
       return this.notificationService.error('Error', 'Please input project name', { timeOut: 3000, showProgressBar: false });
     }
