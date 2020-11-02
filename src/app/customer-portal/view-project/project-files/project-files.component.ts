@@ -322,7 +322,7 @@ onViewDocumentDetails(docId ?: string) {
 
     this.documentDetailModal.initialize(this.currentProject, submission, selectedRowKeys[0], false);
   } else {
-    this.apiService.getDocumentDetails(docId)
+    this.apiService.getDocumentDetails(docId,  this.dataStore.currentCustomer ? (this.dataStore.currentCustomer['customer_timezone'] || 'eastern') : 'eastern')
       .then((res) => {
         this.documentDetailModal.initialize(this.currentProject, {}, res, false);
         return;

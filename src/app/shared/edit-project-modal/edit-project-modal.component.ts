@@ -173,7 +173,7 @@ sourceSystemAccounts(){
     
     if (this.dataStore.currentCustomer != null ) {
       this.contactApi
-        .findCompanyContact(this.dataStore.currentCustomer["customer_id"], company_id)
+        .findCompanyContact(this.dataStore.currentCustomer["customer_id"], company_id, this.dataStore.currentCustomer["customer_timezone"] || "eastern")
         .then((res: any) => {
           this.contactTypeList = new DataSource({store: {data:  res, type:'array', key: 'contact_id'}});
         });
@@ -257,7 +257,7 @@ sourceSystemAccounts(){
   initialize(parent: any, project: any) {
     this.parent = parent;
     this.editProjectModal.nativeElement.style.display = 'block';
-
+    const timezone = this.dataStore.currentCustomer ? (this.dataStore.currentCustomer['customer_timezone'] || 'eastern') : 'eastern';
     this.currentProject = project;
     this.currentProject['project_auto_update_status'] = project['auto_update_status'] === 'active';
     this.currentProject['project_bid_datetime'] = project['project_bid_datetime'] === 'Invalid date' ? null : project['project_bid_datetime'];
@@ -271,7 +271,7 @@ sourceSystemAccounts(){
           const secondUserEmail = secondUser.user_email ? secondUser.user_email.toLowerCase() : '';
           return firstUserEmail.localeCompare(secondUserEmail);
         });
-        return this.calendarApi.findCalendarEvents(null, this.currentProject['project_id']);
+        return this.calendarApi.findCalendarEvents(null, this.currentProject['project_id'], timezone);
       })
       .then((res: any[]) => {
         this.preBidDateTime = res.find(event => event.calendar_event_type === 'project_prebid_mtg_datetime') || {};

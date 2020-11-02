@@ -357,7 +357,7 @@ export class BidretrieverInternalComponent implements OnInit {
     try {
       this.spinner.show();
 
-      const doc = await this.projectFilesApi.getDocumentDetails(selectedRecord['doc_id']);
+      const doc = await this.projectFilesApi.getDocumentDetails(selectedRecord['doc_id'],  this.dataStore.currentCustomer ? (this.dataStore.currentCustomer['customer_timezone'] || 'eastern') : 'eastern');
       this.documentDetailModal.initialize(this.dataStore.currentProject, {}, doc, false);
     } catch (err) {
       this.notificationService.error('Error', 'Failed to read document detail', { timeOut: 3000, showProgressBar: false });

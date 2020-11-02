@@ -593,7 +593,7 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
        // const findDataViewFieldSettings = this.apiService.findDataViewFieldSettings(this.projectViewTypeSelected);
       // const currentOfficeId = this.dataStore.currentUser['customer_office_id'];
       this.source_company_id =this.dataStore.currentCompany.company_id;
-      const findProjects= this.myCalenderApi.findProjectList(this.source_company_id); 
+      const findProjects= this.myCalenderApi.findProjectList(this.source_company_id, this.dataStore.currentCustomer['customer_timezone'] || 'eastern'); 
       Promise.all([findProjects])
         .then(([projects, dataViewFieldSettings]) =>  {
           this.projectGridContent = projects as any[];

@@ -156,7 +156,7 @@ export class CompanyNotesComponent implements OnInit, AfterViewInit {
       return_child_notes: true,
     }; 
     this.notesApi
-      .findNotes(params)
+      .findNotes(params, this.dataStore.currentCustomer ? (this.dataStore.currentCustomer['customer_timezone'] || 'eastern') : 'eastern' )
       .then((res: any[]) => {
         
         this.notes = res;        

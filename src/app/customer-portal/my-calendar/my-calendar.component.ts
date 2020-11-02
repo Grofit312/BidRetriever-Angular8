@@ -86,7 +86,8 @@ export class MyCalendarComponent implements OnInit {
   }
 
   loadEvents() {    
-    this.myCalenderApi.findCalendarEvents(this.dataStore.currentUser['customer_id'], null)
+    const timezone = this.dataStore.currentCustomer ? (this.dataStore.currentCustomer['customer_timezone'] || 'eastern') : 'eastern';
+    this.myCalenderApi.findCalendarEvents(this.dataStore.currentUser['customer_id'], null, timezone)
       .then((res: any[]) => {
         const events = res.map(event => {
           let today = null;
@@ -213,7 +214,7 @@ export class MyCalendarComponent implements OnInit {
               value: projectInfo.project_stage,
             },
           ];
-          return this.myCalenderApi.findCalendarEvents('', event.project_id);
+          return this.myCalenderApi.findCalendarEvents('', event.project_id, timezone);
         })
         .then((res: any) => {
           const prebidDate = res.find(event => event.calendar_event_type === 'project_prebid_mtg_datetime');

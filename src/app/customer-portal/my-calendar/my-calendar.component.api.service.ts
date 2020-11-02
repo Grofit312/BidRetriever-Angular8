@@ -85,7 +85,7 @@ export class MyCalendarApi {
     },
   ];
 
-  public findCalendarEvents(company_id: string, project_id: string) {  
+  public findCalendarEvents(company_id: string, project_id: string, timezone:string) {  
     return new Promise((resolve, reject) => {
       const query = `status=active${company_id ? `&company_id=${company_id}` : ''}${project_id ? `&project_id=${project_id}` : ''}`;
       axios.get(`${window['env'].apiBaseUrl}/FindCalendarEvents?${query}`, {
@@ -95,8 +95,14 @@ export class MyCalendarApi {
       })
       .then(res => {
         if (res.status === 200) {
+          res.data = res.data.map((events) => {
+            events['calendar_event_end_datetime'] = this.convertToTimeZoneString(events['calendar_event_end_datetime'], timezone);
+            events['calendar_event_start_datetime'] = this.convertToTimeZoneString(events['calendar_event_start_datetime'], timezone);
+            return events;
+          });
+
           resolve(res.data);
-          //TODO - TimeZone handling
+
         } else {
           reject(res.data.status);
         }
@@ -108,7 +114,7 @@ export class MyCalendarApi {
     });
   }
 
-  public getCalendarEvent(calendar_event_id: string) {
+  public getCalendarEvent(calendar_event_id: string, timezone: string) {
     return new Promise((resolve, reject) => {
       axios.get(`${window['env'].apiBaseUrl}/GetCalendarEvent?calendar_event_id=${calendar_event_id}`, {
         validateStatus: (status) => {
@@ -117,6 +123,12 @@ export class MyCalendarApi {
       })
       .then(res => {
         if (res.status === 200) {
+          res.data = res.data.map((events) => {
+            events['calendar_event_end_datetime'] = this.convertToTimeZoneString(events['calendar_event_end_datetime'], timezone);
+            events['calendar_event_start_datetime'] = this.convertToTimeZoneString(events['calendar_event_start_datetime'], timezone);
+            return events;
+          });
+
           resolve(res.data);
         } else {
           reject(res.data.status);
@@ -250,7 +262,7 @@ export class MyCalendarApi {
     return result === 'Invalid date' ? '' : result;
   }
 
-  public findProjectList(source_company_id: string) {
+  public findProjectList(source_company_id: string, timezone: string) {
     return new Promise((resolve, reject) => {
       axios.get(window['env'].apiBaseUrl + `/FindProjects?source_company_id=${source_company_id}&detail_level=all`, {
         validateStatus: (status) => {
@@ -262,9 +274,10 @@ export class MyCalendarApi {
             if (res.data.length === 0) {
               reject('Project not found');
             } else {
-              //TODO - TimeZone handling
+              //TODO - TimeZone handling may be neededin future , no datetime fields in detail=all as of today
               res.data = res.data.map((project) => {
                 project['project_city_state'] = `${project['project_state']}, ${project['project_city']}`;
+
                 return project;
               });
               
@@ -282,7 +295,7 @@ export class MyCalendarApi {
   }
 
 
-  public findCompanyContact(customer_id: any, company_id: any) {
+  public findCompanyContact(customer_id: any, company_id: any, timezone: string) {
     
     return new Promise((resolve, reject) => {
       axios.get(`${window['env'].apiBaseUrl}/FindContacts?customer_id=${customer_id}&company_id=${company_id}&detail_level=all`, {
@@ -293,8 +306,15 @@ export class MyCalendarApi {
         .then(res => {
           
           if (res.status === 200) {
+            res.data = res.data.map((contacts) => {
+              contacts['create_datetime'] = this.convertToTimeZoneString(contacts['create_datetime'], timezone);
+              contacts['edit_datetime'] = this.convertToTimeZoneString(contacts['edit_datetime'], timezone);
+              contacts['contact_verification_datetime'] = this.convertToTimeZoneString(contacts['contact_verification_datetime'], timezone);
+
+              return contacts;
+            });
             resolve(res.data);
-            //TODO - TimeZone handling
+
           } else {
             reject(res.data.status);
           }

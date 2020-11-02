@@ -168,7 +168,7 @@ export class ProjectSourceComponent implements OnInit, AfterViewInit {
               totalCount: this.sourceGridContent.length
             });
           } else {
-            return this._projectSourceApi.findProjectSources(this._dataStore.currentProject.project_id)
+            return this._projectSourceApi.findProjectSources(this._dataStore.currentProject.project_id,  this._dataStore.currentCustomer ? (this._dataStore.currentCustomer['customer_timezone'] || 'eastern') : 'eastern')
             .then((sources: any) => {
               this.sourceGridContent = sources;
               this.sourceGridContentLoaded = true;

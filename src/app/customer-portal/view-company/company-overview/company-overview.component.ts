@@ -82,7 +82,7 @@ export class CompanyOverviewComponent implements OnInit {
   }
 
   loadDates() {
-    ;
+    
     const companyDates = [
       {
         timestamp: this.dataStore.currentCompany["create_datetime"],
@@ -95,9 +95,9 @@ export class CompanyOverviewComponent implements OnInit {
         event: null,
       },
     ];
-
+    const timezone = this.dataStore.currentCustomer ? (this.dataStore.currentCustomer['customer_timezone'] || 'eastern') : 'eastern';
     this.calendarApi
-      .findCalendarEvents(this.dataStore.currentCompany["company_id"], null)
+      .findCalendarEvents(this.dataStore.currentCompany["company_id"], null, timezone)
       .then((events: any[]) => {
         events.forEach((event) => {
           companyDates.push({
