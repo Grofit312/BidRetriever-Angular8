@@ -1,17 +1,12 @@
 import { Component, OnInit, ViewEncapsulation, HostListener, ElementRef, AfterViewInit, ViewChild } from '@angular/core';
-
 import { DataStore } from 'app/providers/datastore';
 import { NotificationsService } from 'angular2-notifications';
 import { ValidationService } from 'app/providers/validation.service';
-import { ContactApi } from './company-employees.component.api.service';
-import { RowNode } from 'ag-grid-community/dist/lib/entities/rowNode';
-import { GridApi } from 'ag-grid-community/dist/lib/gridApi';
 import { AuthApi } from 'app/providers/auth.api.service';
 import { Logger } from 'app/providers/logger.service';
 import { DxDataGridComponent, DxToolbarComponent, DxSelectBoxComponent } from 'devextreme-angular';
 import CustomStore from 'devextreme/data/custom_store';
 import DataSource from 'devextreme/data/data_source';
-import { DxiItemComponent } from 'devextreme-angular/ui/nested/item-dxi';
 import { ProjectsApi } from 'app/customer-portal/my-projects/my-projects.api.service';
 import { CompanyOfficeApi } from 'app/customer-portal/system-settings/company-office-setup/company-office-setup.api.service';
 import { UserInfoApi } from 'app/customer-portal/system-settings/user-setup/user-setup.api.service';
@@ -19,37 +14,6 @@ import { MyCalendarApi } from 'app/customer-portal/my-calendar/my-calendar.compo
 const moment = require('moment-timezone');
 declare var jQuery: any;
 
-class DatePicker {
-  eInput;
-
-  init(params) {
-    // create the cell
-    this.eInput = document.createElement('input');
-
-    jQuery(this.eInput).datetimepicker({
-      format: 'yyyy-mm-ddThh:ii:ss',
-      initialDate: new Date(),
-      fontAwesome: true,
-    });
-  }
-
-  getGui() {
-    return this.eInput;
-  }
-
-  afterGuiAttached() {
-    this.eInput.focus();
-    this.eInput.select();
-  }
-
-  getValue() {
-    return this.eInput.value;
-  }
-
-  isPopup() {
-    return false;
-  }
-}
 
 @Component({
   selector: 'app-company-employees',
@@ -71,17 +35,10 @@ export class CompanyEmployeesComponent implements OnInit {
   projectGridContentLoaded = false;
 
   projectViewTypeSelected = null;
-
-  projectGridEditorTemplateSource: any;
-
-  @ViewChild('grid', { static: false }) grid;
-  @ViewChild('addSubmissionModal', { static: false }) addSubmissionModal;
-  @ViewChild('addProjectModal', { static: false }) addProjectModal;
-  @ViewChild('editProjectModal', { static: false }) editProjectModal;
-  @ViewChild('removeProjectModal', { static: false }) removeProjectModal;
   @ViewChild('transactionLogsModal', { static: false }) transactionLogsModal;
+  @ViewChild('addContactModal', { static: false }) addContactModal;
   
-
+  companyId: any;
   projectViewMode = 'my';
   searchText = '';
   currentOffice = null;
@@ -93,7 +50,7 @@ export class CompanyEmployeesComponent implements OnInit {
   // Modal Flags
   isProjectDataViewModalShown = false;
 
-  selectedUserId = null;
+  
   selectedCustomerId = null;
   source_company_id: any;
   customer_id: any;
@@ -111,62 +68,7 @@ export class CompanyEmployeesComponent implements OnInit {
     private userInfoApiService: UserInfoApi,
     private logger: Logger) { 
       this.toolbarConfig = {
-        projectViewType: {
-          width: 250,
-          dataSource: new DataSource({
-            store: new CustomStore({
-              key: 'view_id',
-              loadMode: 'raw',
-              load: (loadOptions) => this.toolbarProjectViewTypeLoadAction(loadOptions)
-            })
-          }),
-          showClearButton: true,
-          valueExpr: 'view_id',
-          displayExpr: 'view_name',
-          onValueChanged: (event) => {
-            if (event.value === 'manage_project_views') {
-              this.projectToolbarViewType.value = event.previousValue;
-              this.projectViewTypeSelected = event.previousValue;
-              this.isProjectDataViewModalShown = true;
-              return;
-            }
-  
-            if (this.projectViewTypeSelected !== event.value) {
-              this.projectViewTypeSelected = event.value;
-              localStorage.setItem(this.PROJECT_TOOLBAR_INITIAL_VIEW, this.projectViewTypeSelected == null ? '' : this.projectViewTypeSelected);
-              this.toolbarRefreshGridAction();
-            }
-          }
-        },
-        users: {
-          width: 250,
-          dataSource: new DataSource({
-            store: new CustomStore({
-              key: 'user_email',
-              loadMode: 'raw',
-              load: (loadOptions) => this.toolbarUsersLoadAction(loadOptions)
-            })
-          }),
-          showClearButton: false,
-          valueExpr: 'user_email',
-          displayExpr: 'user_displayname',
-          searchEnabled: true,
-          searchTimeout: 200,
-          searchMode: 'contains',
-          searchExpr: 'user_email',
-          onValueChanged: (event: any) => {
-            this.onChangeUser(event.value);
-          },
-          onInitialized: (args: any) => {
-            this.toolbarUsersSelectBox = args.component;
-            if (this.dataStore.originUserEmail) {
-              this.toolbarUsersSelectBox.getDataSource().load().done((data) => {
-                console.log('Users Data Loaded onInitialized');
-              });
-            }
-          }
-        },
-  
+       
         search: {
           placeholder: 'Search',
           width: 200,
@@ -174,73 +76,29 @@ export class CompanyEmployeesComponent implements OnInit {
           onValueChanged: (event) => this.toolbarSearchAction(event)
         },
   
-        viewProject: {
+        viewContact: {
           type: 'normal',
           text: 'View Contact',
-          onClick: () => this.toolbarViewProjectAction()
+          onClick: () => this.toolbarViewContactAction()
         },
-        addProject: {
+        addContact: {
           type: 'normal',
           text: 'Add Contact',
-          // onClick: () => this.toolbarAddProjectAction()
+          onClick: () => this.toolbarAddContactAction()
         },
   
         others: {
-          viewSourceProject: {
-            type: 'normal',
-            text: 'View Source Project',
-            onClick: () => this.onViewProjectSourceSystem()
-          },
-          viewProject: {
+         
+          viewContact: {
             type: 'normal',
             text: 'View Contact',
-            onClick: () => this.toolbarViewProjectAction()
+            onClick: () => this.toolbarViewContactAction()
           },
-          addProject: {
+          addContact: {
             type: 'normal',
             text: 'Add Contact',
-            onClick: () => this.toolbarAddProjectAction()
-          },
-          viewProjectDocuments: {
-            type: 'normal',
-            text: 'View Project Documents',
-            onClick: () => this.toolbarViewProjectDocumentsAction()
-          },
-          editProject: {
-            type: 'normal',
-            text: 'Edit Project',
-            onClick: () => this.toolbarEditProjectAction()
-          },
-          deleteProject: {
-            type: 'normal',
-            text: 'Delete Project',
-            onClick: () => this.toolbarDeleteProjectAction()
-          },
-          archiveProject: {
-            type: 'normal',
-            text: 'Archive Project',
-            onClick: () => this.toolbarArchiveProjectAction()
-          },
-          addDocumentsToProject: {
-            type: 'normal',
-            text: 'Add Documents To Project',
-            onClick: () => this.toolbarAddDocumentsToProjectAction()
-          },
-          viewPublishedProject: {
-            type: 'normal',
-            text: 'View Published Project',
-            onClick: () => this.toolbarViewPublishedProjectAction()
-          },
-          printProjectList: {
-            type: 'normal',
-            text: 'Print Project List',
-            onClick: () => this.toolbarPrintProjectListAction()
-          },
-          exportProjectListToCsv: {
-            type: 'normal',
-            text: 'Export Project List  To CSV',
-            onClick: () => this.toolbarExportProjectListToCsvAction()
-          },
+            onClick: () => this.toolbarAddContactAction()
+          },        
           viewTransactionLog: {
             type: 'normal',
             text: 'View Transaction Log',
@@ -262,260 +120,20 @@ export class CompanyEmployeesComponent implements OnInit {
       this.projectGridDataSource = new CustomStore({
         key: 'contact_id',
         load: (loadOptions) => this.gridProjectLoadAction(loadOptions),
-        update: (key, values) => this.gridProjectUpdateAction(key, values)
+        
       });
-  
-      this.projectGridEditorTemplateSource = {
-        status: [
-          { id: 'active', name: 'active' },
-          { id: 'inactive', name: 'inactive' },
-          { id: 'deleted', name: 'deleted' },
-          { id: 'archived', name: 'archived' }
-        ],
-        stage: [
-          { id: 'Prospect', name: 'Prospect' },
-          { id: 'Lead', name: 'Lead' },
-          { id: 'Opportunity', name: 'Opportunity' },
-          { id: 'Proposal', name: 'Proposal' },
-          { id: 'Bid', name: 'Bid' },
-          { id: 'Awarded', name: 'Awarded' },
-          { id: 'Contract', name: 'Contract' },
-          { id: 'Completed', name: 'Completed' },
-          { id: 'Not Interested', name: 'Not Interested' },
-          { id: 'Lost', name: 'Lost' }
-        ],
-        autoUpdateStatus: [
-          { id: 'active', name: 'active' },
-          { id: 'inactive', name: 'inactive' }
-        ],
-        timezone: [
-          { id: 'eastern', name: 'eastern' },
-          { id: 'central', name: 'central' },
-          { id: 'mountain', name: 'mountain' },
-          { id: 'pacific', name: 'pacific' }
-        ],
-        contractType: [
-          { id: 'GMP Bid', name: 'GMP Bid' },
-          { id: 'Negotiated', name: 'Negotiated' },
-          { id: 'Design Build', name: 'Design Build' },
-          { id: 'Time and Materials', name: 'Time and Materials' }
-        ],
-        segment: [
-          { id: 'Commercial', name: 'Commercial' },
-          { id: 'Industrial', name: 'Industrial' },
-          { id: 'Heavy Highway', name: 'Heavy Highway' },
-          { id: 'Residential', name: 'Residential' }
-        ],
-        buildingType: [
-          { id: 'Healthcare', name: 'Healthcare' },
-          { id: 'Government', name: 'Government' },
-          { id: 'Retail', name: 'Retail' },
-          { id: 'Residential', name: 'Residential' }
-        ],
-        laborRequirement: [
-          { id: 'union', name: 'union' },
-          { id: 'open shop', name: 'open shop' },
-          { id: 'prevailing wage', name: 'prevailing wage' }
-        ],
-        constructionType: [
-          { id: 'new construction', name: 'new construction' },
-          { id: 'remodel', name: 'remodel' },
-          { id: 'tenant improvements', name: 'tenant improvements' }
-        ],
-        awardStatus: [
-          { id: 'Preparing Proposal', name: 'Preparing Proposal' },
-          { id: 'Bid Submitted', name: 'Bid Submitted' },
-          { id: 'Awarded', name: 'Awarded' },
-          { id: 'Lost', name: 'Lost' },
-          { id: 'Suspended Bid', name: 'Suspended Bid' }
-        ]
-      };
     }
+     
  
   ngOnInit() {
-    
-    if (this.dataStore.currentUser) {
-      this.load();
-    } else {
-      this.dataStore.authenticationState.subscribe(value => {
-        if (value) {
-          this.load();
-        }
-      });
-    }
   }
-
-  ngAfterViewInit() {
-    setTimeout(() => this.onWindowResize(null), 500);
-
-    if (this.projectGrid && this.projectGrid.instance) {
-      this.projectGrid.instance.columnOption('command:select', 'allowFixing', true);
-    }
-  }
-
-  @HostListener('window:resize', ['$event'])
-  onWindowResize(event) {
-
-    if (!this.projectContent) {
-      return;
-    }
-
-    this.projectGrid.height = `${this.projectContent.nativeElement.offsetHeight}px`;
-  }
-
-  findMatchedProjectAdminUserDisplayName(email: string) {
-    if (!this.projectGridEditorTemplateSource || !this.projectGridEditorTemplateSource.adminUserEmail) {
-      return '';
-    }
-
-    const matchedUser = this.projectGridEditorTemplateSource.adminUserEmail.find((user) => user.user_email === email);
-    if (matchedUser) {
-      return matchedUser.user_displayname;
-    }
-    return '';
-  }
-
-  load() {
-    this.loadAllUsers();
-    this.loadCurrentOffice();
-
-    const initialDataViewSelected = localStorage.getItem(this.PROJECT_TOOLBAR_INITIAL_VIEW);
-    if (initialDataViewSelected) {
-      this.projectViewTypeSelected = initialDataViewSelected;
-
-      if (this.projectToolbarViewType && this.projectToolbarViewType.instance && this.projectViewTypeSelected) {
-        this.projectToolbarViewType.instance.getDataSource().reload().then((data) => {
-          if (this.projectToolbar.instance) {
-            this.projectToolbar.instance.repaint();
-          }
-        });
-      }
-    }
-
-    if (this.projectGrid && this.projectGrid.instance) {
-      this.projectGrid.instance.refresh()
-        .then(() => { })
-        .catch((error) => {
-          console.log('Grid Refresh Error', error);
-        });
-    }
-
-    this.onWindowResize(null);
-
-    this.logger.logActivity({
-      activity_level: 'summary',
-      activity_name: 'Project Dashboard',
-      application_name: 'Customer Portal',
-      customer_id: this.dataStore.currentUser.customer_id,
-      user_id: this.dataStore.currentUser.user_id,
-    });
-  }
-
-  loadAllUsers() {
-    this.selectedUserId = this.dataStore.currentUser.user_id;
-    this.selectedCustomerId = this.dataStore.currentCustomer.customer_id;
-    this.toolbarConfig.users.value = this.dataStore.currentUser.user_email;
-    if (this.toolbarUsersSelectBox) {
-      this.toolbarUsersSelectBox.getDataSource().load().done((data) => {
-        console.log('Users Data was loaded on Repaint');
-        if (this.projectToolbar.instance) {
-          this.projectToolbar.instance.repaint();
-        }
-      });
-    }
-  }
-
-  loadCurrentOffice() {
-    this.userInfoApiService.findUsers(this.dataStore.currentUser['customer_id'])
-      .then((users: any[]) => {
-        const emails = users.filter(({ status }) => status === 'active').map((user) => {
-          if (!user.user_displayname) {
-            user.user_displayname = `${user.user_lastname}, ${user.user_firstname}`;
-          }
-          return user;
-        });
-        this.projectGridEditorTemplateSource.adminUserEmail = emails.sort((firstUser, secondUser) => {
-          const firstUserEmail = firstUser.user_email ? firstUser.user_email.toLowerCase() : '';
-          const secondUserEmail = secondUser.user_email ? secondUser.user_email.toLowerCase() : '';
-          return firstUserEmail.localeCompare(secondUserEmail);
-        });
-
-        return new Promise((resolve) => resolve(null));
-      })
-      .then((res) => {
-        if (this.dataStore.currentUser['customer_office_id']) {
-          this.officeApiService.getOffice(this.dataStore.currentUser['customer_office_id'])
-            .then(office => {
-              this.currentOffice = office;
-            })
-            .catch(err => {
-              this.notificationService.error('Error', err, { timeOut: 3000, showProgressBar: false });
-            });
-        }
-        if (this.dataStore.currentUser['customer_id']) {
-          this.officeApiService.findOffices(this.dataStore.currentUser['customer_id'])
-            .then(offices => {
-              this.projectGridEditorTemplateSource.assignedOfficeName = offices;
-            })
-            .catch(err => {
-              this.notificationService.error('Error', err, { timeOut: 3000, showProgressBar: false });
-            })
-        }
-      })
-      .catch(err => {
-        this.notificationService.error('Error', err, { timeOut: 3000, showProgressBar: false });
-      });
-  }
-
+  
+  
   /* Switch Project View Mode */
   onChangeProjectViewMode() {
     this.toolbarRefreshGridAction();
   }
-
-  /* Switch User */
-  onChangeUser(changedEmail) {
-    this.searchText = '';
-
-    if (changedEmail === 'all-users') {
-      this.selectedUserId = changedEmail;
-      this.selectedCustomerId = null;
-      this.toolbarRefreshGridAction();
-      return;
-    }
-
-    this.currentOffice = null;
-
-    this.authApiService.getUser(changedEmail)
-      .then((res: any) => {
-        this.dataStore.currentUser = res;
-        this.selectedUserId = res.user_id;
-
-        if (res['customer_id']) {
-          return this.authApiService.getCustomer(res['customer_id']);
-        } else {
-          return new Promise((resolve) => resolve(null));
-        }
-      })
-      .then((res: any) => {
-        this.dataStore.currentCustomer = res;
-        this.selectedCustomerId = res == null ? null : res.customer_id;
-
-        this.toolbarRefreshGridAction();
-        this.loadCurrentOffice();
-      })
-      .catch(err => {
-        this.notificationService.error('Error', err, { timeOut: 3000, showProgressBar: false });
-      });
-  }
-
-  /* Project Grid Actions */
-  gridProjectEditingStartAction(event) {
-    if (!event.data.project_bid_datetime) {
-      event.data.project_bid_datetime = null;
-    }
-    event.component.selectRows([event.data.contact_id]);
-  }
-
+ 
   private getGridProjectContentByLoadOption(loadOptions) {
     
     let projects = this.projectGridContent;
@@ -554,7 +172,7 @@ export class CompanyEmployeesComponent implements OnInit {
 
     if (this.searchText) {
       projects = projects.filter((project) => {
-        const isMatched = Object.keys(project).map(key => project[key]).some(item => item.toString().toLowerCase().includes(this.searchText));
+        const isMatched = Object.keys(project).map(key => project[key]).some(item =>  (item?item:'').toString().toLowerCase().includes(this.searchText));
         return isMatched;
       });
     }
@@ -572,32 +190,10 @@ export class CompanyEmployeesComponent implements OnInit {
         });
       }
 
-      if (!this.dataStore.currentUser || !this.dataStore.currentCustomer) {
-        this.projectGridContent = [];
-        this.projectGridContentLoaded = false;
-
-        const filteredProjects = this.getGridProjectContentByLoadOption(loadOptions);
-        return resolve({
-          data: filteredProjects,
-          totalCount: filteredProjects.length
-        });
-      }
-
-      if (this.selectedUserId == null) {
-        return resolve({
-          data: [],
-          totalCount: 0
-        });
-      }  
-      this.source_company_id =this.dataStore.currentCompany.company_id;
+    
+      
       this.customer_id =this.dataStore.currentCompany.customer_id;
-      this.detail_level="all"
-      const params: any = {
-        company_id:this.source_company_id,
-        customer_id:this.customer_id,
-        detail_level:this.detail_level
-      };           
-            
+
       const findProjects= this.myCalenderApi.findCompanyContact(this.customer_id, this.dataStore.currentCompany.company_id); 
       Promise.all([findProjects])
         .then(([projects, dataViewFieldSettings]) =>  {
@@ -664,16 +260,6 @@ export class CompanyEmployeesComponent implements OnInit {
                   newGridColumn['cellTemplate'] = 'projectAdminUserEmailCell';
                   newGridColumn['editCellTemplate'] = 'projectAdminUserEmailEditor';
                   break;
-                // case 'project_assigned_office_name': newGridColumn['editCellTemplate'] = 'projectAssignedOfficeNameEditor'; break;
-                // case 'auto_update_status': newGridColumn['editCellTemplate'] = 'autoUpdateStatusEditor'; break;
-                // case 'project_stage': newGridColumn['editCellTemplate'] = 'projectStageEditor'; break;
-                // case 'project_timezone': newGridColumn['editCellTemplate'] = 'projectTimezoneEditor'; break;
-                // case 'project_contract_type': newGridColumn['editCellTemplate'] = 'projectContractTypeEditor'; break;
-                // case 'project_segment': newGridColumn['editCellTemplate'] = 'projectSegmentEditor'; break;
-                // case 'project_building_type': newGridColumn['editCellTemplate'] = 'projectBuildingTypeEditor'; break;
-                // case 'project_labor_requirement': newGridColumn['editCellTemplate'] = 'projectLaborRequirementEditor'; break;
-                // case 'project_construction_type': newGridColumn['editCellTemplate'] = 'projectConstructionTypeEditor'; break;
-                // case 'project_award_status': newGridColumn['editCellTemplate'] = 'projectAwardStatusEditor'; break;
               }
 
               newGridColumnList.push(newGridColumn);
@@ -703,220 +289,7 @@ export class CompanyEmployeesComponent implements OnInit {
     });
   }
 
-  gridProjectUpdateAction(key, values) {
-    return new Promise((resolve, reject) => {
-      try {
-        const updateIndex = this.projectGridContent.findIndex((project) => project.contact_id === key);
-        if ('project_name' in values) {
-          const validProjectName = this.validationService.validateProjectName(values['project_name']);
-          if (validProjectName.length === 0) {
-            return reject('Project name cannot be empty.');
-          } else {
-            this.apiService.updateProject(key, {
-              project_name: validProjectName
-            }).then((res) => {
-              this.notificationService.success('Success', 'Project has been updated', { timeOut: 3000, showProgressBar: false });
-              this.projectGridContent[updateIndex]['project_name'] = validProjectName;
-              return resolve(true);
-            }).catch((error) => {
-              return reject('Failed to update the project name');
-            });
-          }
-        } else if ('project_admin_user_email' in values) {
-          const matchedUser = this.projectGridEditorTemplateSource.adminUserEmail.find(({ user_email }) => user_email === values['project_admin_user_email']);
-          this.apiService.updateProject(key, {
-            project_admin_user_id: matchedUser['user_id']
-          }).then((res) => {
-            this.notificationService.success('Success', 'Project Admin User Email has been updated', { timeOut: 3000, showProgressBar: false });
-            this.projectGridContent[updateIndex]['project_admin_user_email'] = values['project_admin_user_email'];
-            return resolve(true);
-          }).catch((error) => {
-            return reject('Failed to update the status');
-          });
-        } else if ('project_bid_datetime' in values) {
-          const updatedValue = values['project_bid_datetime'] ? moment(values['project_bid_datetime']).utc().format('YYYY-MM-DDTHH:mm:ss.SSSSSS') + 'Z' : 'NULL';
-          this.apiService.updateProject(key, {
-            project_bid_datetime: updatedValue
-          }).then((res) => {
-            this.notificationService.success('Success', 'Project Bid DateTime has been updated', { timeOut: 3000, showProgressBar: false });
-            this.projectGridContent[updateIndex]['project_bid_datetime'] = updatedValue;
-            return resolve(true);
-          }).catch((error) => {
-            return reject('Failed to update the status');
-          });
-        } else if ('auto_update_status' in values) {
-          this.apiService.updateProject(key, {
-            auto_update_status: values['auto_update_status']
-          }).then((res) => {
-            this.notificationService.success('Success', 'Auto-Update-Status has been updated', { timeOut: 3000, showProgressBar: false });
-            this.projectGridContent[updateIndex]['auto_update_status'] = values['auto_update_status'];
-            return resolve(true);
-          }).catch((error) => {
-            return reject('Failed to update the status');
-          });
-        } else if ('status' in values) {
-          const isPlatformAdmin = this.dataStore.originUserEmail.includes('bidretriever.net');
-
-          if ((this.projectGridContent[updateIndex]['status'] === 'deleted' && !isPlatformAdmin)
-            || (this.projectGridContent[updateIndex]['status'] === 'archived' && !this.isSysAdmin)) {
-            return reject('You are not authorized to perform this action');
-          } else {
-            this.apiService.updateProject(key, {
-              status: values['status']
-            }).then((res) => {
-              this.notificationService.success('Success', 'Status has been updated', { timeOut: 3000, showProgressBar: false });
-              this.projectGridContent[updateIndex]['status'] = values['status'];
-              return resolve(true);
-            }).catch((error) => {
-              return reject('Failed to update the status');
-            });
-          }
-        } else if ('project_assigned_office_name' in values) {
-          this.apiService.updateProject(key, {
-            project_assigned_office_name: values['project_assigned_office_name']
-          }).then((res) => {
-            this.notificationService.success('Success', 'Project assigned office name has been updated', { timeOut: 3000, showProgressBar: false });
-            this.projectGridContent[updateIndex]['project_assigned_office_name'] = values['project_assigned_office_name'];
-            return resolve(true);
-          }).catch((error) => {
-            return reject('Failed to update the project assigned office name');
-          })
-        } else if ('project_notes' in values) {
-          this.apiService.updateProject(key, {
-            project_notes: values['project_notes']
-          }).then((res) => {
-            this.notificationService.success('Success', 'Project Note has been updated', { timeOut: 3000, showProgressBar: false });
-            this.projectGridContent[updateIndex]['project_notes'] = values['project_notes'];
-            return resolve(true);
-          }).catch((error) => {
-            return reject('Failed to update the project notes');
-          });
-        } else if ('project_stage' in values) {
-          this.apiService.updateProject(key, {
-            project_stage: values['project_stage']
-          }).then((res) => {
-            this.notificationService.success('Success', 'Project-Stage has been updated', { timeOut: 3000, showProgressBar: false });
-            this.projectGridContent[updateIndex]['project_stage'] = values['project_stage'];
-            return resolve(true);
-          }).catch((error) => {
-            return reject('Failed to update the status');
-          });
-        } else if ('project_timezone' in values) {
-          this.apiService.updateProject(key, {
-            project_timezone: values['project_timezone']
-          }).then((res) => {
-            this.notificationService.success('Success', 'Project Timezone has been updated', { timeOut: 3000, showProgressBar: false });
-            this.projectGridContent[updateIndex]['project_timezone'] = values['project_timezone'];
-            return resolve(true);
-          }).catch((error) => {
-            return reject('Failed to update the status');
-          });
-        } else if ('project_contract_type' in values) {
-          this.apiService.updateProject(key, {
-            project_contract_type: values['project_contract_type']
-          }).then((res) => {
-            this.notificationService.success('Success', 'Project Contract Type has been updated', { timeOut: 3000, showProgressBar: false });
-            this.projectGridContent[updateIndex]['project_contract_type'] = values['project_contract_type'];
-            return resolve(true);
-          }).catch((error) => {
-            return reject('Failed to update the status');
-          })
-        } else if ('project_segment' in values) {
-          this.apiService.updateProject(key, {
-            project_segment: values['project_segment']
-          }).then((res) => {
-            this.notificationService.success('Success', 'Project Segment has been updated', { timeOut: 3000, showProgressBar: false });
-            this.projectGridContent[updateIndex]['project_segment'] = values['project_segment'];
-            return resolve(true);
-          }).catch((error) => {
-            return reject('Failed to update the status');
-          });
-        } else if ('project_building_type' in values) {
-          this.apiService.updateProject(key, {
-            project_building_type: values['project_building_type']
-          }).then((res) => {
-            this.notificationService.success('Success', 'Project Building Type has been updated', { timeOut: 3000, showProgressBar: false });
-            this.projectGridContent[updateIndex]['project_building_type'] = values['project_building_type'];
-            return resolve(true);
-          }).catch((error) => {
-            return reject('Failed to update the status');
-          });
-        } else if ('project_labor_requirement' in values) {
-          this.apiService.updateProject(key, {
-            project_labor_requirement: values['project_labor_requirement']
-          }).then((res) => {
-            this.notificationService.success('Success', 'Project Labor Requirement has been updated', { timeOut: 3000, showProgressBar: false });
-            this.projectGridContent[updateIndex]['project_labor_requirement'] = values['project_labor_requirement'];
-            return resolve(true);
-          }).catch((error) => {
-            return reject('Failed to update the status');
-          });
-        } else if ('project_value' in values) {
-          this.apiService.updateProject(key, {
-            project_value: values['project_value']
-          }).then((res) => {
-            this.notificationService.success('Success', 'Project Value has been updated', { timeOut: 3000, showProgressBar: false });
-            this.projectGridContent[updateIndex]['project_value'] = values['project_value'];
-            return resolve(true);
-          }).catch((error) => {
-            return reject('Failed to update the status');
-          });
-        } else if ('project_size' in values) {
-          this.apiService.updateProject(key, {
-            project_size: values['project_size']
-          }).then((res) => {
-            this.notificationService.success('Success', 'Project Size has been updated', { timeOut: 3000, showProgressBar: false });
-            this.projectGridContent[updateIndex]['project_size'] = values['project_size'];
-            return resolve(true);
-          }).catch((error) => {
-            return reject('Failed to update the status');
-          });
-        } else if ('project_number' in values) {
-          this.apiService.updateProject(key, {
-            project_number: values['project_number']
-          }).then((res) => {
-            this.notificationService.success('Success', 'Project number has been updated', { timeOut: 3000, showProgressBar: false });
-            this.projectGridContent[updateIndex]['project_number'] = values['project_number'];
-            return resolve(true);
-          }).catch((error) => {
-            return reject('Failed to update the status');
-          });
-        } else if ('project_construction_type' in values) {
-          this.apiService.updateProject(key, {
-            project_construction_type: values['project_construction_type']
-          }).then((res) => {
-            this.notificationService.success('Success', 'Project Construction Type has been updated', { timeOut: 3000, showProgressBar: false });
-            this.projectGridContent[updateIndex]['project_construction_type'] = values['project_construction_type'];
-            return resolve(true);
-          }).catch((error) => {
-            return reject('Failed to update the status');
-          });
-        } else if ('project_award_status' in values) {
-          this.apiService.updateProject(key, {
-            project_award_status: values['project_award_status']
-          }).then((res) => {
-            this.notificationService.success('Success', 'Project Award Status has been updated', { timeOut: 3000, showProgressBar: false });
-            this.projectGridContent[updateIndex]['project_award_status'] = values['project_award_status'];
-            return resolve(true);
-          }).catch((error) => {
-            return reject('Failed to update the status');
-          });
-        } else {
-          return reject('You are not able to edit this value');
-        }
-      } catch (error) {
-        return reject('Invalid format');
-      }
-    });
-  }
-
-  /* Popup Actions */
-  popupDataViewHidingAction(event) {
-    if (this.projectToolbarViewType.instance) {
-      this.projectToolbarViewType.instance.getDataSource().reload();
-    }
-  }
-
+  
   /** Toolbar Actions **/
   /* Toolbar Project ViewType SelectBox Action */
   toolbarProjectViewTypeLoadAction(loadOptions) {
@@ -940,71 +313,6 @@ export class CompanyEmployeesComponent implements OnInit {
     });
   }
 
-  /* Toolbar Users SelectBox Action */
-  toolbarUsersLoadAction(loadOptions) {
-    return new Promise((resolve, reject) => {
-      if (this.isBidRetrieverAdmin) {
-        if (this.toolbarUsersContent.length === 0) {
-          this.userInfoApiService.findUsers()
-            .then((res: any[]) => {
-              res = res.map((item) => {
-                item.user_email = item.user_email.toLowerCase();
-                if (!item.user_displayname) {
-                  if (!item.user_firstname && !item.user_lastname) {
-                    item.user_displayname = item.user_email;
-                  } else {
-                    item.user_displayname = `${item.user_lastname ? item.user_lastname + ', ' : ''}${item.user_firstname} (${item.user_email})`;
-                  }
-                } else {
-                  item.user_displayname = `${item.user_displayname} (${item.user_email})`;
-                }
-                return item;
-              });
-              this.toolbarUsersContent = res.sort((prev, next) => prev.user_displayname < next.user_displayname ? -1 : 1);
-              return resolve(res);
-            })
-            .catch(err => {
-              this.notificationService.error('Error', err, { timeOut: 3000, showProgressBar: false });
-              this.toolbarUsersContent = [];
-              return resolve(this.toolbarUsersContent);
-            });
-        } else {
-          return resolve(this.toolbarUsersContent);
-        }
-      } else if (this.dataStore && this.dataStore.currentCustomer && this.dataStore.currentCustomer.customer_id) {
-        if (this.toolbarUsersContent.length === 0) {
-          this.userInfoApiService.findUsers(this.dataStore.currentCustomer.customer_id)
-            .then((res: any[]) => {
-              res = res.map((item) => {
-                item.user_email = item.user_email.toLowerCase();
-                if (!item.user_displayname) {
-                  item.user_displayname = `${item.user_lastname ? item.user_lastname + ', ' : ''}${item.user_firstname} (${item.user_email})`;
-                } else {
-                  item.user_displayname = `${item.user_displayname} (${item.user_email})`;
-                }
-                return item;
-              });
-              this.toolbarUsersContent = res.sort((prev, next) => prev.user_displayname < next.user_displayname ? -1 : 1);
-              this.toolbarUsersContent.unshift({
-                user_displayname: 'All Users',
-                user_email: 'all-users'
-              });
-              return resolve(res);
-            })
-            .catch(err => {
-              this.notificationService.error('Error', err, { timeOut: 3000, showProgressBar: false });
-              this.toolbarUsersContent = [];
-              return resolve(this.toolbarUsersContent);
-            });
-        } else {
-          return resolve(this.toolbarUsersContent);
-        }
-      } else {
-        return resolve([]);
-      }
-      // return resolve([]);
-    });
-  }
 
 
   toolbarSearchAction(event) {
@@ -1015,12 +323,14 @@ export class CompanyEmployeesComponent implements OnInit {
   }
 
 
-  toolbarAddProjectAction() {
-    this.addProjectModal.initialize(this);
+
+toolbarAddContactAction() {
+    this.addContactModal.initialize(this);
   }
 
+  
 
-  toolbarViewProjectAction() {
+  toolbarViewContactAction() {
     const { selectedRowKeys } = this.projectGrid;
     if (selectedRowKeys.length === 0) {
       this.notificationService.error('No Selection', 'Please select one Contact!', { timeOut: 3000, showProgressBar: false });
@@ -1034,117 +344,6 @@ export class CompanyEmployeesComponent implements OnInit {
   }
 
   
-  toolbarViewProjectDocumentsAction() {
-    const { selectedRowKeys } = this.projectGrid;
-    if (selectedRowKeys.length === 0) {
-      this.notificationService.error('No Selection', 'Please select one project!', { timeOut: 3000, showProgressBar: false });
-      return;
-    } else if (selectedRowKeys.length > 1) {
-      this.notificationService.error('Multiple Selection', 'Please select just one project!', { timeOut: 3000, showProgressBar: false });
-      return;
-    }
-
-    const selectedRows = this.projectGridContent.filter(({ contact_id: projectId }) => selectedRowKeys.includes(projectId));
-    const { currentUser: { user_id: userId } } = this.dataStore;
-    window.open(`${window['env'].docViewerBaseUrl}?contact_id=${selectedRows[0].contact_id}&user_id=${userId}`, '_blank');
-  }
-
-  /* Edit Project */
-  toolbarEditProjectAction() {
-    const { selectedRowKeys } = this.projectGrid;
-    if (selectedRowKeys.length === 0) {
-      this.notificationService.error('No Selection', 'Please select one project!', { timeOut: 3000, showProgressBar: false });
-      return;
-    } else if (selectedRowKeys.length > 1) {
-      this.notificationService.error('Multiple Selection', 'Please select just one project!', { timeOut: 3000, showProgressBar: false });
-      return;
-    }
-
-    const selectedRows = this.projectGridContent.filter(({ contact_id: projectId }) => selectedRowKeys.includes(projectId));
-    this.editProjectModal.initialize(this, selectedRows[0]);
-  }
-
-  /* Delete Project(s) */
-  toolbarDeleteProjectAction() {
-    const { selectedRowKeys } = this.projectGrid;
-    if (selectedRowKeys.length === 0) {
-      this.notificationService.error('No Selection', 'Please select at least one contact!', { timeOut: 3000, showProgressBar: false });
-      return;
-    }
-
-    const selectedRows = this.projectGridContent.filter(({ contact_id: projectId }) => selectedRowKeys.includes(projectId));
-    const selectedProjects = selectedRows.filter(project => project.status !== 'deleted' && project.status !== 'archived');
-
-    this.removeProjectModal.initialize(selectedProjects, true, this);
-  }
-
-  /* Archive Project(s) */
-  toolbarArchiveProjectAction() {
-    const { selectedRowKeys } = this.projectGrid;
-    if (selectedRowKeys.length === 0) {
-      this.notificationService.error('No Selection', 'Please select at least one contact!', { timeOut: 3000, showProgressBar: false });
-      return;
-    }
-
-    const selectedRows = this.projectGridContent.filter(({ contact_id: projectId }) => selectedRowKeys.includes(projectId));
-    const selectedProjects = selectedRows.filter(project => project.status !== 'deleted' && project.status !== 'archived');
-
-    this.removeProjectModal.initialize(selectedProjects, false, this);
-  }
-
-  /* Add Documents To Project */
-  toolbarAddDocumentsToProjectAction() {
-    // const selectedProjects = this.grid.api.getSelectedRows();
-    const { selectedRowKeys } = this.projectGrid;
-    if (selectedRowKeys.length === 0) {
-      this.notificationService.error('No Selection', 'Please select one project!', { timeOut: 3000, showProgressBar: false });
-      return;
-    } else if (selectedRowKeys.length > 1) {
-      this.notificationService.error('Multiple Selection', 'Please select just one project!', { timeOut: 3000, showProgressBar: false });
-      return;
-    }
-
-    const selectedRows = this.projectGridContent.filter(({ contact_id: projectId }) => selectedRowKeys.includes(projectId));
-    if (selectedRows[0].status === 'deleted' || selectedRows[0].status === 'archived') {
-      this.notificationService.error('Error', 'You cannot add submission to deleted/archived project!', { timeOut: 3000, showProgressBar: false });
-      return;
-    }
-
-    this.addSubmissionModal.initialize(selectedRows[0], this);
-  }
-
-  /* Toolbar "View Published Project" Action */
-  toolbarViewPublishedProjectAction() {
-    const { selectedRowKeys } = this.projectGrid;
-    if (selectedRowKeys.length === 0) {
-      this.notificationService.error('No Selection', 'Please select one project!', { timeOut: 3000, showProgressBar: false });
-      return;
-    } else if (selectedRowKeys.length > 1) {
-      this.notificationService.error('Multiple Selection', 'Please select just one project!', { timeOut: 3000, showProgressBar: false });
-      return;
-    }
-
-    const selectedRows = this.projectGridContent.filter(({ contact_id: projectId }) => selectedRowKeys.includes(projectId));
-    this.apiService.getPublishedLink(selectedRows[0].contact_id)
-      .then((url: string) => {
-        window.open(url, '_blank');
-      })
-      .catch(err => {
-        this.notificationService.error('Error', err, { timeOut: 3000, showProgressBar: false });
-      });
-  }
-
-  /* Print */
-  toolbarPrintProjectListAction() {
-  }
-
-  /* Toolbar "Export Project List to Csv" Action */
-  toolbarExportProjectListToCsvAction() {
-    if (this.projectGrid && this.projectGrid.instance) {
-      this.projectGrid.instance.exportToExcel(false);
-    }
-  }
-
   /* View Transaction Log */
   toolbarViewTransactionLogAction() {
     const { selectedRowKeys } = this.projectGrid;
@@ -1170,44 +369,7 @@ export class CompanyEmployeesComponent implements OnInit {
   toolbarHelpAction() {
   }
 
-  /* Table Event: Cell Changed */
-  onCellValueChanged(event: any) {
-    if (event['newValue'] === event['oldValue'] || !event['newValue']) {
-      return;
-    }
-
-    const columnName = event['colDef']['field'];
-    const projectId = event['data']['contact_id'];
-    const newValue = event['newValue'];
-
-    // update project
-    this.apiService.updateProject(projectId, { [columnName]: newValue })
-      .then(res => {
-        this.notificationService.success('Success', 'Project has been updated', { timeOut: 3000, showProgressBar: false });
-      })
-      .catch(err => {
-        this.notificationService.error('Error', err, { timeOut: 3000, showProgressBar: false });
-      });
-  }
-
-  /**
-   * Table Event: Row double clicked
-   * @param event
-   */
-  onRowDoubleClicked(event: any) {
-    window.open(`/customer-portal/view-project/${event['data']['contact_id']}`, '_blank');
-  }
-
-  onRefresh() {
-    this.toolbarRefreshGridAction();
-  }
-
-  projectAdminUserEmailEditorContentReady(event) {
-    setTimeout(() => {
-      event.component.content().parentElement.style.width = '350px';
-    });
-  }
-
+ 
   addProjectGridMenuItems(e) {
 ;
     if (!e.row) { return; }
@@ -1225,54 +387,14 @@ export class CompanyEmployeesComponent implements OnInit {
       e.items.push(
         {
           type: 'normal',
-          text: 'View Project',
-          onItemClick: () => this.toolbarViewProjectAction()
+          text: 'View Contact',
+          onClick: () => this.toolbarViewContactAction()
         },
         {
           type: 'normal',
-          text: 'Add Project',
-          onItemClick: () => this.toolbarAddProjectAction()
-        },
-        {
-          type: 'normal',
-          text: 'View Project Documents',
-          onItemClick: () => this.toolbarViewProjectDocumentsAction()
-        },
-        {
-          type: 'normal',
-          text: 'Edit Project',
-          onItemClick: () => this.toolbarEditProjectAction()
-        },
-        {
-          type: 'normal',
-          text: 'Delete Project',
-          onItemClick: () => this.toolbarDeleteProjectAction()
-        },
-        {
-          type: 'normal',
-          text: 'Archive Project',
-          onItemClick: () => this.toolbarArchiveProjectAction()
-        },
-        {
-          type: 'normal',
-          text: 'Add Documents To Project',
-          onItemClick: () => this.toolbarAddDocumentsToProjectAction()
-        },
-        {
-          type: 'normal',
-          text: 'View Published Project',
-          onItemClick: () => this.toolbarViewPublishedProjectAction()
-        },
-        {
-          type: 'normal',
-          text: 'Print Project List',
-          onItemClick: () => this.toolbarPrintProjectListAction()
-        },
-        {
-          type: 'normal',
-          text: 'Export Project List  To CSV',
-          onItemClick: () => this.toolbarExportProjectListToCsvAction()
-        },
+          text: 'Add Contact',
+          onClick: () => this.toolbarAddContactAction()
+        }, 
         {
           type: 'normal',
           text: 'View Transaction Log',
@@ -1291,28 +413,6 @@ export class CompanyEmployeesComponent implements OnInit {
       );
     }
     return e;
-  }
-
-  onViewProjectSourceSystem() {
-    const { selectedRowKeys } = this.projectGrid;
-
-    if (selectedRowKeys.length === 0) {
-      this.notificationService.error('No Selection', 'Please select one project!', { timeOut: 3000, showProgressBar: false });
-      return;
-    } else if (selectedRowKeys.length == 1) {
-      const selectedRows = this.projectGridContent.filter(({ contact_id: projectId }) => selectedRowKeys.includes(projectId));
-
-      if (selectedRows && selectedRows[0]['source_url']) {
-
-        window.open(selectedRows[0]['source_url'], '_blank');
-        return;
-      }
-      this.notificationService.error('Error', 'This project source system is empty.', { timeOut: 3000, showProgressBar: false });
-
-    } else {
-      this.notificationService.error('Error', 'Multiple Selection', 'Please select just one project!', { timeOut: 3000, showProgressBar: false });
-    }
-
   }
 
 

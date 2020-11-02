@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import CustomStore from 'devextreme/data/custom_store';
 import { ActivatedRoute } from '@angular/router';
 import { ProjectFilesApi } from './project-files.api.service';
 import { NotificationsService } from 'angular2-notifications';
@@ -8,6 +9,8 @@ import { ProjectsApi } from 'app/customer-portal/my-projects/my-projects.api.ser
 import { AmazonService } from 'app/providers/amazon.service';
 import { DataStore } from 'app/providers/datastore';
 import { Logger } from 'app/providers/logger.service';
+import { DxDataGridComponent } from 'devextreme-angular';
+import { LoadOptions } from 'devextreme/data/load_options';
 const moment = require('moment');
 
 
@@ -19,7 +22,7 @@ const moment = require('moment');
 export class ProjectFilesComponent implements OnInit {
 
   @ViewChild('folderTree', { static: true }) folderTree;
-  @ViewChild('fileGrid', { static: true }) fileGrid;
+  @ViewChild('fileGrid', { static: false }) fileGrid: DxDataGridComponent;
   @ViewChild('transactionLogsModal', { static: true }) transactionLogsModal;
   @ViewChild('documentDetailModal', { static: true }) documentDetailModal;
   @ViewChild('pdfViewerModal', { static: false }) pdfViewerModal;
@@ -29,7 +32,13 @@ export class ProjectFilesComponent implements OnInit {
   documentsViewMode = 'all';
   currentProject = {};
   ischildVisible = false;
+  
+  fileGridDataSource: any;
+  fileGridContent = [];
+  fileGridContentLoaded = false;
+  
 
+  notificationViewTypeSelected = null;
   prevClickEventDate = null;
 
   actionMapping: IActionMapping = {
@@ -69,71 +78,16 @@ export class ProjectFilesComponent implements OnInit {
   };
   activeFolderNode = null;
 
-  columnDefs = [
-    {
-      headerName: 'Document Name',
-      field: 'doc_name',
-      sortable: true,
-      resizable: true,
-      filter: true,
-      minWidth: 200,
-    },
-    {
-      headerName: 'Doc Number',
-      field: 'doc_number',
-      sortable: true,
-      resizable: true,
-      filter: true,
-      minWidth: 100,
-    },
-    {
-      headerName: 'Revision',
-      field: 'doc_revision',
-      sortable: true,
-      resizable: true,
-      filter: true,
-      minWidth: 100,
-    },
-    {
-      headerName: 'Original File Name',
-      field: 'folder_original_filename',
-      sortable: true,
-      resizable: true,
-      filter: true,
-      minWidth: 200,
-    },
-    {
-      headerName: 'Type',
-      field: 'doc_type',
-      sortable: true,
-      resizable: true,
-      filter: true,
-      minWidth: 150,
-    },
-    {
-      headerName: 'Created Date',
-      field: 'create_datetime',
-      sortable: true,
-      resizable: true,
-      filter: true,
-      minWidth: 100,
-    },
-    {
-      headerName: 'Submitted Date',
-      field: 'submission_datetime',
-      sortable: true,
-      resizable: true,
-      filter: true,
-      minWidth: 100,
-    },
-    {
-      headerName: 'Process Status',
-      field: 'process_status',
-      sortable: true,
-      resizable: true,
-      filter: true,
-      minWidth: 100,
-    },
+  
+  fileGridColumns = [
+    {caption: 'Document Name',dataField: 'doc_name',minWidth: 200,allowEditing: false},
+    {caption: 'Doc Number',dataField: 'doc_number',minWidth: 100,allowEditing: false},
+    {caption: 'Revision',dataField: 'doc_revision',minWidth: 100,allowEditing: false},
+    {caption: 'Original File Name',dataField: 'folder_original_filename',minWidth: 200,allowEditing: false},
+    {caption: 'Type',dataField: 'doc_type',minWidth: 150,allowEditing: false},
+    {caption: 'Created Date',dataField: 'create_datetime',minWidth: 100,allowEditing: false},
+    {caption: 'Submitted Date',dataField: 'submission_datetime',minWidth: 100,allowEditing: false},
+    {caption: 'Process Status',dataField: 'process_status',minWidth: 100,allowEditing: false},
   ];
 
   files = null;
@@ -141,18 +95,16 @@ export class ProjectFilesComponent implements OnInit {
   favorites = [];
 
   get isFavoriteDocument(): boolean {
-    if (!this.fileGrid.api) {
-      return false;
-    }
-
-    const selectedDocuments = this.fileGrid.api.getSelectedRows();
-
-    if (selectedDocuments.length === 1) {
-      if (this.favorites.find(favorite => favorite['favorite_id'] === selectedDocuments[0]['doc_id'])) {
+    if(!this.fileGrid) return false;
+    const { selectedRowKeys } = this.fileGrid;
+    if(selectedRowKeys === null) return;
+    
+    if (selectedRowKeys.length === 1) {
+      
+      if (this.favorites.find(favorite => favorite['favorite_id'] === selectedRowKeys[0]['doc_id'])) {
         return true;
       }
     }
-
     return false;
   }
 
@@ -165,19 +117,24 @@ export class ProjectFilesComponent implements OnInit {
     private amazonService: AmazonService,
     private logger: Logger,
     public dataStore: DataStore
-  ) { }
+  ) {
+
+
+   }
+
+   
 
   ngOnInit() {
-    this.fileGrid.gridSizeChanged.subscribe(() => {
-      this.fileGrid.api.sizeColumnsToFit();
-    });
-    this.fileGrid.columnResized.subscribe((event) => {
-      if (event.source !== 'sizeColumnsToFit') {
-        if (document.getElementsByClassName('ag-center-cols-container')[0]['offsetWidth'] < document.getElementsByClassName('ag-center-cols-viewport')[0]['offsetWidth']) {
-          this.fileGrid.api.sizeColumnsToFit();
-        }
-      }
-    });
+    // this.fileGrid.gridSizeChanged.subscribe(() => {
+    //   this.fileGrid.api.sizeColumnsToFit();
+    // });
+    // this.fileGrid.columnResized.subscribe((event) => {
+    //   if (event.source !== 'sizeColumnsToFit') {
+    //     if (document.getElementsByClassName('ag-center-cols-container')[0]['offsetWidth'] < document.getElementsByClassName('ag-center-cols-viewport')[0]['offsetWidth']) {
+    //       this.fileGrid.api.sizeColumnsToFit();
+    //     }
+    //   }
+    // });
 
     if (this.dataStore.currentUser) {
       this.initialize();
@@ -297,34 +254,37 @@ export class ProjectFilesComponent implements OnInit {
   }
 }
 
+
+
 loadFiles() {
   this.files = null;
   const timezone = this.dataStore.currentCustomer ? (this.dataStore.currentCustomer['customer_timezone'] || 'eastern') : 'eastern';
-
   this.apiService.getFolderChildren('', '', this.activeFolderNode.id, timezone)
-    .then((res: any[]) => {
-      this.files = res.filter(child => child['child_type'] === 'file');
-    })
-    .catch(err => {
-      this.notificationService.error('Error', err, { timeOut: 3000, showProgressBar: false });
-    });
+  .then((res: any[]) => {
+    this.files = res.filter(child => child['child_type'] === 'file');
+  })
+  .catch(err => {
+    this.notificationService.error('Error', err, { timeOut: 3000, showProgressBar: false });
+  });
+  
 }
 
 onChangeDocumentViewMode() { }
 
 onViewDocument() {
-  const selectedDocuments = this.fileGrid.api.getSelectedRows();
+  
+  const { selectedRowKeys } = this.fileGrid;
+  if(selectedRowKeys === null) return;
 
-  if (selectedDocuments.length === 0) {
+  if (selectedRowKeys.length === 0) {
     this.notificationService.error('No Selection', 'Please select one document!', { timeOut: 3000, showProgressBar: false });
     return;
-  } else if (selectedDocuments.length > 1) {
+  } else if (selectedRowKeys.length > 1) {
     this.notificationService.error('Multiple Selection', 'Please select a single document.', { timeOut: 3000, showProgressBar: false });
     return;
-  }
-
-  if (selectedDocuments[0]['doc_type'] === 'original_other_project_document') {
-    const splitArray = selectedDocuments[0]['doc_name'].split('.');
+  } 
+  if (selectedRowKeys[0]['doc_type'] === 'original_other_project_document') {
+    const splitArray = selectedRowKeys[0]['doc_name'].split('.');
     if (splitArray.length > 1) {
       const fileExtension = splitArray.pop();
 
@@ -338,28 +298,29 @@ onViewDocument() {
 
   const isComparison = this.activeFolderNode.data['name'].includes('Comparison');
   const { currentUser: { user_id: userId } } = this.dataStore;
-  window.open(`${window['env'].docViewerBaseUrl}?project_id=${this.currentProject['project_id']}&user_id=${userId}&folder_id=${selectedDocuments[0]['folder_id']}&doc_id=${selectedDocuments[0]['doc_id']}&doc_type=${isComparison ? 'comparison' : 'normal'}`, '_blank');
+  window.open(`${window['env'].docViewerBaseUrl}?project_id=${this.currentProject['project_id']}&user_id=${userId}&folder_id=${selectedRowKeys[0]['folder_id']}&doc_id=${selectedRowKeys[0]['doc_id']}&doc_type=${isComparison ? 'comparison' : 'normal'}`, '_blank');
 }
 
 onViewDocumentDetails(docId ?: string) {
   if (docId == null) {
-    const selectedDocuments = this.fileGrid.api.getSelectedRows();
+    const { selectedRowKeys } = this.fileGrid;
+    if(selectedRowKeys === null) return;
 
-    if (selectedDocuments.length === 0) {
+    if (selectedRowKeys.length === 0) {
       this.notificationService.error('No Selection', 'Please select one document!', { timeOut: 3000, showProgressBar: false });
       return;
-    } else if (selectedDocuments.length > 1) {
+    } else if (selectedRowKeys.length > 1) {
       this.notificationService.error('Multiple Selection', 'Please select a single document.', { timeOut: 3000, showProgressBar: false });
       return;
     }
-
+ 
     const submission = {
-      submission_datetime: selectedDocuments[0]['submission_datetime'],
-      submission_name: selectedDocuments[0]['submission_name'],
-      submitter_email: selectedDocuments[0]['submitter_email'],
+      submission_datetime: selectedRowKeys[0]['submission_datetime'],
+      submission_name: selectedRowKeys[0]['submission_name'],
+      submitter_email: selectedRowKeys[0]['submitter_email'],
     };
 
-    this.documentDetailModal.initialize(this.currentProject, submission, selectedDocuments[0], false);
+    this.documentDetailModal.initialize(this.currentProject, submission, selectedRowKeys[0], false);
   } else {
     this.apiService.getDocumentDetails(docId)
       .then((res) => {
@@ -374,17 +335,20 @@ onViewDocumentDetails(docId ?: string) {
 }
 
 onDownloadDocument() {
-  const selectedDocuments = this.fileGrid.api.getSelectedRows();
+  
+  const { selectedRowKeys } = this.fileGrid;
+  if(selectedRowKeys === null) return;
 
-  if (selectedDocuments.length === 0) {
+  if (selectedRowKeys.length === 0) {
     this.notificationService.error('No Selection', 'Please select one document!', { timeOut: 3000, showProgressBar: false });
     return;
-  } else if (selectedDocuments.length > 1) {
+  } else if (selectedRowKeys.length > 1) {
     this.notificationService.error('Multiple Selection', 'Please select a single document.', { timeOut: 3000, showProgressBar: false });
     return;
   }
 
-  this.projectApiService.getDocument(selectedDocuments[0]['doc_id'])
+  
+  this.projectApiService.getDocument(selectedRowKeys[0]['doc_id'])
     .then((doc: any) => {
       const ext = doc['file_key'].substr(doc['file_key'].lastIndexOf('.') + 1);
       return this.amazonService.getPresignedUrlWithOriginalFileName(doc['bucket_name'], doc['file_key'], `${doc['doc_name']}.${ext}`);
@@ -424,17 +388,18 @@ onDownloadProject() {
 }
 
 onToggleFavorite() {
-  const selectedDocuments = this.fileGrid.api.getSelectedRows();
+  const { selectedRowKeys } = this.fileGrid;
+  if(selectedRowKeys === null) return;
 
-  if (selectedDocuments.length === 0) {
+  if (selectedRowKeys.length === 0) {
     this.notificationService.error('No Selection', 'Please select one document!', { timeOut: 3000, showProgressBar: false });
     return;
-  } else if (selectedDocuments.length > 1) {
+  } else if (selectedRowKeys.length > 1) {
     this.notificationService.error('Multiple Selection', 'Please select a single document.', { timeOut: 3000, showProgressBar: false });
     return;
   }
 
-  const docId = selectedDocuments[0]['doc_id'];
+  const docId = selectedRowKeys[0]['doc_id'];
 
   if (this.isFavoriteDocument) {
     const favoriteIndex = this.favorites.findIndex(favorite => favorite['favorite_id'] === docId);
@@ -473,10 +438,11 @@ onToggleFavorite() {
 
 onEditDocument(docId: string) {
   if (docId == null) {
-    const selectedDocuments = this.fileGrid.api.getSelectedRows();
+    const { selectedRowKeys } = this.fileGrid;
+    if(selectedRowKeys === null) return;
 
-    if (selectedDocuments.length === 1) {
-      this.editDocumentModal.initialize(this, selectedDocuments[0]['doc_id']);
+    if (selectedRowKeys.length === 1) {
+      this.editDocumentModal.initialize(this, selectedRowKeys[0]['doc_id']);
     } else {
       this.notificationService.error('No Selection', 'Please select one document!', { timeOut: 3000, showProgressBar: false });
     }
@@ -487,48 +453,114 @@ onEditDocument(docId: string) {
   return false;
 }
 
-onAddDocsToProjectEvent(docId: string) {
+onAddDocsToProjectEvent() {
   this.addSubmissionModal.initialize(this, this.dataStore.currentProject); 
 }
 
 onRemoveDocument() { }
 
 onExport() {
-  this.fileGrid.gridOptions.api.exportDataAsCsv({
-    fileName: `${this.currentProject['project_name']}_files_${moment().format('YYYY-MM-DD_HH-mm')}`,
-  });
+  if (this.fileGrid && this.fileGrid.instance) {
+    this.fileGrid.instance.exportToExcel(false);
+  }
 }
 
 onViewTransactionLogs() {
-  const selectedDocuments = this.fileGrid.api.getSelectedRows();
+  
+  const { selectedRowKeys } = this.fileGrid;
+  if(selectedRowKeys === null) return;
 
-  if (selectedDocuments.length === 0) {
+  if (selectedRowKeys.length === 0) {
     this.notificationService.error('No Selection', 'Please select one document!', { timeOut: 3000, showProgressBar: false });
     return;
-  } else if (selectedDocuments.length > 1) {
+  } else if (selectedRowKeys.length > 1) {
     this.notificationService.error('Multiple Selection', 'Please select a single document.', { timeOut: 3000, showProgressBar: false });
     return;
   }
-
-  this.transactionLogsModal.initialize(this.currentProject, { submission_id: selectedDocuments[0]['submission_id'] }, selectedDocuments[0]);
+  this.transactionLogsModal.initialize(this.currentProject, { submission_id: selectedRowKeys[0]['submission_id'] }, selectedRowKeys[0]);
 }
 
 onHelp() { }
 
-onSearchChange(searchWord: string) {
-  this.fileGrid.gridOptions.api.setQuickFilter(searchWord);
-}
-
-/* Table Event: Grid Ready */
-onGridReady(event: any) {
-  const defaultSortModel = [
-    { colId: "doc_number", sort: "asc" },
-    { colId: "doc_name", sort: "asc" },
-  ];
-  event.api.setSortModel(defaultSortModel);
-}
 
 onRefresh() {
   this.loadFiles();
+}
+
+addFileGridMenuItems(e) {
+  if (!e.row) { return; }
+ 
+  if (e.row && e.row.rowType === 'data') {   // e.items can be undefined
+    if (!e.items) { e.items = []; }
+
+    e.items.push(
+      {
+        type: 'normal',
+        text: 'View Document',
+        onItemClick: () => this.onViewDocument()
+      },
+      {
+        type: 'normal',
+        text: 'View Document Details',
+        onItemClick: () => this.onViewDocumentDetails()
+      },
+      {
+        type: 'normal',
+        visible: !this.dataStore.isSharedProject,
+        text: 'Add Documents to Project',
+        onItemClick: () => this.onAddDocsToProjectEvent()
+      },
+      {
+        type: 'normal',
+        text: 'Edit Document',
+        visible: !this.dataStore.isSharedProject,
+        onItemClick: () => this.onEditDocument(null)
+      },
+      {
+        type: 'normal',
+        text: this.isFavoriteDocument ? 'Remove From' : 'Add To' + ' Favorite' ,
+        onItemClick: () => this.onToggleFavorite()
+      },
+      {
+        type: 'normal',
+        text: 'Remove Document',
+        visible: !this.dataStore.isSharedProject,
+        onItemClick: () => this.onRemoveDocument()
+      },   
+      
+      {
+        type: 'normal',
+        text: 'Download File',
+        onItemClick: () => this.onDownloadDocument()
+      },
+      {
+        type: 'normal',
+        text: 'Download Folder',
+        onItemClick: () => this.onDownloadFolder()
+      },
+      {
+        type: 'normal',
+        text: 'Download Project',
+        onItemClick: () => this.onDownloadProject()
+      },
+      {
+        type: 'normal',
+        text: 'Export File List To CSV',
+        onItemClick: () => this.onExport()
+      },
+      {
+        type: 'normal',
+        text: 'View Transaction Log',
+        onItemClick: () => this.onViewTransactionLogs()
+      },
+      {
+        type: 'normal',
+        text: 'Help',
+        onItemClick: () => this.onHelp()
+      },
+      
+    );
+  }
+  return e;
 }
 }

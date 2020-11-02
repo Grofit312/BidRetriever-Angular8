@@ -89,6 +89,7 @@
                     [columnAutoWidth]="true"
                     [dataSource]="sourceGridDataSource"
                     (onRowClick)="sourceGridRowClickAction($event)"
+                    (onRowDblClick)="toolbarViewProjectAction()"
                     (onContextMenuPreparing)="addProjectSourceGridMenuItems($event)"
                     [remoteOperations]="true"
                     [rowAlternationEnabled]="true"

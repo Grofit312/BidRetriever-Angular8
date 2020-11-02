@@ -5,7 +5,7 @@
       <option value="open">Pending Submissions View</option>
       <option value="deleted">Deleted Submissions View</option>
     </select>
-    <input class='submissions-search' type='text' placeholder='Search' (input)="onSearchChange($event.target.value)"/>
+    <input class='submissions-search' type='text' placeholder='Search' [(ngModel)]='searchWord' (input)="onSearchChange($event.target.value)"/>
     <div class='button-group'>
       <button *ngIf='!dataStore.isSharedProject' class='btn btn-light' (click)='onAddSubmission()'>Add Submission</button>
       <button class='btn btn-light' (click)='onViewSubmission()'>View Submission</button>
@@ -33,18 +33,24 @@
   </div>
 
   <div class='submissions-table'>
-    <ag-grid-angular
-      #grid
-      style="width: 100%;"
-      class="ag-theme-balham"
-      [rowData]="rowData"
-      [columnDefs]="columnDefs"
-      rowSelection="multiple"
-      rowDragManaged=true
-      (cellValueChanged)="onCellValueChanged($event)"
-      (gridReady)="onGridReady($event)"
-      >
-    </ag-grid-angular>
+    <dx-data-grid #submissionGrid id="submissionGrid" [allowColumnReordering]="true" [allowColumnResizing]="true"
+    columnResizingMode="widget" [columns]="submissionGridColumns" [dataSource]="submissionGridDataSource"
+    [showColumnLines]="true" [showRowLines]="true" hr
+    [showBorders]="true" [rowAlternationEnabled]="true" [columnAutoWidth]="true" [remoteOperations]="true"
+    width="100%" 
+    (onContextMenuPreparing)='addSubmissionGridMenuItems($event)' 
+    (onRowDblClick)='onAddSubmission()' >
+    <dxo-column-fixing [enabled]="true"></dxo-column-fixing>
+    <dxo-header-filter [visible]="false"></dxo-header-filter>
+    <dxo-paging [enabled]="false"></dxo-paging>
+    <dxo-scrolling mode="vertical"></dxo-scrolling>
+    <dxo-selection mode="multiple"></dxo-selection>
+    <dxo-sorting mode="multiple"></dxo-sorting>
+
+    <div *dxTemplate="let cell of 'dateCell'">
+      {{ cell.value | moment: 'YYYY-MM-DD hh:mm a z' }}
+    </div>
+    </dx-data-grid>
   </div>
 </div>
 

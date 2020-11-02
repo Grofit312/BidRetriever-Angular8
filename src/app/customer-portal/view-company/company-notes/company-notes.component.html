@@ -12,7 +12,7 @@
           <span
             style="font-size: 0.75rem; white-space: nowrap;"
             [ngClass]="{ active: ischildVisible == true }"
-            >{{ node.data.subject }}</span
+            >{{ node.data.note_subject }}</span
           >
         </div>
       </ng-template>
@@ -31,15 +31,15 @@
       <div class="desc" *ngIf="isVisible(node)">
         <div class="desc-header">
           <h5>
-            <span>Author Name</span> : {{ node.firstName }} {{ node.lastName }}
+            <span>Author Name</span> : {{ node.author_user_displayname }}
           </h5>
           <h5>
             <span>Created Date</span> :
-            {{ node.createdDate | date: "MM-dd-yyyy" }}
+            {{ node.create_datetime }}
           </h5>
         </div>
-        <h4>{{ node.subject }}</h4>
-        <div class="descript" [innerHTML]="node.description"></div>
+        <h4>{{ node.note_subject }}</h4>
+        <div class="descript" [innerHTML]="node.note_desc"></div>
         <div class="buttons">
           <button
             class="edit-btn ad_com action-close dx-button dx-button-danger dx-button-mode-contained dx-widget dx-button-has-text .dx-button-has-text .dx-button-content"
@@ -53,10 +53,9 @@
           >
             Edit
           </button>
-          <button
-            *ngIf="node.userRole == 'sys admin'"
+          <button  *ngIf="node.note_user_id === this.dataStore.currentUser.user_id"
             class="del-btn action-close dx-button dx-button-danger dx-button-mode-contained dx-widget dx-button-has-text .dx-button-has-text .dx-button-content"
-            (click)="onDelete(node.id)"
+            (click)="onDelete(node.note_id)"
           >
             Delete
           </button>

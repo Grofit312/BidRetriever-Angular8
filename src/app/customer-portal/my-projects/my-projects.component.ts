@@ -13,6 +13,7 @@ import { DxDataGridComponent, DxToolbarComponent, DxSelectBoxComponent } from 'd
 import CustomStore from 'devextreme/data/custom_store';
 import DataSource from 'devextreme/data/data_source';
 import { DxiItemComponent } from 'devextreme-angular/ui/nested/item-dxi';
+import { LargeTextCellEditor } from 'ag-grid-community';
 const moment = require('moment-timezone');
 declare var jQuery: any;
 
@@ -274,11 +275,12 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
         { id: 'inactive', name: 'inactive' },       
       ],
       stage: [
+        { id: 'Unassigned', name: 'Unassigned' },
         { id: 'Prospect', name: 'Prospect' },
         { id: 'Lead', name: 'Lead' },
         { id: 'Opportunity', name: 'Opportunity' },
         { id: 'Proposal', name: 'Proposal' },
-        { id: 'Bid', name: 'Bid' },
+        { id: 'Bidding', name: 'Bidding' },
         { id: 'Awarded', name: 'Awarded' },
         { id: 'Contract', name: 'Contract' },
         { id: 'Completed', name: 'Completed' },
@@ -477,7 +479,6 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
   /* Switch User */
   onChangeUser(changedEmail) {
     this.searchText = '';
-
     if (changedEmail === 'all-users') {
       this.selectedUserId = changedEmail;
       this.selectedCustomerId = null;
@@ -520,15 +521,17 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
 
   private getGridProjectContentByLoadOption(loadOptions) {
     let projects = this.projectGridContent;
-
+    let sortName = 'project_bid_datetime';
     if (loadOptions.sort && loadOptions.sort.length > 0) {
-      const sortName = loadOptions.sort[0].selector;
-
+      sortName = loadOptions.sort[0].selector;
+    }
+    
       projects = projects.sort((first, second) => {
         const sortColumnOption = this.projectGridColumns.find((column) => column.dataField === sortName);
-  
+
         let firstValue = first[sortName];
         let secondValue = second[sortName];
+
   
         if (sortColumnOption) {
           if (sortColumnOption.dataType === 'date' || sortColumnOption.dataType === 'datetime') {
@@ -538,15 +541,14 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
             secondValue = secondValue.toString().toLowerCase();
           }
         }
-  
+
         if(!loadOptions.sort)
         {
-          if (firstValue < secondValue ) {
+          if (firstValue > secondValue ) {
             return -1;
           }
           else return 1;
         }
-  
         let loadOptionIndex = 0;
         while (loadOptionIndex < loadOptions.sort.length) {
           if (firstValue > secondValue && loadOptions.sort[loadOptionIndex].desc) {
@@ -561,10 +563,9 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
           }
           return 1;
         }
-  
         return 1;
       });
-    }
+    
 
     if (this.searchText) {
       projects = projects.filter((project) => {
@@ -604,9 +605,28 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
         });
       }
 
-      const findProjects = this.selectedUserId === 'all-users'
-        ? this.apiService.findProjectsByCustomerId(this.dataStore.currentUser['customer_id'], this.dataStore.currentCustomer['customer_timezone'] || 'eastern', this.projectViewTypeSelected)
-        : this.apiService.findProjectsByUserId(this.selectedUserId, this.selectedCustomerId, this.dataStore.currentCustomer['customer_timezone'] || 'eastern', this.projectViewTypeSelected);
+      const findProjects 
+          = this.selectedUserId === 'all-users'
+        ? this.apiService.findProjectsByCustomerId(
+              this.dataStore.currentUser['customer_id'], 
+              this.dataStore.currentCustomer['customer_timezone'] || 'eastern', 
+              this.projectViewTypeSelected
+              )
+        : (
+          !this.selectedCustomerId ? //if customer id exists - load projects based on that 
+                this.apiService.findProjectsByUserId(
+                  this.selectedUserId, 
+                  this.selectedCustomerId, 
+                  this.dataStore.currentCustomer['customer_timezone'] || 'eastern', 
+                  this.projectViewTypeSelected)
+                : 
+                this.apiService.findProjectsByUserEmail( //if no customer id, this means this current user is on product trial , in this case load projects by user_email
+                  this.dataStore.currentUser['user_email'],
+                  this.dataStore.currentCustomer['customer_timezone'] || 'eastern', 
+                  this.projectViewTypeSelected
+                  )
+          )
+        
       const findDataViewFieldSettings = this.apiService.findDataViewFieldSettings(this.projectViewTypeSelected);
       const currentOfficeId = this.dataStore.currentUser['customer_office_id'];
 
@@ -724,7 +744,16 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
         });
     });
   }
+  getDateDiff_DH(dateSent){
+    let currentDate = new Date();
+    dateSent = new Date(dateSent);
 
+    let b_tick= Date.UTC(dateSent.getFullYear(), dateSent.getMonth(), dateSent.getDate(), dateSent.getHours()) ;
+    let c_tick= Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), currentDate.getHours());
+    
+    let result = (b_tick - c_tick)/1000;
+    return result === 0? Number.MAX_SAFE_INTEGER: result;
+}
   gridProjectUpdateAction(key, values) {
     return new Promise((resolve, reject) => {
       try {
@@ -767,6 +796,7 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
             .then((res) => {
               this.notificationService.success('Success', 'Project Bid DateTime has been updated', { timeOut: 3000, showProgressBar: false });
               this.projectGridContent[updateIndex]['project_bid_datetime'] = updatedValue;
+              this.projectGridContent[updateIndex]['time_till_bid'] = this.getDateDiff_DH(updatedValue) ;
               return resolve();
             }).catch((error) => {
               return reject('Failed to update the status');

@@ -77,7 +77,38 @@ export class ProjectsApi {
         });
     });
   }
+  public findProjectsByUserEmail(user_email: string, timezone: string, data_view_id: string = null) {
+    return new Promise((resolve, reject) => {
+      let apiUrl = `${window['env'].apiBaseUrl}/FindProjects2?user_email=${user_email}&detail_level=all`;
+      if (data_view_id) {
+        apiUrl = `${apiUrl}&view_id=${data_view_id}`;
+      }
+      axios.get(apiUrl, {
+        validateStatus: (status) => status === 200 || status === 400
+      })
+        .then(res => {
+          if (res.status === 200) {
+            res.data = res.data.map((project) => {
+              project['project_city_state'] = `${project['project_state']}, ${project['project_city']}`;
+              project['last_change_date'] = this.convertToTimeZoneString(project['last_change_date'], timezone);
+              project['create_datetime'] = this.convertToTimeZoneString(project['create_datetime'], timezone);
+              if (project['time_till_bid'] === 0) {
+                project['time_till_bid'] = Number.MAX_SAFE_INTEGER;
+              }
+              return project;
+            });
 
+            resolve(res.data);
+          } else {
+            reject(res.data.status);
+          }
+        })
+        .catch(err => {
+          console.log(err);
+          reject(err);
+        });
+    });
+  }
   public updateProject(project_id: string, params: any) {
     return new Promise((resolve, reject) => {
       params.search_project_id = project_id;

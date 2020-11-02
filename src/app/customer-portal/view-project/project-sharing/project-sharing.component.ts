@@ -50,7 +50,7 @@ export class ProjectSharingComponent implements OnInit {
     },
     {
       headerName: 'User Phone Number',
-      field: 'share_user_phone',
+      field: 'share_source_user_phone',
       sortable: true,
       filter: true,
       resizable: true,

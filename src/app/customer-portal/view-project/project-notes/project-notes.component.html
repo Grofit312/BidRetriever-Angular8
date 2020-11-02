@@ -5,7 +5,7 @@
         <div id='div-{{node.id}}' class="nodediv">
           <img style='height: 20px' src='/assets/folder.png' alt='folder' />
           <span style='font-size: .75rem; white-space: nowrap;'
-            [ngClass]="{'active': ischildVisible == true}">{{ node.data.subject }}</span></div>
+            [ngClass]="{'active': ischildVisible == true}">{{ node.data.note_subject }}</span></div>
       </ng-template>
     </tree-root>
   </div>
@@ -18,22 +18,22 @@
       </ng-container>
     </div>
     <ng-template #tree let-node="node">
-      <div class="desc" *ngIf="isVisible(node)">
+      <div class="desc"  *ngIf="isVisible(node)"> 
         <div class="desc-header">
-          <h5><span>Author Name</span> : {{node.firstName}} {{node.lastName}}</h5>
-        <h5><span>Created Date</span> : {{node.createdDate | date: 'MM-dd-yyyy' }}</h5>
+          <h5><span>Author Name</span> : {{node.author_user_displayname}}</h5>
+        <h5><span>Created Date</span> : {{node.create_datetime  }}</h5>
         </div> 
-        <h4>{{node.subject}}</h4>
-        <div class="descript" [innerHTML]="node.description"></div>
+        <h4>{{node.note_subject}}</h4>
+        <div class="descript" [innerHTML]="node.note_desc"></div>
         <div class="buttons">
           <button  class="edit-btn ad_com action-close dx-button dx-button-danger dx-button-mode-contained dx-widget dx-button-has-text .dx-button-has-text .dx-button-content"
            (click)='onAddComment()'>Add Comment</button>
           <button
             class=" edit-btn gray action-close dx-button dx-button-danger dx-button-mode-contained dx-widget dx-button-has-text .dx-button-has-text .dx-button-content"
             (click)="onEdit(node)">Edit</button>
-          <button *ngIf="node.userRole == 'sys admin'"
+          <button *ngIf="node.note_user_id === this.dataStore.currentUser.user_id"
             class=" del-btn action-close dx-button dx-button-danger dx-button-mode-contained dx-widget dx-button-has-text .dx-button-has-text .dx-button-content"
-            (click)="onDelete(node.id)">Delete</button>
+            (click)="onDelete(node.note_id)">Delete</button>
         </div>
       </div>
 

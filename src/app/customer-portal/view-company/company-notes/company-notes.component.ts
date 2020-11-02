@@ -66,7 +66,7 @@ export class CompanyNotesComponent implements OnInit, AfterViewInit {
     },
     {
       text: "Public",
-      value: "Public",
+      value: "public",
     },
   ];
   actionMapping: IActionMapping = {
@@ -142,7 +142,7 @@ export class CompanyNotesComponent implements OnInit, AfterViewInit {
       );
     }
     this.editModalTitle = `Add Comment`;
-    this.subject = "Re:" + this.activeFolderNode.data.subject;
+    this.subject = "Re:" + this.activeFolderNode.data.note_subject;
     this.editModal.nativeElement.style.display = "block";
     this.editType = EditType.UPDATE;
   }
@@ -151,8 +151,12 @@ export class CompanyNotesComponent implements OnInit, AfterViewInit {
     
     this.spinner.show();
     this.companyId = this.activatedRoute.snapshot.queryParams["company_id"];
+    const params: any = {
+      company_id: this.companyId,
+      return_child_notes: true,
+    }; 
     this.notesApi
-      .getNotesByCompanyId(this.companyId)
+      .findNotes(params)
       .then((res: any[]) => {
         
         this.notes = res;        
@@ -182,15 +186,6 @@ export class CompanyNotesComponent implements OnInit, AfterViewInit {
    this.currentNote = node.data; 
   }
 
-  // imagesUploHadhandler(blobInfo, success, failure) {
-  //   
-  //   var data = JSON.stringify({fileName: blobInfo.blob().name});
-  //   this.notesApi.uploadFiles(data).then(
-  //     (data) => {
-  //     });
-  // }
-
-
   onAdd() {
     this.description = "";
     this.editModalTitle = `Add Notes`;
@@ -213,10 +208,10 @@ export class CompanyNotesComponent implements OnInit, AfterViewInit {
       );
     }
     this.editModalTitle = `Add Comment`;
-    if (this.activeFolderNode.data.subject.indexOf("Re:") !== -1) {
-      this.subject = this.activeFolderNode.data.subject;
+    if (this.activeFolderNode.data.note_subject.indexOf("Re:") !== -1) {
+      this.subject = this.activeFolderNode.data.note_subject;
     } else {
-      this.subject = "Re:" + this.activeFolderNode.data.subject;
+      this.subject = "Re:" + this.activeFolderNode.data.note_subject;
     }
     this.editModal.nativeElement.style.display = "block";
     this.editType = EditType.CREATE;
@@ -248,11 +243,11 @@ export class CompanyNotesComponent implements OnInit, AfterViewInit {
     let note_parent_id = null;
     if (!this.isComment) {
       note_parent_id = this.activeFolderNode
-        ? this.activeFolderNode.data.parent_id
+        ? this.activeFolderNode.data.note_parent_id
         : this.companyId;
     } else {
       note_parent_id = this.activeFolderNode
-        ? this.activeFolderNode.data.id
+        ? this.activeFolderNode.data.note_id
         : this.companyId;
     }
     const params: any = {
@@ -338,13 +333,13 @@ export class CompanyNotesComponent implements OnInit, AfterViewInit {
         { timeOut: 3000, showProgressBar: false }
       );
     }
-    this.note_id = node.id;
+    this.note_id = node.note_id;
     this.editModalTitle = `Edit Note`;
-    this.subject = node.subject;
+    this.subject = node.note_subject;
     this.editModal.nativeElement.style.display = "block";
-    this.description = node.description;
+    this.description = node.note_desc;
     this.editType = EditType.UPDATE;
-    this.noteType = node.noteType;
+    this.noteType = node.note_type;
   }
 
   onDelete(id) {
@@ -388,22 +383,24 @@ export class CompanyNotesComponent implements OnInit, AfterViewInit {
   }
 
   isVisible(note: any) {
-    if(this.dataStore != null){
+    this.ischildVisible = false;
+    if(this.dataStore.currentCompany != null){
       const user_id = this.dataStore.currentUser.user_id;
       const company_id = this.dataStore.currentCompany.company_id;
-      if (note.noteType == "public") {
+      if (note.note_type == "public") {
         this.ischildVisible = true;
         return true;
-      } else if (note.noteType == "personal" && note.userId == user_id) {
+      } else if (note.note_type === 'personal' && note.note_user_id === user_id) {//if personal show only when userid matches
         this.ischildVisible = true;
         return true;
-      } else if (note.noteType == "company" && note.companyId == company_id) {
+      } else if (note.note_type == "company" && note.note_company_id === (company_id?company_id :note.note_company_id) ) { 
         this.ischildVisible = true;
         return true;
-      } else if (note.noteType == "") {
+      } else if (note.note_type == "" && note.note_company_id === (company_id?company_id :note.note_company_id)) {
         this.ischildVisible = true;
         return true;
       }
-    }``
+    }
+    return false;
   }
 }
