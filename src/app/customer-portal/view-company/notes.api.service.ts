@@ -118,6 +118,7 @@ export class NotesApi {
     }
     return timezonedDateTime;
   }
+ 
 
   public updateNote(params: any) {
     return new Promise((resolve, reject) => {

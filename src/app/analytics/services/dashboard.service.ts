@@ -158,7 +158,7 @@ export class DashboardService {
     analytic_datasource_enddatetime,
     analytic_type,
   }): Observable<AnalyticDataResponse> {
-    const url = `${window["env"].apiBaseUrl}/AnalyticDatasources/ExecuteAnalyticDatasource`;
+    const url = `${window["env"].apiBaseUrl}/ExecuteAnalyticDatasource`;
 
     let params = new HttpParams();
     params = params.append("customer_id", customer_id);
@@ -185,7 +185,7 @@ export class DashboardService {
     customerId: string,
     analyticDatasourceType: string
   ): Observable<AnalyticDatasource[]> {
-    const url = `${window["env"].apiBaseUrl}/AnalyticDatasources/FindAnalyticDatasources`;
+    const url = `${window["env"].apiBaseUrl}/FindAnalyticDatasources`;
 
     let params = new HttpParams();
     params = params.append("customer_id", customerId);

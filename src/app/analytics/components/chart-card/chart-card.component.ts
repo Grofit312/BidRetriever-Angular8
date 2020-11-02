@@ -87,6 +87,7 @@ export class ChartCardComponent implements OnInit, OnDestroy {
     modalRef.dismiss();
 
     if (ev === "update") {
+      this.chartConfig = null;
       this.getDashboardPanel();
     }
   }
@@ -130,11 +131,29 @@ export class ChartCardComponent implements OnInit, OnDestroy {
       })
       .pipe(takeUntil(this.destroy$))
       .subscribe((v) => {
-        this.chartConfig = {
-          dataProvider: v,
-          valueField: "total_stage",
-          titleField: "project_stage",
-        };
+        switch (this.panelData.panel_chart_type) {
+          case this.ChartTypes.PieChart:
+            this.chartConfig = {
+              dataProvider: v,
+              valueField: "total_stage",
+              titleField: "project_stage",
+            };
+            break;
+            case this.ChartTypes.BarChart:
+              this.chartConfig = {
+                dataProvider: v,
+                graphs: [
+                  {
+                    fillAlphas: 0.9,
+                    lineAlpha: 0.2,
+                    type: "column",
+                    valueField: "total_stage",
+                  },
+                ],
+                categoryField: "project_stage",
+              };
+              break;
+        }
       });
   }
 }
