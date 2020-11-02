@@ -11,7 +11,7 @@ const env = {
   dropboxTokenPath: '/oauth2/token',
   dropboxAppKey: 'pwz4k8x8jdij8hx',
   dropboxAppSecret: '20gd0jsucoplhqg',
-  oauthRedirectURL: isLocalHost ? 'http://localhost:4200/customer-portal/system-settings/destination-system-settings' : 'https://customerportal.bidretrieverqa.com/customer-portal/system-settings/destination-system-settings',
+  oauthRedirectURL: isLocalHost ? 'http://localhost:4200/customer-portal/system-settings/destination-system-settings' : 'https://customerportala8.bidretrieverqa.com/customer-portal/system-settings/destination-system-settings',
 
   helpHeroAppId: 'puUCqzf21HE'
 };
