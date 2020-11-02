@@ -195,11 +195,11 @@ export class MyCalendarComponent implements OnInit {
             },
             {
               name: 'Bid Due Date:',
-              value: projectInfo.project_bid_datetime,
+              value: this.projectApi.convertToTimeZoneString(projectInfo.project_bid_datetime, timezone),
             },
             {
-              name: 'Last Update:',
-              value: this.projectApi.convertToTimeZoneObject(projectInfo.edit_datetime_origin, timezone).format('MMM D, YYYY H:mm z'),
+              name: 'Last Update:', 
+              value: this.projectApi.convertToTimeZoneString(projectInfo.edit_datetime_origin, timezone),
             },
             {
               name: 'Value:',
@@ -225,25 +225,25 @@ export class MyCalendarComponent implements OnInit {
           if (prebidDate) {
             this.overviewData.push({
               name: 'Pre-Bid Meeting:',
-              value: this.projectApi.convertToTimeZoneObject(prebidDate.calendar_event_start_datetime, timezone).format('MMM D, YYYY H:mm z'),
+              value: this.projectApi.convertToTimeZoneObject(prebidDate.calendar_event_start_datetime, timezone).format('YYYY-MM-DD HH:mm:ss z'),
             });
           }
           if (expectedAwardDate) {
             this.overviewData.push({
               name: 'Expected Award:',
-              value: this.projectApi.convertToTimeZoneObject(expectedAwardDate.calendar_event_start_datetime, timezone).format('MMM D, YYYY H:mm z'),
+              value: this.projectApi.convertToTimeZoneObject(expectedAwardDate.calendar_event_start_datetime, timezone).format('YYYY-MM-DD HH:mm:ss z'),
             });
           }
           if (projectStartDate) {
             this.overviewData.push({
               name: 'Project Start:',
-              value: this.projectApi.convertToTimeZoneObject(projectStartDate.calendar_event_start_datetime, timezone).format('MMM D, YYYY H:mm z'),
+              value: this.projectApi.convertToTimeZoneObject(projectStartDate.calendar_event_start_datetime, timezone).format('YYYY-MM-DD HH:mm:ss z'),
             });
           }
           if (workStartDate) {
             this.overviewData.push({
               name: 'Work Start:',
-              value: this.projectApi.convertToTimeZoneObject(workStartDate.calendar_event_start_datetime, timezone).format('MMM D, YYYY H:mm z'),
+              value: this.projectApi.convertToTimeZoneObject(workStartDate.calendar_event_start_datetime, timezone).format('YYYY-MM-DD HH:mm:ss z'),
             });
           }
           return this.myCalenderApi.findEventAttendees(event.calendar_event_id);
@@ -287,17 +287,17 @@ export class MyCalendarComponent implements OnInit {
             },
             {
               name: 'Event Start Date/Time:',
-              value: this.projectApi.convertToTimeZoneObject(event.calendar_event_start_datetime, timezone).format('MMM D, YYYY H:mm z'),
+              value: this.projectApi.convertToTimeZoneObject(event.calendar_event_start_datetime, timezone).format('YYYY-MM-DD HH:mm:ss z'),
             },
             {
               name: 'Event End Date/Time:',
               value: event.calendar_event_end_datetime ?
-                this.projectApi.convertToTimeZoneObject(event.calendar_event_end_datetime, timezone).format('MMM D, YYYY H:mm z')
+                this.projectApi.convertToTimeZoneObject(event.calendar_event_end_datetime, timezone).format('YYYY-MM-DD HH:mm:ss z')
                 : '--',
             },
             {
               name: 'Last Update:',
-              value: this.projectApi.convertToTimeZoneObject(event.edit_datetime, timezone).format('MMM D, YYYY H:mm z'),
+              value: this.projectApi.convertToTimeZoneObject(event.edit_datetime, timezone).format('YYYY-MM-DD HH:mm:ss z'),
             },
           ];
           return this.myCalenderApi.findEventAttendees(event.calendar_event_id);
@@ -324,6 +324,35 @@ export class MyCalendarComponent implements OnInit {
           this.notificationService.error('Error', err, { timeOut: 3000, showProgressBar: false });
         });
     }
+  }
+  public convertToTimeZoneString(timestamp: string, timezone: string, withSeconds: boolean = false) {
+    const datetime = moment(timestamp);
+    let timeZonedDateTime = null;
+
+    switch(timezone) {
+      case 'eastern':
+        timeZonedDateTime = datetime.tz('America/New_York');
+        break;
+
+      case 'central':
+        timeZonedDateTime = datetime.tz('America/Chicago');
+        break;
+
+      case 'mountain':
+        timeZonedDateTime = datetime.tz('America/Denver');
+        break;
+
+      case 'pacific':
+        timeZonedDateTime = datetime.tz('America/Los_Angeles');
+        break;
+
+      case 'Non US Timezone': case 'utc': default:
+        timeZonedDateTime = datetime.utc();
+    }
+
+    const result = withSeconds ? timeZonedDateTime.format('YYYY-MM-DD HH:mm:ss z') : timeZonedDateTime.format('YYYY-MM-DD HH:mm z');
+
+    return result === 'Invalid date' ? '' : result;
   }
 
   loadCurrentOffice() {

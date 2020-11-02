@@ -327,7 +327,7 @@ export class ProjectSourceComponent implements OnInit, AfterViewInit {
   }
 
   private _loadProjectSourceInfo(projectId) {
-     this.viewProjectsApi.getProject(projectId, 'eastern')
+     this.viewProjectsApi.getProject(projectId,  this._dataStore.currentCustomer ? (this._dataStore.currentCustomer['customer_timezone'] || 'eastern') : 'eastern')
       .then(res => {
         this.currentProject = res;
 

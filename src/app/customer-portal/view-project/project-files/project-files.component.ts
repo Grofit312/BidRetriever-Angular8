@@ -85,8 +85,8 @@ export class ProjectFilesComponent implements OnInit {
     {caption: 'Revision',dataField: 'doc_revision',minWidth: 100,allowEditing: false},
     {caption: 'Original File Name',dataField: 'folder_original_filename',minWidth: 200,allowEditing: false},
     {caption: 'Type',dataField: 'doc_type',minWidth: 150,allowEditing: false},
-    {caption: 'Created Date',dataField: 'create_datetime',minWidth: 100,allowEditing: false},
-    {caption: 'Submitted Date',dataField: 'submission_datetime',minWidth: 100,allowEditing: false},
+    {caption: 'Created Date',dataField: 'create_datetime',minWidth: 100, cellTemplate: 'dateCell', allowEditing: false},
+    {caption: 'Submitted Date',dataField: 'submission_datetime',minWidth: 100,cellTemplate: 'dateCell', allowEditing: false},
     {caption: 'Process Status',dataField: 'process_status',minWidth: 100,allowEditing: false},
   ];
 
