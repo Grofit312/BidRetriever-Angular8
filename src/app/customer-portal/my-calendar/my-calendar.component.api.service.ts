@@ -3,6 +3,7 @@ import {
 } from '@angular/core';
 import axios from 'axios';
 import * as queryString from 'query-string';
+const moment = require('moment-timezone');
 
 @Injectable()
 export class MyCalendarApi {
@@ -95,6 +96,7 @@ export class MyCalendarApi {
       .then(res => {
         if (res.status === 200) {
           resolve(res.data);
+          //TODO - TimeZone handling
         } else {
           reject(res.data.status);
         }
@@ -218,6 +220,35 @@ export class MyCalendarApi {
     });
   }
 
+  public convertToTimeZoneString(timestamp: string, timezone: string, withSeconds: boolean = false) {
+    const datetime = moment(timestamp);
+    let timeZonedDateTime = null;
+
+    switch(timezone) {
+      case 'eastern':
+        timeZonedDateTime = datetime.tz('America/New_York');
+        break;
+
+      case 'central':
+        timeZonedDateTime = datetime.tz('America/Chicago');
+        break;
+
+      case 'mountain':
+        timeZonedDateTime = datetime.tz('America/Denver');
+        break;
+
+      case 'pacific':
+        timeZonedDateTime = datetime.tz('America/Los_Angeles');
+        break;
+
+      case 'Non US Timezone': case 'utc': default:
+        timeZonedDateTime = datetime.utc();
+    }
+
+    const result = withSeconds ? timeZonedDateTime.format('YYYY-MM-DD HH:mm:ss z') : timeZonedDateTime.format('YYYY-MM-DD HH:mm z');
+
+    return result === 'Invalid date' ? '' : result;
+  }
 
   public findProjectList(source_company_id: string) {
     return new Promise((resolve, reject) => {
@@ -231,6 +262,11 @@ export class MyCalendarApi {
             if (res.data.length === 0) {
               reject('Project not found');
             } else {
+              //TODO - TimeZone handling
+              res.data = res.data.map((project) => {
+                project['project_city_state'] = `${project['project_state']}, ${project['project_city']}`;
+                return project;
+              });
               
               resolve(res.data);
             }
@@ -258,6 +294,7 @@ export class MyCalendarApi {
           
           if (res.status === 200) {
             resolve(res.data);
+            //TODO - TimeZone handling
           } else {
             reject(res.data.status);
           }

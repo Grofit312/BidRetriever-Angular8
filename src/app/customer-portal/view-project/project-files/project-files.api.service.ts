@@ -73,6 +73,7 @@ export class ProjectFilesApi {
       axios.get(`${window['env'].apiBaseUrl}/GetDocumentDetails?doc_id=${doc_id}`)
         .then(res => {
           resolve(res.data);
+          //TODO - TimeZone handling
         })
         .catch(err => {
           console.log(err);

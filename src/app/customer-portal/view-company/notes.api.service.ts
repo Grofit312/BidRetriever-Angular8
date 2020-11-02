@@ -43,6 +43,7 @@ export class NotesApi {
         .then((res) => {
           if (res.status === 200) {
             res.data = res.data.map((project) => {
+               //TODO - TimeZone handling
               return project;
             });
 

@@ -314,6 +314,7 @@ export class ProjectsApi {
           if (res.status === 200) {
             res.data = res.data.map((log) => {
               log['operation_datetime'] = this.convertToTimeZoneString(log['operation_datetime'], timezone, true);
+               //TODO - TimeZone handling
               return log;
             });
 

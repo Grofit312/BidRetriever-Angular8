@@ -21,9 +21,9 @@ export class ViewProjectApi {
       .then(res => {
         if (res.status === 200) {
           res['data']['project_admin_user_id'] = res['data']['user_id'];
-          res['data']['create_datetime_origin'] = res['data']['create_datetime'];
-          res['data']['edit_datetime_origin'] = res['data']['edit_datetime'];
-          res['data']['project_bid_datetime_origin'] = res['data']['project_bid_datetime'];
+          res['data']['create_datetime_origin'] = this.convertToTimeZoneObject(res['data']['create_datetime'], timezone).format('MMM D, YYYY H:mm z');
+          res['data']['edit_datetime_origin'] = this.convertToTimeZoneObject(res['data']['edit_datetime'], timezone).format('MMM D, YYYY H:mm z');
+          res['data']['project_bid_datetime_origin'] = this.convertToTimeZoneObject(res['data']['project_bid_datetime'], timezone).format('MMM D, YYYY H:mm z');
           res['data']['create_datetime'] = this.convertToTimeZoneObject(res['data']['create_datetime'], timezone).format('MMM D, YYYY');
           res['data']['edit_datetime'] = this.convertToTimeZoneObject(res['data']['edit_datetime'], timezone).format('MMM D, YYYY');
           res['data']['project_bid_datetime'] = this.convertToTimeZoneObject(res['data']['project_bid_datetime'], timezone).format('MMM D, YYYY H:mm z');

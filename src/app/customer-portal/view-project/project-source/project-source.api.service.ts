@@ -46,6 +46,7 @@ export class ProjectSourceApi {
       axios.get(`${window['env'].apiBaseUrl}/FindProjectSources?project_id=${projectId}`)
         .then((res) => {
           const sources = res.data.sort((first, second) => first.project_name < second.project_name ? -1 : 1);
+           //TODO - TimeZone handling
           return resolve(sources);
         })
         .catch((error) => {

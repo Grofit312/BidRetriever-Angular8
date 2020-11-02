@@ -21,14 +21,11 @@ export class ViewCompanyApi {
       .then(res => {
         if (res.status === 200) {
           res['data']['company_admin_user_id'] = res['data']['user_id'];
-          res['data']['create_datetime_origin'] = res['data']['create_datetime'];
-          res['data']['edit_datetime_origin'] = res['data']['edit_datetime'];
-         // res['data']['project_bid_datetime_origin'] = res['data']['project_bid_datetime'];
+          res['data']['create_datetime_origin'] = this.convertToTimeZoneObject(res['data']['create_datetime'], timezone).format('MMM D, YYYY H:mm z');
+          res['data']['edit_datetime_origin'] = this.convertToTimeZoneObject(res['data']['edit_datetime'], timezone).format('MMM D, YYYY H:mm z');
           res['data']['create_datetime'] = this.convertToTimeZoneObject(res['data']['create_datetime'], timezone).format('MMM D, YYYY');
           res['data']['edit_datetime'] = this.convertToTimeZoneObject(res['data']['edit_datetime'], timezone).format('MMM D, YYYY');
-       //   res['data']['project_bid_datetime'] = this.convertToTimeZoneObject(res['data']['project_bid_datetime'], timezone).format('MMM D, YYYY H:mm z');
           res['data']['company_address'] = `${res['data']['company_address1']} ${res['data']['company_address2']} ${res['data']['company_city']} ${res['data']['company_state']} ${res['data']['company_zip']} ${res['data']['company_country']}`;
-
           resolve(res.data);
         } else {
           reject(res.data.status);
