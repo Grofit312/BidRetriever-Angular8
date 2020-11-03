@@ -9,7 +9,7 @@
         <p class="subcategory-subtitle">Project Address</p>
         <p class="subcategory-description">{{ currentProject?.project_address }}</p>
         <p class="subcategory-subtitle">Bid Date</p>
-        <p class="subcategory-description">{{ currentProject?.project_bid_datetime || '--' }}</p>
+        <p class="subcategory-description">{{ getProjectBidDateLocale() }}</p>
       </div>
     </div>
 
