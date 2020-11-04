@@ -148,7 +148,7 @@ export class ProjectNotificationsComponent implements OnInit {
     if (selectedRowKeys.length === 0) {
       this.notificationHtml.nativeElement.innerHTML = '';
     } else {
-      debugger
+      
       const selectedRows = this.notificationGridContent.filter(({ user_notification_id: nId }) => selectedRowKeys.includes(nId));
     
       localStorage.setItem('notification_content', selectedRows[0]['notification_actual_html']);

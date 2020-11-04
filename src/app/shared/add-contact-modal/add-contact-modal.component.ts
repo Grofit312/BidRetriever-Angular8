@@ -48,7 +48,7 @@ export class AddContactModalComponent implements OnInit {
   }
 
   onSaveContact() {
-    debugger
+    
     this.contactId = uuid();
    
     this.spinner.show();

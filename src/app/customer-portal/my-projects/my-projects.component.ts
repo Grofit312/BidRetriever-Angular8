@@ -645,7 +645,7 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
               { dataField: 'project_bid_datetime', caption: 'Bid Date/Time', minWidth: 150, cellTemplate: 'dateCell', editCellTemplate: 'dateTimeEditor', allowEditing: true },
               { dataField: 'time_till_bid', caption: 'Time Till Bid', minWidth: 150, allowEditing: false, sortOrder: 'asc', cellTemplate: 'ttbCell' },
               { dataField: 'project_stage', caption: 'Stage', minWidth: 150,editCellTemplate: 'projectStageEditor', allowEditing: true },
-              { dataField: 'project_city_state', caption: 'City/State', width: 150, minWidth: 100, allowEditing: false },
+              { dataField: 'project_city_state', caption: 'State/City', width: 150, minWidth: 100, allowEditing: false },
               { dataField: 'project_assigned_office_name', caption: 'Office', width: 150, minWidth: 100, editCellTemplate: 'projectAssignedOfficeNameEditor', allowEditing: true },
               { dataField: 'auto_update_status', caption: 'Automatic Updates', width: 180, minWidth: 150, allowEditing: true, editCellTemplate: 'autoUpdateStatusEditor' },
               { dataField: 'create_datetime', caption: 'Create Date', width: 180, minWidth: 150, dataType: 'datetime', cellTemplate: 'dateCell', allowEditing: false },

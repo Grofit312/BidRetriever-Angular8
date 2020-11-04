@@ -798,7 +798,7 @@ export class MyCompaniesComponent implements OnInit, AfterViewInit {
 
               {
                 dataField: 'company_city_state',
-                caption: 'City/State',
+                caption: 'State/City',
                 width: 150,
                 minWidth: 100,
                 allowEditing: false,

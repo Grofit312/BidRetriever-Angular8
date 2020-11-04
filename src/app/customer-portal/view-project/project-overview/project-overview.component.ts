@@ -133,8 +133,8 @@ export class ProjectOverviewComponent implements OnInit {
         event: null,
       }
     ];
-
-    this.calendarApi.findCalendarEvents(null, this.dataStore.currentProject['project_id'])
+    const timezone = this.dataStore.currentCustomer ? (this.dataStore.currentCustomer['customer_timezone'] || 'eastern') : 'eastern';
+    this.calendarApi.findCalendarEvents(null, this.dataStore.currentProject['project_id'], timezone)
       .then((events: any[]) => {
         events.forEach(event => {
           projectDates.push({

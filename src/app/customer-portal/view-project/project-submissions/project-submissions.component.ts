@@ -64,7 +64,7 @@ export class ProjectSubmissionsComponent implements OnInit {
   gridSubmissionLoadAction(loadOptions: any){
     
     return new Promise((resolve, reject) => {
-      debugger
+      
       if (this.submissionGridContentLoaded) {
         const filteredSubmissions = this.getGridSubmissionContentByLoadOption(loadOptions);
         return resolve({
@@ -100,7 +100,7 @@ export class ProjectSubmissionsComponent implements OnInit {
               { dataField: 'submission_id', dataType: 'number', caption: 'Submission Id', width: 250, visible: false, allowEditing: false },
               { dataField: 'submission_name', caption: 'Submission Name', minWidth: 200, allowEditing: false },
               { dataField: 'submission_type', caption: 'Submission Type', minWidth: 150, allowEditing: false },
-              { dataField: 'submission_date', caption: 'Submission Date', minWidth: 100, allowEditing: false },
+              { dataField: 'submission_date', caption: 'Submission Date', minWidth: 100, allowEditing: false, cellTemplate: 'dateCell' },
               { dataField: 'submitter_email', caption: 'Submission Email', minWidth: 200, allowEditing: false },
               { dataField: 'source_sys_name', caption: 'Source', width: 150, minWidth: 100, allowEditing: false },
               { dataField: 'submission_file_count', caption: '# Files', width: 150, minWidth: 150, allowEditing: false },

@@ -593,7 +593,7 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
        // const findDataViewFieldSettings = this.apiService.findDataViewFieldSettings(this.projectViewTypeSelected);
       // const currentOfficeId = this.dataStore.currentUser['customer_office_id'];
       this.source_company_id =this.dataStore.currentCompany.company_id;
-      const findProjects= this.myCalenderApi.findProjectList(this.source_company_id); 
+      const findProjects= this.myCalenderApi.findProjectList(this.source_company_id, this.dataStore.currentCustomer['customer_timezone'] || 'eastern'); 
       Promise.all([findProjects])
         .then(([projects, dataViewFieldSettings]) =>  {
           this.projectGridContent = projects as any[];
@@ -602,10 +602,10 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
             this.projectGridColumns = [
               { dataField: 'project_id', dataType: 'number', caption: 'Project Id', width: 250, visible: false, allowEditing: false },
               { dataField: 'project_name', caption: 'Project Name', width: 400, minWidth: 250, allowEditing: true },
-              { dataField: 'project_number', caption: 'Project Number', minWidth: 150, allowEditing: false },
-              { dataField: 'project_admin_user_fullname', caption: 'Admin User', minWidth: 150, allowEditing: false },
-               { dataField: 'project_bid_datetime', caption: 'Bid Date/Time', minWidth: 150, cellTemplate: 'dateCell', editCellTemplate: 'dateTimeEditor', allowEditing: false },
-              { dataField: 'project_state', caption: 'City/State', width: 150, minWidth: 100, allowEditing: false },
+              { dataField: 'project_number', caption: 'Project Number', minWidth: 150, allowEditing: true },
+              { dataField: 'project_admin_user_fullname', caption: 'Admin User', minWidth: 150,editCellTemplate: 'projectAdminUserEmailEditor', allowEditing: true  },
+              { dataField: 'project_bid_datetime', caption: 'Bid Date/Time', minWidth: 150, cellTemplate: 'dateCell', editCellTemplate: 'dateTimeEditor', allowEditing: true },
+              { dataField: 'project_city_state', caption: 'State/City', width: 150, minWidth: 100, allowEditing: false },
               { dataField: 'project_assigned_office_name', caption: 'Office', width: 150, minWidth: 100, editCellTemplate: 'projectAssignedOfficeNameEditor', allowEditing: true },
               { dataField: 'create_datetime', caption: 'Create Date', width: 180, minWidth: 150, dataType: 'datetime', cellTemplate: 'dateCell', allowEditing: false },
               { dataField: 'project_stage', caption: 'Stage', width: 100, minWidth: 100, allowEditing: true, editCellTemplate: 'projectStageEditor' },             
@@ -613,7 +613,7 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
           } else {
             const newGridColumnList = [];
             const editingAllowedColumns = [
-              'project_name', 'project_bid_datetime', 'auto_update_status', 
+              'project_name', 'project_bid_datetime', 'auto_update_status', 'project_admin_user_fullname',
               'project_stage', 'project_timezone', 'project_contract_type', 'project_segment', 'project_building_type', 'project_labor_requirement',
               'project_value', 'project_size', 'project_construction_type', 'project_award_status', 'project_assigned_office_name',
               'project_number'
@@ -701,6 +701,7 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
   gridProjectUpdateAction(key, values) {
     return new Promise((resolve, reject) => {
       try {
+        
         const updateIndex = this.projectGridContent.findIndex((project) => project.project_id === key);
         if ('project_name' in values) {
           const validProjectName = this.validationService.validateProjectName(values['project_name']);
@@ -712,19 +713,19 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
             }).then((res) => {
               this.notificationService.success('Success', 'Project has been updated', { timeOut: 3000, showProgressBar: false });
               this.projectGridContent[updateIndex]['project_name'] = validProjectName;
-              return resolve(true);
+              return resolve();
             }).catch((error) => {
               return reject('Failed to update the project name');
             });
           }
-        } else if ('project_admin_user_email' in values) {
-          const matchedUser = this.projectGridEditorTemplateSource.adminUserEmail.find(({ user_email }) => user_email === values['project_admin_user_email']);
+        } else if ('project_admin_user_fullname' in values) {
+          const matchedUser = this.projectGridEditorTemplateSource.adminUserEmail.find(({ user_email }) => user_email === values['project_admin_user_fullname']);
           this.apiService.updateProject(key, {
             project_admin_user_id: matchedUser['user_id']
           }).then((res) => {
             this.notificationService.success('Success', 'Project Admin User Email has been updated', { timeOut: 3000, showProgressBar: false });
-            this.projectGridContent[updateIndex]['project_admin_user_email'] = values['project_admin_user_email'];
-            return resolve(true);
+            this.projectGridContent[updateIndex]['project_admin_user_email'] = values['project_admin_user_fullname'];
+            return resolve();
           }).catch((error) => {
             return reject('Failed to update the status');
           });
@@ -735,7 +736,7 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
           }).then((res) => {
             this.notificationService.success('Success', 'Project Bid DateTime has been updated', { timeOut: 3000, showProgressBar: false });
             this.projectGridContent[updateIndex]['project_bid_datetime'] = updatedValue;
-            return resolve(true);
+            return resolve();
           }).catch((error) => {
             return reject('Failed to update the status');
           });
@@ -745,7 +746,7 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
           }).then((res) => {
             this.notificationService.success('Success', 'Auto-Update-Status has been updated', { timeOut: 3000, showProgressBar: false });
             this.projectGridContent[updateIndex]['auto_update_status'] = values['auto_update_status'];
-            return resolve(true);
+            return resolve();
           }).catch((error) => {
             return reject('Failed to update the status');
           });
@@ -761,7 +762,7 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
             }).then((res) => {
               this.notificationService.success('Success', 'Status has been updated', { timeOut: 3000, showProgressBar: false });
               this.projectGridContent[updateIndex]['status'] = values['status'];
-              return resolve(true);
+              return resolve();
             }).catch((error) => {
               return reject('Failed to update the status');
             });
@@ -772,7 +773,7 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
           }).then((res) => {
             this.notificationService.success('Success', 'Project assigned office name has been updated', { timeOut: 3000, showProgressBar: false });
             this.projectGridContent[updateIndex]['project_assigned_office_name'] = values['project_assigned_office_name'];
-            return resolve(true);
+            return resolve();
           }).catch((error) => {
             return reject('Failed to update the project assigned office name');
           })
@@ -782,7 +783,7 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
           }).then((res) => {
             this.notificationService.success('Success', 'Project Note has been updated', { timeOut: 3000, showProgressBar: false });
             this.projectGridContent[updateIndex]['project_notes'] = values['project_notes'];
-            return resolve(true);
+            return resolve();
           }).catch((error) => {
             return reject('Failed to update the project notes');
           });
@@ -792,7 +793,7 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
           }).then((res) => {
             this.notificationService.success('Success', 'Project-Stage has been updated', { timeOut: 3000, showProgressBar: false });
             this.projectGridContent[updateIndex]['project_stage'] = values['project_stage'];
-            return resolve(true);
+            return resolve();
           }).catch((error) => {
             return reject('Failed to update the status');
           });
@@ -802,7 +803,7 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
           }).then((res) => {
             this.notificationService.success('Success', 'Project Timezone has been updated', { timeOut: 3000, showProgressBar: false });
             this.projectGridContent[updateIndex]['project_timezone'] = values['project_timezone'];
-            return resolve(true);
+            return resolve();
           }).catch((error) => {
             return reject('Failed to update the status');
           });
@@ -812,7 +813,7 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
           }).then((res) => {
             this.notificationService.success('Success', 'Project Contract Type has been updated', { timeOut: 3000, showProgressBar: false });
             this.projectGridContent[updateIndex]['project_contract_type'] = values['project_contract_type'];
-            return resolve(true);
+            return resolve();
           }).catch((error) => {
             return reject('Failed to update the status');
           })
@@ -822,7 +823,7 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
           }).then((res) => {
             this.notificationService.success('Success', 'Project Segment has been updated', { timeOut: 3000, showProgressBar: false });
             this.projectGridContent[updateIndex]['project_segment'] = values['project_segment'];
-            return resolve(true);
+            return resolve();
           }).catch((error) => {
             return reject('Failed to update the status');
           });
@@ -832,7 +833,7 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
           }).then((res) => {
             this.notificationService.success('Success', 'Project Building Type has been updated', { timeOut: 3000, showProgressBar: false });
             this.projectGridContent[updateIndex]['project_building_type'] = values['project_building_type'];
-            return resolve(true);
+            return resolve();
           }).catch((error) => {
             return reject('Failed to update the status');
           });
@@ -842,7 +843,7 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
           }).then((res) => {
             this.notificationService.success('Success', 'Project Labor Requirement has been updated', { timeOut: 3000, showProgressBar: false });
             this.projectGridContent[updateIndex]['project_labor_requirement'] = values['project_labor_requirement'];
-            return resolve(true);
+            return resolve();
           }).catch((error) => {
             return reject('Failed to update the status');
           });
@@ -852,27 +853,32 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
           }).then((res) => {
             this.notificationService.success('Success', 'Project Value has been updated', { timeOut: 3000, showProgressBar: false });
             this.projectGridContent[updateIndex]['project_value'] = values['project_value'];
-            return resolve(true);
+            return resolve();
           }).catch((error) => {
             return reject('Failed to update the status');
           });
-        } else if ('project_size' in values) {
-          this.apiService.updateProject(key, {
-            project_size: values['project_size']
-          }).then((res) => {
-            this.notificationService.success('Success', 'Project Size has been updated', { timeOut: 3000, showProgressBar: false });
-            this.projectGridContent[updateIndex]['project_size'] = values['project_size'];
-            return resolve(true);
-          }).catch((error) => {
-            return reject('Failed to update the status');
-          });
+        } else if ('project_admin_user_fullname' in values) {
+          const matchedUser 
+            = this.projectGridEditorTemplateSource
+                  .adminUserEmail
+                  .find(({ user_email }) => user_email === values['project_admin_user_email']);
+          this.apiService
+            .updateProject(key, {project_admin_user_id: matchedUser['user_id']})
+            .then((res) => {
+              this.notificationService.success('Success', 'Project Admin User has been updated', { timeOut: 3000, showProgressBar: false });
+              this.projectGridContent[updateIndex]['project_admin_user_fullname'] = values['project_admin_user_fullname'];
+              return resolve();
+            }).catch((error) => {
+              return reject('Failed to update the status');
+            });
+          
         } else if ('project_number' in values) {
           this.apiService.updateProject(key, {
             project_number: values['project_number']
           }).then((res) => {
             this.notificationService.success('Success', 'Project number has been updated', { timeOut: 3000, showProgressBar: false });
             this.projectGridContent[updateIndex]['project_number'] = values['project_number'];
-            return resolve(true);
+            return resolve();
           }).catch((error) => {
             return reject('Failed to update the status');
           });
@@ -882,7 +888,7 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
           }).then((res) => {
             this.notificationService.success('Success', 'Project Construction Type has been updated', { timeOut: 3000, showProgressBar: false });
             this.projectGridContent[updateIndex]['project_construction_type'] = values['project_construction_type'];
-            return resolve(true);
+            return resolve();
           }).catch((error) => {
             return reject('Failed to update the status');
           });
@@ -892,7 +898,7 @@ export class CompanyProjectsComponent implements OnInit, AfterViewInit {
           }).then((res) => {
             this.notificationService.success('Success', 'Project Award Status has been updated', { timeOut: 3000, showProgressBar: false });
             this.projectGridContent[updateIndex]['project_award_status'] = values['project_award_status'];
-            return resolve(true);
+            return resolve();
           }).catch((error) => {
             return reject('Failed to update the status');
           });

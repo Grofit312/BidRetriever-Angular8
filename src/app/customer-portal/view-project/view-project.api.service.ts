@@ -21,9 +21,9 @@ export class ViewProjectApi {
       .then(res => {
         if (res.status === 200) {
           res['data']['project_admin_user_id'] = res['data']['user_id'];
-          res['data']['create_datetime_origin'] = res['data']['create_datetime'];
-          res['data']['edit_datetime_origin'] = res['data']['edit_datetime'];
-          res['data']['project_bid_datetime_origin'] = res['data']['project_bid_datetime'];
+          res['data']['create_datetime_origin'] = this.convertToTimeZoneObject(res['data']['create_datetime'], timezone).format('MMM D, YYYY H:mm z');
+          res['data']['edit_datetime_origin'] = this.convertToTimeZoneObject(res['data']['edit_datetime'], timezone).format('MMM D, YYYY H:mm z');
+          res['data']['project_bid_datetime_origin'] = this.convertToTimeZoneObject(res['data']['project_bid_datetime'], timezone).format('MMM D, YYYY H:mm z');
           res['data']['create_datetime'] = this.convertToTimeZoneObject(res['data']['create_datetime'], timezone).format('MMM D, YYYY');
           res['data']['edit_datetime'] = this.convertToTimeZoneObject(res['data']['edit_datetime'], timezone).format('MMM D, YYYY');
           res['data']['project_bid_datetime'] = this.convertToTimeZoneObject(res['data']['project_bid_datetime'], timezone).format('MMM D, YYYY H:mm z');
@@ -156,7 +156,7 @@ export class ViewProjectApi {
     });
   }
 
-  public findNotes(params: any) {
+  public findNotes(params: any,timezone: string) {
     return new Promise((resolve, reject) => {
       let apiUrl = `${window["env"].apiBaseUrl}/FindNotes?${queryString.stringify(params)}`;
       axios
@@ -167,8 +167,12 @@ export class ViewProjectApi {
         })
         .then((res) => {
           if (res.status === 200) {
-            res.data = res.data.map((project) => {
-              return project;
+            res.data = res.data.map((notes) => {
+               
+              notes['create_datetime'] = this.convertToTimeZoneString(notes['create_datetime'], timezone);
+              notes['edit_datetime'] = this.convertToTimeZoneString(notes['edit_datetime'], timezone);
+              
+              return notes;
             });
 
             resolve(res.data);
@@ -182,6 +186,37 @@ export class ViewProjectApi {
         });
     });
   } 
+  
+  public convertToTimeZoneString(timestamp: string, timezone: string, withSeconds: boolean = false) {
+    const datetime = moment(timestamp);
+    let timeZonedDateTime = null;
+
+    switch(timezone) {
+      case 'eastern':
+        timeZonedDateTime = datetime.tz('America/New_York');
+        break;
+
+      case 'central':
+        timeZonedDateTime = datetime.tz('America/Chicago');
+        break;
+
+      case 'mountain':
+        timeZonedDateTime = datetime.tz('America/Denver');
+        break;
+
+      case 'pacific':
+        timeZonedDateTime = datetime.tz('America/Los_Angeles');
+        break;
+
+      case 'Non US Timezone': case 'utc': default:
+        timeZonedDateTime = datetime.utc();
+    }
+
+    const result = withSeconds ? timeZonedDateTime.format('YYYY-MM-DD HH:mm:ss z') : timeZonedDateTime.format('YYYY-MM-DD HH:mm z');
+
+    return result === 'Invalid date' ? '' : result;
+  }
+
   public getComments(note_id: any, timezone: any) {
     return new Promise((resolve, reject) => {
       let apiUrl = `${window["env"].apiBaseUrl}/FindCompanyNotes?note_id=${note_id}&timezone=${timezone}`;

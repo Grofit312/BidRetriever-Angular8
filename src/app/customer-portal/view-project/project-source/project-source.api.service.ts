@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import axios from 'axios';
 import * as queryString from 'query-string';
+const moment = require('moment-timezone');
 
 @Injectable()
 export class ProjectSourceApi {
@@ -41,10 +42,14 @@ export class ProjectSourceApi {
     });
   }
 
-  findProjectSources(projectId: string) {
+  findProjectSources(projectId: string, timezone: string) {
     return new Promise((resolve, reject) => {
       axios.get(`${window['env'].apiBaseUrl}/FindProjectSources?project_id=${projectId}`)
         .then((res) => {
+          res.data = res.data.map((source) => {
+            source['project_bid_datetime'] = this.convertToTimeZoneString(source['project_bid_datetime'], timezone);
+            return source;
+          });
           const sources = res.data.sort((first, second) => first.project_name < second.project_name ? -1 : 1);
           return resolve(sources);
         })
@@ -53,7 +58,63 @@ export class ProjectSourceApi {
         });
     });
   }
+  
+  public convertToTimeZoneString(timestamp: string, timezone: string, withSeconds: boolean = false) {
+    const datetime = moment(timestamp);
+    let timeZonedDateTime = null;
 
+    switch(timezone) {
+      case 'eastern':
+        timeZonedDateTime = datetime.tz('America/New_York');
+        break;
+
+      case 'central':
+        timeZonedDateTime = datetime.tz('America/Chicago');
+        break;
+
+      case 'mountain':
+        timeZonedDateTime = datetime.tz('America/Denver');
+        break;
+
+      case 'pacific':
+        timeZonedDateTime = datetime.tz('America/Los_Angeles');
+        break;
+
+      case 'Non US Timezone': case 'utc': default:
+        timeZonedDateTime = datetime.utc();
+    }
+
+    const result = withSeconds ? timeZonedDateTime.format('YYYY-MM-DD HH:mm:ss z') : timeZonedDateTime.format('YYYY-MM-DD HH:mm z');
+
+    return result === 'Invalid date' ? '' : result;
+  }
+
+  public convertToTimeZoneObject(timestamp: string, timezone: string) {
+    const datetime = moment(timestamp);
+    let timezonedDateTime = null;
+
+    switch(timezone) {
+        case 'eastern':
+        timezonedDateTime = datetime.tz('America/New_York');
+        break;
+
+        case 'central':
+        timezonedDateTime = datetime.tz('America/Chicago');
+        break;
+
+        case 'mountain':
+        timezonedDateTime = datetime.tz('America/Denver');
+        break;
+
+        case 'pacific':
+        timezonedDateTime = datetime.tz('America/Los_Angeles');
+        break;
+
+        case 'Non US Timezone': case 'utc': default:
+        timezonedDateTime = datetime.utc();
+    }
+    return timezonedDateTime;
+  }
   findOtherProjects(customerId: string) {
     return new Promise((resolve, reject) => {
       axios.get(`${window['env'].apiBaseUrl}/FindProjects?customer_id=${customerId}`)

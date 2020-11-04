@@ -68,10 +68,18 @@ export class ProjectFilesApi {
     });
   }
 
-  public getDocumentDetails(doc_id: string) {
+  public getDocumentDetails(doc_id: string, timezone: string) {
     return new Promise((resolve, reject) => {
       axios.get(`${window['env'].apiBaseUrl}/GetDocumentDetails?doc_id=${doc_id}`)
         .then(res => {
+          res.data = res.data.map((item) => {
+            item['create_datetime'] = this.convertToTimeZoneString(item['create_datetime'], timezone);
+            item['edit_datetime'] = this.convertToTimeZoneString(item['edit_datetime'], timezone);
+            item['file_original_create_datetime'] = this.convertToTimeZoneString(item['file_original_create_datetime'], timezone);
+            item['file_original_modified_datetime'] = this.convertToTimeZoneString(item['file_original_modified_datetime'], timezone);
+            item['submission_datetime'] = this.convertToTimeZoneString(item['submission_datetime'], timezone);
+            return item;
+          });
           resolve(res.data);
         })
         .catch(err => {
@@ -80,7 +88,33 @@ export class ProjectFilesApi {
         });
     });
   }
+  
+  public convertToTimeZoneObject(timestamp: string, timezone: string) {
+    const datetime = moment(timestamp);
+    let timezonedDateTime = null;
 
+    switch(timezone) {
+        case 'eastern':
+        timezonedDateTime = datetime.tz('America/New_York');
+        break;
+
+        case 'central':
+        timezonedDateTime = datetime.tz('America/Chicago');
+        break;
+
+        case 'mountain':
+        timezonedDateTime = datetime.tz('America/Denver');
+        break;
+
+        case 'pacific':
+        timezonedDateTime = datetime.tz('America/Los_Angeles');
+        break;
+
+        case 'Non US Timezone': case 'utc': default:
+        timezonedDateTime = datetime.utc();
+    }
+    return timezonedDateTime;
+  }
   public findUserFavorites(user_id: string, project_id: string, favorite_type: string) {
     return new Promise((resolve, reject) => {
       axios.get(`${window['env'].apiBaseUrl}/FindUserFavorites?user_id=${user_id}&project_id=${project_id}&favorite_type=${favorite_type}`)

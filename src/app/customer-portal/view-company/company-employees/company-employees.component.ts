@@ -194,7 +194,7 @@ export class CompanyEmployeesComponent implements OnInit {
       
       this.customer_id =this.dataStore.currentCompany.customer_id;
 
-      const findProjects= this.myCalenderApi.findCompanyContact(this.customer_id, this.dataStore.currentCompany.company_id); 
+      const findProjects= this.myCalenderApi.findCompanyContact(this.customer_id, this.dataStore.currentCompany.company_id,  this.dataStore.currentCustomer ? (this.dataStore.currentCustomer['customer_timezone'] || 'eastern') : 'eastern'); 
       Promise.all([findProjects])
         .then(([projects, dataViewFieldSettings]) =>  {
           this.projectGridContent = projects as any[];

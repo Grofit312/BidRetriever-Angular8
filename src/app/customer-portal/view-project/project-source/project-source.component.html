@@ -102,7 +102,7 @@
         <dxi-column dataField="project_source_id" caption="Project Source Id" [visible]="false"></dxi-column>
         <dxi-column dataField="source_company_id" caption="Source Company Id" [visible]="false"></dxi-column>
         <dxi-column dataField="project_name" caption="Project Name"></dxi-column>
-        <dxi-column dataField="project_bid_datetime" caption="Bid Due Date"></dxi-column>
+        <dxi-column dataField="project_bid_datetime" caption="Bid Due Date" cellTemplate="dateCell"></dxi-column>
         <dxi-column dataField="source_company_name" caption="Source Company"></dxi-column>      
         <dxi-column dataField="source_company_contact_name" caption="Source Contact"></dxi-column>
         <dxi-column dataField="project_source_sys_name" caption="Source System"></dxi-column>
@@ -117,6 +117,9 @@
         
         <dxi-column dataField="secondary_project_id" caption="Secondary Project Id" [visible]="false"></dxi-column>
         <dxi-column dataField="source_contact_id" caption="Source Contact Id" [visible]="false"></dxi-column>
+        <div *dxTemplate="let cell of 'dateCell'">
+          {{ cell.value | moment: 'YYYY-MM-DD hh:mm a z' }}
+      </div>
       </dx-data-grid>
     </div>
   </div>

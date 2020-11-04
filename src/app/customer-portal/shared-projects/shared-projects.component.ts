@@ -199,7 +199,7 @@ this.filterOptions = [
   }
   /* Toolbar Search Action */
   toolbarSearchAction(event) {
-    debugger
+    
     this.searchWord = event.value.toLowerCase();
     if (this.projectGrid && this.projectGrid.instance) {
       this.projectGrid.instance.refresh();
@@ -207,7 +207,7 @@ this.filterOptions = [
   }
   gridSharedProjectLoadAction(loadOptions) {
     return new Promise((resolve, reject) => {
-      debugger
+      
       if (this.projectGridContentLoaded) {
         const filteredProjects = this.getGridProjectContentByLoadOption(loadOptions);
         return resolve({
@@ -264,10 +264,10 @@ this.filterOptions = [
               { dataField: 'share_source_user_email', caption: 'Source', minWidth: 150, allowEditing: false },
               { dataField: 'share_source_company_name', caption: 'Source Company', minWidth: 150, allowEditing: false },
               { dataField: 'project_bid_datetime', caption: 'Bid Date/Time', minWidth: 150, cellTemplate: 'dateCell', editCellTemplate: 'dateTimeEditor', allowEditing: false },
-              { dataField: 'project_city_state', caption: 'City/State', width: 150, minWidth: 100, allowEditing: false },
+              { dataField: 'project_city_state', caption: 'State/City', width: 150, minWidth: 100, allowEditing: false },
               { dataField: 'share_user_office_name', caption: 'Office', width: 150, minWidth: 100, editCellTemplate: 'projectAssignedOfficeNameEditor', allowEditing: true },
               { dataField: 'create_datetime', caption: 'Create Date', width: 180, minWidth: 150, dataType: 'datetime', cellTemplate: 'dateCell', allowEditing: false },
-              { dataField: 'edit_datetime', caption: 'Last Change Date', width: 100, minWidth: 100, allowEditing: true, editCellTemplate: 'projectStageEditor' },             
+              { dataField: 'edit_datetime', caption: 'Last Change Date', width: 150, minWidth: 100,  dataType: 'datetime', cellTemplate: 'dateCell', allowEditing: false },
             ];
          
 
@@ -327,7 +327,7 @@ this.filterOptions = [
 
   /* Archive Project(s) */
   toolbarArchiveSharedProjectAction()  {
-    debugger
+    
     const sharedProject = this.selectedSharedProject;
     const { selectedRowKeys } = this.projectGrid;
     if (selectedRowKeys.length === 0) {
@@ -548,7 +548,7 @@ this.filterOptions = [
 
   /* Create Project */
   toolbarAddToMyProjectAction() {
-debugger
+
   const { selectedRowKeys } = this.projectGrid;
   if (selectedRowKeys.length === 0) {
     this.notificationService.error('No Selection', 'Please select one project!', { timeOut: 3000, showProgressBar: false });

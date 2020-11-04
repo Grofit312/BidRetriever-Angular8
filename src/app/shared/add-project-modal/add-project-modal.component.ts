@@ -216,7 +216,7 @@ export class AddProjectModalComponent implements OnInit {
     
     if (this.dataStore.currentCustomer != null ) {
       this.contactApi
-        .findCompanyContact(this.dataStore.currentCustomer["customer_id"], company_id)
+        .findCompanyContact(this.dataStore.currentCustomer["customer_id"], company_id, this.projectTimezone)
         .then((res: any) => {
           this.contactTypeList = new DataSource({store: {data:  res, type:'array', key: 'contact_id'}});
         });
