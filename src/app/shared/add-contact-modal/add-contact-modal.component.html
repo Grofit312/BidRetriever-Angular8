@@ -7,18 +7,69 @@
         </div>
   
         <form (ngSubmit)='onSaveContact()'>
-          <div class='contact-form'>
-            <div class='contact-form-half'>
-              <span>First Name</span>
-              <input required name='firstName' [(ngModel)]='firstName' />
-              <span>Last Name</span>
-              <input required name='lastName' [(ngModel)]='lastName' />
-              <span>Mobile Phone</span>
-              <input name='phone' [(ngModel)]='phone' />
-              <span>Email</span>
-              <input required name='email' [(ngModel)]='email' />
-              <span>Company Name</span>
-              <input required name='companyName' [(ngModel)]='companyName' [readonly]='true'/>
+          <div class='contact-form-wrapper'>
+            <div class='contact-form'>
+              <div class="dx-field-set">
+                <div class="dx-field">
+                  <div class="dx-field-label">First Name</div>
+                  <div class="dx-field-value">
+                    <dx-text-box name="firstName" [(value)]="firstName" [showClearButton]="true">
+                      <dx-validator>
+                        <dxi-validation-rule type="required"></dxi-validation-rule>
+                      </dx-validator>
+                    </dx-text-box>
+                  </div>
+                </div>
+                <div class="dx-field">
+                  <div class="dx-field-label">Last Name</div>
+                  <div class="dx-field-value">
+                    <dx-text-box name="lastName" [(value)]="lastName" [showClearButton]="true">
+                    </dx-text-box>
+                  </div>
+                </div>
+                <div class="dx-field">
+                  <div class="dx-field-label">Contact Phone</div>
+                  <div class="dx-field-value">
+                    <div class="double-col">
+                    <dx-text-box name="mobilePhone" [(value)]="mobilePhone" placeholder="Mobile Phone" [showClearButton]="true"></dx-text-box>
+                    <dx-text-box name="phone" [(value)]="phone" placeholder="Office Phone" [showClearButton]="true"></dx-text-box>
+                  </div>
+                </div>
+                </div>
+                <div class="dx-field">
+                  <div class="dx-field-label">Email</div>
+                  <div class="dx-field-value">
+                    <dx-text-box name="email" [(value)]="email" [showClearButton]="true">
+                    </dx-text-box>
+                  </div>
+                </div>
+                <div class="dx-field">
+                  <div class="dx-field-label">Title</div>
+                  <div class="dx-field-value">
+                    <dx-text-box name="contact_title" [(value)]="contact_title" [showClearButton]="true">
+                    </dx-text-box>
+                  </div>
+                </div>
+                <div class="dx-field">
+                  <div class="dx-field-label">Company Name</div>
+                  <div class="dx-field-value">
+                    <dx-text-box name="companyName" [(value)]="companyName" >
+                    </dx-text-box>
+                  </div>
+                </div>
+              <div class="dx-field">
+                <div class="dx-field-label">Contact Address</div>
+                <div class="dx-field-value">
+                  <dx-text-box name="contact_address1" [(value)]="contact_address1" placeholder="Address 1" [showClearButton]="true"></dx-text-box>
+                  <dx-text-box name="contact_address2" [(value)]="contact_address2" placeholder="Address 2" [showClearButton]="true" style="margin-top: 5px;"></dx-text-box>
+                  <div class="triple-form">
+                    <dx-text-box name="contact_city" [(value)]="contact_city" placeholder="City" [showClearButton]="true"></dx-text-box>
+                    <dx-text-box name="contact_state" [(value)]="contact_state" placeholder="State" [showClearButton]="true"></dx-text-box>
+                    <dx-text-box name="contact_zip" [(value)]="contact_zip" placeholder="Zip" [showClearButton]="true"></dx-text-box>
+                  </div>
+                </div>
+              </div>
+              </div>
               
             </div>
           </div>

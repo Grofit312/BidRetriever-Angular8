@@ -19,7 +19,16 @@ export class AddContactModalComponent implements OnInit {
   email = '';
   firstName = '';
   lastName = '';
-  phone='';
+  
+  mobilePhone = '';
+  phone = '';
+  contact_title = '';
+  contact_address1 = '';
+  contact_address2 = '';
+  contact_city = '';
+  contact_state = '';
+  contact_zip = '';
+  
   contactId: any;
   company_id: any;
   companyName = '';
@@ -31,7 +40,6 @@ export class AddContactModalComponent implements OnInit {
   constructor(
     private authApi: AuthApi,
     private contactApi: ContactApi,
-    
     private spinner: NgxSpinnerService,
     private notificationService: NotificationsService
   ) { }
@@ -41,10 +49,15 @@ export class AddContactModalComponent implements OnInit {
 
   initialize(parent: any) {
     this.parent = parent;
-    this.company_id = this.parent.companyId;
-    this.companyName = this.parent.dataStore.currentCompany.company_name;
+    const company = this.parent.dataStore.currentCompany;
+    this.company_id =  company.company_id;
+    this.companyName = company.company_name;
+    this.contact_address1 = company.company_address1;
+    this.contact_address2 = company.company_address2;
+    this.contact_city = company.company_city;
+    this.contact_state = company.company_state;
+    this.contact_zip = company.company_zip;
     this.addContactModal.nativeElement.style.display = 'block';
-    
   }
 
   onSaveContact() {
@@ -61,9 +74,17 @@ export class AddContactModalComponent implements OnInit {
           contact_email: this.email  ,
           contact_firstname: this.firstName,
           contact_lastname: this.lastName,
-          contact_mobile_phone: this.phone,
-          contact_display_name: `${this.firstName} ${this.lastName}`,   
+          contact_mobile_phone: this.mobilePhone,
+          contact_display_name: `${this.firstName} ${this.lastName}`,
           customer_id: this.parent.dataStore.currentCompany.customer_id,
+          contact_phone: this.phone,
+          contact_title: this.contact_title,
+          contact_address1: this.contact_address1,
+          contact_address2: this.contact_address2,
+          contact_city: this.contact_city,
+          contact_state: this.contact_state,
+          contact_zip: this.contact_zip,
+
         };
 
      this.contactApi.createContact(params)
@@ -91,10 +112,17 @@ export class AddContactModalComponent implements OnInit {
     this.email = '';
     this.firstName = '';
     this.lastName = '';
-    this.phone='';
+    this.mobilePhone = '';
     this.companyName = '';
     this.required = true;
     this.userId = '';
+    this.phone = '';
+    this.contact_title = '';
+    this.contact_address1 = '';
+    this.contact_address2 = '';
+    this.contact_city = '';
+    this.contact_state = '';
+    this.contact_zip = '';
   }
 
 }
