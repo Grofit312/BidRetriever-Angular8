@@ -58,7 +58,7 @@ export class ManageDashboardPanelComponent implements OnInit, OnDestroy {
     private datePipe: DatePipe
   ) {}
 
-  ngOnInit(): void {
+  async ngOnInit() {
     if (!this.dashboardId) {
       this.closeModal.emit("error");
     }
@@ -69,7 +69,7 @@ export class ManageDashboardPanelComponent implements OnInit, OnDestroy {
     }));
 
     this.spinner.show("spinner");
-    this.dashboardService
+    await this.dashboardService
       .findAnalyticDatasources(
         this.dataStore.currentUser.customer_id,
         this.analyticType
@@ -84,7 +84,7 @@ export class ManageDashboardPanelComponent implements OnInit, OnDestroy {
         }));
       });
 
-    this.form.controls.datasource.valueChanges
+    await this.form.controls.datasource.valueChanges
       .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
       .subscribe((v) => {
         const dataSource = this.dataSourceTypes.find((item) => item.key === v);

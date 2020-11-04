@@ -15,9 +15,13 @@ import { takeUntil } from "rxjs/operators";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 
 import { DataStore } from "app/providers/datastore";
-import { DashboardService } from "../../services/dashboard.service";
-import { DashboardPanel } from "../../models/dashboard.model";
-import { EChartTypes } from "../../models/dataTypes.model";
+import { DashboardService } from "app/analytics/services/dashboard.service";
+import { DashboardPanel } from "app/analytics/models/dashboard.model";
+import {
+  EChartTypes,
+  SourceCompanyOverallBidHistoryResponse,
+  SourceCompanyOverallInviteVolumeResponse,
+} from "app/analytics/models/dataTypes.model";
 
 @Component({
   selector: "app-chart-card",
@@ -61,11 +65,11 @@ export class ChartCardComponent implements OnInit, OnDestroy {
           analytic_datasource_type: item.analytic_datasource_type,
           charts: item.compatible_chart_types,
         }));
-      });
 
-    if (this.dashboardPanelId) {
-      this.getDashboardPanel();
-    }
+        if (this.dashboardPanelId) {
+          this.getDashboardPanel();
+        }
+      });
   }
 
   getDashboardPanel() {
@@ -131,28 +135,48 @@ export class ChartCardComponent implements OnInit, OnDestroy {
       })
       .pipe(takeUntil(this.destroy$))
       .subscribe((v) => {
+        let data;
+        switch (this.panelData.panel_analytic_datasource) {
+          case "SourceCompanyOverallBidHistory":
+            data = (v as SourceCompanyOverallBidHistoryResponse[]).map(
+              (item) => ({
+                value: item.total_stage,
+                title: item.project_stage,
+              })
+            );
+            break;
+          case "SourceCompanyOverallInviteVolume":
+            data = (v as SourceCompanyOverallInviteVolumeResponse[]).map(
+              (item) => ({
+                value: item.total_invites,
+                title: item.bid_month.AssemblyName,
+              })
+            );
+            break;
+        }
+
         switch (this.panelData.panel_chart_type) {
           case this.ChartTypes.PieChart:
             this.chartConfig = {
-              dataProvider: v,
-              valueField: "total_stage",
-              titleField: "project_stage",
+              dataProvider: data,
+              valueField: "value",
+              titleField: "title",
             };
             break;
-            case this.ChartTypes.BarChart:
-              this.chartConfig = {
-                dataProvider: v,
-                graphs: [
-                  {
-                    fillAlphas: 0.9,
-                    lineAlpha: 0.2,
-                    type: "column",
-                    valueField: "total_stage",
-                  },
-                ],
-                categoryField: "project_stage",
-              };
-              break;
+          case this.ChartTypes.BarChart:
+            this.chartConfig = {
+              dataProvider: data,
+              graphs: [
+                {
+                  fillAlphas: 0.9,
+                  lineAlpha: 0.2,
+                  type: "column",
+                  valueField: "value",
+                },
+              ],
+              categoryField: "title",
+            };
+            break;
         }
       });
   }
