@@ -16,12 +16,13 @@ import { AuthApi } from 'app/providers/auth.api.service';
 })
 export class ViewEmployeeComponent implements OnInit {
   contactFirstname = ' ';
+  contactLastname = ' ';
   contactCity = ' ';
   contactMobilePhone = ' ';
   contactPhone = ' ';
   contactEmail = ' ';
   contactStatus = ' ';
-
+  
   constructor(   
     public dataStore: DataStore,
     private authApiService: AuthApi,
@@ -68,11 +69,13 @@ export class ViewEmployeeComponent implements OnInit {
       .then(res => {
         
         this.contactFirstname = res[0]['contact_firstname'];
-        this.contactCity = res[0]['contact_city'];
+        this.contactLastname = res[0]['contact_lastname'];
         this.contactMobilePhone = res[0]['contact_mobile_phone'];
         this.contactPhone = res[0]['contact_phone'];
         this.contactEmail = res[0]['contact_email'];
         this.contactStatus = res[0]['contact_status'];
+
+        
          
         
         this.dataStore.currentContact = res[0];
