@@ -95,11 +95,11 @@ export class ProjectSharingComponent implements OnInit {
   }
 
   load() {
-    
+
     this.projectSharingApi.findShareUsers(this.projectId)
       .then((users: any[]) => {
         this.originData = users;
-        this.rowData =users;
+        this.rowData = users;
       })
       .catch(err => {
         this.notificationService.error('Error', err, { timeOut: 3000, showProgressBar: false });
@@ -169,7 +169,9 @@ export class ProjectSharingComponent implements OnInit {
   }
 
   onAddShare() {
-    this.addShareUserModal.initialize(this.projectId, this);
+    const projectIds = [];
+    projectIds[0] = this.projectId;
+    this.addShareUserModal.initialize(projectIds, this);
   }
 
   onRemoveShare() {

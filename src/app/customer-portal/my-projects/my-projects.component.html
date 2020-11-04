@@ -26,6 +26,7 @@
 
     <dxi-item locateInMenu="always" widget="dxButton" [options]="toolbarConfig.others.viewProject"></dxi-item>
     <dxi-item locateInMenu="always" widget="dxButton" [options]="toolbarConfig.others.addProject"></dxi-item>
+    <dxi-item locateInMenu="always" widget="dxButton" [options]="toolbarConfig.others.shareProjects"></dxi-item>
     <dxi-item locateInMenu="always" title="">
       <div *dxTemplate>
         <div class="separator"></div>
@@ -188,6 +189,10 @@
 
 <!-- Transaction Logs Modal -->
 <transaction-logs-modal #transactionLogsModal></transaction-logs-modal>
+
+<!-- Add Share User Modal -->
+<add-share-user-modal  #addShareUserModal></add-share-user-modal>
+
 
 <!-- Project Data View Modal -->
 <dx-popup [closeOnOutsideClick]="true" [dragEnabled]="false" (onHiding)="popupDataViewHidingAction($event)"
