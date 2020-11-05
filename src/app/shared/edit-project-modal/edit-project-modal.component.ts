@@ -376,7 +376,8 @@ sourceSystemAccounts(){
       { company_website: this.company_website?this.company_website:""},
       { project_bid_datetime: this.currentProject['project_bid_datetime'] ? this.formatDateTime(this.currentProject['project_bid_datetime']) : "NULL" },
       { project_assigned_office_name: projectOffice ? projectOffice['company_office_name'] : '' },
-      { auto_update_status: this.currentProject['project_auto_update_status'] ? 'active' : 'inactive' }
+      { auto_update_status: this.currentProject['project_auto_update_status'] ? 'active' : 'inactive' }, 
+      { source_sys_type_id : this.source_sys_type_id}
     );
     this.spinner.show();
     this.apiService.updateProject(this.currentProject['project_id'], params).then(res => this.updateProjectEvents())

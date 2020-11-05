@@ -368,7 +368,7 @@
                 <div class="dx-field-label">Source System Type</div>
                 <div class="dx-field-value">
                   <!-- <dx-text-box name="source_sys_type_id" [(value)]="source_sys_type_id" [showClearButton]="true"></dx-text-box> -->
-                  <select name='source_sys_type_id' [(value)]='source_sys_type_id'>
+                  <select name='source_sys_type_id' [(value)]='source_sys_type_id' [(ngModel)]="source_sys_type_id">
                     <option *ngFor="let sourceSystemType of sourceSystemTypes" [ngValue]="sourceSystemType.source_sys_type_id">
                       {{ sourceSystemType.source_type_name }}
                     </option>
