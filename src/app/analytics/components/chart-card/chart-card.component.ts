@@ -20,7 +20,7 @@ import { DashboardPanel } from "app/analytics/models/dashboard.model";
 import {
   EChartTypes,
   SourceCompanyOverallBidHistoryResponse,
-  SourceCompanyOverallInviteVolumeResponse,
+  SourceOverallBidsReceivedResponse,
 } from "app/analytics/models/dataTypes.model";
 
 @Component({
@@ -145,13 +145,11 @@ export class ChartCardComponent implements OnInit, OnDestroy {
               })
             );
             break;
-          case "SourceCompanyOverallInviteVolume":
-            data = (v as SourceCompanyOverallInviteVolumeResponse[]).map(
-              (item) => ({
-                value: item.total_invites,
-                title: item.bid_month,
-              })
-            );
+          case "SourceOverallBidsReceived":
+            data = (v as SourceOverallBidsReceivedResponse[]).map((item) => ({
+              value: item.total_invites,
+              title: item.bid_month,
+            }));
             break;
         }
 
