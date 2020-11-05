@@ -149,7 +149,7 @@ export class ChartCardComponent implements OnInit, OnDestroy {
             data = (v as SourceCompanyOverallInviteVolumeResponse[]).map(
               (item) => ({
                 value: item.total_invites,
-                title: item.bid_month.AssemblyName,
+                title: item.bid_month,
               })
             );
             break;

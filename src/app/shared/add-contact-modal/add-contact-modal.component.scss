@@ -1,64 +1,52 @@
 .modal-container {
     visibility: 'visible';
     
-  
-    .modal-box {
-      height: 600px;
-      overflow: hidden;
-      padding: 20px;
-    }
-  
     .add-contact-modal {
-      width: 500px;
-      /* height: 560px; */
+      width: 600px;
+      height: 800px;
   
-      .modal-title {
-        font-size: 1.5rem;
-      }
+ 
   
       form {
         margin-top: 20px;
+
+      .contact-form-wrapper {
+        height: 660px;
+        overflow-y: auto;
+      }
   
         .contact-form {
           display: flex;
           justify-content: space-between;
   
-          .contact-form-half {
-            display: flex;
-            flex-direction: column;
-            width: 90%;
-            
-            .buttons button {
-              height: 30px;
-              font-size: .75rem;
-            }
-            input {
-              width: unset;
-              border: .5px solid lightgrey;
-            }
-            textarea{border: .5px solid lightgrey;}
-            .form-check {
-              display: flex;
-              align-items: center;
+          
+          .double-col {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            grid-column-gap: 5px;
+            margin-top: 5px;
+          }
+         
+          input {
+            margin: 0;
+            height: unset;
+            width: 100%;
+            border: none;
+          }
   
-              input {
-                width: unset;
-                border: .5px solid #e9e9e9;
-              }
-              textarea{border: .5px solid #e9e9e9;}
-  
-              label {
-                margin-top: 8px;
-                margin-left: 5px;
-              }
-            }
+         
+          .triple-form {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            grid-column-gap: 5px;
+            margin-top: 5px;
           }
         }
   
         .button-group {
           display: flex;
           justify-content: flex-end;
-          
+          margin-top: 30px;
         }
       }
     }

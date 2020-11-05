@@ -10,6 +10,7 @@ import DataSource from 'devextreme/data/data_source';
 import { DataStore } from 'app/providers/datastore';
 import { DxDataGridComponent ,DxToolbarComponent} from 'devextreme-angular';
 import { Title } from '@angular/platform-browser';
+const moment = require('moment-timezone');
 
 @Component({
   selector: 'app-project-source',
@@ -207,6 +208,14 @@ export class ProjectSourceComponent implements OnInit, AfterViewInit {
           console.log('Grid Refresh Error', error);
         });
     });
+  }
+  getProjectBidDateLocale()
+  {
+    const { selectedRowKeys } = this.sourceGrid;
+    if (selectedRowKeys.length === 1) {
+      return moment(new Date(moment(selectedRowKeys['project_bid_datetime']).utc())).format('YYYY-MM-DD HH:mm:ss z');
+  }
+    return '--';
   }
 
   ngAfterViewInit() {

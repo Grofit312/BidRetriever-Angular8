@@ -1,5 +1,11 @@
 <div class="data-view-details">
-  <div class="data-view-details-content">
+  
+    <dx-scroll-view #scrollView class="data-view-details-content"
+    id="scrollview"
+    [scrollByContent]="true"
+    [scrollByThumb]="true"
+    
+    [bounceEnabled]="false">
     <div class="data-view dx-fieldset">
       <div class="dx-field">
         <div class="dx-field-label">View Name</div>
@@ -50,9 +56,9 @@
 
       <dx-data-grid #dataViewColumnSettingGrid
                     id="dataViewColumnSettingGrid"
-                    [allowColumnResizing]="true"
+                    [allowColumnResizing]="false"
                     [columnAutoWidth]="true"
-                    columnResizingMode="widget"
+                    
                     [dataSource]="dataViewColumnSettingGridContentSource"
                     height="380px"
                     keyExpr="data_view_field_setting_id"
@@ -88,7 +94,7 @@
         </dxi-column>
       </dx-data-grid>
     </div>
-  </div>
+    </dx-scroll-view>
 
   <div class="data-view-details-footer">
     <dx-button type="danger" class="btn-cancel" text="Cancel" (click)="buttonCancelAction()"></dx-button>

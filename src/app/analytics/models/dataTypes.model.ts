@@ -32,11 +32,7 @@ export type SourceCompanyOverallBidHistoryResponse = {
 };
 
 export type SourceCompanyOverallInviteVolumeResponse = {
-  bid_month: {
-    AssemblyName: string;
-    Data: any;
-    UnityType: number;
-  };
+  bid_month: string;
   total_invites: string;
 };
 

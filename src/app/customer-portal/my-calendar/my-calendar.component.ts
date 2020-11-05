@@ -7,6 +7,7 @@ import { DxContextMenuComponent } from 'devextreme-angular';
 import { ViewProjectApi } from '../view-project/view-project.api.service';
 import { AuthApi } from 'app/providers/auth.api.service';
 import { CompanyOfficeApi } from '../system-settings/company-office-setup/company-office-setup.api.service';
+import { formatDate } from '@angular/common';
 const DomUtils = require('devextreme/core/utils/dom');
 const moment = require('moment-timezone');
 
@@ -23,7 +24,7 @@ export class MyCalendarComponent implements OnInit {
   @ViewChild('editEventModal', {static:false}) editEventModal;
   @ViewChild('removeEventModal', {static:false}) removeEventModal;
   @ViewChild('editProjectModal', {static:false}) editProjectModal;
-  
+
   calendarViewMode = 'my-active';
   currentOffice = null;
 
@@ -85,7 +86,7 @@ export class MyCalendarComponent implements OnInit {
     }
   }
 
-  loadEvents() {    
+  loadEvents() {
     const timezone = this.dataStore.currentCustomer ? (this.dataStore.currentCustomer['customer_timezone'] || 'eastern') : 'eastern';
     this.myCalenderApi.findCalendarEvents(this.dataStore.currentUser['customer_id'], null, timezone)
       .then((res: any[]) => {
@@ -195,11 +196,11 @@ export class MyCalendarComponent implements OnInit {
             },
             {
               name: 'Bid Due Date:',
-              value: this.projectApi.convertToTimeZoneString(projectInfo.project_bid_datetime, timezone),
+              value:  moment(new Date( projectInfo.project_bid_datetime)).format('YYYY-MM-DD HH:mm z'),
             },
             {
               name: 'Last Update:', 
-              value: this.projectApi.convertToTimeZoneString(projectInfo.edit_datetime_origin, timezone),
+              value: moment(new Date(projectInfo.edit_datetime_origin)).format('YYYY-MM-DD HH:mm z'),
             },
             {
               name: 'Value:',
@@ -287,17 +288,17 @@ export class MyCalendarComponent implements OnInit {
             },
             {
               name: 'Event Start Date/Time:',
-              value: this.projectApi.convertToTimeZoneObject(event.calendar_event_start_datetime, timezone).format('YYYY-MM-DD HH:mm:ss z'),
+              value: moment(new Date(event.calendar_event_start_datetime)).format('YYYY-MM-DD HH:mm:ss z'),
             },
             {
               name: 'Event End Date/Time:',
               value: event.calendar_event_end_datetime ?
-                this.projectApi.convertToTimeZoneObject(event.calendar_event_end_datetime, timezone).format('YYYY-MM-DD HH:mm:ss z')
+              moment(new Date(event.calendar_event_end_datetime)).format('YYYY-MM-DD HH:mm:ss z')
                 : '--',
             },
             {
               name: 'Last Update:',
-              value: this.projectApi.convertToTimeZoneObject(event.edit_datetime, timezone).format('YYYY-MM-DD HH:mm:ss z'),
+              value: moment(new Date(event.edit_datetime)).format('YYYY-MM-DD HH:mm:ss z'),
             },
           ];
           return this.myCalenderApi.findEventAttendees(event.calendar_event_id);

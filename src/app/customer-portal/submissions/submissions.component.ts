@@ -182,12 +182,11 @@ export class SubmissionsComponent implements OnInit {
       },
     ];
   }
-  gridSubmissionLoadAction(loadOptions: any) {
-    return new Promise((resolve, reject) => {
-      if (this.submissionGridContentLoaded) {
-        const filteredSubmissions = this.getGridSubmissionContentByLoadOption(
-          loadOptions
-        );
+gridSubmissionLoadAction(loadOptions: any) {
+  
+  return new Promise((resolve, reject) => {
+    if (this.submissionGridContentLoaded) {
+        const filteredSubmissions = this.getGridSubmissionContentByLoadOption(loadOptions);
         return resolve({
           data: filteredSubmissions,
           totalCount: filteredSubmissions.length,
@@ -286,6 +285,7 @@ export class SubmissionsComponent implements OnInit {
   }
 
   loadSubmissions() {
+    
     this.rowData = null;
 
     const params = {
@@ -370,7 +370,8 @@ export class SubmissionsComponent implements OnInit {
 
   /* View project */
   onViewProject() {
-    const { selectedRowKeys } = this.submissionGrid;
+    
+    const { selectedRowKeys }= this.submissionGrid;
 
     if (selectedRowKeys.length === 0) {
       this.notificationService.error(
