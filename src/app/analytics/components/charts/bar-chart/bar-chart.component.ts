@@ -41,7 +41,7 @@ export class BarChartComponent implements OnInit, OnDestroy, AfterViewInit {
           },
         ],
       },
-      ...this.chartConfig
+      ...this.chartConfig,
     });
   }
 

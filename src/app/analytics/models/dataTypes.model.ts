@@ -31,15 +31,11 @@ export type SourceCompanyOverallBidHistoryResponse = {
   total_stage: string;
 };
 
-export type SourceCompanyOverallInviteVolumeResponse = {
-  bid_month: {
-    AssemblyName: string;
-    Data: any;
-    UnityType: number;
-  };
+export type SourceOverallBidsReceivedResponse = {
+  bid_month: string;
   total_invites: string;
 };
 
 export type AnalyticDataResponse =
   | SourceCompanyOverallBidHistoryResponse[]
-  | SourceCompanyOverallInviteVolumeResponse[];
+  | SourceOverallBidsReceivedResponse[];
