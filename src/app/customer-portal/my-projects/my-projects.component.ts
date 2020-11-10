@@ -79,7 +79,8 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
   @ViewChild('editProjectModal', { static: false }) editProjectModal;
   @ViewChild('removeProjectModal', { static: false }) removeProjectModal;
   @ViewChild('transactionLogsModal', { static: false }) transactionLogsModal;
-
+  @ViewChild('addShareUserModal', { static: false }) addShareUserModal;
+  
   projectViewMode = 'my';
   searchText = '';
   currentOffice = null;
@@ -198,6 +199,11 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
           type: 'normal',
           text: 'Add Project',
           onClick: () => this.toolbarAddProjectAction()
+        },
+        shareProjects: {
+          type: 'normal',
+          text: 'Share Project(s)',
+          onItemClick: () => this.toolbarViewAddShareUserAction()
         },
         viewProjectDocuments: {
           type: 'normal',
@@ -1218,6 +1224,18 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
     this.transactionLogsModal.initialize(selectedRows[0]);
   }
 
+  toolbarViewAddShareUserAction() {
+    
+    const { selectedRowKeys } = this.projectGrid;
+    if (selectedRowKeys.length === 0) {
+      this.notificationService.error('No Selection', 'Please select one project!', { timeOut: 3000, showProgressBar: false });
+    } else {
+      this.addShareUserModal.initialize(selectedRowKeys);
+    }
+
+    
+  }
+
   toolbarRefreshGridAction() {
     this.projectGridContentLoaded = false;
     if (this.projectGrid && this.projectGrid.instance) {
@@ -1244,7 +1262,7 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
       e.row.data.project_bid_datetime = null;
     }
 
-    e.component.selectRows([e.row.data.project_id]);
+    // e.component.selectRows([e.row.data.project_id]);
 
     if (e.row && e.row.rowType === 'data') {   // e.items can be undefined
       if (!e.items) { e.items = []; }
@@ -1261,6 +1279,11 @@ export class MyProjectsComponent implements OnInit, AfterViewInit {
           text: 'Add Project',
           onItemClick: () => this.toolbarAddProjectAction()
         },
+        {
+          type: 'normal',
+          text: 'Share Project(s)',
+          onItemClick: () => this.toolbarViewAddShareUserAction()
+        },        
         {
           type: 'normal',
           text: 'Edit Project',

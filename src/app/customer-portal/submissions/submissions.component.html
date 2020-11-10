@@ -53,7 +53,7 @@
   <div class="submissions-table" #submissionContent>
   
     <dx-data-grid #submissionGrid id="selectedRowKeys" [allowColumnReordering]="true" [allowColumnResizing]="true"
-    columnResizingMode="widget" [columns]="submissionGridColumns" [dataSource]="submissionGridContent"
+    columnResizingMode="widget" [columns]="submissionGridColumns" [dataSource]="submissionGridDataSource"
     [showColumnLines]="true" [showRowLines]="true" 
     [showBorders]="true" [rowAlternationEnabled]="true" [columnAutoWidth]="true" [remoteOperations]="true"
     width="100%" height="100%" 

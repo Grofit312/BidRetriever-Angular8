@@ -17,6 +17,8 @@ import { AnalyticDataResponse } from "../models/dataTypes.model";
   providedIn: "root",
 })
 export class DashboardService {
+  public analyticDatasources: AnalyticDatasource[] = null;
+
   constructor(private http: HttpClient, private datePipe: DatePipe) {}
 
   createDashboard(
@@ -156,7 +158,6 @@ export class DashboardService {
     analytic_datasource_interval,
     analytic_datasource_startdatetime,
     analytic_datasource_enddatetime,
-    analytic_type,
   }): Observable<AnalyticDataResponse> {
     const url = `${window["env"].apiBaseUrl}/ExecuteAnalyticDatasource`;
 
@@ -176,7 +177,6 @@ export class DashboardService {
       "analytic_datasource_enddatetime",
       analytic_datasource_enddatetime
     );
-    params = params.append("analytic_type", analytic_type);
 
     return this.http.get<AnalyticDataResponse>(url, { params });
   }

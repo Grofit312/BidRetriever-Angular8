@@ -26,16 +26,49 @@ export const IntervalTypeLabels: Record<EIntervalTypes, string> = {
   [EIntervalTypes.Year]: "Year",
 };
 
-export type SourceCompanyOverallBidHistoryResponse = {
+export type CompanyOverallBidHistoryResponse = {
   project_stage: string;
   total_stage: string;
 };
 
-export type SourceOverallBidsReceivedResponse = {
+export type OverallBidsReceivedResponse = {
   bid_month: string;
   total_invites: string;
 };
 
+export type OverallBidReceivedBySourceCompanyResponse = {
+  bid_month: string;
+  totalinvites: string;
+  company_name: string;
+};
+
+export type OverallBidReceivedByProjectAdminResponse = {
+  bid_month: string;
+  totalinvites: string;
+  user_displayname: string;
+};
+
+export type OverallBidsReceivedByOfficeResponse = {
+  bid_month: string;
+  totalinvites: string;
+  office_name: string;
+};
+
+export type CompanyOverallValueResponse = {
+  bid_month: string;
+  total_value: string;
+};
+
+export type CompanyOverallInviteVolumeResponse = {
+  bid_month: string;
+  total_Invites: string;
+};
+
 export type AnalyticDataResponse =
-  | SourceCompanyOverallBidHistoryResponse[]
-  | SourceOverallBidsReceivedResponse[];
+  | CompanyOverallBidHistoryResponse[]
+  | OverallBidsReceivedResponse[]
+  | OverallBidReceivedByProjectAdminResponse[]
+  | OverallBidsReceivedByOfficeResponse[]
+  | CompanyOverallValueResponse[]
+  | CompanyOverallInviteVolumeResponse[]
+  | OverallBidReceivedBySourceCompanyResponse[];

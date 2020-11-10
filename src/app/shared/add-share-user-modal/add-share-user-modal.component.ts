@@ -17,6 +17,7 @@ export class AddShareUserModalComponent implements OnInit {
   @ViewChild('addShareUserModal', { static: true }) addShareUserModal: ElementRef;
 
   projectId = '';
+  projectIds = [];
   parent = null;
   email = '';
   firstName = '';
@@ -59,38 +60,47 @@ export class AddShareUserModalComponent implements OnInit {
   ngOnInit() {
   }
 
-  initialize(project_id: string, parent: any) {
-    this.projectId = project_id;
+  initialize(projectIds: any, parent: any) {
+    this.projectIds = projectIds;
+    // this.projectId = project_id;
     this.parent = parent;
     this.addShareUserModal.nativeElement.style.display = 'block'; 
   }
- 
 
-  createSharedProject() {    
-    const params = {
-      project_id: this.projectId,
-      share_user_id: this.userId,
-      share_source_company_id: this.dataStore.currentUser['customer_id'],
-      share_source_user_id: this.dataStore.currentUser['user_id']  
-    
-    };
-
+  createSharedProject() {
+    debugger;
     this.spinner.show();
-    this.projectSharingApi.createSharedProject(params)
-      .then(res => {
+    let requests:Promise<any>[] = [];
+
+    if (this.projectIds.length > 0) {
+
+    
+    this.projectIds.forEach( project => {
+        const params = {
+          project_id: project,
+          share_user_id: this.userId,
+          share_source_company_id: this.dataStore.currentUser['customer_id'],
+          share_source_user_id: this.dataStore.currentUser['user_id']
+        };
+        requests.push(this.projectSharingApi.createSharedProject(params));
+        });     
+      }
+
+      Promise.all([requests])
+      .then(([res]) => {
         this.spinner.hide();
         this.notificationService.success('Success', 'Share user has been created', { timeOut: 3000, showProgressBar: false });
 
         this.reset();
         this.addShareUserModal.nativeElement.style.display = 'none';
-        this.parent.onRefresh();
+        //this.parent.onRefresh();
       })
       .catch(err => {
         this.spinner.hide();
         this.notificationService.error('Error', err, { timeOut: 3000, showProgressBar: false });
       });
-  }
 
+ }
 
   onEmailChange(event: any) {
     if (this.timer) {
@@ -145,6 +155,7 @@ export class AddShareUserModalComponent implements OnInit {
     } else {
       this.createSharedProject();
     }
+    this.parent.onRefresh();
   }
 
   onCancel(event) {
@@ -163,5 +174,6 @@ export class AddShareUserModalComponent implements OnInit {
     this.isNewUser = false;
     this.userId = '';
     this.projectId = '';
+    this.projectIds = [];
   }
 }

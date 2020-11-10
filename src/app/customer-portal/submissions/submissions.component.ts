@@ -11,7 +11,6 @@ import {
   DxToolbarComponent,
   DxSelectBoxComponent,
 } from "devextreme-angular";
-import { LoadOptions } from "devextreme/data/load_options";
 
 @Component({
   selector: "app-submissions",
@@ -20,8 +19,7 @@ import { LoadOptions } from "devextreme/data/load_options";
   providers: [SubmissionsApi, ProjectsApi, ViewProjectApi, CompanyOfficeApi],
 })
 export class SubmissionsComponent implements OnInit {
-  //@ViewChild('grid', { static: true }) grid;
-  @ViewChild("submissionGrid", { static: false })
+    @ViewChild("submissionGrid", { static: false })
   submissionGrid: DxDataGridComponent;
   @ViewChild("submissionToolbar", { static: false })
   submissionToolbar: DxToolbarComponent;
@@ -75,112 +73,29 @@ export class SubmissionsComponent implements OnInit {
     private officeApiService: CompanyOfficeApi,
     private notificationService: NotificationsService
   ) {
-    // this.submissionGridDataSource = new CustomStore({
-    //   key: "submission_id",
-    //   load: (loadOptions) => this.gridSubmissionLoadAction(loadOptions),
-    // });
+
 
     this.submissionGridColumns = [
-      {
-        dataField: "project_name",
-        caption: "Project Name",
-        width: 400,
-        visible: true,
-        allowEditing: false,
-      },
-      {
-        dataField: "source_sys_name",
-        caption: "Source",
-        width: 200,
-        visible: true,
-        allowEditing: false,
-      },
-      {
-        dataField: "source_company_name",
-        caption: "Source Company",
-        width: 200,
-        visible: true,
-        allowEditing: false,
-      },
-      {
-        dataField: "submission_name",
-        caption: "Submission Name",
-        width: 200,
-        visible: true,
-        allowEditing: false,
-      },
-      {
-        dataField: "submission_type",
-        caption: "Submission Type",
-        width: 200,
-        visible: true,
-        allowEditing: false,
-      },
-      {
-        dataField: "submitter_email",
-        caption: "Submitter Email",
-        width: 100,
-        visible: true,
-        allowEditing: false,
-      },
-      {
-        dataField: "submission_date",
-        caption: "Submission Date/Time",
-        width: 100,
-        visible: true,
-        allowEditing: false,
-      },
-      {
-        dataField: "submission_process_status",
-        caption: "Processing Status",
-        width: 100,
-        visible: this.isBidRetrieverAdmin,
-        allowEditing: false,
-      }, //TODO --tooltip: params => { return params.value; }
-      {
-        dataField: "submission_process_message",
-        caption: "Processing Message",
-        width: 100,
-        visible: this.isBidRetrieverAdmin,
-        allowEditing: false,
-      }, //TODO --tooltip: params => { return params.value; }
-
-      {
-        dataField: "submission_file_count",
-        caption: "# Files",
-        width: 100,
-        visible: true,
-        allowEditing: false,
-      },
-      {
-        dataField: "submission_pending_file_count",
-        caption: "# Files Pending",
-        width: 100,
-        visible: true,
-        allowEditing: false,
-      },
-      {
-        dataField: "submission_plan_count",
-        caption: "# Plans",
-        width: 100,
-        visible: true,
-        allowEditing: false,
-      },
-      {
-        dataField: "total_processing_time",
-        caption: "Total Processing Time",
-        width: 100,
-        visible: false,
-        allowEditing: false,
-      },
-      {
-        dataField: "submission_id",
-        caption: "Submission ID",
-        width: 100,
-        visible: false,
-        allowEditing: false,
-      },
+        {dataField: "project_name",caption: "Project Name",width: 400,visible: true,allowEditing: false,},
+        {dataField: "source_sys_name",caption: "Source",width: 200,visible: true,allowEditing: false,},
+        {dataField: "source_company_name",caption: "Source Company",width: 200,visible: true,allowEditing: false,},
+        {dataField: "submission_name",caption: "Submission Name",width: 200,visible: true,allowEditing: false,},
+        {dataField: "submission_type",caption: "Submission Type",width: 200,visible: true,allowEditing: false,},
+        {dataField: "submitter_email",caption: "Submitter Email",width: 100,visible: true,allowEditing: false,},
+        {dataField: "submission_date",caption: "Submission Date/Time",width: 100,visible: true,allowEditing: false,},
+        {dataField: "submission_process_status",caption: "Processing Status",width: 100,visible: this.isBidRetrieverAdmin,allowEditing: false,}, 
+        {dataField: "submission_process_message",caption: "Processing Message",width: 100,visible: this.isBidRetrieverAdmin,allowEditing: false,}, 
+        {dataField: "submission_file_count",caption: "# Files",width: 100,visible: true,allowEditing: false,},
+        {dataField: "submission_pending_file_count",caption: "# Files Pending",width: 100,visible: true,allowEditing: false,},
+        {dataField: "submission_plan_count",caption: "# Plans",width: 100,visible: true,allowEditing: false,},
+        {dataField: "total_processing_time",caption: "Total Processing Time",width: 100,visible: false,allowEditing: false,},
+        {dataField: "submission_id",caption: "Submission ID",width: 100,visible: false,allowEditing: false,},
     ];
+
+    this.submissionGridDataSource = new CustomStore({
+      key: "submission_id",
+      load: (loadOptions) => this.gridSubmissionLoadAction(loadOptions),
+    });
   }
 gridSubmissionLoadAction(loadOptions: any) {
   
@@ -204,13 +119,11 @@ gridSubmissionLoadAction(loadOptions: any) {
         ? this.dataStore.currentCustomer["customer_timezone"] || "eastern"
         : "eastern";
 
-      if (!this.isBidRetrieverAdmin) {
+        if (!this.isBidRetrieverAdmin) {
         if (this.submissionViewMode === "my") {
           params["user_id"] = this.dataStore.currentUser["user_id"];
         } else if (this.submissionViewMode === "office") {
-          params["office_id"] = this.dataStore.currentUser[
-            "customer_office_id"
-          ];
+          params["office_id"] = this.dataStore.currentUser["customer_office_id"];
         } else if (this.submissionViewMode === "all") {
           params["customer_id"] = this.dataStore.currentUser["customer_id"];
         }
@@ -230,14 +143,14 @@ gridSubmissionLoadAction(loadOptions: any) {
               ({ submission_file_count }) => Number(submission_file_count) > 0
             ) as any[];
           }
+          
 
-          const filteredSubmissions = this.getGridSubmissionContentByLoadOption(
-            loadOptions
-          );
+          const filteredSubmissions = this.getGridSubmissionContentByLoadOption(loadOptions);
           return resolve({
             data: filteredSubmissions,
             totalCount: filteredSubmissions.length,
           });
+         
         })
         .catch((err) => {
           this.notificationService.error("Error", err, {
@@ -251,12 +164,10 @@ gridSubmissionLoadAction(loadOptions: any) {
   ngOnInit() {
     if (this.dataStore.currentUser) {
       this.initialize();
-      this.loadSubmissions();
     } else {
       this.dataStore.authenticationState.subscribe((value) => {
         if (value) {
           this.initialize();
-          this.loadSubmissions();
         }
       });
     }
@@ -284,50 +195,6 @@ gridSubmissionLoadAction(loadOptions: any) {
     }
   }
 
-  loadSubmissions() {
-    
-    this.rowData = null;
-
-    const params = {
-      submission_process_status: this.isBidRetrieverAdmin
-        ? this.submissionViewMode
-        : "all",
-    };
-    const userTimezone = this.dataStore.currentCustomer
-      ? this.dataStore.currentCustomer["customer_timezone"] || "eastern"
-      : "eastern";
-
-    if (!this.isBidRetrieverAdmin) {
-      if (this.submissionViewMode === "my") {
-        params["user_id"] = this.dataStore.currentUser["user_id"];
-      } else if (this.submissionViewMode === "office") {
-        params["office_id"] = this.dataStore.currentUser["customer_office_id"];
-      } else if (this.submissionViewMode === "all") {
-        params["customer_id"] = this.dataStore.currentUser["customer_id"];
-      }
-    }
-
-    this.apiService
-      .getSubmissions(params, userTimezone)
-      .then((submissions: any) => {
-        console.log("Submissions", submissions);
-
-        if (this.isBidRetrieverAdmin) {
-          this.submissionGridContent = submissions as any[];
-        } else {
-          this.submissionGridContent = submissions.filter(
-            ({ submission_file_count }) => Number(submission_file_count) > 0
-          ) as any[];
-        }
-        this.submissionGridContentLoaded = true;
-      })
-      .catch((err) => {
-        this.notificationService.error("Error", err, {
-          timeOut: 3000,
-          showProgressBar: false,
-        });
-      });
-  }
 
   startRefreshTimer() {
     this.refreshTimer = window.setInterval(() => {
@@ -613,7 +480,8 @@ gridSubmissionLoadAction(loadOptions: any) {
 
   /* Refresh Page */
   onRefresh() {
-    this.loadSubmissions();
+    this.submissionGridContentLoaded = false;
+    this.submissionGrid.instance.refresh();
   }
 
   /* Help */
