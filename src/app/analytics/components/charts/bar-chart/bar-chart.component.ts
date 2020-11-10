@@ -28,19 +28,6 @@ export class BarChartComponent implements OnInit, OnDestroy, AfterViewInit {
     this.chart = this.chartsService.makeChart(this.chartRef.nativeElement, {
       type: "serial",
       theme: "light",
-      chartCursor: {
-        fullWidth: true,
-        cursorAlpha: 0.1,
-        listeners: [
-          {
-            event: "changed",
-            method: (ev) => {
-              // Log last cursor position
-              ev.chart.lastCursorPosition = ev.index;
-            },
-          },
-        ],
-      },
       ...this.chartConfig,
     });
   }
