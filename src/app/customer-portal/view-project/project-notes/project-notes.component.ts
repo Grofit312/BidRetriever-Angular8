@@ -218,7 +218,7 @@ export class ProjectNotesComponent implements OnInit, AfterViewInit {
     }
     this.note_parent_type = "Project";
     const created_user_id = this.dataStore.currentUser.user_id;
-    const note_company_id = this.dataStore.currentProject.source_company_id;
+    const note_company_id = this.dataStore.currentProject.customer_id;
     let note_parent_id = null;
     if (!this.isComment) {
       note_parent_id = this.activeFolderNode
