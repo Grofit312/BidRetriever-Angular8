@@ -5,6 +5,7 @@ import {
   ViewChild,
   OnDestroy,
 } from "@angular/core";
+import { combineLatest } from "rxjs";
 
 import { Dashboard, DashboardPanel } from "../../models/dashboard.model";
 import { DashboardService } from "../../services/dashboard.service";
@@ -62,16 +63,24 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   findDashboards() {
     this.spinner.show();
-    this.dashboardService
-      .findDashboards(
+    combineLatest([
+      this.dashboardService.findDashboards(
         this.dataStore.currentUser.user_id,
         this.dataStore.currentUser.customer_id,
         this.dataStore.currentUser.customer_office_id
-      )
+      ),
+
+      this.dashboardService.findAnalyticDatasources(
+        this.dataStore.currentUser.customer_id,
+        this.analyticType
+      ),
+    ])
       .pipe(takeUntil(this.destroy$))
-      .subscribe((dashboards) => {
+      .subscribe(([dashboards, analyticDatasources]) => {
         this.spinner.hide();
         this.dashboards = dashboards;
+        this.dashboardService.analyticDatasources = analyticDatasources;
+
         if (dashboards.length > 0 && this.selectedDashboard === null) {
           this.selectedDashboard = dashboards[0].dashboard_id;
           this.onChangeDashboard();
@@ -90,7 +99,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.dashboardService
         .findDashboardPanels(this.selectedDashboard)
         .pipe(takeUntil(this.destroy$))
-        .subscribe((panels) => (this.dashboardPanels = panels));
+        .subscribe(
+          (panels) =>
+            (this.dashboardPanels = panels.filter((panel) =>
+              this.dashboardService.analyticDatasources
+                .map(
+                  (analyticDatasource) =>
+                    analyticDatasource.analytic_datasource_id
+                )
+                .includes(panel.panel_analytic_datasource)
+            ))
+        );
     } else {
       this.dashboardPanels = [];
     }

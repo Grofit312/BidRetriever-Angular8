@@ -489,3 +489,9 @@ ckeditor .ck-content p {
   color: red;
   font-size: 0.9em;
 }
+
+// remove JSChart by amChart
+a[href='http://www.amcharts.com']
+{
+  display: none !important;
+}

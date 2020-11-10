@@ -19,8 +19,13 @@ import { DashboardService } from "app/analytics/services/dashboard.service";
 import { DashboardPanel } from "app/analytics/models/dashboard.model";
 import {
   EChartTypes,
-  SourceCompanyOverallBidHistoryResponse,
-  SourceOverallBidsReceivedResponse,
+  CompanyOverallBidHistoryResponse,
+  OverallBidsReceivedResponse,
+  OverallBidReceivedByProjectAdminResponse,
+  OverallBidReceivedBySourceCompanyResponse,
+  OverallBidsReceivedByOfficeResponse,
+  CompanyOverallValueResponse,
+  CompanyOverallInviteVolumeResponse,
 } from "app/analytics/models/dataTypes.model";
 
 @Component({
@@ -52,24 +57,18 @@ export class ChartCardComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.dashboardService
-      .findAnalyticDatasources(
-        this.dataStore.currentUser.customer_id,
-        this.analyticType
-      )
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((analyticDatasources) => {
-        this.dataSourceTypes = analyticDatasources.map((item) => ({
-          key: item.analytic_datasource_id,
-          label: item.analytic_datasource_name,
-          analytic_datasource_type: item.analytic_datasource_type,
-          charts: item.compatible_chart_types,
-        }));
+    this.dataSourceTypes = this.dashboardService.analyticDatasources.map(
+      (item) => ({
+        key: item.analytic_datasource_id,
+        label: item.analytic_datasource_name,
+        analytic_datasource_type: item.analytic_datasource_type,
+        charts: item.compatible_chart_types,
+      })
+    );
 
-        if (this.dashboardPanelId) {
-          this.getDashboardPanel();
-        }
-      });
+    if (this.dashboardPanelId) {
+      this.getDashboardPanel();
+    }
   }
 
   getDashboardPanel() {
@@ -127,31 +126,70 @@ export class ChartCardComponent implements OnInit, OnDestroy {
           .panel_start_date_offset,
         analytic_datasource_enddatetime: this.panelData.panel_end_date_offset,
         analytic_datasource_id: this.panelData.panel_analytic_datasource,
-        analytic_type: (
-          this.dataSourceTypes.find(
-            (type) => type.key === this.panelData.panel_analytic_datasource
-          ) || {}
-        ).analytic_datasource_type,
       })
       .pipe(takeUntil(this.destroy$))
       .subscribe((v) => {
         let data;
         switch (this.panelData.panel_analytic_datasource) {
-          case "SourceCompanyOverallBidHistory":
-            data = (v as SourceCompanyOverallBidHistoryResponse[]).map(
-              (item) => ({
-                value: item.total_stage,
-                title: item.project_stage,
-              })
-            );
+          case "CompanyOverallBidHistory":
+          case "OverallBidHistory":
+            data = (v as CompanyOverallBidHistoryResponse[]).map((item) => ({
+              value: item.total_stage,
+              title: item.project_stage,
+            }));
             break;
+
           case "SourceOverallBidsReceived":
-            data = (v as SourceOverallBidsReceivedResponse[]).map((item) => ({
+          case "OverallBidsReceived":
+            data = (v as OverallBidsReceivedResponse[]).map((item) => ({
               value: item.total_invites,
               title: item.bid_month,
             }));
             break;
+
+          case "OverallBidReceivedBySourceCompany":
+            data = (v as OverallBidReceivedBySourceCompanyResponse[]).map(
+              (item) => ({
+                value: item.totalinvites,
+                title: item.bid_month,
+              })
+            );
+            break;
+
+          case "OverallBidReceivedByProjectAdmin":
+            data = (v as OverallBidReceivedByProjectAdminResponse[]).map(
+              (item) => ({
+                value: item.totalinvites,
+                title: item.bid_month,
+              })
+            );
+            break;
+
+          case "OverallBidsReceivedByOffice":
+            data = (v as OverallBidsReceivedByOfficeResponse[]).map((item) => ({
+              value: item.totalinvites,
+              title: item.bid_month,
+            }));
+            break;
+
+          case "CompanyOverallValue":
+            data = (v as CompanyOverallValueResponse[]).map((item) => ({
+              value: item.total_value,
+              title: item.bid_month,
+            }));
+            break;
+
+          case "CompanyOverallInviteVolume":
+            data = (v as CompanyOverallInviteVolumeResponse[]).map((item) => ({
+              value: item.total_Invites,
+              title: item.bid_month,
+            }));
+            break;
         }
+
+        data = data.sort((a, b) =>
+          a.title > b.title ? 1 : a.title < b.title ? -1 : 0
+        );
 
         switch (this.panelData.panel_chart_type) {
           case this.ChartTypes.PieChart:

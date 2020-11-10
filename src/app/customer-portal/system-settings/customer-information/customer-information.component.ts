@@ -17,6 +17,7 @@ const CircularJSON = require('circular-json');
 export class CustomerInformationComponent implements OnInit {
 
   companyName = '';
+  companyDomain = '';
   companyAddress = '';
   companyPhone = '';
   companyEmail = '';
@@ -48,6 +49,7 @@ export class CustomerInformationComponent implements OnInit {
     const customer = this.dataStore.currentCustomer;
 
     this.companyName = customer.customer_name;
+    this.companyDomain = customer.customer_domain;
     this.companyAddress = (`${customer.customer_address1} ${customer.customer_address2} ${customer.customer_city} `
                         + `${customer.customer_state} ${customer.customer_zip} ${customer.customer_country}`).trim();
     this.companyPhone = customer.customer_phone;
@@ -93,6 +95,7 @@ export class CustomerInformationComponent implements OnInit {
     }
 
     currentCustomer.customer_name = this.companyName;
+    currentCustomer.customer_domain = this.companyDomain;
     currentCustomer.customer_phone = formattedPhone;
     currentCustomer.customer_email = this.companyEmail;
     currentCustomer.company_website = this.companyWebsite;
@@ -100,6 +103,7 @@ export class CustomerInformationComponent implements OnInit {
 
     this.userSettingsApi.updateCustomer(this.dataStore.currentCustomer.customer_id, {
       customer_name: currentCustomer.customer_name,
+      customer_domain: currentCustomer.customer_domain,
       customer_address1: currentCustomer.customer_address1,
       customer_address2: currentCustomer.customer_address2,
       customer_city: currentCustomer.customer_city,
