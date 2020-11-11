@@ -17,6 +17,7 @@ import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { DataStore } from "app/providers/datastore";
 import { DashboardService } from "app/analytics/services/dashboard.service";
 import { DashboardPanel } from "app/analytics/models/dashboard.model";
+import { mergeObjectsByKey } from "app/analytics/helpers/object-helper";
 import {
   EChartTypes,
   CompanyOverallBidHistoryResponse,
@@ -129,61 +130,107 @@ export class ChartCardComponent implements OnInit, OnDestroy {
       })
       .pipe(takeUntil(this.destroy$))
       .subscribe((v) => {
-        let data;
+        let data, valueKeys;
         switch (this.panelData.panel_analytic_datasource) {
           case "CompanyOverallBidHistory":
           case "OverallBidHistory":
             data = (v as CompanyOverallBidHistoryResponse[]).map((item) => ({
-              value: item.total_stage,
+              "Total Stage": item.total_stage,
               title: item.project_stage,
             }));
+            valueKeys = ["Total Stage"];
             break;
 
           case "SourceOverallBidsReceived":
           case "OverallBidsReceived":
             data = (v as OverallBidsReceivedResponse[]).map((item) => ({
-              value: item.total_invites,
+              "Total Invites": item.total_invites,
               title: item.bid_month,
             }));
+            valueKeys = ["Total Invites"];
             break;
 
           case "OverallBidReceivedBySourceCompany":
             data = (v as OverallBidReceivedBySourceCompanyResponse[]).map(
               (item) => ({
-                value: item.totalinvites,
+                "Total Invites": item.totalinvites,
                 title: item.bid_month,
               })
             );
+            valueKeys = ["Total Invites"];
             break;
 
           case "OverallBidReceivedByProjectAdmin":
-            data = (v as OverallBidReceivedByProjectAdminResponse[]).map(
-              (item) => ({
-                value: item.totalinvites,
-                title: item.bid_month,
-              })
-            );
+            // data = mergeObjectsByKey(
+            //   (v as OverallBidReceivedByProjectAdminResponse[]).map((item) => ({
+            //     [item.user_displayname]: item.totalinvites,
+            //     title: item.bid_month,
+            //   })),
+            //   "title"
+            // );
+
+            data = [
+              {
+                title: 2003,
+                europe: 2.5,
+                namerica: 2.5,
+                asia: 2.1,
+                lamerica: 0.3,
+                meast: 0.2,
+                africa: 0.1,
+              },
+              {
+                title: 2004,
+                europe: 2.6,
+                namerica: 2.7,
+                asia: 2.2,
+                lamerica: 0.3,
+                meast: 0.3,
+                africa: 0.1,
+              },
+              {
+                title: 2005,
+                europe: 2.8,
+                namerica: 2.9,
+                asia: 2.4,
+                lamerica: 0.3,
+                meast: 0.3,
+                africa: 0.1,
+              },
+            ];
+
+            valueKeys = data
+              .reduce((acc, cur) => [...acc, ...Object.keys(cur)], [])
+              .filter((el, i, arr) => arr.indexOf(el) === i && el !== "title");
             break;
 
           case "OverallBidsReceivedByOffice":
-            data = (v as OverallBidsReceivedByOfficeResponse[]).map((item) => ({
-              value: item.totalinvites,
-              title: item.bid_month,
-            }));
+            data = mergeObjectsByKey(
+              (v as OverallBidsReceivedByOfficeResponse[]).map((item) => ({
+                [item.office_name]: item.totalinvites,
+                title: item.bid_month,
+              })),
+              "title"
+            );
+            valueKeys = data
+              .reduce((acc, cur) => [...acc, ...Object.keys(cur)], [])
+              .filter((el, i, arr) => arr.indexOf(el) === i && el !== "title");
             break;
 
           case "CompanyOverallValue":
             data = (v as CompanyOverallValueResponse[]).map((item) => ({
-              value: item.total_value,
+              "Total Value": item.total_value,
               title: item.bid_month,
             }));
+            valueKeys = ["Total Value"];
             break;
 
           case "CompanyOverallInviteVolume":
             data = (v as CompanyOverallInviteVolumeResponse[]).map((item) => ({
-              value: item.total_Invites,
+              "Total Invites": item.total_Invites,
               title: item.bid_month,
             }));
+            valueKeys = ["Total Invites"];
             break;
         }
 
@@ -195,21 +242,44 @@ export class ChartCardComponent implements OnInit, OnDestroy {
           case this.ChartTypes.PieChart:
             this.chartConfig = {
               dataProvider: data,
-              valueField: "value",
+              valueField: valueKeys[0],
               titleField: "title",
             };
             break;
           case this.ChartTypes.BarChart:
             this.chartConfig = {
               dataProvider: data,
-              graphs: [
+              legend: {
+                horizontalGap: 10,
+                maxColumns: 1,
+                position: "right",
+                useGraphSettings: true,
+                markerSize: 10,
+              },
+              valueAxes: [
                 {
-                  fillAlphas: 0.9,
-                  lineAlpha: 0.2,
-                  type: "column",
-                  valueField: "value",
+                  stackType: "regular",
+                  axisAlpha: 0.3,
+                  gridAlpha: 0,
                 },
               ],
+              graphs: valueKeys.map((valueKey) => ({
+                balloonText:
+                  "<span style='font-size:14px'>[[category]]: <b>[[value]]</b></span>",
+                fillAlphas: 0.8,
+                labelText: "[[value]]",
+                lineAlpha: 0.3,
+                title: valueKey,
+                type: "column",
+                color: "#000000",
+                valueField: valueKey,
+              })),
+              categoryAxis: {
+                gridPosition: "start",
+                axisAlpha: 0,
+                gridAlpha: 0,
+                position: "left",
+              },
               categoryField: "title",
             };
             break;
