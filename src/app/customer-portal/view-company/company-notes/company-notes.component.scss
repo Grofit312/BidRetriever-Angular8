@@ -8,6 +8,14 @@
         .notes-edit-form-body {
           display: flex;
           flex-direction: row;
+
+             
+          .double-col {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            grid-column-gap: 5px;
+            margin-top: 5px;
+          }
   
           .notes-edit-form-help {
             margin-left: 50px;
@@ -19,16 +27,49 @@
               color: red;
             }
           }
-        }
+
+
+          .notes-form-half {
+            display: flex;
+            flex-direction: column;
   
-        .notes-edit-form-buttons {
-          display: flex;
-          flex-direction: row;
-          justify-content: flex-end;
-        }
+            &.dx-fieldset {
+              margin: 0;
+            }
+  
+            .dx-field {
+              display: flex;
+              flex-direction: column;
+  
+              .dx-field-label {
+                width: 100%;
+              }
+  
+              .dx-field-value {
+                width: 100%;
+              }
+            }
+  
+            .buttons button {
+              height: 30px;
+              font-size: .75rem;
+            }
+  
+           
+          }
+        
+  
+      }
+      
+      .notes-edit-form-buttons {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        padding-top: 10px;
       }
     }
   }
+}
   
   .notes-container {
     flex: 1 1 auto;

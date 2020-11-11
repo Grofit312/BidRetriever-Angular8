@@ -220,6 +220,7 @@ export class CompanyNotesComponent implements OnInit, AfterViewInit {
 
   onCloseEditModal() {
     this.editModal.nativeElement.style.display = "none";
+    this.reset();
   }
 
   saveNotes() {
@@ -320,6 +321,7 @@ export class CompanyNotesComponent implements OnInit, AfterViewInit {
   reset() {
     this.subject = "";
     this.description = "";
+    this.noteType = "";
   }
 
   onEdit(node) {

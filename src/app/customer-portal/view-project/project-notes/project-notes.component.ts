@@ -186,6 +186,7 @@ export class ProjectNotesComponent implements OnInit, AfterViewInit {
 
   onCloseEditModal() {
     this.editModal.nativeElement.style.display = "none";
+    this.reset();
   }
   ngAfterViewInit() {
     setTimeout(() => this.setNodeActiveOnLaodTree(), 500);
@@ -301,6 +302,7 @@ export class ProjectNotesComponent implements OnInit, AfterViewInit {
   reset() {
     this.subject = "";
     this.description = "";
+    this.noteType = "";
   }
 
   onEdit(node) {
