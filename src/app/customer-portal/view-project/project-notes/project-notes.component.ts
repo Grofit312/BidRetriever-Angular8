@@ -372,10 +372,10 @@ export class ProjectNotesComponent implements OnInit, AfterViewInit {
       } else if (note.note_type === 'personal' && note.note_user_id === user_id) {//if personal show only when userid matches
         this.ischildVisible = true;
         return true;
-      } else if (note.note_type === 'company' && note.note_company_id === (company_id?company_id :note.note_company_id) ) { 
+      } else if (note.note_type === 'company' ) { //&& note.note_company_id === (company_id?company_id :note.note_company_id) ) { 
         this.ischildVisible = true;
         return true;
-      } else if (note.note_type === ''  && note.note_company_id === (company_id?company_id :note.note_company_id)) {
+      } else if (note.note_type === '') {//  && note.note_company_id === (company_id?company_id :note.note_company_id)) {
         this.ischildVisible = true;
         return true;
       }
