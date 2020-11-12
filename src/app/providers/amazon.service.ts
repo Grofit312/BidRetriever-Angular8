@@ -9,6 +9,7 @@ import * as queryString from 'query-string';
 import { reject } from 'lodash';
 
 const WIP_TABLE_KEYS = {
+  920: 'submission_id',
   922: 'id_922',
   923: 'id_923',
   925: 'file_preprocessing_id',
@@ -304,7 +305,7 @@ public getPresignedUrlWithOriginalFileName(bucket_name: string, file_key: string
 
       try {
         const routineNames = [
-          '922', '923', '925', '940', '941', '94111', '94114', '9414', '9418', '964', '966', '970'
+          '920', '922', '923', '925', '940', '941', '94111', '94114', '9414', '9418', '964', '966', '970'
         ];
 
         const tasks = [];
