@@ -186,6 +186,7 @@ export class ProjectNotesComponent implements OnInit, AfterViewInit {
 
   onCloseEditModal() {
     this.editModal.nativeElement.style.display = "none";
+    this.reset();
   }
   ngAfterViewInit() {
     setTimeout(() => this.setNodeActiveOnLaodTree(), 500);
@@ -218,7 +219,7 @@ export class ProjectNotesComponent implements OnInit, AfterViewInit {
     }
     this.note_parent_type = "Project";
     const created_user_id = this.dataStore.currentUser.user_id;
-    const note_company_id = this.dataStore.currentProject.source_company_id;
+    const note_company_id = this.dataStore.currentProject.customer_id;
     let note_parent_id = null;
     if (!this.isComment) {
       note_parent_id = this.activeFolderNode
@@ -301,6 +302,7 @@ export class ProjectNotesComponent implements OnInit, AfterViewInit {
   reset() {
     this.subject = "";
     this.description = "";
+    this.noteType = "";
   }
 
   onEdit(node) {
@@ -370,10 +372,10 @@ export class ProjectNotesComponent implements OnInit, AfterViewInit {
       } else if (note.note_type === 'personal' && note.note_user_id === user_id) {//if personal show only when userid matches
         this.ischildVisible = true;
         return true;
-      } else if (note.note_type === 'company' && note.note_company_id === (company_id?company_id :note.note_company_id) ) { 
+      } else if (note.note_type === 'company' ) { //&& note.note_company_id === (company_id?company_id :note.note_company_id) ) { 
         this.ischildVisible = true;
         return true;
-      } else if (note.note_type === ''  && note.note_company_id === (company_id?company_id :note.note_company_id)) {
+      } else if (note.note_type === '') {//  && note.note_company_id === (company_id?company_id :note.note_company_id)) {
         this.ischildVisible = true;
         return true;
       }

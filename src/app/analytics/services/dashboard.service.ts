@@ -158,7 +158,7 @@ export class DashboardService {
     analytic_datasource_interval,
     analytic_datasource_startdatetime,
     analytic_datasource_enddatetime,
-  }): Observable<AnalyticDataResponse> {
+  }): Observable<AnalyticDataResponse<any>[]> {
     const url = `${window["env"].apiBaseUrl}/ExecuteAnalyticDatasource`;
 
     let params = new HttpParams();
@@ -178,7 +178,7 @@ export class DashboardService {
       analytic_datasource_enddatetime
     );
 
-    return this.http.get<AnalyticDataResponse>(url, { params });
+    return this.http.get<AnalyticDataResponse<any>[]>(url, { params });
   }
 
   findAnalyticDatasources(

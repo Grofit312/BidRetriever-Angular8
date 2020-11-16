@@ -76,7 +76,7 @@
 </div>
 
 <div #editModal class="modal-container fix-modal-notes">
-  <div class="modal-box">
+  <div class="modal-box-wide">
     <div class="notes-edit-modal">
       <div class="modal-title">
         {{ editModalTitle }}
@@ -85,26 +85,38 @@
         <form (ngSubmit)="saveNotes()">
           <div class="notes-edit-form-body">
             <div class="notes-edit-form-inputs">
-              <div>Subject</div>
-              <input
-                type="text"
-                name="subject"
-                [(ngModel)]="subject"
-                [ngModelOptions]="{ standalone: true }"
-                required
-              />
-              <div>Note Type</div>
-              <div>
-                <select
-                  [(ngModel)]="noteType"
-                  [ngModelOptions]="{ standalone: true }"
-                >
-                  <option value="">--Select--</option>
-                  <option *ngFor="let item of noteTypes" [value]="item.value">{{
-                    item.text
-                  }}</option>
-                </select>
+              <div class="notes-form-half dx-fieldset">
+                <div class="dx-field">
+                  <div class="dx-field-value">
+                  <div class="double-col">
+                    <div>
+                        <div>Subject</div>
+                        <input
+                          type="text"
+                          name="subject"
+                          [(ngModel)]="subject"
+                          [ngModelOptions]="{ standalone: true }"
+                          required
+                        />
+                    </div>
+                    <div>
+                        <div>Note Type</div>
+                        <select
+                            [(ngModel)]="noteType"
+                            [ngModelOptions]="{ standalone: true }"
+                        >
+                          <option value="">--Select--</option>
+                          <option *ngFor="let item of noteTypes" [value]="item.value">{{
+                          item.text
+                          }}</option>
+                        </select>  
+                    </div>
+                </div>
+                  </div>
+                </div>
+                
               </div>
+             
               <h4>Description</h4>
               <ckeditor [editor]="Editor"  
               [config]="{ 
@@ -129,14 +141,19 @@
             </div>
           </div>
           <div class="notes-edit-form-buttons">
-            <button
-              class="btn btn-light"
-              type="button"
-              (click)="onCloseEditModal()"
-            >
+            <button 
+              class="btn btn-light" 
+              type="button" 
+              (click)="onCloseEditModal()" 
+              style="float: right;">
               Cancel
             </button>
-            <button class="btn btn-primary" type="submit">Save</button>
+            <button 
+              class="btn btn-primary" 
+              type="submit" 
+              style="float: right;">
+              Save
+            </button>
           </div>
         </form>
       </div>
