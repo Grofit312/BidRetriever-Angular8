@@ -17,17 +17,11 @@ import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { DataStore } from "app/providers/datastore";
 import { DashboardService } from "app/analytics/services/dashboard.service";
 import { DashboardPanel } from "app/analytics/models/dashboard.model";
-import { mergeObjectsByKey } from "app/analytics/helpers/object-helper";
 import {
-  EChartTypes,
-  CompanyOverallBidHistoryResponse,
-  OverallBidsReceivedResponse,
-  OverallBidReceivedByProjectAdminResponse,
-  OverallBidReceivedBySourceCompanyResponse,
-  OverallBidsReceivedByOfficeResponse,
-  CompanyOverallValueResponse,
-  CompanyOverallInviteVolumeResponse,
-} from "app/analytics/models/dataTypes.model";
+  mergeObjectsByKey,
+  groupByTimeInterval,
+} from "app/analytics/helpers/object-helper";
+import { EChartTypes } from "app/analytics/models/dataTypes.model";
 
 @Component({
   selector: "app-chart-card",
@@ -130,120 +124,45 @@ export class ChartCardComponent implements OnInit, OnDestroy {
       })
       .pipe(takeUntil(this.destroy$))
       .subscribe((v) => {
-        let data, valueKeys;
-        switch (this.panelData.panel_analytic_datasource) {
-          case "CompanyOverallBidHistory":
-          case "OverallBidHistory":
-            data = (v as CompanyOverallBidHistoryResponse[]).map((item) => ({
-              "Total Stage": item.total_stage,
-              title: item.project_stage,
-            }));
-            valueKeys = ["Total Stage"];
-            break;
+        // parse response into key: value
+        let valueKeys = [];
+        let data = v.map((el) => {
+          // find the value key name
+          const valueKey = Object.keys(el).find(
+            (key) => typeof el[key] === "number"
+          );
 
-          case "SourceOverallBidsReceived":
-          case "OverallBidsReceived":
-            data = (v as OverallBidsReceivedResponse[]).map((item) => ({
-              "Total Invites": item.total_invites,
-              title: item.bid_month,
-            }));
-            valueKeys = ["Total Invites"];
-            break;
+          // find the custom key name
+          const customKey = Object.keys(el).find(
+            (key) => key !== "bid_month" && key !== valueKey
+          );
 
-          case "OverallBidReceivedBySourceCompany":
-            data = (v as OverallBidReceivedBySourceCompanyResponse[]).map(
-              (item) => ({
-                "Total Invites": item.totalinvites,
-                title: item.bid_month,
-              })
-            );
-            valueKeys = ["Total Invites"];
-            break;
+          valueKeys.push(customKey ? el[customKey] : valueKey);
 
-          case "OverallBidReceivedByProjectAdmin":
-            // data = mergeObjectsByKey(
-            //   (v as OverallBidReceivedByProjectAdminResponse[]).map((item) => ({
-            //     [item.user_displayname]: item.totalinvites,
-            //     title: item.bid_month,
-            //   })),
-            //   "title"
-            // );
+          return {
+            bid_month: el.bid_month,
+            [customKey ? el[customKey] : valueKey]: el[valueKey],
+          };
+        });
 
-            data = [
-              {
-                title: 2003,
-                europe: 2.5,
-                namerica: 2.5,
-                asia: 2.1,
-                lamerica: 0.3,
-                meast: 0.2,
-                africa: 0.1,
-              },
-              {
-                title: 2004,
-                europe: 2.6,
-                namerica: 2.7,
-                asia: 2.2,
-                lamerica: 0.3,
-                meast: 0.3,
-                africa: 0.1,
-              },
-              {
-                title: 2005,
-                europe: 2.8,
-                namerica: 2.9,
-                asia: 2.4,
-                lamerica: 0.3,
-                meast: 0.3,
-                africa: 0.1,
-              },
-            ];
+        valueKeys = valueKeys.filter((v, i, a) => a.indexOf(v) === i);
 
-            valueKeys = data
-              .reduce((acc, cur) => [...acc, ...Object.keys(cur)], [])
-              .filter((el, i, arr) => arr.indexOf(el) === i && el !== "title");
-            break;
+        // group by bid month
+        data = mergeObjectsByKey(data, "bid_month");
 
-          case "OverallBidsReceivedByOffice":
-            data = mergeObjectsByKey(
-              (v as OverallBidsReceivedByOfficeResponse[]).map((item) => ({
-                [item.office_name]: item.totalinvites,
-                title: item.bid_month,
-              })),
-              "title"
-            );
-            valueKeys = data
-              .reduce((acc, cur) => [...acc, ...Object.keys(cur)], [])
-              .filter((el, i, arr) => arr.indexOf(el) === i && el !== "title");
-            break;
-
-          case "CompanyOverallValue":
-            data = (v as CompanyOverallValueResponse[]).map((item) => ({
-              "Total Value": item.total_value,
-              title: item.bid_month,
-            }));
-            valueKeys = ["Total Value"];
-            break;
-
-          case "CompanyOverallInviteVolume":
-            data = (v as CompanyOverallInviteVolumeResponse[]).map((item) => ({
-              "Total Invites": item.total_Invites,
-              title: item.bid_month,
-            }));
-            valueKeys = ["Total Invites"];
-            break;
-        }
+        // group by time interval
+        data = groupByTimeInterval(data, this.panelData.panel_time_interval);
 
         data = data.sort((a, b) =>
-          a.title > b.title ? 1 : a.title < b.title ? -1 : 0
+          a.bid_month > b.bid_month ? 1 : a.bid_month < b.bid_month ? -1 : 0
         );
 
         switch (this.panelData.panel_chart_type) {
           case this.ChartTypes.PieChart:
             this.chartConfig = {
               dataProvider: data,
-              valueField: valueKeys[0],
-              titleField: "title",
+              valueField: valueKeys[0] || "value",
+              titleField: "bid_month",
             };
             break;
           case this.ChartTypes.BarChart:
@@ -251,8 +170,7 @@ export class ChartCardComponent implements OnInit, OnDestroy {
               dataProvider: data,
               legend: {
                 horizontalGap: 10,
-                maxColumns: 1,
-                position: "right",
+                position: "bottom",
                 useGraphSettings: true,
                 markerSize: 10,
               },
@@ -265,11 +183,17 @@ export class ChartCardComponent implements OnInit, OnDestroy {
               ],
               graphs: valueKeys.map((valueKey) => ({
                 balloonText:
-                  "<span style='font-size:14px'>[[category]]: <b>[[value]]</b></span>",
+                  "<b>[[title]]</b><br/><span style='font-size:14px'>[[category]]: <b>[[value]]</b></span>",
                 fillAlphas: 0.8,
                 labelText: "[[value]]",
                 lineAlpha: 0.3,
-                title: valueKey,
+                title: valueKey
+                  .split("_")
+                  .map(
+                    (word: string) =>
+                      word.charAt(0).toUpperCase() + word.slice(1)
+                  )
+                  .join(" "),
                 type: "column",
                 color: "#000000",
                 valueField: valueKey,
@@ -280,10 +204,30 @@ export class ChartCardComponent implements OnInit, OnDestroy {
                 gridAlpha: 0,
                 position: "left",
               },
-              categoryField: "title",
+              categoryField: "bid_month",
             };
             break;
         }
       });
+  }
+
+  groupByRange(
+    data: { bid_month: string; [i: string]: string | number }[],
+    interval: string
+  ) {
+    console.log(data);
+    // switch (interval) {
+    //   case EIntervalTypes.Month:
+    //     break;
+    //     case EIntervalTypes.Quarter:
+    //     break;
+    //     case EIntervalTypes.Year:
+    //     break;
+    // }
+    return data.map((el) => {
+      const newData = { ...el, title: el.bid_month };
+      delete newData.bid_month;
+      return newData;
+    });
   }
 }
