@@ -51,26 +51,33 @@ export class UserSetupComponent implements OnInit {
   settings = {
     columns: {
       user_email: {
-        title: 'User Email'
+        title: 'User Email',
+        filter: false
       },
       user_firstname: {
-        title: 'User First Name'
+        title: 'User First Name',
+        filter: false
       },
       user_lastname: {
         title: 'User Last Name',
         sort: true,
         sortDirection: 'asc',
+        filter: false
       },
       user_phone: {
-        title: 'User Phone Number'
+        title: 'User Phone Number',
+        filter: false
       },
       user_office: {
         title: 'Office',
+        filter: false
       },
       user_role: {
-        title: 'Role'
+        title: 'Role',
+        filter: false
       },
     },
+    selectMode: 'single',
     actions: {
       add: false,
       edit: false,
