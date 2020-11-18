@@ -20,6 +20,7 @@ import { DashboardPanel } from "app/analytics/models/dashboard.model";
 import {
   mergeObjectsByKey,
   groupByTimeInterval,
+  generateRandomColor,
 } from "app/analytics/helpers/object-helper";
 import { EChartTypes } from "app/analytics/models/dataTypes.model";
 
@@ -159,11 +160,63 @@ export class ChartCardComponent implements OnInit, OnDestroy {
 
         switch (this.panelData.panel_chart_type) {
           case this.ChartTypes.PieChart:
-            this.chartConfig = {
-              dataProvider: data,
-              valueField: valueKeys[0] || "value",
-              titleField: "bid_month",
-            };
+            {
+              const pieData = data.map((item, index) => ({
+                type: item.bid_month,
+                value: Object.keys(item)
+                  .filter((key) => key !== "bid_month")
+                  .reduce((acc, cur) => acc + item[cur], 0),
+                subs: Object.keys(item)
+                  .filter((key) => key !== "bid_month")
+                  .map((cur) => ({
+                    type: cur,
+                    value: item[cur],
+                  })),
+                id: index,
+                color: generateRandomColor(),
+              }));
+
+              this.chartConfig = {
+                dataProvider: pieData,
+                valueField: "value",
+                titleField: "type",
+                labelText: "[[title]]: [[value]]",
+                balloonText: "[[title]]: [[value]]",
+                pulledField: "pulled",
+                colorField: "color",
+                listeners: [
+                  {
+                    event: "clickSlice",
+                    method: function (event) {
+                      var chart = event.chart;
+                      let selected;
+                      if (event.dataItem.dataContext.id != undefined) {
+                        console.log(event.dataItem.dataContext);
+                        selected = event.dataItem.dataContext.id;
+                      } else {
+                        selected = undefined;
+                      }
+
+                      chart.dataProvider = pieData.reduce(
+                        (acc, cur, index) =>
+                          index === selected
+                            ? [
+                                ...acc,
+                                ...cur.subs.map((v) => ({
+                                  ...v,
+                                  pulled: true,
+                                  color: cur.color,
+                                })),
+                              ]
+                            : [...acc, cur],
+                        []
+                      );
+                      chart.validateData();
+                    },
+                  },
+                ],
+              };
+            }
             break;
           case this.ChartTypes.BarChart:
             this.chartConfig = {
@@ -215,7 +268,6 @@ export class ChartCardComponent implements OnInit, OnDestroy {
     data: { bid_month: string; [i: string]: string | number }[],
     interval: string
   ) {
-    console.log(data);
     // switch (interval) {
     //   case EIntervalTypes.Month:
     //     break;
