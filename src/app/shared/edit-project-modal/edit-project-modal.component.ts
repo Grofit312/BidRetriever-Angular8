@@ -44,7 +44,7 @@ export class EditProjectModalComponent implements OnInit {
   viewMode = 'basic';
   offices = [];
   companyUsers = [];
-  data: any;
+  
   email_company: any;
   company_office_id: any;
   contactEmailDetail: any;
@@ -228,6 +228,16 @@ sourceSystemAccounts(){
     this.hasNewCompany = "true";
     event.customItem = newItem;
     this.companyData = newItem;
+
+    
+    this.company_domain = '';
+    this.company_website = '';
+    this.contactId = '';
+    this.contactFirstName = '';
+    this.contactSecondName = '';
+
+    this.getContactList(this.companyData.company_id);
+
  }
   hasNewContact ="";
   onNewContactEntry(event){
@@ -248,20 +258,26 @@ sourceSystemAccounts(){
   }
   onCompanySelected(event) {
     this.hasNewCompany = "";
-    this.data = event.itemData;
+    
     this.company_website = event.itemData["company_website"];
     this.company_domain = event.itemData["company_domain"];
     this.companyData = event.itemData;
     this.companyId =  event.itemData["company_id"];
+
     this.getContactList(event.itemData["company_id"]);
+
+    this.contactId = '';
+    this.contactFirstName = '';
+    this.contactSecondName = '';
   }
   
   onContactSelected(event) {
     this.hasNewContact = "";
-    this.data = event.itemData;
+    
     this.contactFirstName = event.itemData["contact_firstname"];
     this.contactSecondName = event.itemData["contact_lastname"];
-this.contactId = event.itemData["contact_id"];
+    
+    this.contactId = event.itemData["contact_id"];
     this.contactData = event.itemData;
   }
   onEmailDetail(email) {
@@ -381,7 +397,8 @@ this.contactId = event.itemData["contact_id"];
       this.contactId = uuid();
       const params: any = {
         contact_id: this.contactId,
-        company_id: this.companyId? this.companyId : (this.data && this.data.company_id) ? this.data.company_id : null,
+        company_id: this.companyId? this.companyId : 
+          (this.companyData && this.companyData.company_id) ? this.companyData.company_id : null,
         contact_email: this.contactData["contact_email"]  ,
         contact_firstname: this.contactFirstName,
         contact_lastname: this.contactSecondName,
@@ -402,11 +419,13 @@ this.contactId = event.itemData["contact_id"];
     const params = Object.assign(
       {},
       this.currentProject,
-      { project_name: projectName },     
-      { source_company_id: this.companyId? this.companyId : (this.data && this.data.company_id) ? this.data.company_id : this.currentProject.source_company_id },
+      { project_name: projectName },
+      { source_company_id: this.companyId? this.companyId : 
+              (this.companyData && this.companyData.company_id) ? this.companyData.company_id : this.currentProject.source_company_id },
       { source_company_contact_id: this.contactId? this.contactId : this.contactEmailDetail ? this.contactEmailDetail.contact_id : ""},     
       { company_website: this.company_website?this.company_website:""},
-      { project_bid_datetime: this.currentProject['project_bid_datetime'] ? this.formatDateTime(this.currentProject['project_bid_datetime']) : "NULL" },
+      { project_bid_datetime: this.currentProject['project_bid_datetime'] ?
+           this.formatDateTime(this.currentProject['project_bid_datetime']) : "NULL" },
       { project_assigned_office_name: projectOffice ? projectOffice['company_office_name'] : '' },
       { auto_update_status: this.currentProject['project_auto_update_status'] ? 'active' : 'inactive' }, 
       { source_sys_type_id : this.source_sys_type_id}

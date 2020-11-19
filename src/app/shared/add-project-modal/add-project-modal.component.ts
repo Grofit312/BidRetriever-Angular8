@@ -127,7 +127,7 @@ export class AddProjectModalComponent implements OnInit {
   company_domain ="";
   company_website = "";
   source_sys_url = "";
-  data: any;
+  
   email_company: any;
   company_office_id: any;
   contactEmailDetail: any;
@@ -238,11 +238,19 @@ export class AddProjectModalComponent implements OnInit {
     };
     this.companyTypeList.store().insert(newItem);
     this.companyTypeList.load();
-    this.hasNewCompany = "true";
+    this.hasNewCompany = 'true';
     event.customItem = newItem;
     this.companyData = newItem;
+
+    this.company_domain = '';
+    this.company_website = '';
+    this.contactId = '';
+    this.contactFirstName = '';
+    this.contactSecondName = '';
+
+    this.getContactList(this.companyData.company_id);
  }
-  hasNewContact ="";
+  hasNewContact ='';
   onNewContactEntry(event){
         if(!event.text)
     {
@@ -261,16 +269,21 @@ export class AddProjectModalComponent implements OnInit {
   }
   onCompanySelected(event) {
     this.hasNewCompany = "";
-    this.data = event.itemData;
+    
     this.company_website = event.itemData["company_website"];
     this.company_domain = event.itemData["company_domain"];
     this.companyData = event.itemData;
 
     this.getContactList(event.itemData["company_id"]);
+    
+    this.contactId = '';
+    this.contactFirstName = '';
+    this.contactSecondName = '';
+
   }
   onContactSelected(event) {
     this.hasNewContact = "";
-    this.data = event.itemData;
+    
     this.contactFirstName = event.itemData["contact_firstname"];
     this.contactSecondName = event.itemData["contact_lastname"];
 
@@ -436,7 +449,7 @@ export class AddProjectModalComponent implements OnInit {
         this.contactId = uuid();
         const params: any = {
           contact_id: this.contactId,
-          company_id: this.companyId? this.companyId : (this.data && this.data.company_id) ? this.data.company_id : null,
+          company_id: this.companyId? this.companyId : (this.companyData && this.companyData.company_id) ? this.companyData.company_id : null,
           contact_email: this.contactData["contact_email"]  ,
           contact_firstname: this.contactFirstName,
           contact_lastname: this.contactSecondName,
@@ -513,7 +526,8 @@ export class AddProjectModalComponent implements OnInit {
             ? parseInt(this.projectValue, 10)
             : "",
           project_size: this.projectSize,
-          source_company_id: this.companyId? this.companyId : (this.data && this.data.company_id) ? this.data.company_id : null,
+          source_company_id: this.companyId? this.companyId :
+           (this.companyData && this.companyData.company_id) ? this.companyData.company_id : null,
           project_construction_type: this.constructionType,
           project_award_status: this.awardStatus,
           project_assigned_office_id: projectOffice
