@@ -133,6 +133,37 @@ export class EditProjectModalComponent implements OnInit {
     }
     this.sourceSystemAccounts();
 }
+  fillSourceCompanyFields(project: any) {
+    debugger;
+
+    this.apiService.getProject(project.project_id)
+    .then(res => {
+      if(res['source_company_id']) {
+        //#region  Load Company Fields 
+        this.companyId = res['source_company_id'];
+        this.getContactList(this.companyId);
+        this.contactId = res['source_company_contact_id'];
+      
+       return this.companyApi.getCompany(this.companyId, 'eastern');
+      }
+    })
+        .then(com => {
+            this.company_website = com[0]['company_website'];
+           return this.contactApi.getEmployee(this.contactId, 'eastern');
+
+        })
+        .then(con => {
+            this.contactFirstName = con[0]['contact_firstname'];
+            this.contactSecondName = con[0]['contact_lastname'];
+        })
+        .catch(err => {
+          console.log(err);
+          this.companyId="";
+          this.contactId="";
+        });
+        //#endregion
+      
+  }
 
 sourceSystemAccounts(){
   if(this.dataStore.currentCustomer){
@@ -221,7 +252,7 @@ sourceSystemAccounts(){
     this.company_website = event.itemData["company_website"];
     this.company_domain = event.itemData["company_domain"];
     this.companyData = event.itemData;
-
+    this.companyId =  event.itemData["company_id"];
     this.getContactList(event.itemData["company_id"]);
   }
   
@@ -230,7 +261,7 @@ sourceSystemAccounts(){
     this.data = event.itemData;
     this.contactFirstName = event.itemData["contact_firstname"];
     this.contactSecondName = event.itemData["contact_lastname"];
-
+this.contactId = event.itemData["contact_id"];
     this.contactData = event.itemData;
   }
   onEmailDetail(email) {
@@ -259,6 +290,7 @@ sourceSystemAccounts(){
     this.editProjectModal.nativeElement.style.display = 'block';
     const timezone = this.dataStore.currentCustomer ? (this.dataStore.currentCustomer['customer_timezone'] || 'eastern') : 'eastern';
     this.currentProject = project;
+    this.fillSourceCompanyFields(this.currentProject);
     this.currentProject['project_auto_update_status'] = project['auto_update_status'] === 'active';
     this.currentProject['project_bid_datetime'] = project['project_bid_datetime'] === 'Invalid date' ? null : project['project_bid_datetime'];
     this.company_name=this.currentProject['source_company_name'];
@@ -322,9 +354,9 @@ sourceSystemAccounts(){
     }
 
     const projectOffice = this.offices.find(office => office['company_office_id'] === this.currentProject['project_assigned_office_id']);
-    this.companyId="";
+    
     if(this.hasNewCompany){
-
+      this.companyId="";
       this.companyId = uuid();
     
       this.companyApi.createCompany({
@@ -335,7 +367,7 @@ sourceSystemAccounts(){
         company_domain: this.company_domain,
         customer_id: this.dataStore.currentUser['customer_id'],
       }).then(res => {
-        
+        this.companyId = res['company_id'];
       })
       .catch(err => {
         console.log(err);
@@ -343,9 +375,9 @@ sourceSystemAccounts(){
       });
   
     }
-    this.contactId="";
+    
     if(this.hasNewContact){
-
+      this.contactId="";
       this.contactId = uuid();
       const params: any = {
         contact_id: this.contactId,
@@ -359,7 +391,7 @@ sourceSystemAccounts(){
   
       this.contactApi.createContact(params)
       .then(res => {
-        
+        this.contactId = res['contact_id'];
       })
       .catch(err => {
         console.log(err);

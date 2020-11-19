@@ -357,7 +357,8 @@
                         [minSearchLength]="conMinSearchLengthOption"
                         [searchEnabled]="true"
                         [acceptCustomValue]="true"
-                        
+                        [value]="contactId"
+                        (onItemClick)="onContactSelected($event)"
                         (onCustomItemCreating)="onNewContactEntry($event)"
                         ></dx-select-box>
                   <!-- (onItemClick)="onContactSelected($event)"  -->

@@ -308,7 +308,7 @@
                         [searchTimeout]="searchTimeoutOption"                      
                         [minSearchLength]="minSearchLengthOption"
                         [searchEnabled]="true"
-                        [value]="currentProject.source_company_id"
+                        [value]="companyId"
                         (onItemClick)="onCompanySelected($event)" 
                         (onCustomItemCreating)="onNewCompanyEntry($event)"
                         ></dx-select-box>
@@ -321,7 +321,7 @@
               <div class="dx-field">
                 <div class="dx-field-label">Source Company Website</div>
                 <div class="dx-field-value">
-                  <dx-text-box name="source_company_website" [(value)]="currentProject.company_website" [(ngModel)]="company_website" [showClearButton]="true"></dx-text-box>
+                  <dx-text-box name="source_company_website"  [(ngModel)]="company_website" [showClearButton]="true"></dx-text-box>
                 </div>
               </div>
             </div>
@@ -338,9 +338,10 @@
                         [minSearchLength]="conMinSearchLengthOption"
                         [searchEnabled]="true"
                         [acceptCustomValue]="true"
+                        [value]="contactId"
+                        (onItemClick)="onContactSelected($event)" 
                         (onCustomItemCreating)="onNewContactEntry($event)"
                         ></dx-select-box>
-                  <!-- <dx-text-box name="company_email" [(value)]="currentProject.source_contact_email" [showClearButton]="true" (onChange)="onEmailDetail($event)"></dx-text-box> -->
                 </div>
               </div>
             </div>
@@ -348,7 +349,7 @@
               <div class="dx-field">
                 <div class="dx-field-label">Source Contact First Name</div>
                 <div class="dx-field-value">
-                  <dx-text-box name="contactFirstName" [(value)]="currentProject.contact_firstname"  [(ngModel)]="contactFirstName" [showClearButton]="true"></dx-text-box>
+                  <dx-text-box name="contactFirstName"   [(ngModel)]="contactFirstName" [showClearButton]="true"></dx-text-box>
                 </div>
               </div>
             </div>
@@ -357,7 +358,7 @@
               <div class="dx-field">
                 <div class="dx-field-label">Source Contact Last Name</div>
                 <div class="dx-field-value">
-                  <dx-text-box name="contactSecondName" [(value)]="currentProject.contact_lastname" [(ngModel)]="contactSecondName"  [showClearButton]="true"></dx-text-box>
+                  <dx-text-box name="contactSecondName"  [(ngModel)]="contactSecondName"  [showClearButton]="true"></dx-text-box>
                 </div>
               </div>
             </div>
