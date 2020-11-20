@@ -1,11 +1,13 @@
 export enum EChartTypes {
   PieChart = "pie",
-  BarChart = "bar",
+  StackedBarChart = "bar",
+  SeriesBarChart = "series_bar",
 }
 
 export const ChartTypeLabels: Record<EChartTypes, string> = {
   [EChartTypes.PieChart]: "Pie Chart",
-  [EChartTypes.BarChart]: "Bar Chart",
+  [EChartTypes.StackedBarChart]: "Stacked Bar Chart",
+  [EChartTypes.SeriesBarChart]: "Series Bar Chart",
 };
 
 export const enum EIntervalTypes {
