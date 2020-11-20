@@ -29,7 +29,7 @@
                 <div class="dx-field-label">Project Name</div>
                 <div class="dx-field-value">
                   <dx-text-box name="projectName" [(value)]="projectName" [showClearButton]="true">
-                    <dx-validator>
+                    <dx-validator [elementAttr]="{ style: 'width: 100%' }">
                       <dxi-validation-rule type="required"></dxi-validation-rule>
                     </dx-validator>
                   </dx-text-box>
@@ -357,7 +357,8 @@
                         [minSearchLength]="conMinSearchLengthOption"
                         [searchEnabled]="true"
                         [acceptCustomValue]="true"
-                        
+                        [value]="contactId"
+                        (onItemClick)="onContactSelected($event)"
                         (onCustomItemCreating)="onNewContactEntry($event)"
                         ></dx-select-box>
                   <!-- (onItemClick)="onContactSelected($event)"  -->

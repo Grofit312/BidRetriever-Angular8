@@ -8,6 +8,28 @@ const moment = require('moment-timezone');
 @Injectable()
 export class CompaniesApi {
 
+  public getCompany(company_id: string, timezone: string) {
+    return new Promise((resolve, reject) => {
+      axios.get(`${window['env'].apiBaseUrl}/GetCompany?company_id=${company_id}&detail_level=admin`, {
+        validateStatus: (status) => {
+          return status === 200 || status === 400
+        }
+      })
+      .then(res => {
+        if (res.status === 200) {
+          res['data']['company_admin_user_id'] = res['data']['user_id'];
+          resolve(res.data);
+        } else {
+          reject(res.data.status);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        reject(err);
+      });
+    });
+  }
+
   public findCompaniesByCustomerId(customer_id: string, timezone: string, data_view_id: string = null) {
     return new Promise((resolve, reject) => {
       let apiUrl = `${window['env'].apiBaseUrl}/FindCompanies?customer_id=${customer_id}&detail_level=all`;

@@ -173,7 +173,7 @@ export class ChartCardComponent implements OnInit, OnDestroy {
                     value: item[cur],
                   })),
                 id: index,
-                color: generateRandomColor(),
+                color: generateRandomColor(3 * index),
               }));
 
               this.chartConfig = {
@@ -191,7 +191,6 @@ export class ChartCardComponent implements OnInit, OnDestroy {
                       var chart = event.chart;
                       let selected;
                       if (event.dataItem.dataContext.id != undefined) {
-                        console.log(event.dataItem.dataContext);
                         selected = event.dataItem.dataContext.id;
                       } else {
                         selected = undefined;
@@ -218,7 +217,8 @@ export class ChartCardComponent implements OnInit, OnDestroy {
               };
             }
             break;
-          case this.ChartTypes.BarChart:
+          case this.ChartTypes.StackedBarChart:
+          case this.ChartTypes.SeriesBarChart:
             this.chartConfig = {
               dataProvider: data,
               legend: {
@@ -228,11 +228,17 @@ export class ChartCardComponent implements OnInit, OnDestroy {
                 markerSize: 10,
               },
               valueAxes: [
-                {
-                  stackType: "regular",
-                  axisAlpha: 0.3,
-                  gridAlpha: 0,
-                },
+                this.panelData.panel_chart_type ===
+                this.ChartTypes.StackedBarChart
+                  ? {
+                      stackType: "regular",
+                      axisAlpha: 0.3,
+                      gridAlpha: 0,
+                    }
+                  : {
+                      axisAlpha: 0.3,
+                      gridAlpha: 0,
+                    },
               ],
               graphs: valueKeys.map((valueKey) => ({
                 balloonText:

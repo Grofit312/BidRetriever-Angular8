@@ -95,6 +95,54 @@ export class ViewCompanyApi {
     });
   }
 
+  
+  public findCompanyContact(customer_id: any, company_id: any, timezone: string) {
+    
+    return new Promise((resolve, reject) => {
+      axios.get(`${window['env'].apiBaseUrl}/FindContacts?customer_id=${customer_id}&company_id=${company_id}&detail_level=all`, {
+        validateStatus: (status) => {
+          return status === 200 || status === 400
+        }
+      })
+        .then(res => {
+          if (res.status === 200) {
+            res.data = res.data.map((contacts) => {
+              contacts['contact_city_state'] = `${contacts['contact_city']}, ${contacts['contact_state']}`;
+              contacts['contact_last_first_name'] = `${contacts['contact_lastname']}, ${contacts['contact_firstname']}`;
+              return contacts;
+            });
+            resolve(res.data);
+
+          } else {
+            reject(res.data.status);
+          }
+        })
+        .catch(err => {
+          console.log(err);
+          reject(err);
+        });
+    });
+  }
+  public findProjects(source_company_id: string) {
+    return new Promise((resolve, reject) => {
+      axios.get(window['env'].apiBaseUrl + `/FindProjects?source_company_id=${source_company_id}&detail_level=basic`, {
+        validateStatus: (status) => {
+          return status === 200 || status === 400
+        }
+      })
+        .then(res => {
+          if (res.status === 200) {
+            resolve(res.data);
+          } else {
+            reject(res.data.status);
+          }
+        })
+        .catch(err => {
+          console.log(err);
+          reject(err);
+        });
+    });
+  }
   /**
    * Convert to timezone object
    * @param timestamp

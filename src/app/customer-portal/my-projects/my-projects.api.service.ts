@@ -109,6 +109,30 @@ export class ProjectsApi {
         });
     });
   }
+
+  
+  public getProject(project_id: string) {
+    return new Promise((resolve, reject) => {
+      axios.get(`${window['env'].apiBaseUrl}/GetProject?project_id=${project_id}`, {
+        validateStatus: (status) => {
+          return status === 200 || status === 400
+        }
+      })
+        .then(res => {
+          if (res.status === 200) {
+            resolve(res.data);
+          } else {
+            reject(res.data.status);
+          }
+        })
+        .catch(err => {
+          console.log(err);
+          reject(err);
+        });
+    });
+  }
+
+
   public updateProject(project_id: string, params: any) {
     return new Promise((resolve, reject) => {
       params.search_project_id = project_id;

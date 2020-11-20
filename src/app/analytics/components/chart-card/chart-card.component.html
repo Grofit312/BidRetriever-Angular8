@@ -25,7 +25,10 @@
   <hr />
   <div class="card-content" *ngIf="chartConfig">
     <div [ngSwitch]="panelData?.panel_chart_type">
-      <div *ngSwitchCase="ChartTypes.BarChart">
+      <div *ngSwitchCase="ChartTypes.StackedBarChart">
+        <app-bar-chart [chartConfig]="chartConfig"></app-bar-chart>
+      </div>
+      <div *ngSwitchCase="ChartTypes.SeriesBarChart">
         <app-bar-chart [chartConfig]="chartConfig"></app-bar-chart>
       </div>
       <div *ngSwitchCase="ChartTypes.PieChart">

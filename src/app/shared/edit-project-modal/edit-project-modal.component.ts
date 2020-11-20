@@ -44,7 +44,7 @@ export class EditProjectModalComponent implements OnInit {
   viewMode = 'basic';
   offices = [];
   companyUsers = [];
-  data: any;
+  
   email_company: any;
   company_office_id: any;
   contactEmailDetail: any;
@@ -133,6 +133,37 @@ export class EditProjectModalComponent implements OnInit {
     }
     this.sourceSystemAccounts();
 }
+  fillSourceCompanyFields(project: any) {
+    debugger;
+
+    this.apiService.getProject(project.project_id)
+    .then(res => {
+      if(res['source_company_id']) {
+        //#region  Load Company Fields 
+        this.companyId = res['source_company_id'];
+        this.getContactList(this.companyId);
+        this.contactId = res['source_company_contact_id'];
+      
+       return this.companyApi.getCompany(this.companyId, 'eastern');
+      }
+    })
+        .then(com => {
+            this.company_website = com[0]['company_website'];
+           return this.contactApi.getEmployee(this.contactId, 'eastern');
+
+        })
+        .then(con => {
+            this.contactFirstName = con[0]['contact_firstname'];
+            this.contactSecondName = con[0]['contact_lastname'];
+        })
+        .catch(err => {
+          console.log(err);
+          this.companyId="";
+          this.contactId="";
+        });
+        //#endregion
+      
+  }
 
 sourceSystemAccounts(){
   if(this.dataStore.currentCustomer){
@@ -197,6 +228,16 @@ sourceSystemAccounts(){
     this.hasNewCompany = "true";
     event.customItem = newItem;
     this.companyData = newItem;
+
+    
+    this.company_domain = '';
+    this.company_website = '';
+    this.contactId = '';
+    this.contactFirstName = '';
+    this.contactSecondName = '';
+
+    this.getContactList(this.companyData.company_id);
+
  }
   hasNewContact ="";
   onNewContactEntry(event){
@@ -217,20 +258,26 @@ sourceSystemAccounts(){
   }
   onCompanySelected(event) {
     this.hasNewCompany = "";
-    this.data = event.itemData;
+    
     this.company_website = event.itemData["company_website"];
     this.company_domain = event.itemData["company_domain"];
     this.companyData = event.itemData;
+    this.companyId =  event.itemData["company_id"];
 
     this.getContactList(event.itemData["company_id"]);
+
+    this.contactId = '';
+    this.contactFirstName = '';
+    this.contactSecondName = '';
   }
   
   onContactSelected(event) {
     this.hasNewContact = "";
-    this.data = event.itemData;
+    
     this.contactFirstName = event.itemData["contact_firstname"];
     this.contactSecondName = event.itemData["contact_lastname"];
-
+    
+    this.contactId = event.itemData["contact_id"];
     this.contactData = event.itemData;
   }
   onEmailDetail(email) {
@@ -259,6 +306,7 @@ sourceSystemAccounts(){
     this.editProjectModal.nativeElement.style.display = 'block';
     const timezone = this.dataStore.currentCustomer ? (this.dataStore.currentCustomer['customer_timezone'] || 'eastern') : 'eastern';
     this.currentProject = project;
+    this.fillSourceCompanyFields(this.currentProject);
     this.currentProject['project_auto_update_status'] = project['auto_update_status'] === 'active';
     this.currentProject['project_bid_datetime'] = project['project_bid_datetime'] === 'Invalid date' ? null : project['project_bid_datetime'];
     this.company_name=this.currentProject['source_company_name'];
@@ -322,9 +370,9 @@ sourceSystemAccounts(){
     }
 
     const projectOffice = this.offices.find(office => office['company_office_id'] === this.currentProject['project_assigned_office_id']);
-    this.companyId="";
+    
     if(this.hasNewCompany){
-
+      this.companyId="";
       this.companyId = uuid();
     
       this.companyApi.createCompany({
@@ -335,7 +383,7 @@ sourceSystemAccounts(){
         company_domain: this.company_domain,
         customer_id: this.dataStore.currentUser['customer_id'],
       }).then(res => {
-        
+        this.companyId = res['company_id'];
       })
       .catch(err => {
         console.log(err);
@@ -343,13 +391,14 @@ sourceSystemAccounts(){
       });
   
     }
-    this.contactId="";
+    
     if(this.hasNewContact){
-
+      this.contactId="";
       this.contactId = uuid();
       const params: any = {
         contact_id: this.contactId,
-        company_id: this.companyId? this.companyId : (this.data && this.data.company_id) ? this.data.company_id : null,
+        company_id: this.companyId? this.companyId : 
+          (this.companyData && this.companyData.company_id) ? this.companyData.company_id : null,
         contact_email: this.contactData["contact_email"]  ,
         contact_firstname: this.contactFirstName,
         contact_lastname: this.contactSecondName,
@@ -359,7 +408,7 @@ sourceSystemAccounts(){
   
       this.contactApi.createContact(params)
       .then(res => {
-        
+        this.contactId = res['contact_id'];
       })
       .catch(err => {
         console.log(err);
@@ -370,11 +419,13 @@ sourceSystemAccounts(){
     const params = Object.assign(
       {},
       this.currentProject,
-      { project_name: projectName },     
-      { source_company_id: this.companyId? this.companyId : (this.data && this.data.company_id) ? this.data.company_id : this.currentProject.source_company_id },
+      { project_name: projectName },
+      { source_company_id: this.companyId? this.companyId : 
+              (this.companyData && this.companyData.company_id) ? this.companyData.company_id : this.currentProject.source_company_id },
       { source_company_contact_id: this.contactId? this.contactId : this.contactEmailDetail ? this.contactEmailDetail.contact_id : ""},     
       { company_website: this.company_website?this.company_website:""},
-      { project_bid_datetime: this.currentProject['project_bid_datetime'] ? this.formatDateTime(this.currentProject['project_bid_datetime']) : "NULL" },
+      { project_bid_datetime: this.currentProject['project_bid_datetime'] ?
+           this.formatDateTime(this.currentProject['project_bid_datetime']) : "NULL" },
       { project_assigned_office_name: projectOffice ? projectOffice['company_office_name'] : '' },
       { auto_update_status: this.currentProject['project_auto_update_status'] ? 'active' : 'inactive' }, 
       { source_sys_type_id : this.source_sys_type_id}

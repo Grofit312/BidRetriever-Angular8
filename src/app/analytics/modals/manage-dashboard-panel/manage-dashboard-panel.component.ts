@@ -7,7 +7,6 @@ import {
   EventEmitter,
 } from "@angular/core";
 import { FormGroup, Validators, FormBuilder } from "@angular/forms";
-import { DatePipe } from "@angular/common";
 
 import { Subject } from "rxjs";
 import { takeUntil, distinctUntilChanged } from "rxjs/operators";
@@ -54,11 +53,10 @@ export class ManageDashboardPanelComponent implements OnInit, OnDestroy {
     private dataStore: DataStore,
     private dashboardService: DashboardService,
     private fb: FormBuilder,
-    private spinner: NgxSpinnerService,
-    private datePipe: DatePipe
+    private spinner: NgxSpinnerService
   ) {}
 
-  async ngOnInit() {
+  ngOnInit() {
     if (!this.dashboardId) {
       this.closeModal.emit("error");
     }
@@ -69,7 +67,8 @@ export class ManageDashboardPanelComponent implements OnInit, OnDestroy {
     }));
 
     this.spinner.show("spinner");
-    await this.dashboardService
+
+    this.dashboardService
       .findAnalyticDatasources(
         this.dataStore.currentUser.customer_id,
         this.analyticType
@@ -82,9 +81,24 @@ export class ManageDashboardPanelComponent implements OnInit, OnDestroy {
           label: item.analytic_datasource_name,
           charts: item.compatible_chart_types,
         }));
+
+        if (this.form.value.datasource) {
+          const dataSource = this.dataSourceTypes.find(
+            (item) => item.key === this.form.value.datasource
+          );
+          console.log("dataSource", dataSource);
+          if (dataSource) {
+            this.chartTypes = dataSource.charts.split(",").map((key) => ({
+              key,
+              label: ChartTypeLabels[key],
+            }));
+          } else {
+            this.chartTypes = [];
+          }
+        }
       });
 
-    await this.form.controls.datasource.valueChanges
+    this.form.controls.datasource.valueChanges
       .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
       .subscribe((v) => {
         const dataSource = this.dataSourceTypes.find((item) => item.key === v);
@@ -116,7 +130,7 @@ export class ManageDashboardPanelComponent implements OnInit, OnDestroy {
         this.form.setValue({
           datasource: dashboardPanel.panel_analytic_datasource,
           chartType: dashboardPanel.panel_chart_type,
-          description: dashboardPanel.panel_desc,
+          description: dashboardPanel.panel_desc || "",
           panel_start_date_offset: dashboardPanel.panel_start_date_offset,
           panel_end_date_offset: dashboardPanel.panel_end_date_offset,
           name: dashboardPanel.panel_name,
