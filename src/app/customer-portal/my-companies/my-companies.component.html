@@ -2,157 +2,316 @@
   <dx-toolbar class="header" #companyToolbar>
     <dxi-item location="before">
       <div *dxTemplate>
-        <dx-select-box #companyToolbarViewType [width]="toolbarConfig.companyViewType.width"
+        <dx-select-box
+          #companyToolbarViewType
+          [width]="toolbarConfig.companyViewType.width"
           [dataSource]="toolbarConfig.companyViewType.dataSource"
-          [showClearButton]="toolbarConfig.companyViewType.showClearButton" [value]="companyViewTypeSelected"
+          [showClearButton]="toolbarConfig.companyViewType.showClearButton"
+          [value]="companyViewTypeSelected"
           [valueExpr]="toolbarConfig.companyViewType.valueExpr"
           [displayExpr]="toolbarConfig.companyViewType.displayExpr"
-          (onValueChanged)="toolbarConfig.companyViewType.onValueChanged($event)">
+          (onValueChanged)="
+            toolbarConfig.companyViewType.onValueChanged($event)
+          "
+        >
           <div *dxTemplate="let data of 'item'">
-            <div class="company-toolbar-view-type-item" *ngIf="data.view_id !== 'manage_company_views'">
-              {{ data.view_name }}</div>
-            <div class="company-toolbar-view-type-item manage-company-view"
-              *ngIf="data.view_id === 'manage_company_views'">{{ data.view_name }}</div>
+            <div
+              class="company-toolbar-view-type-item"
+              *ngIf="data.view_id !== 'manage_company_views'"
+            >
+              {{ data.view_name }}
+            </div>
+            <div
+              class="company-toolbar-view-type-item manage-company-view"
+              *ngIf="data.view_id === 'manage_company_views'"
+            >
+              {{ data.view_name }}
+            </div>
           </div>
         </dx-select-box>
       </div>
     </dxi-item>
-    <dxi-item location="before" widget="dxLookup" [options]="toolbarConfig.users"></dxi-item>
+    <dxi-item
+      location="before"
+      widget="dxLookup"
+      [options]="toolbarConfig.users"
+    ></dxi-item>
 
-    <dxi-item location="center" widget="dxTextBox" [options]="toolbarConfig.search"></dxi-item>
+    <dxi-item
+      location="center"
+      widget="dxTextBox"
+      [options]="toolbarConfig.search"
+    ></dxi-item>
 
-    <dxi-item location="after" widget="dxButton" [options]="toolbarConfig.viewCompany"></dxi-item>
-    <dxi-item location="after" widget="dxButton" [options]="toolbarConfig.addCompany"></dxi-item>
+    <dxi-item
+      location="after"
+      widget="dxButton"
+      [options]="toolbarConfig.viewCompany"
+    ></dxi-item>
+    <dxi-item
+      location="after"
+      widget="dxButton"
+      [options]="toolbarConfig.addCompany"
+    ></dxi-item>
 
-    <dxi-item locateInMenu="always" widget="dxButton" [options]="toolbarConfig.others.viewCompany"></dxi-item>
-    <dxi-item locateInMenu="always" widget="dxButton" [options]="toolbarConfig.others.addCompany"></dxi-item>
+    <dxi-item
+      locateInMenu="always"
+      widget="dxButton"
+      [options]="toolbarConfig.others.viewCompany"
+    ></dxi-item>
+    <dxi-item
+      locateInMenu="always"
+      widget="dxButton"
+      [options]="toolbarConfig.others.addCompany"
+    ></dxi-item>
     <dxi-item locateInMenu="always" title="">
       <div *dxTemplate>
         <div class="separator"></div>
       </div>
     </dxi-item>
-    <dxi-item locateInMenu="always" widget="dxButton" [options]="toolbarConfig.others.editCompany"></dxi-item>
-    <dxi-item locateInMenu="always" widget="dxButton" [options]="toolbarConfig.others.deleteCompany"></dxi-item>
-    <dxi-item locateInMenu="always" widget="dxButton" [options]="toolbarConfig.others.archiveCompany"></dxi-item>
+    <dxi-item
+      locateInMenu="always"
+      widget="dxButton"
+      [options]="toolbarConfig.others.editCompany"
+    ></dxi-item>
+    <dxi-item
+      locateInMenu="always"
+      widget="dxButton"
+      [options]="toolbarConfig.others.deleteCompany"
+    ></dxi-item>
+    <dxi-item
+      locateInMenu="always"
+      widget="dxButton"
+      [options]="toolbarConfig.others.archiveCompany"
+    ></dxi-item>
     <dxi-item title="" locateInMenu="always">
       <div *dxTemplate>
         <div class="separator"></div>
       </div>
     </dxi-item>
-    <dxi-item locateInMenu="always" widget="dxButton" [options]="toolbarConfig.others.printCompanyList"></dxi-item>
-    <dxi-item locateInMenu="always" widget="dxButton" [options]="toolbarConfig.others.exportCompanyListToCsv">
+    <dxi-item
+      locateInMenu="always"
+      widget="dxButton"
+      [options]="toolbarConfig.others.printCompanyList"
+    ></dxi-item>
+    <dxi-item
+      locateInMenu="always"
+      widget="dxButton"
+      [options]="toolbarConfig.others.exportCompanyListToCsv"
+    >
     </dxi-item>
     <dxi-item locateInMenu="always" title="">
       <div *dxTemplate>
         <div class="separator"></div>
       </div>
     </dxi-item>
-    <dxi-item locateInMenu="always" widget="dxButton" [options]="toolbarConfig.others.viewTransactionLog"></dxi-item>
-    <dxi-item locateInMenu="always" widget="dxButton" [options]="toolbarConfig.others.refreshGrid"></dxi-item>
-    <dxi-item locateInMenu="always" widget="dxButton" [options]="toolbarConfig.others.help"></dxi-item>
+    <dxi-item
+      locateInMenu="always"
+      widget="dxButton"
+      [options]="toolbarConfig.others.viewTransactionLog"
+    ></dxi-item>
+    <dxi-item
+      locateInMenu="always"
+      widget="dxButton"
+      [options]="toolbarConfig.others.refreshGrid"
+    ></dxi-item>
+    <dxi-item
+      locateInMenu="always"
+      widget="dxButton"
+      [options]="toolbarConfig.others.help"
+    ></dxi-item>
   </dx-toolbar>
 
-    <div class="content" #companyContent>
-        <dx-data-grid #companyGrid id="companyGrid" [allowColumnReordering]="true" [allowColumnResizing]="true"
-          columnResizingMode="widget" [columns]="companyGridColumns" [dataSource]="companyGridDataSource"
-          (onEditingStart)="gridCompanyEditingStartAction($event)" [showColumnLines]="true" [showRowLines]="true"
-          [showBorders]="true" [rowAlternationEnabled]="true" [columnAutoWidth]="true" [remoteOperations]="true"
-          width="100%" (onContextMenuPreparing)='addCompanyGridMenuItems($event)' (onRowDblClick)='toolbarViewCompanyAction()' >
-            <dxo-editing mode="cell" [allowDeleting]="false" [allowUpdating]="true" refreshMode="reshape"></dxo-editing>
-            <dxo-column-fixing [enabled]="true"></dxo-column-fixing>
-            <dxo-header-filter [visible]="false"></dxo-header-filter>
-            <dxo-paging [enabled]="false"></dxo-paging>
-            <dxo-scrolling mode="vertical"></dxo-scrolling>
-            <dxo-selection mode="multiple"></dxo-selection>
-            <dxo-sorting mode=" "></dxo-sorting>
+  <div class="content" #companyContent>
+    <dx-data-grid
+      #companyGrid
+      id="companyGrid"
+      [allowColumnReordering]="true"
+      [allowColumnResizing]="true"
+      columnResizingMode="widget"
+      [columns]="companyGridColumns"
+      [dataSource]="companyGridDataSource"
+      (onEditingStart)="gridCompanyEditingStartAction($event)"
+      [showColumnLines]="true"
+      [showRowLines]="true"
+      [showBorders]="true"
+      [rowAlternationEnabled]="true"
+      [columnAutoWidth]="true"
+      [remoteOperations]="true"
+      width="100%"
+      (onContextMenuPreparing)="addCompanyGridMenuItems($event)"
+      (onRowDblClick)="toolbarViewCompanyAction()"
+    >
+      <dxo-editing
+        mode="cell"
+        [allowDeleting]="false"
+        [allowUpdating]="true"
+        refreshMode="reshape"
+      ></dxo-editing>
+      <dxo-column-fixing [enabled]="true"></dxo-column-fixing>
+      <dxo-header-filter [visible]="false"></dxo-header-filter>
+      <dxo-paging [enabled]="false"></dxo-paging>
+      <dxo-scrolling mode="vertical"></dxo-scrolling>
+      <dxo-selection mode="multiple"></dxo-selection>
+      <dxo-sorting mode="single"></dxo-sorting>
 
-            <div *dxTemplate="let cell of 'dateCell'">
-                {{ cell.value | moment: 'YYYY-MM-DD hh:mm a z' }}
-            </div>
+      <div *dxTemplate="let cell of 'dateCell'">
+        {{ cell.value | moment: "YYYY-MM-DD hh:mm a z" }}
+      </div>
 
-            <div *dxTemplate="let cell of 'dateTimeEditor'">
-                <app-custom-datetime [value]="cell.value" (onValueChanged)="cell.setValue($event)" [showClearButton]="true">
-                </app-custom-datetime>
-            </div>
+      <div *dxTemplate="let cell of 'dateTimeEditor'">
+        <app-custom-datetime
+          [value]="cell.value"
+          (onValueChanged)="cell.setValue($event)"
+          [showClearButton]="true"
+        >
+        </app-custom-datetime>
+      </div>
 
-            <div *dxTemplate="let cell of 'companyAdminUserEmailCell'">
-               {{cell.value}} <!-- {{ findMatchedCompanyAdminUserDisplayName(cell.value) }} hgfhgf -->
-            </div>
-            <div *dxTemplate="let cell of 'companyAdminUserEmailCell'">
-               {{cell.value}} <!-- {{ findMatchedCompanyAdminUserDisplayName(cell.value) }} hgfhgf -->
-            </div>
-            <div *dxTemplate="let cell of 'companyAdminUserEmailEditor'">
-                <dx-select-box [items]="companyGridEditorTemplateSource.adminUserEmail" [value]="cell.value"
-                  displayExpr="user_displayname" valueExpr="user_email" (onValueChanged)="cell.setValue($event.value)"
-                  (onContentReady)="companyAdminUserEmailEditorContentReady($event)">
-                  <div *dxTemplate="let data of 'item'">
-                    {{ data.user_displayname }} ({{ data.user_email }})23234
-                  </div>
-                </dx-select-box>
-            </div>
-
-            <div *dxTemplate="let cell of 'statusEditor'">
-            <dx-select-box [items]="companyGridEditorTemplateSource.status" [value]="cell.value" displayExpr="name"
-              valueExpr="id" (onValueChanged)="cell.setValue($event.value)"></dx-select-box>
+      <div *dxTemplate="let cell of 'companyAdminUserEmailCell'">
+        {{ cell.value }}
+        <!-- {{ findMatchedCompanyAdminUserDisplayName(cell.value) }} hgfhgf -->
+      </div>
+      <div *dxTemplate="let cell of 'companyAdminUserEmailCell'">
+        {{ cell.value }}
+        <!-- {{ findMatchedCompanyAdminUserDisplayName(cell.value) }} hgfhgf -->
+      </div>
+      <div *dxTemplate="let cell of 'companyAdminUserEmailEditor'">
+        <dx-select-box
+          [items]="companyGridEditorTemplateSource.adminUserEmail"
+          [value]="cell.value"
+          displayExpr="user_displayname"
+          valueExpr="user_email"
+          (onValueChanged)="cell.setValue($event.value)"
+          (onContentReady)="companyAdminUserEmailEditorContentReady($event)"
+        >
+          <div *dxTemplate="let data of 'item'">
+            {{ data.user_displayname }} ({{ data.user_email }})23234
           </div>
+        </dx-select-box>
+      </div>
 
-          <div *dxTemplate="let cell of 'typeEditor'">
-            <dx-select-box [items]="companyGridEditorTemplateSource.company_type" [value]="cell.value" displayExpr="name"
-              valueExpr="id" (onValueChanged)="cell.setValue($event.value)"></dx-select-box>
-          </div>
+      <div *dxTemplate="let cell of 'statusEditor'">
+        <dx-select-box
+          [items]="companyGridEditorTemplateSource.status"
+          [value]="cell.value"
+          displayExpr="name"
+          valueExpr="id"
+          (onValueChanged)="cell.setValue($event.value)"
+        ></dx-select-box>
+      </div>
 
-          <div *dxTemplate="let cell of 'autoUpdateStatusEditor'">
-            <dx-select-box [items]="companyGridEditorTemplateSource.autoUpdateStatus" [value]="cell.value"
-              displayExpr="name" valueExpr="id" (onValueChanged)="cell.setValue($event.value)"></dx-select-box>
-          </div>
+      <div *dxTemplate="let cell of 'typeEditor'">
+        <dx-select-box
+          [items]="companyGridEditorTemplateSource.company_type"
+          [value]="cell.value"
+          displayExpr="name"
+          valueExpr="id"
+          (onValueChanged)="cell.setValue($event.value)"
+        ></dx-select-box>
+      </div>
 
-          <div *dxTemplate="let cell of 'companyStageEditor'">
-            <dx-select-box [items]="companyGridEditorTemplateSource.stage" [value]="cell.value" displayExpr="name"
-              valueExpr="id" (onValueChanged)="cell.setValue($event.value)"></dx-select-box>
-          </div>
+      <div *dxTemplate="let cell of 'autoUpdateStatusEditor'">
+        <dx-select-box
+          [items]="companyGridEditorTemplateSource.autoUpdateStatus"
+          [value]="cell.value"
+          displayExpr="name"
+          valueExpr="id"
+          (onValueChanged)="cell.setValue($event.value)"
+        ></dx-select-box>
+      </div>
 
-          <div *dxTemplate="let cell of 'companyTimezoneEditor'">
-            <dx-select-box [items]="companyGridEditorTemplateSource.timezone" [value]="cell.value" displayExpr="name"
-              valueExpr="id" (onValueChanged)="cell.setValue($event.value)"></dx-select-box>
-          </div>
+      <div *dxTemplate="let cell of 'companyStageEditor'">
+        <dx-select-box
+          [items]="companyGridEditorTemplateSource.stage"
+          [value]="cell.value"
+          displayExpr="name"
+          valueExpr="id"
+          (onValueChanged)="cell.setValue($event.value)"
+        ></dx-select-box>
+      </div>
 
-          <div *dxTemplate="let cell of 'companyContractTypeEditor'">
-            <dx-select-box [items]="companyGridEditorTemplateSource.contractType" [value]="cell.value" displayExpr="name"
-              valueExpr="id" (onValueChanged)="cell.setValue($event.value)"></dx-select-box>
-          </div>
+      <div *dxTemplate="let cell of 'companyTimezoneEditor'">
+        <dx-select-box
+          [items]="companyGridEditorTemplateSource.timezone"
+          [value]="cell.value"
+          displayExpr="name"
+          valueExpr="id"
+          (onValueChanged)="cell.setValue($event.value)"
+        ></dx-select-box>
+      </div>
 
-          <div *dxTemplate="let cell of 'companySegmentEditor'">
-            <dx-select-box [items]="companyGridEditorTemplateSource.segment" [value]="cell.value" displayExpr="name"
-              valueExpr="id" (onValueChanged)="cell.setValue($event.value)"></dx-select-box>
-          </div>
+      <div *dxTemplate="let cell of 'companyContractTypeEditor'">
+        <dx-select-box
+          [items]="companyGridEditorTemplateSource.contractType"
+          [value]="cell.value"
+          displayExpr="name"
+          valueExpr="id"
+          (onValueChanged)="cell.setValue($event.value)"
+        ></dx-select-box>
+      </div>
 
-          <div *dxTemplate="let cell of 'companyBuildingTypeEditor'">
-            <dx-select-box [items]="companyGridEditorTemplateSource.buildingType" [value]="cell.value" displayExpr="name"
-              valueExpr="id" (onValueChanged)="cell.setValue($event.value)"></dx-select-box>
-          </div>
+      <div *dxTemplate="let cell of 'companySegmentEditor'">
+        <dx-select-box
+          [items]="companyGridEditorTemplateSource.segment"
+          [value]="cell.value"
+          displayExpr="name"
+          valueExpr="id"
+          (onValueChanged)="cell.setValue($event.value)"
+        ></dx-select-box>
+      </div>
 
-          <div *dxTemplate="let cell of 'companyLaborRequirementEditor'">
-            <dx-select-box [items]="companyGridEditorTemplateSource.laborRequirement" [value]="cell.value"
-              displayExpr="name" valueExpr="id" (onValueChanged)="cell.setValue($event.value)"></dx-select-box>
-          </div>
+      <div *dxTemplate="let cell of 'companyBuildingTypeEditor'">
+        <dx-select-box
+          [items]="companyGridEditorTemplateSource.buildingType"
+          [value]="cell.value"
+          displayExpr="name"
+          valueExpr="id"
+          (onValueChanged)="cell.setValue($event.value)"
+        ></dx-select-box>
+      </div>
 
-          <div *dxTemplate="let cell of 'companyConstructionTypeEditor'">
-            <dx-select-box [items]="companyGridEditorTemplateSource.constructionType" [value]="cell.value"
-              displayExpr="name" valueExpr="id" (onValueChanged)="cell.setValue($event.value)"></dx-select-box>
-          </div>
+      <div *dxTemplate="let cell of 'companyLaborRequirementEditor'">
+        <dx-select-box
+          [items]="companyGridEditorTemplateSource.laborRequirement"
+          [value]="cell.value"
+          displayExpr="name"
+          valueExpr="id"
+          (onValueChanged)="cell.setValue($event.value)"
+        ></dx-select-box>
+      </div>
 
-          <div *dxTemplate="let cell of 'companyAwardStatusEditor'">
-            <dx-select-box [items]="companyGridEditorTemplateSource.awardStatus" [value]="cell.value" displayExpr="name"
-              valueExpr="id" (onValueChanged)="cell.setValue($event.value)"></dx-select-box>
-          </div>
+      <div *dxTemplate="let cell of 'companyConstructionTypeEditor'">
+        <dx-select-box
+          [items]="companyGridEditorTemplateSource.constructionType"
+          [value]="cell.value"
+          displayExpr="name"
+          valueExpr="id"
+          (onValueChanged)="cell.setValue($event.value)"
+        ></dx-select-box>
+      </div>
 
-          <div *dxTemplate="let cell of 'companyAssignedOfficeNameEditor'">
-            <dx-select-box [items]="companyGridEditorTemplateSource.assignedOfficeName" [value]="cell.value"
-              displayExpr="company_office_name" valueExpr="company_office_name"
-              (onValueChanged)="cell.setValue($event.value)"></dx-select-box>
-          </div>
-        </dx-data-grid>
-    </div>
+      <div *dxTemplate="let cell of 'companyAwardStatusEditor'">
+        <dx-select-box
+          [items]="companyGridEditorTemplateSource.awardStatus"
+          [value]="cell.value"
+          displayExpr="name"
+          valueExpr="id"
+          (onValueChanged)="cell.setValue($event.value)"
+        ></dx-select-box>
+      </div>
+
+      <div *dxTemplate="let cell of 'companyAssignedOfficeNameEditor'">
+        <dx-select-box
+          [items]="companyGridEditorTemplateSource.assignedOfficeName"
+          [value]="cell.value"
+          displayExpr="company_office_name"
+          valueExpr="company_office_name"
+          (onValueChanged)="cell.setValue($event.value)"
+        ></dx-select-box>
+      </div>
+    </dx-data-grid>
+  </div>
 </div>
 
 <!-- Add Submission Modal -->
@@ -160,8 +319,8 @@
 
 <!-- Add Company Modal -->
 <add-company-modal #addCompanyModal></add-company-modal>
-<!-- Edit Company Modal --> 
- <edit-company-modal #editCompanyModal></edit-company-modal> 
+<!-- Edit Company Modal -->
+<edit-company-modal #editCompanyModal></edit-company-modal>
 
 <!-- Remove Company Modal (Archive/Delete) -->
 <!-- <remove-company-modal #removeCompanyModal></remove-company-modal> -->
@@ -170,9 +329,17 @@
 <!-- <transaction-logs-modal #transactionLogsModal></transaction-logs-modal> -->
 
 <!-- Company Data View Modal -->
-<dx-popup [closeOnOutsideClick]="true" [dragEnabled]="false" (onHiding)="popupDataViewHidingAction($event)"
-  [(visible)]="isCompanyDataViewModalShown" [showTitle]="true" title="Manage Views" width="80vw" height="80vh">
+<dx-popup
+  [closeOnOutsideClick]="true"
+  [dragEnabled]="false"
+  (onHiding)="popupDataViewHidingAction($event)"
+  [(visible)]="isCompanyDataViewModalShown"
+  [showTitle]="true"
+  title="Manage Views"
+  width="80vw"
+  height="80vh"
+>
   <div *dxTemplate="let data of 'content'">
-<app-company-data-view-modal></app-company-data-view-modal> 
+    <app-company-data-view-modal></app-company-data-view-modal>
   </div>
 </dx-popup>

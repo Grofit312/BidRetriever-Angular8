@@ -21,8 +21,11 @@ import {
   mergeObjectsByKey,
   groupByTimeInterval,
   generateRandomColor,
-} from "app/analytics/helpers/object-helper";
-import { EChartTypes } from "app/analytics/models/dataTypes.model";
+} from "app/analytics/helpers/other-helper";
+import {
+  EChartTypes,
+  EIntervalTypes,
+} from "app/analytics/models/dataTypes.model";
 
 @Component({
   selector: "app-chart-card",
@@ -118,9 +121,8 @@ export class ChartCardComponent implements OnInit, OnDestroy {
         customer_id: this.dataStore.currentUser.customer_id,
         company_id: this.activatedRoute.snapshot.queryParams["company_id"],
         analytic_datasource_interval: this.panelData.panel_time_interval,
-        analytic_datasource_startdatetime: this.panelData
-          .panel_start_date_offset,
-        analytic_datasource_enddatetime: this.panelData.panel_end_date_offset,
+        start_date_offset: this.panelData.panel_start_date_offset,
+        end_date_offset: this.panelData.panel_end_date_offset,
         analytic_datasource_id: this.panelData.panel_analytic_datasource,
       })
       .pipe(takeUntil(this.destroy$))
@@ -268,24 +270,5 @@ export class ChartCardComponent implements OnInit, OnDestroy {
             break;
         }
       });
-  }
-
-  groupByRange(
-    data: { bid_month: string; [i: string]: string | number }[],
-    interval: string
-  ) {
-    // switch (interval) {
-    //   case EIntervalTypes.Month:
-    //     break;
-    //     case EIntervalTypes.Quarter:
-    //     break;
-    //     case EIntervalTypes.Year:
-    //     break;
-    // }
-    return data.map((el) => {
-      const newData = { ...el, title: el.bid_month };
-      delete newData.bid_month;
-      return newData;
-    });
   }
 }

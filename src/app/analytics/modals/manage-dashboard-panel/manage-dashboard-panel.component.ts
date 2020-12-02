@@ -17,6 +17,7 @@ import { DashboardService } from "../../services/dashboard.service";
 import { DashboardPanel } from "../../models/dashboard.model";
 import {
   IntervalTypeLabels,
+  AvailableOffsetOptions,
   ChartTypeLabels,
 } from "../../models/dataTypes.model";
 
@@ -35,8 +36,10 @@ export class ManageDashboardPanelComponent implements OnInit, OnDestroy {
 
   analyticTypes = [];
   dataSourceTypes = [];
+  availableOffsetOptions = [];
   chartTypes = [];
   intervalTypes = [];
+  intervalLabel = "";
   chartTypeConfig = null;
 
   form: FormGroup = this.fb.group({
@@ -66,50 +69,36 @@ export class ManageDashboardPanelComponent implements OnInit, OnDestroy {
       label: IntervalTypeLabels[key],
     }));
 
-    this.spinner.show("spinner");
-
-    this.dashboardService
-      .findAnalyticDatasources(
-        this.dataStore.currentUser.customer_id,
-        this.analyticType
-      )
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((analyticDatasources) => {
-        this.spinner.hide("spinner");
-        this.dataSourceTypes = analyticDatasources.map((item) => ({
-          key: item.analytic_datasource_id,
-          label: item.analytic_datasource_name,
-          charts: item.compatible_chart_types,
-        }));
-
-        if (this.form.value.datasource) {
-          const dataSource = this.dataSourceTypes.find(
-            (item) => item.key === this.form.value.datasource
-          );
-          console.log("dataSource", dataSource);
-          if (dataSource) {
-            this.chartTypes = dataSource.charts.split(",").map((key) => ({
-              key,
-              label: ChartTypeLabels[key],
-            }));
-          } else {
-            this.chartTypes = [];
-          }
-        }
-      });
+    this.dataSourceTypes = this.dashboardService.analyticDatasources.map(
+      (item) => ({
+        key: item.analytic_datasource_id,
+        label: item.analytic_datasource_name,
+        charts: item.compatible_chart_types,
+      })
+    );
 
     this.form.controls.datasource.valueChanges
       .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
       .subscribe((v) => {
         const dataSource = this.dataSourceTypes.find((item) => item.key === v);
         if (dataSource) {
-          this.chartTypes = dataSource.charts.split(",").map((key) => ({
-            key,
-            label: ChartTypeLabels[key],
-          }));
+          this.chartTypes = dataSource.charts
+            .split(",")
+            .map((key) => key.trim())
+            .map((key) => ({
+              key,
+              label: ChartTypeLabels[key],
+            }));
         } else {
           this.chartTypes = [];
         }
+      });
+
+    this.form.controls.interval.valueChanges
+      .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
+      .subscribe((v) => {
+        this.availableOffsetOptions = AvailableOffsetOptions[v] || [];
+        this.intervalLabel = IntervalTypeLabels[v];
       });
 
     if (this.dashboardPanelId) {

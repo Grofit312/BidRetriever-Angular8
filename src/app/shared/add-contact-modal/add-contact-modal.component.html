@@ -3,7 +3,7 @@
     <div class='modal-box'>
       <div class='add-contact-modal'>
         <div class='modal-title'>
-          Add Company Contact
+          {{initialValues ? 'Edit Contact' : 'Add Company Contact'}}
         </div>
   
         <form (ngSubmit)='onSaveContact()'>

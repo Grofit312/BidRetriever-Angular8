@@ -1,42 +1,89 @@
 <!-- Add Share User Modal -->
-<div #addShareUserModal class='modal-container'>
-  <div class='modal-box'>
-    <div class='add-share-user-modal'>
-      <div class='modal-title'>
-        Add Share User
-      </div>
+<div #addShareUserModal class="modal-container">
+  <div class="modal-box">
+    <div class="add-share-user-modal">
+      <div class="modal-title">Add Shared Contract</div>
 
-      <form (ngSubmit)='onSaveShareUser()'>
-        <div class='share-user-form'>
-          <div class='share-user-form-half'>
+      <form (ngSubmit)="onSaveShareUser()">
+        <div class="share-user-form">
+          <div class="share-user-form-half">
             <span>User Email Address</span>
-            <input required name='email' [(ngModel)]='email' (ngModelChange)='onEmailChange($event)'/>
+            <input
+              required
+              name="email"
+              [(ngModel)]="email"
+              (ngModelChange)="onEmailChange($event)"
+            />
             <span>User First Name</span>
-            <input required name='firstName' [(ngModel)]='firstName' [readonly]='!isNewUser'/>
+            <input
+              required
+              name="firstName"
+              [(ngModel)]="firstName"
+              [readonly]="
+                inputEmailStatus === EInputEmailStatus.ExistingUser ||
+                inputEmailStatus ===
+                  EInputEmailStatus.MatchedWithExistingContact
+              "
+            />
             <span>User Last Name</span>
-            <input required name='lastName' [(ngModel)]='lastName' [readonly]='!isNewUser'/>
+            <input
+              required
+              name="lastName"
+              [(ngModel)]="lastName"
+              [readonly]="
+                inputEmailStatus === EInputEmailStatus.ExistingUser ||
+                inputEmailStatus ===
+                  EInputEmailStatus.MatchedWithExistingContact
+              "
+            />
             <span>Company Name</span>
-            <input required name='companyName' [(ngModel)]='companyName' [readonly]='!isNewUser'/>
+            <input
+              required
+              name="companyName"
+              [(ngModel)]="companyName"
+              [readonly]="
+                inputEmailStatus === EInputEmailStatus.ExistingUser ||
+                inputEmailStatus ===
+                  EInputEmailStatus.MatchedWithExistingContact ||
+                inputEmailStatus ===
+                  EInputEmailStatus.MatchedWithExistingCompany
+              "
+            />
             <span>User Phone Number</span>
-            <input required name='phone' [(ngModel)]='phone' [readonly]='!isNewUser'/>
+            <input
+              required
+              name="phone"
+              [(ngModel)]="phone"
+              [readonly]="
+                inputEmailStatus === EInputEmailStatus.ExistingUser ||
+                inputEmailStatus ===
+                  EInputEmailStatus.MatchedWithExistingContact
+              "
+            />
             <span>Share Type</span>
-            <select name='shareType' [(value)]='shareType'>
-              <option value="">Share Type</option>
-              <option *ngFor="let data of shareType" [ngValue]="data.value">
+            <select
+              name="shareType"
+              [(ngModel)]="shareType"
+              placeholder="Share Type"
+            >
+              <option *ngFor="let data of shareTypes" [ngValue]="data.value">
                 {{ data.name }}
               </option>
-            </select>          
+            </select>
           </div>
-          <div class='share-user-form-half'>
+          <div class="share-user-form-half">
             <b>
-              Enter the email address first so that the system can verify if we already have the user information.
+              Enter the email address first so that the system can verify if we
+              already have the user information.
             </b>
           </div>
         </div>
 
-        <div class='button-group'>
-          <button class='btn btn-light' (click)='onCancel($event)'>Cancel</button>
-          <button type='submit' class='btn btn-primary'>Save</button>
+        <div class="button-group">
+          <button class="btn btn-light" (click)="onCancel($event)">
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-primary">Save</button>
         </div>
       </form>
     </div>

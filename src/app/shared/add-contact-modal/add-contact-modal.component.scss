@@ -1,54 +1,47 @@
 .modal-container {
-    visibility: 'visible';
-    
-    .add-contact-modal {
-      width: 600px;
-      height: 800px;
-  
- 
-  
-      form {
-        margin-top: 20px;
+  visibility: "visible";
+
+  .add-contact-modal {
+    width: 600px;
+
+    form {
+      margin-top: 20px;
 
       .contact-form-wrapper {
-        height: 660px;
         overflow-y: auto;
       }
-  
-        .contact-form {
-          display: flex;
-          justify-content: space-between;
-  
-          
-          .double-col {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            grid-column-gap: 5px;
-            margin-top: 5px;
-          }
-         
-          input {
-            margin: 0;
-            height: unset;
-            width: 100%;
-            border: none;
-          }
-  
-         
-          .triple-form {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            grid-column-gap: 5px;
-            margin-top: 5px;
-          }
+
+      .contact-form {
+        display: flex;
+        justify-content: space-between;
+
+        .double-col {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          grid-column-gap: 5px;
+          margin-top: 5px;
         }
-  
-        .button-group {
-          display: flex;
-          justify-content: flex-end;
-          margin-top: 30px;
+
+        input {
+          margin: 0;
+          height: unset;
+          width: 100%;
+          border: none;
         }
+
+        .triple-form {
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          grid-column-gap: 5px;
+          margin-top: 5px;
+        }
+      }
+
+      .button-group {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 30px;
       }
     }
   }
-  
+}

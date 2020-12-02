@@ -5,6 +5,7 @@ import { HttpClient, HttpParams } from "@angular/common/http";
 import { Observable } from "rxjs";
 
 import { generateFormData } from "../helpers/form-helper";
+import { calculateRangeByOffset } from "../helpers/other-helper";
 import {
   Dashboard,
   DashboardPanel,
@@ -156,10 +157,18 @@ export class DashboardService {
     company_id,
     analytic_datasource_id,
     analytic_datasource_interval,
-    analytic_datasource_startdatetime,
-    analytic_datasource_enddatetime,
+    start_date_offset,
+    end_date_offset,
   }): Observable<AnalyticDataResponse<any>[]> {
     const url = `${window["env"].apiBaseUrl}/ExecuteAnalyticDatasource`;
+    const [
+      analytic_datasource_startdatetime,
+      analytic_datasource_enddatetime,
+    ] = calculateRangeByOffset(
+      analytic_datasource_interval,
+      start_date_offset,
+      end_date_offset
+    );
 
     let params = new HttpParams();
     params = params.append("customer_id", customer_id);
@@ -171,11 +180,11 @@ export class DashboardService {
     params = params.append("analytic_datasource_id", analytic_datasource_id);
     params = params.append(
       "analytic_datasource_startdatetime",
-      analytic_datasource_startdatetime
+      analytic_datasource_startdatetime.toLocaleDateString()
     );
     params = params.append(
       "analytic_datasource_enddatetime",
-      analytic_datasource_enddatetime
+      analytic_datasource_enddatetime.toLocaleDateString()
     );
 
     return this.http.get<AnalyticDataResponse<any>[]>(url, { params });

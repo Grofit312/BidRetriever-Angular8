@@ -1,15 +1,15 @@
-import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
-import { LocalDataSource } from 'ng2-smart-table';
-import { NotificationsService } from 'angular2-notifications';
-import { DataStore } from '../../../providers/datastore';
-import { UserInfoApi } from './user-setup.api.service';
-import { NgxSpinnerService } from 'ngx-spinner';
-import { MouseGuard } from '../../../providers/mouseguard';
-import { Logger } from 'app/providers/logger.service';
-import { CompanyOfficeApi } from '../company-office-setup/company-office-setup.api.service';
-const CircularJSON = require('circular-json');
+import { Component, OnInit, ElementRef, ViewChild } from "@angular/core";
+import { LocalDataSource } from "ng2-smart-table";
+import { NotificationsService } from "angular2-notifications";
+import { DataStore } from "../../../providers/datastore";
+import { UserInfoApi } from "./user-setup.api.service";
+import { NgxSpinnerService } from "ngx-spinner";
+import { MouseGuard } from "../../../providers/mouseguard";
+import { Logger } from "app/providers/logger.service";
+import { CompanyOfficeApi } from "../company-office-setup/company-office-setup.api.service";
+const CircularJSON = require("circular-json");
 
-const phoneUtil = require('google-libphonenumber').PhoneNumberUtil.getInstance();
+const phoneUtil = require("google-libphonenumber").PhoneNumberUtil.getInstance();
 
 enum EditType {
   CREATE,
@@ -17,79 +17,86 @@ enum EditType {
 }
 
 @Component({
-  selector: 'app-customer-portal-user-setup',
-  templateUrl: './user-setup.component.html',
-  styleUrls: ['./user-setup.component.scss'],
+  selector: "app-customer-portal-user-setup",
+  templateUrl: "./user-setup.component.html",
+  styleUrls: ["./user-setup.component.scss"],
   providers: [UserInfoApi, CompanyOfficeApi],
 })
 export class UserSetupComponent implements OnInit {
-
-  @ViewChild('table', { static:false}) table;
-  @ViewChild('editModal', { static:false}) editModal: ElementRef;
-  @ViewChild('removeModal', { static:false}) removeModal: ElementRef;
-  @ViewChild('roleAlertModal', { static:false}) roleAlertModal: ElementRef;
+  @ViewChild("grid", { static: false }) grid;
+  @ViewChild("editModal", { static: false }) editModal: ElementRef;
+  @ViewChild("removeModal", { static: false }) removeModal: ElementRef;
+  @ViewChild("roleAlertModal", { static: false }) roleAlertModal: ElementRef;
 
   editType: EditType;
 
-  editId = '';
-  editEmail = '';
-  editFirstName = '';
-  editLastName = '';
-  editPhone = '';
-  editPassword = '';
-  editRole = 'user';
-  editOfficeId = '';
+  editId = "";
+  editEmail = "";
+  editFirstName = "";
+  editLastName = "";
+  editPhone = "";
+  editPassword = "";
+  editRole = "user";
+  editOfficeId = "";
 
-  editModalTitle = '';
-  editModalDescriptionText = '';
+  editModalTitle = "";
+  editModalDescriptionText = "";
 
-  removeDescriptionText = '';
-  roleAlertText = '';
+  removeDescriptionText = "";
+  roleAlertText = "";
 
   isSysAdmin = false;
 
-  settings = {
-    columns: {
-      user_email: {
-        title: 'User Email',
-        filter: false
-      },
-      user_firstname: {
-        title: 'User First Name',
-        filter: false
-      },
-      user_lastname: {
-        title: 'User Last Name',
-        sort: true,
-        sortDirection: 'asc',
-        filter: false
-      },
-      user_phone: {
-        title: 'User Phone Number',
-        filter: false
-      },
-      user_office: {
-        title: 'Office',
-        filter: false
-      },
-      user_role: {
-        title: 'Role',
-        filter: false
-      },
+  columnDefs = [
+    {
+      width: 70,
+      checkboxSelection: true,
     },
-    selectMode: 'single',
-    actions: {
-      add: false,
-      edit: false,
-      delete: false,
+    {
+      headerName: "User Email",
+      field: "user_email",
+      sortable: true,
+      resizable: true,
+      filter: true,
     },
-    pager: {
-      display: false,
-      perPage: 1000000,
-    }
-  };
+    {
+      headerName: "User First Name",
+      field: "user_firstname",
+      sortable: true,
+      resizable: true,
+      filter: true,
+    },
+    {
+      headerName: "User Last Name",
+      field: "user_lastname",
+      sortable: true,
+      resizable: true,
+      filter: true,
+    },
+    {
+      headerName: "User Phone Number",
+      field: "user_phone",
+      sortable: true,
+      resizable: true,
+      filter: true,
+    },
+    {
+      headerName: "Office",
+      field: "user_office",
+      sortable: true,
+      resizable: true,
+      filter: true,
+    },
+    {
+      headerName: "Role",
+      field: "user_role",
+      sortable: true,
+      resizable: true,
+      filter: true,
+    },
+  ];
 
-  data: LocalDataSource;
+  rowData = [];
 
   offices = [];
 
@@ -100,13 +107,13 @@ export class UserSetupComponent implements OnInit {
     private companyOfficeApi: CompanyOfficeApi,
     private spinner: NgxSpinnerService,
     private loggerService: Logger
-  ) { }
+  ) {}
 
   ngOnInit() {
     if (this.dataStore.currentUser) {
       this.loadData();
     } else {
-      this.dataStore.authenticationState.subscribe(value => {
+      this.dataStore.authenticationState.subscribe((value) => {
         if (value) {
           this.loadData();
         }
@@ -114,163 +121,240 @@ export class UserSetupComponent implements OnInit {
     }
   }
 
-  loadData() {
-    this.isSysAdmin = this.dataStore.currentUser.user_role === 'sys admin';
+  onGridReady(params): void {
+    params.api.sizeColumnsToFit();
+  }
 
-    this.companyOfficeApi.findOffices(this.dataStore.currentUser['customer_id'])
+  loadData() {
+    this.isSysAdmin = this.dataStore.currentUser.user_role === "sys admin";
+
+    this.companyOfficeApi
+      .findOffices(this.dataStore.currentUser["customer_id"])
       .then((offices: any[]) => {
         this.offices = offices;
-        return this.userInfoApi.findUsers(this.dataStore.currentUser.customer_id);
+        return this.userInfoApi.findUsers(
+          this.dataStore.currentUser.customer_id
+        );
       })
       .then((users: any) => {
-        users.forEach(user => {
+        users.forEach((user) => {
           const { customer_office_id } = user;
-          const userOffice = this.offices.find(({ company_office_id }) => company_office_id === customer_office_id);
+          const userOffice = this.offices.find(
+            ({ company_office_id }) => company_office_id === customer_office_id
+          );
 
           if (userOffice) {
-            user['user_office'] = userOffice['company_office_name'];
+            user["user_office"] = userOffice["company_office_name"];
           }
         });
 
-        this.data = new LocalDataSource(users);
-        this.data.reset();
+        this.rowData = users;
 
-        return this.companyOfficeApi.findOffices(this.dataStore.currentUser['customer_id']);
+        return this.companyOfficeApi.findOffices(
+          this.dataStore.currentUser["customer_id"]
+        );
       })
-      .catch(err => {
-        this.notificationService.error('Error', err, { timeOut: 3000, showProgressBar: false });
+      .catch((err) => {
+        this.notificationService.error("Error", err, {
+          timeOut: 3000,
+          showProgressBar: false,
+        });
       });
   }
 
-  onAdd () {
+  onAdd() {
     this.editModalTitle = `Add New User For ${this.dataStore.currentUser.customer_name}`;
-    this.editModalDescriptionText = 'Adding a new user will allow that user to submit and review projects. It will also allow them to access this application so that they can modify any project settings.  Only Admin users will be able to change customer settings.';
+    this.editModalDescriptionText =
+      "Adding a new user will allow that user to submit and review projects. It will also allow them to access this application so that they can modify any project settings.  Only Admin users will be able to change customer settings.";
 
-    this.editEmail = '';
-    this.editFirstName = '';
-    this.editLastName = '';
-    this.editPhone = '';
-    this.editPassword = '';
-    this.editRole = 'user';
-    this.editOfficeId = '';
+    this.editEmail = "";
+    this.editFirstName = "";
+    this.editLastName = "";
+    this.editPhone = "";
+    this.editPassword = "";
+    this.editRole = "user";
+    this.editOfficeId = "";
 
-    this.editModal.nativeElement.style.display = 'block';
+    this.editModal.nativeElement.style.display = "block";
     this.editType = EditType.CREATE;
   }
 
-  onRemove () {
-    let selectedUser = this.table.grid.dataSet.selectedRow.data;
+  onRemove() {
+    const selectedRecords = this.grid.api.getSelectedRows();
 
-    if (selectedUser) {
-      if (selectedUser['user_id'] === this.dataStore.currentUser['user_id']) {
-        this.notificationService.error('Error', 'You cannot remove yourself', { timeOut: 3000, showProgressBar: false });
+    if (selectedRecords.length) {
+      const selectedUser = selectedRecords[0];
+
+      if (selectedUser["user_id"] === this.dataStore.currentUser["user_id"]) {
+        this.notificationService.error("Error", "You cannot remove yourself", {
+          timeOut: 3000,
+          showProgressBar: false,
+        });
       } else {
-        this.removeDescriptionText = `Are You Sure You Want To Remove ${selectedUser.user_firstname} ${selectedUser.user_lastname}` + `, From Accessing ${this.dataStore.currentUser.customer_name} information?`;
-        this.removeModal.nativeElement.style.display = 'block';
+        this.removeDescriptionText =
+          `Are You Sure You Want To Remove ${selectedUser.user_firstname} ${selectedUser.user_lastname}` +
+          `, From Accessing ${this.dataStore.currentUser.customer_name} information?`;
+        this.removeModal.nativeElement.style.display = "block";
       }
     } else {
-      this.notificationService.error('Error', 'Please select a user first', { timeOut: 3000, showProgressBar: false });
+      this.notificationService.error("Error", "Please select a user first", {
+        timeOut: 3000,
+        showProgressBar: false,
+      });
     }
   }
 
-  onEdit () {
-    const selectedUser = this.table.grid.dataSet.selectedRow.data;
+  onEdit() {
+    const selectedRecords = this.grid.api.getSelectedRows();
 
-    if (selectedUser) {
-      if (selectedUser.user_role === 'sys admin' && this.dataStore.currentUser['user_role'] !== 'sys admin') {
-        return this.notificationService.error('Error', 'You cannot edit sys admin', { timeOut: 3000, showProgressBar: false });
+    if (selectedRecords.length) {
+      const selectedUser = selectedRecords[0];
+      if (
+        selectedUser.user_role === "sys admin" &&
+        this.dataStore.currentUser["user_role"] !== "sys admin"
+      ) {
+        return this.notificationService.error(
+          "Error",
+          "You cannot edit sys admin",
+          { timeOut: 3000, showProgressBar: false }
+        );
       }
 
       this.editModalTitle = `Edit User ${selectedUser.user_firstname} ${selectedUser.user_lastname}`;
-      this.editModalDescriptionText = 'Editing a user should not be used to remove a user and replace them with a new user. This will cause the history of previous user to be associated with the new user.';
+      this.editModalDescriptionText =
+        "Editing a user should not be used to remove a user and replace them with a new user. This will cause the history of previous user to be associated with the new user.";
 
       this.editId = selectedUser.user_id;
       this.editEmail = selectedUser.user_email;
       this.editFirstName = selectedUser.user_firstname;
       this.editLastName = selectedUser.user_lastname;
       this.editPhone = selectedUser.user_phone;
-      this.editPassword = selectedUser.has_password === 'yes' ? 'FAKEPW' : '';
+      this.editPassword = selectedUser.has_password === "yes" ? "FAKEPW" : "";
       this.editRole = selectedUser.user_role;
       this.editOfficeId = selectedUser.customer_office_id;
 
-      this.editModal.nativeElement.style.display = 'block';
+      this.editModal.nativeElement.style.display = "block";
       this.editType = EditType.UPDATE;
     } else {
-      this.notificationService.error('Error', 'Please select a user first', { timeOut: 3000, showProgressBar: false });
+      this.notificationService.error("Error", "Please select a user first", {
+        timeOut: 3000,
+        showProgressBar: false,
+      });
     }
   }
 
   onCloseEditModal() {
-    this.editModal.nativeElement.style.display = 'none';
+    this.editModal.nativeElement.style.display = "none";
   }
 
   onSave() {
-    let sysAdmin = this.data['data'].find((user) => user.user_role === 'sys admin');
+    let sysAdmin = this.rowData.find((user) => user.user_role === "sys admin");
 
-    if(!(!sysAdmin || this.editRole !== 'sys admin' || (sysAdmin['user_id'] === this.editId && this.editType === EditType.UPDATE))) {
+    if (
+      !(
+        !sysAdmin ||
+        this.editRole !== "sys admin" ||
+        (sysAdmin["user_id"] === this.editId &&
+          this.editType === EditType.UPDATE)
+      )
+    ) {
       // sys admin conflict, show alert message
-      this.roleAlertText = `There can only be one system administrator. By adding this role to user <${this.editFirstName} ${this.editLastName}> you are making them the system administrator and demoting <${sysAdmin['user_firstname']} ${sysAdmin['user_lastname']}> to an admin.  This will prevent him from managing payment information.`;
-      this.roleAlertModal.nativeElement.style.display = 'block';
+      this.roleAlertText = `There can only be one system administrator. By adding this role to user <${this.editFirstName} ${this.editLastName}> you are making them the system administrator and demoting <${sysAdmin["user_firstname"]} ${sysAdmin["user_lastname"]}> to an admin.  This will prevent him from managing payment information.`;
+      this.roleAlertModal.nativeElement.style.display = "block";
     } else {
       this.save();
     }
   }
 
   onCloseRemoveModal() {
-    this.removeModal.nativeElement.style.display = 'none';
+    this.removeModal.nativeElement.style.display = "none";
   }
 
   onConfirmRemove() {
-    let selectedUser = this.table.grid.dataSet.selectedRow.data;
-    let user_id = selectedUser.user_id;
-    let customer_id = selectedUser.customer_id;
+    const selectedRecords = this.grid.api.getSelectedRows();
 
-    this.userInfoApi.removeUser(user_id, customer_id)
-      .then(res => {
-        this.removeModal.nativeElement.style.display = 'none';
-        this.notificationService.success('Sucess', 'User has been removed', { timeOut: 3000, showProgressBar: false });
-        this.logTransaction('Remove user', 'Completed', `User <${selectedUser.user_email}> has been removed`, 'summary');
+    if (selectedRecords.length) {
+      const selectedUser = selectedRecords[0];
+      let user_id = selectedUser.user_id;
+      let customer_id = selectedUser.customer_id;
 
-        this.loadData();
-      })
-      .catch(err => {
-        this.notificationService.error('Error', err, { timeOut: 3000, showProgressBar: false });
-        this.logTransaction('Remove user', 'Failed', CircularJSON.stringify(err), 'summary');
-      });
+      this.userInfoApi
+        .removeUser(user_id, customer_id)
+        .then((res) => {
+          this.removeModal.nativeElement.style.display = "none";
+          this.notificationService.success("Sucess", "User has been removed", {
+            timeOut: 3000,
+            showProgressBar: false,
+          });
+          this.logTransaction(
+            "Remove user",
+            "Completed",
+            `User <${selectedUser.user_email}> has been removed`,
+            "summary"
+          );
+
+          this.loadData();
+        })
+        .catch((err) => {
+          this.notificationService.error("Error", err, {
+            timeOut: 3000,
+            showProgressBar: false,
+          });
+          this.logTransaction(
+            "Remove user",
+            "Failed",
+            CircularJSON.stringify(err),
+            "summary"
+          );
+        });
+    }
   }
 
   onUserRowSelected(event) {
-    if (MouseGuard.isDoubleClick()){
+    if (MouseGuard.isDoubleClick()) {
       this.onEdit();
     }
   }
 
   onCloseAlertModal() {
-    this.roleAlertModal.nativeElement.style.display = 'none';
+    this.roleAlertModal.nativeElement.style.display = "none";
   }
 
   onConfirmSave() {
-    this.roleAlertModal.nativeElement.style.display = 'none';
+    this.roleAlertModal.nativeElement.style.display = "none";
 
-    let sysAdmin = this.data['data'].find((user) => user.user_role === 'sys admin');
+    let sysAdmin = this.rowData.find((user) => user.user_role === "sys admin");
 
-    this.userInfoApi.updateUser({
-      search_user_id: sysAdmin['user_id'],
-      user_role: 'user',
-    }).then(res => {
-      this.save();
-    }).catch(err => {
-      this.notificationService.error('Error', err, { timeOut: 3000, showProgressBar: false });
-    });
+    this.userInfoApi
+      .updateUser({
+        search_user_id: sysAdmin["user_id"],
+        user_role: "user",
+      })
+      .then((res) => {
+        this.save();
+      })
+      .catch((err) => {
+        this.notificationService.error("Error", err, {
+          timeOut: 3000,
+          showProgressBar: false,
+        });
+      });
   }
 
   save() {
     let formattedPhone = this.editPhone;
 
     try {
-      formattedPhone = phoneUtil.formatInOriginalFormat(phoneUtil.parseAndKeepRawInput(this.editPhone, 'US'), 'US');
+      formattedPhone = phoneUtil.formatInOriginalFormat(
+        phoneUtil.parseAndKeepRawInput(this.editPhone, "US"),
+        "US"
+      );
     } catch (err) {
-      this.notificationService.alert('Warning', 'Phone number cannot be formatted', { timeOut: 3000, showProgressBar: false });
+      this.notificationService.alert(
+        "Warning",
+        "Phone number cannot be formatted",
+        { timeOut: 3000, showProgressBar: false }
+      );
     }
 
     const params: any = {
@@ -282,63 +366,114 @@ export class UserSetupComponent implements OnInit {
       customer_office_id: this.editOfficeId,
     };
 
-    if (this.editPassword && this.editPassword !== 'FAKEPW') {
+    if (this.editPassword && this.editPassword !== "FAKEPW") {
       params.user_password = this.editPassword;
     }
 
     this.spinner.show();
 
     if (this.editType === EditType.CREATE) {
-      this.userInfoApi.createUser(params)
+      this.userInfoApi
+        .createUser(params)
         .then((user_id: string) => {
-          return this.userInfoApi.addCompanyUser(user_id, this.dataStore.currentUser.customer_id);
+          return this.userInfoApi.addCompanyUser(
+            user_id,
+            this.dataStore.currentUser.customer_id
+          );
         })
         .then((status: string) => {
           this.spinner.hide();
-          this.editModal.nativeElement.style.display = 'none';
+          this.editModal.nativeElement.style.display = "none";
 
-          if (status.includes('added')) {
-            this.notificationService.success('Sucess', 'User has been added', { timeOut: 3000, showProgressBar: false });
-            this.logTransaction('Create user', 'Completed', `User <${params.user_email}> created`, 'summary');
+          if (status.includes("added")) {
+            this.notificationService.success("Sucess", "User has been added", {
+              timeOut: 3000,
+              showProgressBar: false,
+            });
+            this.logTransaction(
+              "Create user",
+              "Completed",
+              `User <${params.user_email}> created`,
+              "summary"
+            );
 
             this.loadData();
           } else {
-            this.notificationService.info('Sucess', 'Company change request has been sent to the user', { timeOut: 3000, showProgressBar: false });
-            this.logTransaction('Create user', 'Completed', `Company change request has been sent to the user <${params.user_email}>`, 'summary');
+            this.notificationService.info(
+              "Sucess",
+              "Company change request has been sent to the user",
+              { timeOut: 3000, showProgressBar: false }
+            );
+            this.logTransaction(
+              "Create user",
+              "Completed",
+              `Company change request has been sent to the user <${params.user_email}>`,
+              "summary"
+            );
           }
         })
-        .catch(err => {
+        .catch((err) => {
           this.spinner.hide();
-          this.notificationService.error('Error', err, { timeOut: 3000, showProgressBar: false });
-          this.logTransaction('Create user', 'Failed', CircularJSON.stringify(err), 'summary');
+          this.notificationService.error("Error", err, {
+            timeOut: 3000,
+            showProgressBar: false,
+          });
+          this.logTransaction(
+            "Create user",
+            "Failed",
+            CircularJSON.stringify(err),
+            "summary"
+          );
         });
     } else {
       params.search_user_id = this.editId;
 
-      this.userInfoApi.updateUser(params)
-        .then(res => {
+      this.userInfoApi
+        .updateUser(params)
+        .then((res) => {
           this.spinner.hide();
-          this.editModal.nativeElement.style.display = 'none';
+          this.editModal.nativeElement.style.display = "none";
 
-          this.notificationService.success('Sucess', 'User has been updated', { timeOut: 3000, showProgressBar: false });
-          this.logTransaction('Update user', 'Completed', `User <${params.user_email}> updated`, 'summary');
+          this.notificationService.success("Sucess", "User has been updated", {
+            timeOut: 3000,
+            showProgressBar: false,
+          });
+          this.logTransaction(
+            "Update user",
+            "Completed",
+            `User <${params.user_email}> updated`,
+            "summary"
+          );
 
           this.loadData();
         })
-        .catch(err => {
+        .catch((err) => {
           this.spinner.hide();
-          this.notificationService.error('Error', err, { timeOut: 3000, showProgressBar: false });
-          this.logTransaction('Update user', 'Failed', CircularJSON.stringify(err), 'summary');
+          this.notificationService.error("Error", err, {
+            timeOut: 3000,
+            showProgressBar: false,
+          });
+          this.logTransaction(
+            "Update user",
+            "Failed",
+            CircularJSON.stringify(err),
+            "summary"
+          );
         });
     }
   }
 
-  logTransaction(operation: string, status: string, description: string, transaction_level: string) {
+  logTransaction(
+    operation: string,
+    status: string,
+    description: string,
+    transaction_level: string
+  ) {
     this.loggerService.logAppTransaction({
-      routine_name: 'Customer Portal',
+      routine_name: "Customer Portal",
       operation_name: operation,
-      user_id: this.dataStore.currentUser['user_id'],
-      customer_id: this.dataStore.currentUser['customer_id'],
+      user_id: this.dataStore.currentUser["user_id"],
+      customer_id: this.dataStore.currentUser["customer_id"],
       function_name: operation,
       operation_status: status,
       operation_status_desc: description,

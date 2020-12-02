@@ -95,6 +95,25 @@ textarea {
       width: 150px;
       margin-left: 20px;
     }
+
+    .dx-field {
+      input {
+        height: auto;
+        width: auto;
+        margin: 0;
+        border: none;
+      }
+
+      select {
+        height: auto;
+        width: auto;
+        margin: 0;
+        border: none;
+      }
+      textarea {
+        border: none;
+      }
+    }
   }
   .modal-box-wide {
     display: block;

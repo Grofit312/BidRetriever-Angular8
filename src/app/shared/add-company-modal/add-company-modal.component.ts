@@ -1,69 +1,74 @@
-import { Component, OnInit, ViewEncapsulation, ViewChild, ElementRef } from '@angular/core';
-import { CompaniesApi } from 'app/customer-portal/my-companies/my-companies.api.service';
-import { TreeModel } from 'ng2-tree';
-import { DataStore } from 'app/providers/datastore';
-import { AmazonService } from 'app/providers/amazon.service';
+import {
+  Component,
+  OnInit,
+  ViewEncapsulation,
+  ViewChild,
+  ElementRef,
+} from "@angular/core";
+import { CompaniesApi } from "app/customer-portal/my-companies/my-companies.api.service";
+import { TreeModel } from "ng2-tree";
+import { DataStore } from "app/providers/datastore";
+import { AmazonService } from "app/providers/amazon.service";
 
-import { NotificationsService } from 'angular2-notifications';
-import { NgxSpinnerService } from 'ngx-spinner';
-import { ValidationService } from 'app/providers/validation.service';
-import { FoldingType } from 'ng2-tree/src/tree.types';
-import * as uuid from 'uuid/v1';
-import { DatePicker } from 'angular2-datetimepicker';
-import { Logger } from 'app/providers/logger.service';
-import { CompanyOfficeApi } from 'app/customer-portal/system-settings/company-office-setup/company-office-setup.api.service';
-import { UserInfoApi } from 'app/customer-portal/system-settings/user-setup/user-setup.api.service';
-import { DestinationSettingsApi } from 'app/customer-portal/system-settings/destination-system-settings/destination-system-settings.api.service';
-const CircularJSON = require('circular-json');
-const moment = require('moment-timezone');
+import { NotificationsService } from "angular2-notifications";
+import { NgxSpinnerService } from "ngx-spinner";
+import { ValidationService } from "app/providers/validation.service";
+import { FoldingType } from "ng2-tree/src/tree.types";
+import * as uuid from "uuid/v1";
+import { DatePicker } from "angular2-datetimepicker";
+import { Logger } from "app/providers/logger.service";
+import { CompanyOfficeApi } from "app/customer-portal/system-settings/company-office-setup/company-office-setup.api.service";
+import { UserInfoApi } from "app/customer-portal/system-settings/user-setup/user-setup.api.service";
+import { DestinationSettingsApi } from "app/customer-portal/system-settings/destination-system-settings/destination-system-settings.api.service";
+const CircularJSON = require("circular-json");
+const moment = require("moment-timezone");
 
 @Component({
-  selector: 'add-company-modal',
-  templateUrl: './add-company-modal.component.html',
-  styleUrls: ['./add-company-modal.component.scss'],
+  selector: "add-company-modal",
+  templateUrl: "./add-company-modal.component.html",
+  styleUrls: ["./add-company-modal.component.scss"],
   providers: [
     CompaniesApi,
     CompanyOfficeApi,
     DestinationSettingsApi,
-    UserInfoApi
+    UserInfoApi,
   ],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 export class AddCompanyModalComponent implements OnInit {
+  @ViewChild("addCompanyModal", { static: false }) addCompanyModal: ElementRef;
+  @ViewChild("dropZone", { static: false }) dropZone: ElementRef;
+  @ViewChild("treeZone", { static: false }) treeZone: ElementRef;
 
-  @ViewChild('addCompanyModal', { static: false }) addCompanyModal: ElementRef;
-  @ViewChild('dropZone', { static: false }) dropZone: ElementRef;
-  @ViewChild('treeZone', { static: false }) treeZone: ElementRef;
-
-  viewMode = 'basic';
+  viewMode = "basic";
 
   fileTree: TreeModel = {
-    value: '',
+    value: "",
   };
   droppedFiles = [];
   parent = null;
   offices = [];
   companyUsers = [];
-  companyName = '';
-  companyEmail = '';
-  companyPhone = '';
-  companyRecordSource = '';
-  recordSource = '';
-  companyServiceArea = '';
+  companyName = "";
+  companyEmail = "";
+  companyPhone = "";
+  companyRecordSource = "";
+  recordSource = "";
+  companyServiceArea = "";
   companyStatus = null;
-  companyWebsite = '';
-  companyRevenue = '';
-  companyDomain = '';
-  companyEmployeeNumber = '';
+  companyWebsite = "";
+  companyRevenue = "";
+  companyDomain = "";
+  companyEmployeeNumber = "";
   companyType = null;
-  companyAdminUserId = '';
-  companyAddress1 = '';
-  companyAddress2 = '';
-  companyCity = '';
-  companyState = '';
-  companyCountry = '';
-  companyZip = '';
-  companyTimezone = '';
+  companyAdminUserId = "";
+  companyAddress1 = "";
+  companyAddress2 = "";
+  companyCity = "";
+  companyState = "";
+  companyCountry = "";
+  companyZip = "";
+  companyTimezone = "";
   constructor(
     private _destinationSettingsApi: DestinationSettingsApi,
     public dataStore: DataStore,
@@ -85,84 +90,97 @@ export class AddCompanyModalComponent implements OnInit {
     };
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   initialize(parent: any) {
     this.parent = parent;
-    this.companyName = '';   
-    this.companyPhone = '';   
-    this.companyRecordSource = '';   
-    this.recordSource = '';   
-    this.companyServiceArea = '';   
-    this.companyWebsite = '';   
-    this.companyStatus = null;   
-    this.companyType = null;   
-    this.companyRevenue = '';   
-    this.companyEmail = '';   
-    this.companyDomain = '';
-    this.companyEmployeeNumber = '';
+    this.companyName = "";
+    this.companyPhone = "";
+    this.companyRecordSource = "";
+    this.recordSource = "";
+    this.companyServiceArea = "";
+    this.companyWebsite = "";
+    this.companyStatus = null;
+    this.companyType = null;
+    this.companyRevenue = "";
+    this.companyEmail = "";
+    this.companyDomain = "";
+    this.companyEmployeeNumber = "";
 
-    this.companyAddress1 = '';
-    this.companyAddress2 = '';
-    this.companyCity = '';
-    this.companyState = '';
-    this.companyCountry = '';
-    this.companyZip = '';
+    this.companyAddress1 = "";
+    this.companyAddress2 = "";
+    this.companyCity = "";
+    this.companyState = "";
+    this.companyCountry = "";
+    this.companyZip = "";
     this.companyAdminUserId = this.dataStore.currentUser.user_id;
     this.droppedFiles = [];
-    this.treeZone.nativeElement.style.display = 'none';
-    this.dropZone.nativeElement.style.display = 'block';
-    this.addCompanyModal.nativeElement.style.display = 'block';
+    this.treeZone.nativeElement.style.display = "none";
+    this.dropZone.nativeElement.style.display = "block";
+    this.addCompanyModal.nativeElement.style.display = "block";
 
-    this.userApiService.findUsers(this.dataStore.currentUser['customer_id'])
+    this.userApiService
+      .findUsers(this.dataStore.currentUser["customer_id"])
       .then((users: any[]) => {
-        this.companyUsers = users.filter(({ status }) => status === 'active');
-        return this.officeApiService.findOffices(this.dataStore.currentUser['customer_id']);
+        this.companyUsers = users.filter(({ status }) => status === "active");
+        return this.officeApiService.findOffices(
+          this.dataStore.currentUser["customer_id"]
+        );
       })
       .then((offices: any[]) => {
         this.offices = offices;
       })
-      .catch(err => {
-        this.notificationService.error('Error', err, { timeOut: 3000, showProgressBar: false });
+      .catch((err) => {
+        this.notificationService.error("Error", err, {
+          timeOut: 3000,
+          showProgressBar: false,
+        });
       });
   }
 
   onClickTab(_: any, index: number) {
     if (index === 1) {
-      this.viewMode = 'basic';
+      this.viewMode = "basic";
     } else if (index === 2) {
-      this.viewMode = 'date';
+      this.viewMode = "date";
     } else if (index === 3) {
-      this.viewMode = 'detail';
+      this.viewMode = "detail";
     } else {
-      this.viewMode = 'basic';
+      this.viewMode = "basic";
     }
   }
 
   onSaveCompany() {
     // validation check
     if (!this.companyName || !this.companyName.trim()) {
-      return this.notificationService.error('Error', 'Please input company name', { timeOut: 3000, showProgressBar: false });
-    }
-
-    if (!this.companyEmail || !this.companyEmail.trim()) {
-      return this.notificationService.error('Error', 'Please input company email', { timeOut: 3000, showProgressBar: false });
+      return this.notificationService.error(
+        "Error",
+        "Please input company name",
+        { timeOut: 3000, showProgressBar: false }
+      );
     }
 
     if (!this.companyDomain || !this.companyDomain.trim()) {
-      return this.notificationService.error('Error', 'Please input company domain', { timeOut: 3000, showProgressBar: false });
+      return this.notificationService.error(
+        "Error",
+        "Please input company domain",
+        { timeOut: 3000, showProgressBar: false }
+      );
     }
 
-  
     // if (this.droppedFiles.length === 0) {
     //   return this.notificationService.error('No Files', 'Please upload files', { timeOut: 3000, showProgressBar: false });
     // }
 
-    const companyName = this.validationService.validateCompanyName(this.companyName);
+    const companyName = this.validationService.validateCompanyName(
+      this.companyName
+    );
 
     if (companyName.length === 0) {
-      this.notificationService.error('Error', 'Company name cannot be empty', { timeOut: 3000, showProgressBar: false });
+      this.notificationService.error("Error", "Company name cannot be empty", {
+        timeOut: 3000,
+        showProgressBar: false,
+      });
       return;
     }
 
@@ -171,56 +189,83 @@ export class AddCompanyModalComponent implements OnInit {
     const companyCrmId = uuid();
     const companyDunsNumber = uuid();
     const companyLogoId = uuid();
-    const submissionDateTime = moment().utc().format('YYYY-MM-DDTHH:mm:ss.SSSSSS') + 'Z';
+    const submissionDateTime =
+      moment().utc().format("YYYY-MM-DDTHH:mm:ss.SSSSSS") + "Z";
     const submissionName = this.convertTimeString(submissionDateTime);
     let hashValues = [];
     let docIDs = [];
     this.spinner.show();
-     this.apiService.createCompany({
-          company_id: companyId,
-          company_crm_id: companyCrmId,
-          company_duns_number : companyDunsNumber,
-          company_admin_user_id: this.companyAdminUserId,
-          company_name: companyName,
-          user_id: this.dataStore.currentUser.user_id,
-          company_email: this.companyEmail,
-          company_phone: this.companyPhone,
-          company_record_source: this.companyRecordSource,
-          record_source: this.recordSource,
-          company_service_area: this.companyServiceArea,
-          company_revenue: this.companyRevenue,
-          company_type: this.companyType,
-          company_status: this.companyStatus,
-          company_website: this.companyWebsite,
-          company_domain: this.companyDomain,
-          company_employee_number: this.companyEmployeeNumber,
-          company_address1: this.companyAddress1,
-          company_address2: this.companyAddress2,
-          company_city: this.companyCity,
-          company_state: this.companyState,
-          company_country: this.companyCountry,
-          company_zip: this.companyZip,
-          customer_id: this.dataStore.currentUser['customer_id'],
-          company_timezone: this.companyTimezone,
-          company_logo_id : companyLogoId,
-       }).then(data => {
-          this.logTransaction('Add Company', 'Completed', `Successfully created Company`, companyId, this.dataStore.currentUser.user_id, 'summary');
+    this.apiService
+      .createCompany({
+        company_id: companyId,
+        company_crm_id: companyCrmId,
+        company_duns_number: companyDunsNumber,
+        company_admin_user_id: this.companyAdminUserId,
+        company_name: companyName,
+        user_id: this.dataStore.currentUser.user_id,
+        company_email: this.companyEmail,
+        company_phone: this.companyPhone,
+        company_record_source: this.companyRecordSource,
+        record_source: this.recordSource,
+        company_service_area: this.companyServiceArea,
+        company_revenue: this.companyRevenue,
+        company_type: this.companyType,
+        company_status: this.companyStatus,
+        company_website: this.companyWebsite,
+        company_domain: this.companyDomain,
+        company_employee_number: this.companyEmployeeNumber,
+        company_address1: this.companyAddress1,
+        company_address2: this.companyAddress2,
+        company_city: this.companyCity,
+        company_state: this.companyState,
+        company_country: this.companyCountry,
+        company_zip: this.companyZip,
+        customer_id: this.dataStore.currentUser["customer_id"],
+        company_timezone: this.companyTimezone,
+        company_logo_id: companyLogoId,
+      })
+      .then(
+        (data) => {
+          this.logTransaction(
+            "Add Company",
+            "Completed",
+            `Successfully created Company`,
+            companyId,
+            this.dataStore.currentUser.user_id,
+            "summary"
+          );
           this.spinner.hide();
           this.reset();
-          this.addCompanyModal.nativeElement.style.display = 'none';
+          this.addCompanyModal.nativeElement.style.display = "none";
           this.parent.onRefresh();
-          this.notificationService.success('Success', 'Company has been created', { timeOut: 3000, showProgressBar: false });
-       }, error => {
+          this.notificationService.success(
+            "Success",
+            "Company has been created",
+            { timeOut: 3000, showProgressBar: false }
+          );
+        },
+        (error) => {
           this.spinner.hide();
-          this.notificationService.error('Error', error, { timeOut: 3000, showProgressBar: false });
-          this.logTransaction('Add Company', 'Failed', CircularJSON.stringify(error), '', '', 'detail');
-       });
+          this.notificationService.error("Error", error, {
+            timeOut: 3000,
+            showProgressBar: false,
+          });
+          this.logTransaction(
+            "Add Company",
+            "Failed",
+            CircularJSON.stringify(error),
+            "",
+            "",
+            "detail"
+          );
+        }
+      );
   }
 
   onCancel(event) {
     event.preventDefault();
     this.reset();
-    this.addCompanyModal.nativeElement.style.display = 'none';
+    this.addCompanyModal.nativeElement.style.display = "none";
   }
 
   /* Drag And Drop */
@@ -242,12 +287,15 @@ export class AddCompanyModalComponent implements OnInit {
           processedItemsCount++;
           if (processedItemsCount === itemsCount) {
             this.fileTree = this.buildFileTree();
-            this.dropZone.nativeElement.style.display = 'none';
-            this.treeZone.nativeElement.style.display = 'block';
+            this.dropZone.nativeElement.style.display = "none";
+            this.treeZone.nativeElement.style.display = "block";
           }
         });
       } else {
-        this.notificationService.error('Error', 'Failed to read file entry', { timeOut: 3000, showProgressBar: false });
+        this.notificationService.error("Error", "Failed to read file entry", {
+          timeOut: 3000,
+          showProgressBar: false,
+        });
       }
     }
   }
@@ -256,9 +304,12 @@ export class AddCompanyModalComponent implements OnInit {
     path = path || "";
     if (item.isFile) {
       // actually ignore .DS_Store from MAC
-      if (item.name !== '.DS_Store') {
-        item.path = path || '';
-        item.filepath = item.path.length > 0 ? (item.path.substring(0, item.path.length - 1)) : '.';
+      if (item.name !== ".DS_Store") {
+        item.path = path || "";
+        item.filepath =
+          item.path.length > 0
+            ? item.path.substring(0, item.path.length - 1)
+            : ".";
         this.droppedFiles.push(item);
       }
       callback();
@@ -295,21 +346,21 @@ export class AddCompanyModalComponent implements OnInit {
         this.readAllEntries(dirReader, callback, allEntries);
       }
     });
-  }
+  };
 
   private buildFileTree() {
     var tree: TreeModel = {
-      value: '[Root]',
+      value: "[Root]",
       children: [],
-    }
+    };
 
     this.droppedFiles.forEach((droppedFile) => {
-      if (droppedFile.filepath === '.') {
+      if (droppedFile.filepath === ".") {
         tree.children.push({
           value: droppedFile.name,
         });
       } else {
-        let filePaths = droppedFile.filepath.split('/');
+        let filePaths = droppedFile.filepath.split("/");
         var parentDirectory = tree;
 
         for (var index = 0; index < filePaths.length; index++) {
@@ -319,9 +370,11 @@ export class AddCompanyModalComponent implements OnInit {
             _foldingType: FoldingType.Collapsed,
           };
 
-          var childsWithSameDirectoryName = parentDirectory.children.filter(child => {
-            return child.value === directory.value
-          });
+          var childsWithSameDirectoryName = parentDirectory.children.filter(
+            (child) => {
+              return child.value === directory.value;
+            }
+          );
 
           if (childsWithSameDirectoryName.length === 0) {
             parentDirectory.children.push(directory);
@@ -342,13 +395,16 @@ export class AddCompanyModalComponent implements OnInit {
 
   private uploadDroppedFiles(submission_id) {
     return new Promise((resolve, reject) => {
-      this.droppedFiles.reduce((p, item) => {
-        return p.then(() => this.uploadDroppedFile(item, submission_id)).catch(err => Promise.reject(err));
-      }, Promise.resolve())
+      this.droppedFiles
+        .reduce((p, item) => {
+          return p
+            .then(() => this.uploadDroppedFile(item, submission_id))
+            .catch((err) => Promise.reject(err));
+        }, Promise.resolve())
         .then((res) => {
           resolve();
         })
-        .catch(err => {
+        .catch((err) => {
           this.droppedFiles = [];
           reject(err);
         });
@@ -357,54 +413,86 @@ export class AddCompanyModalComponent implements OnInit {
 
   private uploadDroppedFile = (item, submission_id) => {
     return new Promise((resolve, reject) => {
-      item.file((file) => {
-        var reader = new FileReader();
-        reader.onload = ((theFile) =>
-          (e) => {
-            const s3Key = `${submission_id}/${item.path}${this.timestamp()}_${file.name}`;
+      item.file(
+        (file) => {
+          var reader = new FileReader();
+          reader.onload = ((theFile) => (e) => {
+            const s3Key = `${submission_id}/${item.path}${this.timestamp()}_${
+              file.name
+            }`;
 
             item.filename = file.name;
-            item.filepath = item.path.length > 0 ? (item.path.substring(0, item.path.length - 1)) : '.';
+            item.filepath =
+              item.path.length > 0
+                ? item.path.substring(0, item.path.length - 1)
+                : ".";
             item.filekey = s3Key;
             item.size = file.size;
 
-            this.amazonService.uploadFile(e.target.result, s3Key)
-              .then(res => {
+            this.amazonService
+              .uploadFile(e.target.result, s3Key)
+              .then((res) => {
                 resolve();
               })
-              .catch(err => {
-                this.logTransaction('Upload dropped file', 'Failed', `${item.filename} - ${CircularJSON.stringify(err)}`, '', '', 'detail');
+              .catch((err) => {
+                this.logTransaction(
+                  "Upload dropped file",
+                  "Failed",
+                  `${item.filename} - ${CircularJSON.stringify(err)}`,
+                  "",
+                  "",
+                  "detail"
+                );
                 reject(err);
               });
-          }
-        )(file);
+          })(file);
 
-        reader.onerror = (e) => {
-          console.log(e);
-          this.notificationService.error('Error', 'Failed to read dropped file', { timeOut: 3000, showProgressBar: false });
+          reader.onerror = (e) => {
+            console.log(e);
+            this.notificationService.error(
+              "Error",
+              "Failed to read dropped file",
+              { timeOut: 3000, showProgressBar: false }
+            );
 
-          reader.abort();
-          reject(e);
-        };
+            reader.abort();
+            reject(e);
+          };
 
-        reader.readAsArrayBuffer(file);
-      }, (err) => {
-        console.log(err.toString());
-        this.notificationService.error('Error', 'Failed to read dropped file', { timeOut: 3000, showProgressBar: false });
+          reader.readAsArrayBuffer(file);
+        },
+        (err) => {
+          console.log(err.toString());
+          this.notificationService.error(
+            "Error",
+            "Failed to read dropped file",
+            { timeOut: 3000, showProgressBar: false }
+          );
 
-        this.droppedFiles = this.droppedFiles.slice(0, this.droppedFiles.indexOf(item));
+          this.droppedFiles = this.droppedFiles.slice(
+            0,
+            this.droppedFiles.indexOf(item)
+          );
 
-        reject(err);
-      });
+          reject(err);
+        }
+      );
     });
-  }
+  };
 
-  logTransaction(operation: string, status: string, description: string, company_id: string = '', submission_id: string = '', transaction_level: string) {
+  logTransaction(
+    operation: string,
+    status: string,
+    description: string,
+    company_id: string = "",
+    submission_id: string = "",
+    transaction_level: string
+  ) {
     this.loggerService.logAppTransaction({
-      routine_name: 'Customer Portal',
-      function_name: 'Add Company',
-      user_id: this.dataStore.currentUser['user_id'],
-      customer_id: this.dataStore.currentCustomer['customer_id'],
+      routine_name: "Customer Portal",
+      function_name: "Add Company",
+      user_id: this.dataStore.currentUser["user_id"],
+      customer_id: this.dataStore.currentCustomer["customer_id"],
       operation_name: operation,
       operation_status: status,
       operation_status_desc: description,
@@ -415,44 +503,44 @@ export class AddCompanyModalComponent implements OnInit {
   }
 
   isArchiveFile(filename: string) {
-    const lastIndex = filename.lastIndexOf('.');
+    const lastIndex = filename.lastIndexOf(".");
 
     if (lastIndex) {
       const extension = filename.substring(lastIndex + 1).toLowerCase();
-      return ['zip', '7-zip', 'rar', '7z'].includes(extension);
+      return ["zip", "7-zip", "rar", "7z"].includes(extension);
     } else {
       return false;
     }
   }
 
   formatDateTime(timestamp) {
-    return moment(timestamp).utc().format('YYYY-MM-DDTHH:mm:ss.SSSSSS') + 'Z';
+    return moment(timestamp).utc().format("YYYY-MM-DDTHH:mm:ss.SSSSSS") + "Z";
   }
 
   timestamp() {
-    return moment().utc().format('YYYYMMDDHHmmssSSSSSS');
+    return moment().utc().format("YYYYMMDDHHmmssSSSSSS");
   }
 
   reset() {
-    this.companyName = '';
-    this.companyEmail = '';
-    this.companyPhone = '';
-    this.companyRevenue = '';
-    this.companyRecordSource = '';
-    this.recordSource = '';
-    this.companyServiceArea = '';
+    this.companyName = "";
+    this.companyEmail = "";
+    this.companyPhone = "";
+    this.companyRevenue = "";
+    this.companyRecordSource = "";
+    this.recordSource = "";
+    this.companyServiceArea = "";
     this.companyStatus = null;
-    this.companyWebsite = '';
+    this.companyWebsite = "";
     this.companyType = null;
-    this.companyAdminUserId = '';
-    this.companyAddress1 = '';
-    this.companyAddress2 = '';
-    this.companyCity = '';
-    this.companyState = '';
-    this.companyCountry = '';
-    this.companyZip = '';
+    this.companyAdminUserId = "";
+    this.companyAddress1 = "";
+    this.companyAddress2 = "";
+    this.companyCity = "";
+    this.companyState = "";
+    this.companyCountry = "";
+    this.companyZip = "";
     this.droppedFiles = [];
-    this.viewMode = 'basic';
+    this.viewMode = "basic";
   }
 
   onClickDatePicker(event: any) {
@@ -461,21 +549,31 @@ export class AddCompanyModalComponent implements OnInit {
   }
 
   convertTimeString(timestamp: string) {
-    return this.convertToUserTimeZone(timestamp).format('YYYY-MM-DD_HH-mm');
+    return this.convertToUserTimeZone(timestamp).format("YYYY-MM-DD_HH-mm");
   }
 
   convertToUserTimeZone(utcDateTime) {
-    const timezone = (this.dataStore.currentCustomer ? this.dataStore.currentCustomer['customer_timezone'] : 'eastern') || 'eastern';
+    const timezone =
+      (this.dataStore.currentCustomer
+        ? this.dataStore.currentCustomer["customer_timezone"]
+        : "eastern") || "eastern";
     const datetime = moment(utcDateTime);
 
     switch (timezone) {
-      case 'eastern': return datetime.tz('America/New_York');
-      case 'central': return datetime.tz('America/Chicago');
-      case 'mountain': return datetime.tz('America/Denver');
-      case 'pacific': return datetime.tz('America/Los_Angeles');
-      case 'Non US Timezone': return datetime.utc();
-      case 'utc': return datetime.utc();
-      default: return datetime.utc();
+      case "eastern":
+        return datetime.tz("America/New_York");
+      case "central":
+        return datetime.tz("America/Chicago");
+      case "mountain":
+        return datetime.tz("America/Denver");
+      case "pacific":
+        return datetime.tz("America/Los_Angeles");
+      case "Non US Timezone":
+        return datetime.utc();
+      case "utc":
+        return datetime.utc();
+      default:
+        return datetime.utc();
     }
   }
 }
