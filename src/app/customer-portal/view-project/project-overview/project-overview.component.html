@@ -1,109 +1,230 @@
-<div class='project-details-container pt-0'>
+<div class="project-details-container pt-0">
   <div class="buttons-group mt-0 pt-1 mb-0">
-    <button class="btn btn-light" (click)='onViewDocuments()'>View Documents</button>
-    <button *ngIf='!dataStore.isSharedProject' class='btn btn-light' (click)='onEditProject()'>Edit Project</button>
-    <button *ngIf='dataStore.isSharedProject' class='btn btn-light' (click)='onAddToMyProjects()'>Add to My Projects</button>
-    <div class="btn-group ">
-      <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <button class="btn btn-light" (click)="onViewDocuments()">
+      View Documents
+    </button>
+    <button
+      *ngIf="!dataStore.isSharedProject"
+      class="btn btn-light"
+      (click)="onEditProject()"
+    >
+      Edit Project
+    </button>
+    <button
+      *ngIf="dataStore.isSharedProject"
+      class="btn btn-light"
+      (click)="onAddToMyProjects()"
+    >
+      Add to My Projects
+    </button>
+    <div class="btn-group">
+      <button
+        type="button"
+        class="btn btn-primary dropdown-toggle"
+        data-toggle="dropdown"
+        aria-haspopup="true"
+        aria-expanded="false"
+      >
         Other Actions
       </button>
       <div class="dropdown-menu">
-        <a class="dropdown-item" (click)='onViewDocuments()'>View Documents</a>
-        <a *ngIf='!dataStore.isSharedProject' class="dropdown-item" (click)='onEditProject()'>Edit Project</a>
+        <a class="dropdown-item" (click)="onViewDocuments()">View Documents</a>
+        <a
+          *ngIf="!dataStore.isSharedProject"
+          class="dropdown-item"
+          (click)="onEditProject()"
+          >Edit Project</a
+        >
         <div class="dropdown-divider"></div>
-        <a *ngIf='!dataStore.isSharedProject' class="dropdown-item" (click)='onAddProjectEvent()'>Add Project Event</a>
-        <a *ngIf='!dataStore.isSharedProject' class="dropdown-item" (click)='onAddDocsToProjectEvent()'>Add Documents to Project</a>
-        <a *ngIf='!dataStore.isSharedProject' class="dropdown-item" (click)='onEditProjectEvent()'>Edit Project Event</a>
-        <a *ngIf='dataStore.isSharedProject' class="dropdown-item" (click)='onAddToMyProjects()'>Add To My Projects</a>
+        <a
+          *ngIf="!dataStore.isSharedProject"
+          class="dropdown-item"
+          (click)="onAddProjectEvent()"
+          >Add Project Event</a
+        >
+        <a
+          *ngIf="!dataStore.isSharedProject"
+          class="dropdown-item"
+          (click)="onAddDocsToProjectEvent()"
+          >Add Documents to Project</a
+        >
+        <a
+          *ngIf="!dataStore.isSharedProject"
+          class="dropdown-item"
+          (click)="onEditProjectEvent()"
+          >Edit Project Event</a
+        >
+        <a
+          *ngIf="dataStore.isSharedProject"
+          class="dropdown-item"
+          (click)="onAddToMyProjects()"
+          >Add To My Projects</a
+        >
         <div class="dropdown-divider"></div>
-        <a *ngIf='!dataStore.isSharedProject' class='dropdown-item' (click)='onArchiveProject()'>Archive Project</a>
-        <a *ngIf='!dataStore.isSharedProject' class='dropdown-item' (click)='onDeleteProject()'>Delete Project</a>
+        <a
+          *ngIf="!dataStore.isSharedProject"
+          class="dropdown-item"
+          (click)="onArchiveProject()"
+          >Archive Project</a
+        >
+        <a
+          *ngIf="!dataStore.isSharedProject"
+          class="dropdown-item"
+          (click)="onDeleteProject()"
+          >Delete Project</a
+        >
         <div class="dropdown-divider"></div>
-        <a class="dropdown-item" (click)="onUpdateProject()">Update Project From Source </a>
-        <a class="dropdown-item" (click)="onViewProjectSourceSystem()">View Project Source System</a>
-        <a class='dropdown-item' (click)='onDownloadProject()'>Download All Files</a>
-        <a class="dropdown-item" (click)='onViewPublishedProject()'>{{ dataStore.isSharedProject ? 'Download ' : 'View Published ' }}Project</a>
+        <a class="dropdown-item" (click)="onUpdateProject()"
+          >Update Project From Source
+        </a>
+        <a class="dropdown-item" (click)="onViewProjectSourceSystem()"
+          >View Project Source System</a
+        >
+        <a class="dropdown-item" (click)="onDownloadProject()"
+          >Download All Files</a
+        >
+        <a class="dropdown-item" (click)="onViewPublishedProject()"
+          >{{
+            dataStore.isSharedProject ? "Download " : "View Published "
+          }}Project</a
+        >
         <div class="dropdown-divider orange"></div>
-        <a *ngIf='!dataStore.isSharedProject' class="dropdown-item" (click)='onViewTransactionLogs()'>View Transaction Log</a>
-        <a class="dropdown-item orange" (click)='onHelp()'>Help</a>
+        <a
+          *ngIf="!dataStore.isSharedProject"
+          class="dropdown-item"
+          (click)="onViewTransactionLogs()"
+          >View Transaction Log</a
+        >
+        <a class="dropdown-item orange" (click)="onHelp()">Help</a>
       </div>
     </div>
   </div>
 
-  <div class='d-flex'>
-    <div class='w-50 mr-3'>
-      <div class='h5'>Project Details</div>
-      <div id='google_map' class='google-map my-4 bg-light'>
-        <span *ngIf='noAddress' class='no-address'>No Address Provided</span>
+  <div class="d-flex">
+    <div class="w-50 mr-3">
+      <div class="h5">Project Details</div>
+      <div id="google_map" class="google-map my-4 bg-light">
+        <span *ngIf="noAddress" class="no-address">No Address Provided</span>
       </div>
     </div>
-    <div class='w-50 ml-3'>
-      <div class='h5'>Project Dates</div>
-      <div class='project-dates-table my-4'>
-        <ag-grid-angular #grid
-                         style="width: 100%; height: 100%;"
-                         class="ag-theme-balham"
-                         rowSelection="single"
-                         [rowData]="rowData"
-                         [columnDefs]="columnDefs"
-                         (gridReady)="onGridReady($event)"
+    <div class="w-50 ml-3">
+      <div class="h5">Project Dates</div>
+      <div class="project-dates-table my-4">
+        <ag-grid-angular
+          #grid
+          style="width: 100%; height: 100%"
+          class="ag-theme-balham"
+          rowSelection="single"
+          [rowData]="rowData"
+          [columnDefs]="columnDefs"
+          (gridReady)="onGridReady($event)"
         ></ag-grid-angular>
       </div>
     </div>
   </div>
 
-  <div class='mb-3 d-flex'>
-    <div class='w-50 mr-3'>
+  <div class="mb-3 d-flex">
+    <div class="w-50 mr-3">
       <!-- <div class='text-muted mb-2'>GENERAL INFO</div> -->
       <div>
-        <div class='project-info mb-2'>
-          <span class='font-weight-bold'>Project Name</span>
-          <span>{{ dataStore.currentProject && dataStore.currentProject?.project_name }}</span>
+        <div class="project-info mb-2">
+          <span class="font-weight-bold">Project Name</span>
+          <span>{{
+            dataStore.currentProject && dataStore.currentProject?.project_name
+          }}</span>
         </div>
-        <div class='project-info mb-2'>
-          <span class='font-weight-bold'>Address</span>
-          <span>{{ dataStore.currentProject && dataStore.currentProject?.project_address }}</span>
+        <div class="project-info mb-2">
+          <span class="font-weight-bold">Address</span>
+          <span>{{
+            dataStore.currentProject &&
+              dataStore.currentProject?.project_address
+          }}</span>
         </div>
-        <div class='project-info mb-2'>
-          <span class='font-weight-bold'>Description</span>
-          <span>{{ dataStore.currentProject && dataStore.currentProject?.project_desc }}</span>
+        <div class="project-info mb-2">
+          <span class="font-weight-bold">Description</span>
+          <span>{{
+            dataStore.currentProject && dataStore.currentProject?.project_desc
+          }}</span>
         </div>
-        <div class='project-info mb-2'>
-          <span class='font-weight-bold'>Source System</span>
-          <span>{{ dataStore.currentProject && dataStore.currentProject?.source_sys_type_name }}</span>
-        </div>
-        <div class='project-info mb-2'>
-          <span class='font-weight-bold'>Source Company</span>
-          <span>{{ dataStore.currentProject && dataStore.currentProject?.source_company_name }}</span>
+        <div class="project-info mb-2">
+          <span class="font-weight-bold">Source System</span>
+          <span>{{
+            dataStore.currentProject &&
+              dataStore.currentProject?.source_sys_type_name
+          }}</span>
         </div>
       </div>
     </div>
-    <div class='w-50 ml-3'>
+    <div class="w-50 ml-3">
       <!-- <div class='text-muted mb-2'>DETAILS</div> -->
       <div>
-        <div class='project-info mb-2'>
-          <span class='font-weight-bold'>Project Administrator</span>
-          <span>{{ dataStore.currentProject && dataStore.currentProject?.user_email }}</span>
+        <div class="project-info mb-2">
+          <span class="font-weight-bold">Source Company</span>
+          <span>{{
+            dataStore.currentProject &&
+              dataStore.currentProject?.source_company_name
+          }}</span>
         </div>
-        <div class='project-info mb-2'>
-          <span class='font-weight-bold'>Stage</span>
-          <span>{{ dataStore.currentProject && dataStore.currentProject?.project_stage }}</span>
+
+        <div class="project-info mb-2">
+          <span class="font-weight-bold">Source Contact</span>
+          <span>
+            {{
+              dataStore.currentProject &&
+                dataStore.currentProject?.contact_fullname
+            }}
+            <br />
+            {{
+              dataStore.currentProject &&
+                dataStore.currentProject?.source_contact_phone
+            }}
+            {{
+              dataStore.currentProject &&
+                dataStore.currentProject?.source_contact_email
+            }}
+          </span>
         </div>
-        <div class='project-info mb-2'>
-          <span class='font-weight-bold'>Project Value</span>
-          <span>${{ dataStore.currentProject && formatValue(dataStore.currentProject?.project_value) }}</span>
+
+        <div class="project-info mb-2">
+          <span class="font-weight-bold">Project Administrator</span>
+          <span>{{
+            dataStore.currentProject && dataStore.currentProject?.user_email
+          }}</span>
         </div>
-        <div class='project-info mb-2'>
-          <span class='font-weight-bold'>Project Size</span>
-          <span>{{ dataStore.currentProject && dataStore.currentProject?.project_size }}</span>
+        <div class="project-info mb-2">
+          <span class="font-weight-bold">Stage</span>
+          <span>{{
+            dataStore.currentProject && dataStore.currentProject?.project_stage
+          }}</span>
         </div>
-        <div class='project-info mb-2'>
-          <span class='font-weight-bold'>Labor Requirement</span>
-          <span>{{ dataStore.currentProject && dataStore.currentProject?.project_labor_requirement }}</span>
+        <div class="project-info mb-2">
+          <span class="font-weight-bold">Project Value</span>
+          <span
+            >${{
+              dataStore.currentProject &&
+                formatValue(dataStore.currentProject?.project_value)
+            }}</span
+          >
         </div>
-        <div class='project-info mb-2'>
-          <span class='font-weight-bold'>Contract Type</span>
-          <span>{{ dataStore.currentProject && dataStore.currentProject?.project_contract_type }}</span>
+        <div class="project-info mb-2">
+          <span class="font-weight-bold">Project Size</span>
+          <span>{{
+            dataStore.currentProject && dataStore.currentProject?.project_size
+          }}</span>
+        </div>
+        <div class="project-info mb-2">
+          <span class="font-weight-bold">Labor Requirement</span>
+          <span>{{
+            dataStore.currentProject &&
+              dataStore.currentProject?.project_labor_requirement
+          }}</span>
+        </div>
+        <div class="project-info mb-2">
+          <span class="font-weight-bold">Contract Type</span>
+          <span>{{
+            dataStore.currentProject &&
+              dataStore.currentProject?.project_contract_type
+          }}</span>
         </div>
       </div>
     </div>

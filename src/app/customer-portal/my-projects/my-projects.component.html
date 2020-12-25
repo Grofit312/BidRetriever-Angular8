@@ -226,6 +226,40 @@
         </dx-select-box>
       </div>
 
+      <div *dxTemplate="let cell of 'projectAdminUserNameCell'">
+        {{ cell.value }}
+      </div>
+      <div *dxTemplate="let cell of 'projectAdminUserNameEditor'">
+        <dx-select-box
+          [items]="projectGridEditorTemplateSource.adminUserEmail"
+          [value]="cell.value"
+          displayExpr="user_displayname"
+          valueExpr="user_name"
+          (onValueChanged)="cell.setValue($event.value)"
+        >
+          <div *dxTemplate="let data of 'item'">
+            {{ data.user_displayname }} ({{ data.user_email }})
+          </div>
+        </dx-select-box>
+      </div>
+
+      <div *dxTemplate="let cell of 'projectSourceCompanyCell'">
+        {{ findMatchedSourceCompanyName(cell.value) }}
+      </div>
+      <div *dxTemplate="let cell of 'projectSourceCompanyEditor'">
+        <dx-select-box
+          [dataSource]="companyTypeList"
+          [value]="cell.value"
+          displayExpr="company_name"
+          valueExpr="company_id"
+          (onValueChanged)="cell.setValue($event.value)"
+        >
+          <div *dxTemplate="let data of 'item'">
+            {{ data.company_name }}
+          </div>
+        </dx-select-box>
+      </div>
+
       <div *dxTemplate="let cell of 'statusEditor'">
         <dx-select-box
           [items]="projectGridEditorTemplateSource.status"

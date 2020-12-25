@@ -19,7 +19,7 @@ import {
   providers: [SubmissionsApi, ProjectsApi, ViewProjectApi, CompanyOfficeApi],
 })
 export class SubmissionsComponent implements OnInit {
-    @ViewChild("submissionGrid", { static: false })
+  @ViewChild("submissionGrid", { static: false })
   submissionGrid: DxDataGridComponent;
   @ViewChild("submissionToolbar", { static: false })
   submissionToolbar: DxToolbarComponent;
@@ -41,6 +41,7 @@ export class SubmissionsComponent implements OnInit {
   submissionGridContentLoaded = false;
 
   submissionViewTypeSelected = null;
+  submissionViewTypes: any[] = [];
 
   toolbarConfig: any = {};
 
@@ -73,23 +74,201 @@ export class SubmissionsComponent implements OnInit {
     private officeApiService: CompanyOfficeApi,
     private notificationService: NotificationsService
   ) {
+    this.toolbarConfig = {
+      submissionViewType: {
+        width: 250,
+        showClearButton: true,
+        onValueChanged: (e) => {
+          this.submissionViewMode = e.value;
+          this.onChangeSubmissionViewMode();
+        },
+      },
 
+      refreshInterval: {
+        width: 100,
+        options: [
+          { value: 1, label: "1 min" },
+          { value: 2, label: "2 min" },
+          { value: 5, label: "5 min" },
+          { value: 10, label: "10 min" },
+          { value: 30, label: "30 min" },
+          { value: 60, label: "60 min" },
+          { value: 0, label: "None" },
+        ],
+        showClearButton: true,
+        onValueChanged: (e) => {
+          this.refreshInterval = e.value;
+          this.onChangeRefreshInterval();
+        },
+      },
+
+      search: {
+        placeholder: "Search",
+        width: 200,
+        valueChangeEvent: "keyup",
+        onValueChanged: (event) =>
+          this.onSearchChange(event.value.toLowerCase()),
+      },
+
+      viewProject: {
+        type: "normal",
+        text: "View Project",
+        onClick: () => this.onViewProject(),
+      },
+      viewSubmission: {
+        type: "normal",
+        text: "View Submission",
+        onClick: () => this.onViewSubmission(),
+      },
+
+      others: {
+        viewProject: {
+          type: "normal",
+          text: "View Project",
+          onClick: () => this.onViewProject(),
+        },
+        viewSubmission: {
+          type: "normal",
+          text: "View Project Submission",
+          onClick: () => this.onViewSubmission(),
+        },
+        viewPublishedSubmission: {
+          type: "normal",
+          text: "View Published Submission",
+          onClick: () => this.onViewPublishedSubmission(),
+        },
+        downloadSubmission: {
+          type: "normal",
+          text: "Download Submission",
+          onClick: () => this.onDownloadSubmission(),
+        },
+        viewSubmissionEmail: {
+          type: "normal",
+          text: "View Submission Email",
+          onClick: () => this.onViewSubmissionEmail(),
+        },
+        deleteSubmission: {
+          type: "normal",
+          text: "Delete Submission",
+          onClick: () => this.onDeleteSubmission(),
+        },
+        viewTransactionLog: {
+          type: "normal",
+          text: "View Transaction Log",
+          onClick: () => this.onViewTransactionLogs(),
+        },
+        refreshGrid: {
+          type: "normal",
+          text: "Refresh Grid",
+          onClick: () => this.onRefresh(),
+        },
+        help: {
+          type: "normal",
+          text: "Help",
+          onClick: () => this.onHelp(),
+        },
+      },
+    };
 
     this.submissionGridColumns = [
-        {dataField: "project_name",caption: "Project Name",width: 400,visible: true,allowEditing: false,},
-        {dataField: "source_sys_name",caption: "Source",width: 200,visible: true,allowEditing: false,},
-        {dataField: "source_company_name",caption: "Source Company",width: 200,visible: true,allowEditing: false,},
-        {dataField: "submission_name",caption: "Submission Name",width: 200,visible: true,allowEditing: false,},
-        {dataField: "submission_type",caption: "Submission Type",width: 200,visible: true,allowEditing: false,},
-        {dataField: "submitter_email",caption: "Submitter Email",width: 100,visible: true,allowEditing: false,},
-        {dataField: "submission_date",caption: "Submission Date/Time",width: 100,visible: true,allowEditing: false,},
-        {dataField: "submission_process_status",caption: "Processing Status",width: 100,visible: this.isBidRetrieverAdmin,allowEditing: false,}, 
-        {dataField: "submission_process_message",caption: "Processing Message",width: 100,visible: this.isBidRetrieverAdmin,allowEditing: false,}, 
-        {dataField: "submission_file_count",caption: "# Files",width: 100,visible: true,allowEditing: false,},
-        {dataField: "submission_pending_file_count",caption: "# Files Pending",width: 100,visible: true,allowEditing: false,},
-        {dataField: "submission_plan_count",caption: "# Plans",width: 100,visible: true,allowEditing: false,},
-        {dataField: "total_processing_time",caption: "Total Processing Time",width: 100,visible: false,allowEditing: false,},
-        {dataField: "submission_id",caption: "Submission ID",width: 100,visible: false,allowEditing: false,},
+      {
+        dataField: "project_name",
+        caption: "Project Name",
+        width: 400,
+        visible: true,
+        allowEditing: false,
+      },
+      {
+        dataField: "source_sys_name",
+        caption: "Source",
+        width: 200,
+        visible: true,
+        allowEditing: false,
+      },
+      {
+        dataField: "source_company_name",
+        caption: "Source Company",
+        width: 200,
+        visible: true,
+        allowEditing: false,
+      },
+      {
+        dataField: "submission_name",
+        caption: "Submission Name",
+        width: 200,
+        visible: true,
+        allowEditing: false,
+      },
+      {
+        dataField: "submission_type",
+        caption: "Submission Type",
+        width: 200,
+        visible: true,
+        allowEditing: false,
+      },
+      {
+        dataField: "submitter_email",
+        caption: "Submitter Email",
+        width: 100,
+        visible: true,
+        allowEditing: false,
+      },
+      {
+        dataField: "submission_date",
+        caption: "Submission Date/Time",
+        width: 100,
+        visible: true,
+        allowEditing: false,
+      },
+      {
+        dataField: "submission_process_status",
+        caption: "Processing Status",
+        width: 100,
+        visible: this.isBidRetrieverAdmin,
+        allowEditing: false,
+      },
+      {
+        dataField: "submission_process_message",
+        caption: "Processing Message",
+        width: 100,
+        visible: this.isBidRetrieverAdmin,
+        allowEditing: false,
+      },
+      {
+        dataField: "submission_file_count",
+        caption: "# Files",
+        width: 100,
+        visible: true,
+        allowEditing: false,
+      },
+      {
+        dataField: "submission_pending_file_count",
+        caption: "# Files Pending",
+        width: 100,
+        visible: true,
+        allowEditing: false,
+      },
+      {
+        dataField: "submission_plan_count",
+        caption: "# Plans",
+        width: 100,
+        visible: true,
+        allowEditing: false,
+      },
+      {
+        dataField: "total_processing_time",
+        caption: "Total Processing Time",
+        width: 100,
+        visible: false,
+        allowEditing: false,
+      },
+      {
+        dataField: "submission_id",
+        caption: "Submission ID",
+        width: 100,
+        visible: false,
+        allowEditing: false,
+      },
     ];
 
     this.submissionGridDataSource = new CustomStore({
@@ -97,11 +276,13 @@ export class SubmissionsComponent implements OnInit {
       load: (loadOptions) => this.gridSubmissionLoadAction(loadOptions),
     });
   }
-gridSubmissionLoadAction(loadOptions: any) {
-  
-  return new Promise((resolve, reject) => {
-    if (this.submissionGridContentLoaded) {
-        const filteredSubmissions = this.getGridSubmissionContentByLoadOption(loadOptions);
+
+  gridSubmissionLoadAction(loadOptions: any) {
+    return new Promise((resolve, reject) => {
+      if (this.submissionGridContentLoaded) {
+        const filteredSubmissions = this.getGridSubmissionContentByLoadOption(
+          loadOptions
+        );
         return resolve({
           data: filteredSubmissions,
           totalCount: filteredSubmissions.length,
@@ -110,22 +291,27 @@ gridSubmissionLoadAction(loadOptions: any) {
 
       this.rowData = null;
 
-      const params = {
-        submission_process_status: this.isBidRetrieverAdmin
-          ? this.submissionViewMode
-          : "all",
-      };
+      const params = {};
       const userTimezone = this.dataStore.currentCustomer
         ? this.dataStore.currentCustomer["customer_timezone"] || "eastern"
         : "eastern";
 
-        if (!this.isBidRetrieverAdmin) {
+      if (!this.isBidRetrieverAdmin) {
         if (this.submissionViewMode === "my") {
           params["user_id"] = this.dataStore.currentUser["user_id"];
         } else if (this.submissionViewMode === "office") {
-          params["office_id"] = this.dataStore.currentUser["customer_office_id"];
+          params["office_id"] = this.dataStore.currentUser[
+            "customer_office_id"
+          ];
         } else if (this.submissionViewMode === "all") {
           params["customer_id"] = this.dataStore.currentUser["customer_id"];
+        }
+      } else {
+        if (
+          this.submissionViewMode === "my" ||
+          this.submissionViewMode === "my-changes"
+        ) {
+          params["user_id"] = this.dataStore.currentUser["user_id"];
         }
       }
 
@@ -137,20 +323,44 @@ gridSubmissionLoadAction(loadOptions: any) {
           this.submissionGridContentLoaded = true;
 
           if (this.isBidRetrieverAdmin) {
-            this.submissionGridContent = submissions as any[];
+            switch (this.submissionViewMode) {
+              case "all":
+              case "my":
+                this.submissionGridContent = submissions as any[];
+                break;
+              case "changes":
+              case "my-changes":
+                this.submissionGridContent = submissions.filter(
+                  (submission) =>
+                    +submission.submission_file_count > 0 ||
+                    +submission.submission_plan_count > 0
+                );
+                break;
+              case "pending":
+                this.submissionGridContent = submissions.filter(
+                  (submission) =>
+                    submission.submission_process_status !== "completed"
+                );
+                break;
+              case "non-automated":
+                this.submissionGridContent = submissions.filter(
+                  (submission) => submission.submission_type !== "automated"
+                );
+                break;
+            }
           } else {
             this.submissionGridContent = submissions.filter(
               ({ submission_file_count }) => Number(submission_file_count) > 0
             ) as any[];
           }
-          
 
-          const filteredSubmissions = this.getGridSubmissionContentByLoadOption(loadOptions);
+          const filteredSubmissions = this.getGridSubmissionContentByLoadOption(
+            loadOptions
+          );
           return resolve({
             data: filteredSubmissions,
             totalCount: filteredSubmissions.length,
           });
-         
         })
         .catch((err) => {
           this.notificationService.error("Error", err, {
@@ -185,6 +395,41 @@ gridSubmissionLoadAction(loadOptions: any) {
         .getOffice(this.dataStore.currentUser["customer_office_id"])
         .then((office) => {
           this.currentOffice = office;
+
+          this.submissionViewTypes = (this.isBidRetrieverAdmin
+            ? [
+                // { value: "all", label: "All Submissions" },
+                // { value: "open", label: "Open Submissions" },
+                // { value: "queued", label: "Queued Submissions" },
+                // { value: "processing", label: "Processing Submissions" },
+                // { value: "errored", label: "Error Submissions" },
+                // { value: "completed", label: "Completed Submissions" },
+                // { value: "deleted", label: "Terminated Submissions" },
+                { value: "all", label: "All Submissions" },
+                { value: "changes", label: "All Submissions with Changes" },
+                { value: "pending", label: "All Pending Submissions" },
+                {
+                  value: "non-automated",
+                  label: "All non-Automated Submissions",
+                },
+                { value: "my", label: "All My Projects" },
+                { value: "my-changes", label: "All My Projects With Changes" },
+              ]
+            : [
+                {
+                  value: "my",
+                  label: "My Projects",
+                },
+                this.currentOffice && {
+                  value: "office",
+                  label: `My ${this.currentOffice.company_office_name} Projects`,
+                },
+                {
+                  value: "all",
+                  label: "All Projects",
+                },
+              ]
+          ).filter((v) => !!v);
         })
         .catch((err) => {
           this.notificationService.error("Error", err, {
@@ -194,7 +439,6 @@ gridSubmissionLoadAction(loadOptions: any) {
         });
     }
   }
-
 
   startRefreshTimer() {
     this.refreshTimer = window.setInterval(() => {
@@ -228,6 +472,7 @@ gridSubmissionLoadAction(loadOptions: any) {
       this.toolbarRefreshGridAction();
     }
   }
+
   toolbarRefreshGridAction() {
     this.submissionGridContentLoaded = false;
     if (this.submissionGrid && this.submissionGrid.instance) {
@@ -237,8 +482,7 @@ gridSubmissionLoadAction(loadOptions: any) {
 
   /* View project */
   onViewProject() {
-    
-    const { selectedRowKeys }= this.submissionGrid;
+    const { selectedRowKeys } = this.submissionGrid;
 
     if (selectedRowKeys.length === 0) {
       this.notificationService.error(

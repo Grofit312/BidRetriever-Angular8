@@ -37,6 +37,7 @@ import {
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
+import { ProjectRatingComponent } from './project-rating/project-rating.component';
 
 @NgModule({
   declarations: [
@@ -50,7 +51,8 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
     ProjectSourceComponent,
     ProjectSharingComponent,
     BidretrieverInternalComponent,
-    ProjectNotesComponent
+    ProjectNotesComponent,
+    ProjectRatingComponent
     
   ],
   imports: [

@@ -388,7 +388,7 @@ export class CompaniesApi {
   ) {
     return new Promise((resolve, reject) => {
       const queryString =
-        `company_id=${company_id}&limit=${-1}` +
+        `customer_id=${company_id}&limit=${-1}` +
         (submission_id ? `&submission_id=${submission_id}` : "") +
         (doc_id ? `&doc_id=${doc_id}` : "");
 

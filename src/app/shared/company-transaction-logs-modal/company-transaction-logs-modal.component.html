@@ -1,0 +1,24 @@
+<!-- Transaction Logs Modal -->
+<div #transactionLogsModal class='modal-container'>
+  <div class='modal-box'>
+    <div class='transaction-logs-modal'>
+      <div class="modal-header">
+        <input class='logs-search' type='text' placeholder='Search' (input)="onSearchChange($event.target.value)" [(ngModel)]='searchWord'/>
+        <button class="btn btn-light" (click)="onRefresh()">Refresh</button>
+      </div>
+      <div class='logs-table'>
+        <ag-grid-angular
+          #grid
+          style="width: 100%;"
+          class="ag-theme-balham"
+          [columnDefs]="columnDefs"
+          [gridOptions]="gridOptions"
+          [rowData]="rowData"
+          (gridReady)="onGridReady($event)"
+        ></ag-grid-angular>
+      </div>
+
+      <button class='btn btn-primary btn-close' (click)='onCloseModal()'>Close</button>
+    </div>
+  </div>
+</div>

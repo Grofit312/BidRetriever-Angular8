@@ -171,7 +171,15 @@ export class SourceSystemAccountsComponent implements OnInit {
       .findSourceSystemTypes()
       .then((sourceSystemTypes: any) => {
         if (Array.isArray(sourceSystemTypes)) {
-          this.sourceSystemTypes = sourceSystemTypes;
+          this.sourceSystemTypes = sourceSystemTypes.sort((first, second) =>
+            first.source_type_name.toLowerCase() >
+            second.source_type_name.toLowerCase()
+              ? 1
+              : first.source_type_name.toLowerCase() <
+                second.source_type_name.toLowerCase()
+              ? -1
+              : 0
+          );
         } else {
           this.sourceSystemTypes = [sourceSystemTypes];
         }

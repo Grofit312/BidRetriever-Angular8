@@ -1,160 +1,203 @@
-<div class='project-details-container'>
+<div class="project-details-container">
   <div class="buttons-group">
-    <button class="btn btn-light" (click)='onViewDocuments()'>View Documents</button>
-    <button class='btn btn-light' (click)='onEditCompany()'>Edit Company</button>
+    <button class="btn btn-light" (click)="onViewDocuments()">
+      View Documents
+    </button>
+    <button class="btn btn-light" (click)="onEditCompany()">
+      Edit Company
+    </button>
     <div class="btn-group">
-      <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <button
+        type="button"
+        class="btn btn-primary dropdown-toggle"
+        data-toggle="dropdown"
+        aria-haspopup="true"
+        aria-expanded="false"
+      >
         Other Actions
       </button>
       <div class="dropdown-menu">
-        <a class="dropdown-item" (click)='onEditCompany()'>Edit Company</a>
-        <a class="dropdown-item" (click)='onAddContact()'>Add Contact</a>
-        
-       
-        
+        <a class="dropdown-item" (click)="onEditCompany()">Edit Company</a>
+        <a class="dropdown-item" (click)="onAddContact()">Add Contact</a>
       </div>
     </div>
   </div>
 
-   <div class='d-flex'>
-    <div class='w-50 mr-3'>
-      <div class='h5'>Company Details</div>
-      <div id='google_map' class='google-map my-4 bg-light'>
-        <span *ngIf='noAddress' class='no-address'>No Address Provided</span>
+  <div class="d-flex">
+    <div class="w-50 mr-3">
+      <div class="h5">Company Details</div>
+      <div id="google_map" class="google-map my-2 bg-light">
+        <span *ngIf="noAddress" class="no-address">No Address Provided</span>
       </div>
       <div>
-        <div class='w-80 mr-3'>
-          <div class='text-muted mb-2'>GENERAL INFO</div>
+        <div class="w-80 mr-3">
           <div>
-            <div class='project-info mb-2'>
-              <span class='font-weight-bold'>Company Name</span>
-              <span>{{ dataStore.currentCompany && dataStore.currentCompany?.company_name }}</span>
+            <div class="project-info mb-2">
+              <span class="font-weight-bold">Company Name</span>
+              <span>{{
+                dataStore.currentCompany &&
+                  dataStore.currentCompany?.company_name
+              }}</span>
             </div>
-            <div class='project-info mb-2'>
-              <span class='font-weight-bold'>Company Email</span>
-              <span>{{ dataStore.currentCompany && dataStore.currentCompany?.company_email }}</span>
+            <div class="project-info mb-2">
+              <span class="font-weight-bold">Company Email</span>
+              <span>{{
+                dataStore.currentCompany &&
+                  dataStore.currentCompany?.company_email
+              }}</span>
             </div>
-            <div class='project-info mb-2'>
-              <span class='font-weight-bold'>Company Phone</span>
-              <span>{{ dataStore.currentCompany && dataStore.currentCompany?.company_phone }}</span>
+            <div class="project-info mb-2">
+              <span class="font-weight-bold">Company Phone</span>
+              <span>{{
+                dataStore.currentCompany &&
+                  dataStore.currentCompany?.company_phone
+              }}</span>
             </div>
-            <div class='project-info mb-2'>
-              <span class='font-weight-bold'>Company Domain</span>
-              <span>{{ dataStore.currentCompany && dataStore.currentCompany?.company_domain }}</span>
+            <div class="project-info mb-2">
+              <span class="font-weight-bold">Company Domain</span>
+              <span>{{
+                dataStore.currentCompany &&
+                  dataStore.currentCompany?.company_domain
+              }}</span>
             </div>
-            <div class='project-info mb-2'>
-              <span class='font-weight-bold'>Company Address</span>
-              <span>{{ dataStore.currentCompany && dataStore.currentCompany?.company_address1 }}, {{ dataStore.currentCompany && dataStore.currentCompany?.company_address2 }}</span>
+            <div class="project-info mb-2">
+              <span class="font-weight-bold">Company Address</span>
+              <span
+                >{{
+                  dataStore.currentCompany &&
+                    dataStore.currentCompany?.company_address1
+                }},
+                {{
+                  dataStore.currentCompany &&
+                    dataStore.currentCompany?.company_address2
+                }}</span
+              >
             </div>
           </div>
         </div>
-        <div class='w-80 mr-3'>
-          <div class='text-muted mb-2'>DETAILS</div>
+        <hr />
+        <div class="w-80 mr-3">
           <div>
-            <div class='project-info mb-2'>
-              <span class='font-weight-bold'>Company Record Source</span>
-              <span>{{ dataStore.currentCompany && dataStore.currentCompany?.company_record_source }}</span>
+            <div class="project-info mb-2">
+              <span class="font-weight-bold">Company Record Source</span>
+              <span>{{
+                dataStore.currentCompany &&
+                  dataStore.currentCompany?.company_record_source
+              }}</span>
             </div>
-            <div class='project-info mb-2'>
-              <span class='font-weight-bold'>Company Revenue</span>
-              <span>{{ dataStore.currentCompany && dataStore.currentCompany?.company_revenue }}</span>
+            <div class="project-info mb-2">
+              <span class="font-weight-bold">Company Revenue</span>
+              <span>{{
+                dataStore.currentCompany &&
+                  dataStore.currentCompany?.company_revenue
+              }}</span>
             </div>
-            <div class='project-info mb-2'>
-              <span class='font-weight-bold'>Company Employee #</span>
-              <span>{{ dataStore.currentCompany && dataStore.currentCompany?.company_employee_number }}</span>
+            <div class="project-info mb-2">
+              <span class="font-weight-bold">Company Employee #</span>
+              <span>{{
+                dataStore.currentCompany &&
+                  dataStore.currentCompany?.company_employee_number
+              }}</span>
             </div>
-            <div class='project-info mb-2'>
-              <span class='font-weight-bold'>Company Status</span>
-              <span>{{ dataStore.currentCompany && dataStore.currentCompany?.company_status }}</span>
+            <div class="project-info mb-2">
+              <span class="font-weight-bold">Company Status</span>
+              <span>{{
+                dataStore.currentCompany &&
+                  dataStore.currentCompany?.company_status
+              }}</span>
             </div>
-            <div class='project-info mb-2'>
-              <span class='font-weight-bold'>Company Type</span>
-              <span>{{ dataStore.currentCompany && dataStore.currentCompany?.company_type }}</span>
+            <div class="project-info mb-2">
+              <span class="font-weight-bold">Company Type</span>
+              <span>{{
+                dataStore.currentCompany &&
+                  dataStore.currentCompany?.company_type
+              }}</span>
             </div>
-              <div class='project-info mb-2'>
-              <span class='font-weight-bold'>Company Website</span>
-              <span>{{ dataStore.currentCompany && dataStore.currentCompany?.company_website }}</span>
-            </div>        
+            <div class="project-info mb-2">
+              <span class="font-weight-bold">Company Website</span>
+              <span>{{
+                dataStore.currentCompany &&
+                  dataStore.currentCompany?.company_website
+              }}</span>
+            </div>
           </div>
         </div>
-        <span class='font-weight-bold'>Description</span>
-        <span>{{ dataStore.currentCompany && dataStore.currentCompany?.company_desc }}</span>
+        <span class="font-weight-bold">Description</span>
+        <span>{{
+          dataStore.currentCompany && dataStore.currentCompany?.company_desc
+        }}</span>
+      </div>
     </div>
-    </div>
-    <div class='w-50 ml-3'>
-      <div class='h6'>Active Projects</div>
-      <div class='active-projects-table my-4 dash-table'>
-        <dx-data-grid 
-          #projectGrid id="projectGrid" 
-          [allowColumnReordering]="true" 
+    <div class="w-50 ml-3">
+      <div class="h6">Active Projects</div>
+      <div class="active-projects-table my-2 dash-table">
+        <dx-data-grid
+          #projectGrid
+          id="projectGrid"
+          [allowColumnReordering]="true"
           [allowColumnResizing]="true"
-          [showColumnLines]="true" 
-          [showRowLines]="true" 
-          [showBorders]="true" 
-          [rowAlternationEnabled]="true" 
-          [columnAutoWidth]="true" 
+          [showColumnLines]="true"
+          [showRowLines]="true"
+          [showBorders]="true"
+          [rowAlternationEnabled]="true"
+          [columnAutoWidth]="true"
           [remoteOperations]="true"
-          columnResizingMode="widget" 
-          width="100%" 
+          columnResizingMode="widget"
+          width="100%"
           height="100%"
-          [columns]="projectGridColumns" 
+          [columns]="projectGridColumns"
           [dataSource]="activeProjects"
-          (onContextMenuPreparing)='addProjectGridMenuItems($event)' 
-          (onRowDblClick)='onViewProject()' 
-        
+          (onContextMenuPreparing)="addProjectGridMenuItems($event)"
+          (onRowDblClick)="onViewProject()"
         >
-        <dxo-column-fixing [enabled]="true"></dxo-column-fixing>
-        <dxo-header-filter [visible]="false"></dxo-header-filter>
-        <dxo-paging [enabled]="false"></dxo-paging>
-        <dxo-scrolling mode="vertical"></dxo-scrolling>
-        <dxo-selection mode="multiple"></dxo-selection>
-        <dxo-sorting mode="multiple"></dxo-sorting>
-    
-        <div *dxTemplate="let cell of 'dateCell'">
-          {{ cell.value | moment: 'YYYY-MM-DD hh:mm a z'}}
-        </div>
+          <dxo-column-fixing [enabled]="true"></dxo-column-fixing>
+          <dxo-header-filter [visible]="false"></dxo-header-filter>
+          <dxo-paging [enabled]="false"></dxo-paging>
+          <dxo-scrolling mode="vertical"></dxo-scrolling>
+          <dxo-selection mode="multiple"></dxo-selection>
+          <dxo-sorting mode="multiple"></dxo-sorting>
+
+          <div *dxTemplate="let cell of 'dateCell'">
+            {{ cell.value | moment: "YYYY-MM-DD hh:mm a z" }}
+          </div>
         </dx-data-grid>
       </div>
-      <div class='h6'>Key Employees</div>
-      <div class='key-employees-table my-4 dash-table'>
-       
-        <dx-data-grid 
-          #employeeGrid id="employeeGrid" 
-          [allowColumnReordering]="true" 
+      <div class="h6">Key Employees</div>
+      <div class="key-employees-table my-2 dash-table">
+        <dx-data-grid
+          #employeeGrid
+          id="employeeGrid"
+          [allowColumnReordering]="true"
           [allowColumnResizing]="true"
-          [showColumnLines]="true" 
-          [showRowLines]="true" 
-          [showBorders]="true" 
-          [rowAlternationEnabled]="true" 
-          [columnAutoWidth]="true" 
+          [showColumnLines]="true"
+          [showRowLines]="true"
+          [showBorders]="true"
+          [rowAlternationEnabled]="true"
+          [columnAutoWidth]="true"
           [remoteOperations]="true"
-          columnResizingMode="widget" 
-          width="100%" 
+          columnResizingMode="widget"
+          width="100%"
           height="100%"
-          [columns]="employeeGridColumns" 
+          [columns]="employeeGridColumns"
           [dataSource]="employees"
-          (onContextMenuPreparing)='addEmployeeGridMenuItems($event)' 
-          (onRowDblClick)='onViewContact()' 
-        
+          (onContextMenuPreparing)="addEmployeeGridMenuItems($event)"
+          (onRowDblClick)="onViewContact()"
         >
-        <dxo-column-fixing [enabled]="true"></dxo-column-fixing>
-        <dxo-header-filter [visible]="false"></dxo-header-filter>
-        <dxo-paging [enabled]="false"></dxo-paging>
-        <dxo-scrolling mode="vertical"></dxo-scrolling>
-        <dxo-selection mode="multiple"></dxo-selection>
-        <dxo-sorting mode="multiple"></dxo-sorting>
-    
-        <div *dxTemplate="let cell of 'dateCell'">
-          {{ cell.value | moment: 'YYYY-MM-DD hh:mm a z'}}
-        </div>
+          <dxo-column-fixing [enabled]="true"></dxo-column-fixing>
+          <dxo-header-filter [visible]="false"></dxo-header-filter>
+          <dxo-paging [enabled]="false"></dxo-paging>
+          <dxo-scrolling mode="vertical"></dxo-scrolling>
+          <dxo-selection mode="multiple"></dxo-selection>
+          <dxo-sorting mode="multiple"></dxo-sorting>
+
+          <div *dxTemplate="let cell of 'dateCell'">
+            {{ cell.value | moment: "YYYY-MM-DD hh:mm a z" }}
+          </div>
         </dx-data-grid>
       </div>
     </div>
-    
   </div>
-  <div class='mb-3 d-flex'>
-    
-  </div>
+  <div class="mb-3 d-flex"></div>
 </div>
 <!-- Edit Project Modal -->
 <edit-company-modal #editCompanyModal></edit-company-modal>

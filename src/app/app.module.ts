@@ -11,6 +11,7 @@ import { NgxSpinnerModule } from "ngx-spinner";
 import { SimpleNotificationsModule } from "angular2-notifications";
 import { NgxStripeModule } from "ngx-stripe";
 import { TreeModule } from "angular-tree-component";
+import { ContextMenuModule } from "ngx-contextmenu";
 
 import { appRouting } from "app/app.routes";
 import { AuthenticationGuard } from "app/providers/auth.guard";
@@ -50,6 +51,7 @@ import { EmailViewerComponent } from "./email-viewer/email-viewer.component";
     SimpleNotificationsModule.forRoot(),
     NgxStripeModule.forRoot(window["env"].stripePublishKey),
     TreeModule.forRoot(),
+    ContextMenuModule.forRoot(),
   ],
   providers: [
     AuthenticationGuard,

@@ -602,4 +602,32 @@ public getPresignedUrlWithOriginalFileName(bucket_name: string, file_key: string
       }
     });
   }
+
+  /**
+   * Create comparison record with given parameters
+   * @param params
+   */
+  public createComparisonRecord(params: any) {
+    return new Promise((resolve, reject) => {
+      this.awaitInitialization()
+        .then(res => {
+          const currentDateTime = moment.utc().format('YYYY-MM-DDTHH:mm:ss.SSSSSS') + 'Z';
+          params.create_datetime = currentDateTime;
+          params.edit_datetime = currentDateTime;
+          params.vault_bucket = this.permBucketName;
+
+          axios.post(`${this._wipApiBaseUrl}Create9414`, queryString.stringify(params))
+            .then((res: any) => {
+              resolve();
+            })
+            .catch((error) => {
+              console.log('Create Comparison Record', error);
+              return reject(error);
+            });
+        })
+        .catch(err => {
+          reject('Failed to initialize AWS modules');
+        });
+    });
+  }
 }

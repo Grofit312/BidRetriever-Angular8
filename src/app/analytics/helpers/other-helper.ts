@@ -17,7 +17,7 @@ const mapMonthToProperIntervalValue = (
   monthString: string,
   interval: string
 ): string => {
-  const [year, month] = monthString.split("/");
+  const [year, month] = (monthString || "").split("/");
 
   switch (interval) {
     case EIntervalTypes.Month:

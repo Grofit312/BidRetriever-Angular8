@@ -4,11 +4,20 @@
   height: 100%;
   padding: 5px;
 
-  .submissions-header {
+  ::ng-deep .submissions-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     flex-shrink: 0;
+
+    .dx-toolbar-menu-container .dx-dropdownmenu-button {
+      background-color: #007BFF;
+      border-color: #007BFF;
+
+      .dx-icon {
+        color: #FFFFFF;
+      }
+    }
 
     .submissions-view-mode, .submissions-search {
       width: 200px;

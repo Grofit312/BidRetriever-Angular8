@@ -317,12 +317,18 @@ export class MyCalendarApi {
     return result === "Invalid date" ? "" : result;
   }
 
-  public findProjectList(source_company_id: string, timezone: string) {
+  public findProjectList(
+    source_company_id: string,
+    selectedUserId: string | null,
+    timezone: string
+  ) {
     return new Promise((resolve, reject) => {
       axios
         .get(
           window["env"].apiBaseUrl +
-            `/FindProjects?source_company_id=${source_company_id}&detail_level=all`,
+            `/FindProjects?source_company_id=${source_company_id}${
+              selectedUserId ? `&user_id=${selectedUserId}` : ""
+            }&detail_level=all`,
           {
             validateStatus: (status) => {
               return status === 200 || status === 400;

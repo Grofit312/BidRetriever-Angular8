@@ -7,11 +7,13 @@ import { TransactionLogsModalComponent } from "./transaction-logs-modal/transact
 import { SubmissionDetailModalComponent } from "./submission-detail-modal/submission-detail-modal.component";
 import { DocumentDetailModalComponent } from "./document-detail-modal/document-detail-modal.component";
 import { RemoveProjectModalComponent } from "./remove-project-modal/remove-project-modal.component";
+import { RemoveCompanyModalComponent } from "./remove-company-modal/remove-company-modal.component";
 import { AngularDateTimePickerModule } from "angular2-datetimepicker";
 import { AgGridModule } from "ag-grid-angular";
 import { FormsModule } from "@angular/forms";
 import { TreeModule } from "ng2-tree";
 import { SubmissionTransactionLogsModalComponent } from "./submission-transaction-logs-modal/submission-transaction-logs-modal.component";
+import { CompanyTransactionLogsModalComponent } from "./company-transaction-logs-modal/company-transaction-logs-modal.component";
 import { RemoveSubmissionModalComponent } from "./remove-submission-modal/remove-submission-modal.component";
 import { EditProjectModalComponent } from "./edit-project-modal/edit-project-modal.component";
 import { EditCompanyModalComponent } from "./edit-company-modal/edit-company-modal.component";
@@ -58,12 +60,14 @@ import { SourceSystemAccountsApi } from "app/customer-portal/system-settings/sou
 import { RecordLogsComponent } from "./record-logs/record-logs.component";
 import { AddContactModalComponent } from "./add-contact-modal/add-contact-modal.component";
 import { ViewCompanyApi } from "app/customer-portal/view-company/view-company.api.service";
+import { ContextMenuModule } from "ngx-contextmenu";
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     TreeModule,
+    ContextMenuModule,
     AgGridModule.withComponents([]),
     AngularDateTimePickerModule,
 
@@ -93,8 +97,9 @@ import { ViewCompanyApi } from "app/customer-portal/view-company/view-company.ap
     SubmissionDetailModalComponent,
     DocumentDetailModalComponent,
     RemoveProjectModalComponent,
+    RemoveCompanyModalComponent,
     SubmissionTransactionLogsModalComponent,
-    SubmissionTransactionLogsModalComponent,
+    CompanyTransactionLogsModalComponent,
     RemoveSubmissionModalComponent,
     EditProjectModalComponent,
     EditCompanyModalComponent,
@@ -126,7 +131,9 @@ import { ViewCompanyApi } from "app/customer-portal/view-company/view-company.ap
     SubmissionDetailModalComponent,
     DocumentDetailModalComponent,
     RemoveProjectModalComponent,
+    RemoveCompanyModalComponent,
     SubmissionTransactionLogsModalComponent,
+    CompanyTransactionLogsModalComponent,
     RemoveSubmissionModalComponent,
     EditProjectModalComponent,
     EditCompanyModalComponent,
@@ -150,6 +157,8 @@ import { ViewCompanyApi } from "app/customer-portal/view-company/view-company.ap
     CompanyDataViewModalComponent,
     CompanyDataViewDetailsModalComponent,
     RecordLogsComponent,
+
+    ContextMenuModule,
   ],
   providers: [
     CompaniesApi,

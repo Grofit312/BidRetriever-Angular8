@@ -1,0 +1,47 @@
+<div>
+  <span
+    class="fa fa-star"
+    [ngClass]="{
+      checked: !selectedRating ? projectRating > 0 : selectedRating > 0
+    }"
+    (mouseenter)="onMouseOver(1)"
+    (mouseleave)="onMouseOut()"
+    (click)="onClick(1)"
+  ></span>
+  <span
+    class="fa fa-star"
+    [ngClass]="{
+      checked: !selectedRating ? projectRating > 1 : selectedRating > 1
+    }"
+    (mouseenter)="onMouseOver(2)"
+    (mouseleave)="onMouseOut()"
+    (click)="onClick(2)"
+  ></span>
+  <span
+    class="fa fa-star"
+    [ngClass]="{
+      checked: !selectedRating ? projectRating > 2 : selectedRating > 2
+    }"
+    (mouseenter)="onMouseOver(3)"
+    (mouseleave)="onMouseOut()"
+    (click)="onClick(3)"
+  ></span>
+  <span
+    class="fa fa-star"
+    [ngClass]="{
+      checked: !selectedRating ? projectRating > 3 : selectedRating > 3
+    }"
+    (mouseenter)="onMouseOver(4)"
+    (mouseleave)="onMouseOut()"
+    (click)="onClick(4)"
+  ></span>
+  <span
+    class="fa fa-star"
+    [ngClass]="{
+      checked: !selectedRating ? projectRating > 4 : selectedRating > 4
+    }"
+    (mouseenter)="onMouseOver(5)"
+    (mouseleave)="onMouseOut()"
+    (click)="onClick(5)"
+  ></span>
+</div>

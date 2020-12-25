@@ -72,14 +72,11 @@ export class ProjectFilesApi {
     return new Promise((resolve, reject) => {
       axios.get(`${window['env'].apiBaseUrl}/GetDocumentDetails?doc_id=${doc_id}`)
         .then(res => {
-          res.data = res.data.map((item) => {
-            item['create_datetime'] = this.convertToTimeZoneString(item['create_datetime'], timezone);
-            item['edit_datetime'] = this.convertToTimeZoneString(item['edit_datetime'], timezone);
-            item['file_original_create_datetime'] = this.convertToTimeZoneString(item['file_original_create_datetime'], timezone);
-            item['file_original_modified_datetime'] = this.convertToTimeZoneString(item['file_original_modified_datetime'], timezone);
-            item['submission_datetime'] = this.convertToTimeZoneString(item['submission_datetime'], timezone);
-            return item;
-          });
+          res.data['create_datetime'] = this.convertToTimeZoneString(res.data['create_datetime'], timezone);
+          res.data['edit_datetime'] = this.convertToTimeZoneString(res.data['edit_datetime'], timezone);
+          res.data['file_original_create_datetime'] = this.convertToTimeZoneString(res.data['file_original_create_datetime'], timezone);
+          res.data['file_original_modified_datetime'] = this.convertToTimeZoneString(res.data['file_original_modified_datetime'], timezone);
+          res.data['submission_datetime'] = this.convertToTimeZoneString(res.data['submission_datetime'], timezone);
           resolve(res.data);
         })
         .catch(err => {

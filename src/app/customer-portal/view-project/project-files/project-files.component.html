@@ -1,52 +1,94 @@
-<div class='project-files-container'>
-  <div class='left-pane'>
-    <tree-root
-      #folderTree
-      [nodes]='folderNodes'
-      [options]='treeOptions'
-    >
+<div class="project-files-container">
+  <div class="left-pane">
+    <tree-root #folderTree [nodes]="folderNodes" [options]="treeOptions">
       <ng-template #treeNodeTemplate let-node="node" let-index="index">
-        <img style='height: 20px' src='/assets/folder.png' alt='folder'/>
-        <span style='font-size: .75rem; white-space: nowrap;'>{{ node.data.name }}</span>
+        <img style="height: 20px" src="/assets/folder.png" alt="folder" />
+        <span style="font-size: 0.75rem; white-space: nowrap">{{
+          node.data.name
+        }}</span>
       </ng-template>
     </tree-root>
   </div>
-  <div class='right-pane'>
-    <div class='modal-controls'>
-      <select class='documents-view-mode' [(ngModel)]='documentsViewMode' (change)='onChangeDocumentViewMode()'>
+  <div class="right-pane">
+    <div class="modal-controls">
+      <select
+        class="documents-view-mode"
+        [(ngModel)]="documentsViewMode"
+        (change)="onChangeDocumentViewMode()"
+      >
         <option value="all">All Documents View</option>
       </select>
-      
-      <div class='button-group'>
-        
-        <button class='btn btn-light' (click)='onViewDocument()'>View Document</button>
-        <button class='btn btn-light' (click)='onViewDocumentDetails()'>View Details</button>
-        
+
+      <div class="button-group">
+        <button class="btn btn-light" (click)="onViewDocument()">
+          View Document
+        </button>
+        <button class="btn btn-light" (click)="onViewDocumentDetails()">
+          View Details
+        </button>
+
         <div class="btn-group">
-          <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <button
+            type="button"
+            class="btn btn-primary dropdown-toggle"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
             Other Actions
           </button>
           <div class="dropdown-menu">
-            <a class="dropdown-item" (click)='onViewDocument()'>View Document</a>
-            <a class="dropdown-item" (click)='onViewDocumentDetails()'>View Document Details</a>
+            <a class="dropdown-item" (click)="onViewDocument()"
+              >View Document</a
+            >
+            <a class="dropdown-item" (click)="onViewDocumentDetails()"
+              >View Document Details</a
+            >
             <div class="dropdown-divider"></div>
-            <a *ngIf='!dataStore.isSharedProject' class="dropdown-item" (click)='onAddDocsToProjectEvent()'>Add Documents to Project</a>
-            <a *ngIf='!dataStore.isSharedProject' class="dropdown-item" (click)='onEditDocument()'>Edit Document</a>
-            <a class="dropdown-item" (click)='onToggleFavorite()'>{{ isFavoriteDocument ? 'Remove From' : 'Add To' }} Favorite</a>
-            <a *ngIf='!dataStore.isSharedProject' class="dropdown-item" (click)='onRemoveDocument()'>Remove Document</a>
+            <a
+              *ngIf="!dataStore.isSharedProject"
+              class="dropdown-item"
+              (click)="onAddDocsToProjectEvent()"
+              >Add Documents to Project</a
+            >
+            <a
+              *ngIf="!dataStore.isSharedProject"
+              class="dropdown-item"
+              (click)="onEditDocument()"
+              >Edit Document</a
+            >
+            <a class="dropdown-item" (click)="onToggleFavorite()"
+              >{{ isFavoriteDocument ? "Remove From" : "Add To" }} Favorite</a
+            >
+            <a
+              *ngIf="!dataStore.isSharedProject"
+              class="dropdown-item"
+              (click)="onRemoveDocument()"
+              >Remove Document</a
+            >
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" (click)='onDownloadDocument()'>Download File</a>
-            <a class="dropdown-item" (click)='onDownloadFolder()'>Download Folder</a>
-            <a class="dropdown-item" (click)='onDownloadProject()'>Download Project</a>
+            <a class="dropdown-item" (click)="onDownloadDocument()"
+              >Download File</a
+            >
+            <a class="dropdown-item" (click)="onDownloadFolder()"
+              >Download Folder</a
+            >
+            <a class="dropdown-item" (click)="onDownloadProject()"
+              >Download Project</a
+            >
             <div class="dropdown-divider orange"></div>
-            <a class="dropdown-item" (click)='onExport()'>Export File List To CSV</a>
-            <a class="dropdown-item" (click)='onViewTransactionLogs()'>View Transaction Log</a>
-            <a class="dropdown-item orange" (click)='onHelp()'>Help</a>
+            <a class="dropdown-item" (click)="onExport()"
+              >Export File List To CSV</a
+            >
+            <a class="dropdown-item" (click)="onViewTransactionLogs()"
+              >View Transaction Log</a
+            >
+            <a class="dropdown-item orange" (click)="onHelp()">Help</a>
           </div>
         </div>
       </div>
     </div>
-    <div class='grid'>
+    <div class="grid">
       <!-- <ag-grid-angular
       #fileGrid
       style="width: 100%; height: 100%;"
@@ -58,39 +100,37 @@
       
       ></ag-grid-angular> -->
 
-      
-        <dx-data-grid 
-          #fileGrid id="fileGrid" 
-          [allowColumnReordering]="true" 
-          [allowColumnResizing]="true"
-          [showColumnLines]="true" 
-          [showRowLines]="true" 
-          [showBorders]="true" 
-          [rowAlternationEnabled]="true" 
-          [columnAutoWidth]="true" 
-          [remoteOperations]="true"
-          columnResizingMode="widget" 
-          width="100%" 
-          height="100%"
-          [columns]="fileGridColumns" 
-          [dataSource]="files"
-          (onContextMenuPreparing)='addFileGridMenuItems($event)' 
-          (onRowDblClick)='onViewDocument()' 
-        
-        >
+      <dx-data-grid
+        #fileGrid
+        id="fileGrid"
+        [allowColumnReordering]="true"
+        [allowColumnResizing]="true"
+        [showColumnLines]="true"
+        [showRowLines]="true"
+        [showBorders]="true"
+        [rowAlternationEnabled]="true"
+        [columnAutoWidth]="true"
+        [remoteOperations]="true"
+        columnResizingMode="widget"
+        width="100%"
+        height="100%"
+        [columns]="fileGridColumns"
+        [dataSource]="files"
+        (onContextMenuPreparing)="addFileGridMenuItems($event)"
+        (onRowDblClick)="onViewDocument()"
+      >
         <dxo-column-fixing [enabled]="true"></dxo-column-fixing>
-          <dxo-filter-row [visible]="true" ></dxo-filter-row>
+        <dxo-filter-row [visible]="true"></dxo-filter-row>
         <dxo-header-filter [visible]="false"></dxo-header-filter>
         <dxo-paging [enabled]="false"></dxo-paging>
         <dxo-scrolling mode="vertical"></dxo-scrolling>
         <dxo-selection mode="multiple"></dxo-selection>
         <dxo-sorting mode="multiple"></dxo-sorting>
-    
-        <div *dxTemplate="let cell of 'dateCell'">
-          {{ cell.value | moment: 'YYYY-MM-DD' }}
-        </div>
-        </dx-data-grid>
 
+        <div *dxTemplate="let cell of 'dateCell'">
+          {{ cell.value | moment: "YYYY-MM-DD" }}
+        </div>
+      </dx-data-grid>
     </div>
   </div>
 </div>
@@ -106,3 +146,9 @@
 
 <!-- Add Submission popup -->
 <add-submission-modal #addSubmissionModal></add-submission-modal>
+
+<context-menu>
+  <ng-template contextMenuItem (execute)="showMessage($event)">
+    Delete Folder
+  </ng-template>
+</context-menu>

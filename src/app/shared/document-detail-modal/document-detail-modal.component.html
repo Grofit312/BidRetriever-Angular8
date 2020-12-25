@@ -2,14 +2,15 @@
 <div #documentDetailModal class='modal-container' [ngClass]="{'bg-transparent': (hasTransparentBackground)}">
   <div class='modal-box'>
     <div class='document-detail-modal'>
-      <div class='modal-title'>
-        Document Details
+      <div class='d-flex justify-content-between'>
+        <span><b>Number: </b>{{ currentDocument.doc_number }}</span>
+        <span><b>Name: </b>{{ currentDocument.doc_name }}</span>
+        <span><b>Page: </b>{{ currentDocument.doc_pagenumber }}</span>
       </div>
-      <div class='d-flex justify-content-between mt-3'>
+      <div class='d-flex justify-content-between'>
         <div class='d-flex flex-column'>
           <span><b>Project Name: </b>{{ currentProject.project_name }}</span>
-          <span><b>Document Number: </b>{{ currentDocument.doc_number }}</span>
-          <span><b>Document Name: </b>{{ currentDocument.doc_name }}</span>
+          <span><b>Subproject Name: </b>{{ currentDocument.doc_subproject }}</span>
         </div>
         <div class='d-flex flex-column'>
           <span><b>Submission Name: </b>{{ currentSubmission.submission_name }}</span>
@@ -32,6 +33,7 @@
             <div class="dropdown-menu">
               <a class="dropdown-item" (click)='onViewDocument()'>View Document</a>
               <a class="dropdown-item" (click)='onViewComparison()'>View Comparison</a>
+              <a class="dropdown-item" (click)='onRegenComparison()'>Regenerate Comparisons</a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" (click)='onViewParentFile()'>View Parent File</a>
               <a class="dropdown-item" (click)='onViewRasterFile()'>View Raster File</a>

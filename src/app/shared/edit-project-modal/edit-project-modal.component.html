@@ -1,36 +1,87 @@
 <!-- Edit Project Modal -->
-<div #editProjectModal class='modal-container'>
-  <div class='modal-box'>
-    <div class='edit-project-modal'>
-      <div class='modal-title'>
-        Project Creation
-      </div>
+<div #editProjectModal class="modal-container">
+  <div class="modal-box">
+    <div class="edit-project-modal">
+      <div class="modal-title">Project Creation</div>
 
       <ul class="nav nav-tabs" id="edit_project_tabs" role="tablist">
         <li class="nav-item">
-          <a (click)="onClickTab($event, 1)" class="nav-link" [ngClass]="{'active': viewMode === 'basic'}" id="edit-project-basic-info" data-toggle="tab" href="#" role="tab" aria-controls="home" aria-selected="true">Basic Info</a>
+          <a
+            (click)="onClickTab($event, 1)"
+            class="nav-link"
+            [ngClass]="{ active: viewMode === 'basic' }"
+            id="edit-project-basic-info"
+            data-toggle="tab"
+            href="#"
+            role="tab"
+            aria-controls="home"
+            aria-selected="true"
+            >Basic Info</a
+          >
         </li>
         <li class="nav-item">
-          <a (click)="onClickTab($event, 2)" class="nav-link" [ngClass]="{'active': viewMode === 'date'}" id="edit-project-dates" data-toggle="tab" href="#" role="tab" aria-controls="home" aria-selected="false">Dates</a>
+          <a
+            (click)="onClickTab($event, 2)"
+            class="nav-link"
+            [ngClass]="{ active: viewMode === 'date' }"
+            id="edit-project-dates"
+            data-toggle="tab"
+            href="#"
+            role="tab"
+            aria-controls="home"
+            aria-selected="false"
+            >Dates</a
+          >
         </li>
         <li class="nav-item">
-          <a (click)="onClickTab($event, 3)" class="nav-link" [ngClass]="{'active': viewMode === 'detail'}" id="edit-project-details" data-toggle="tab" href="#" role="tab" aria-controls="profile" aria-selected="false">Details</a>
+          <a
+            (click)="onClickTab($event, 3)"
+            class="nav-link"
+            [ngClass]="{ active: viewMode === 'detail' }"
+            id="edit-project-details"
+            data-toggle="tab"
+            href="#"
+            role="tab"
+            aria-controls="profile"
+            aria-selected="false"
+            >Details</a
+          >
         </li>
         <li class="nav-item">
-          <a (click)="onClickTab($event, 4)" class="nav-link" [ngClass]="{'active': viewMode === 'source'}" id="edit-project-source" data-toggle="tab" href="#" role="tab" aria-controls="profile" aria-selected="false">Source</a>
+          <a
+            (click)="onClickTab($event, 4)"
+            class="nav-link"
+            [ngClass]="{ active: viewMode === 'source' }"
+            id="edit-project-source"
+            data-toggle="tab"
+            href="#"
+            role="tab"
+            aria-controls="profile"
+            aria-selected="false"
+            >Source</a
+          >
         </li>
       </ul>
 
-      <form (ngSubmit)='onSaveProject()'>
-        <div class='project-form-wrapper'>
-          <div class='project-form' [ngClass]="{'active': viewMode === 'basic'}">
+      <form (ngSubmit)="onSaveProject()">
+        <div class="project-form-wrapper">
+          <div
+            class="project-form"
+            [ngClass]="{ active: viewMode === 'basic' }"
+          >
             <div class="dx-field-set">
               <div class="dx-field">
                 <div class="dx-field-label">Project Name</div>
                 <div class="dx-field-value">
-                  <dx-text-box name="projectName" [(value)]="currentProject.project_name" [showClearButton]="true">
+                  <dx-text-box
+                    name="projectName"
+                    [(value)]="currentProject.project_name"
+                    [showClearButton]="true"
+                  >
                     <dx-validator>
-                      <dxi-validation-rule type="required"></dxi-validation-rule>
+                      <dxi-validation-rule
+                        type="required"
+                      ></dxi-validation-rule>
                     </dx-validator>
                   </dx-text-box>
                 </div>
@@ -38,24 +89,34 @@
               <div class="dx-field">
                 <div class="dx-field-label">Project Description</div>
                 <div class="dx-field-value">
-                  <dx-text-box name="projectDescription" [(value)]="currentProject.project_desc" [showClearButton]="true"></dx-text-box>
+                  <dx-text-box
+                    name="projectDescription"
+                    [(value)]="currentProject.project_desc"
+                    [showClearButton]="true"
+                  ></dx-text-box>
                 </div>
               </div>
               <div class="dx-field">
                 <div class="dx-field-label">Project Bid DateTime</div>
                 <div class="dx-field-value">
-                  <app-custom-datetime name="projectBidDateTime"
-                                       [value]="currentProject.project_bid_datetime"
-                                       (onValueChanged)="currentProject.project_bid_datetime = $event"
-                                       type="datetime"
-                                       [showClearButton]="true"
+                  <app-custom-datetime
+                    name="projectBidDateTime"
+                    [value]="currentProject.project_bid_datetime"
+                    (onValueChanged)="
+                      currentProject.project_bid_datetime = $event
+                    "
+                    type="datetime"
+                    [showClearButton]="true"
                   ></app-custom-datetime>
                 </div>
               </div>
               <div class="dx-field">
                 <div class="dx-field-label">Timezone</div>
                 <div class="dx-field-value">
-                  <select name='timezone' [(ngModel)]='currentProject.project_timezone'>
+                  <select
+                    name="timezone"
+                    [(ngModel)]="currentProject.project_timezone"
+                  >
                     <option value="eastern">Eastern</option>
                     <option value="central">Central</option>
                     <option value="mountain">Mountain</option>
@@ -66,26 +127,52 @@
               <div class="dx-field">
                 <div class="dx-field-label">Office</div>
                 <div class="dx-field-value">
-                  <select name='office' [(ngModel)]='currentProject.project_assigned_office_id'>
-                    <option *ngFor="let office of offices" [value]="office.company_office_id">{{ office.company_office_name }}</option>
+                  <select
+                    name="office"
+                    [(ngModel)]="currentProject.project_assigned_office_id"
+                  >
+                    <option
+                      *ngFor="let office of offices"
+                      [value]="office.company_office_id"
+                    >
+                      {{ office.company_office_name }}
+                    </option>
                   </select>
                 </div>
               </div>
               <div class="dx-field">
                 <div class="dx-field-label">Project Admin User</div>
                 <div class="dx-field-value">
-                  <select name='projectAdmin' [(ngModel)]='currentProject.project_admin_user_id'>
-                    <option *ngFor="let user of companyUsers" [value]="user.user_id">{{ user.user_email }}</option>
+                  <select
+                    name="projectAdmin"
+                    [(ngModel)]="currentProject.project_admin_user_id"
+                  >
+                    <option
+                      *ngFor="let user of companyUsers"
+                      [value]="user.user_id"
+                    >
+                      {{ user.user_email }}
+                    </option>
                   </select>
                 </div>
               </div>
               <div class="dx-field">
                 <div class="dx-field-label">Submitter Email</div>
                 <div class="dx-field-value">
-                  <dx-text-box name="submitterEmail" [(value)]="currentProject.project_admin_user_email" [readOnly]="true" [showClearButton]="true">
+                  <dx-text-box
+                    name="submitterEmail"
+                    [(value)]="currentProject.project_admin_user_email"
+                    [readOnly]="true"
+                    [showClearButton]="true"
+                  >
                     <dx-validator>
-                      <dxi-validation-rule type="required"></dxi-validation-rule>
-                      <dxi-validation-rule type="email" message="Email is invalid"></dxi-validation-rule>
+                      <dxi-validation-rule
+                        type="required"
+                      ></dxi-validation-rule>
+                      <dxi-validation-rule
+                        type="email"
+                        message="Email is invalid"
+                      ></dxi-validation-rule>
                     </dx-validator>
                   </dx-text-box>
                 </div>
@@ -93,13 +180,17 @@
               <div class="dx-field">
                 <div class="dx-field-label">Source System URL</div>
                 <div class="dx-field-value">
-                  <dx-text-box name="source" [(value)]="currentProject.source_url" [showClearButton]="true"></dx-text-box>
+                  <dx-text-box
+                    name="source"
+                    [(value)]="currentProject.source_url"
+                    [showClearButton]="true"
+                  ></dx-text-box>
                 </div>
               </div>
               <div class="dx-field">
                 <div class="dx-field-label">Status</div>
                 <div class="dx-field-value">
-                  <select [(ngModel)]='currentProject.status' name='status'>
+                  <select [(ngModel)]="currentProject.status" name="status">
                     <option value="active">Active</option>
                     <option value="inactive">Inactive</option>
                     <option value="archived">Archived</option>
@@ -108,111 +199,209 @@
                 </div>
               </div>
               <div class="checkbox">
-                <input type="checkbox" name="auto-update-status" [(ngModel)]="currentProject.project_auto_update_status" />
+                <input
+                  type="checkbox"
+                  name="auto-update-status"
+                  [(ngModel)]="currentProject.project_auto_update_status"
+                />
                 <span>Check For Updates Nightly</span>
               </div>
               <div class="dx-field">
                 <div class="dx-field-label">Project Address</div>
                 <div class="dx-field-value">
-                  <dx-text-box name="projectAddress1" [(value)]="currentProject.project_address1" placeholder="Address 1" [showClearButton]="true"></dx-text-box>
-                  <dx-text-box name="projectAddress2" [(value)]="currentProject.project_address2" placeholder="Address 2" [showClearButton]="true" style="margin-top: 5px;"></dx-text-box>
+                  <dx-text-box
+                    name="projectAddress1"
+                    [(value)]="currentProject.project_address1"
+                    placeholder="Address 1"
+                    [showClearButton]="true"
+                  ></dx-text-box>
+                  <dx-text-box
+                    name="projectAddress2"
+                    [(value)]="currentProject.project_address2"
+                    placeholder="Address 2"
+                    [showClearButton]="true"
+                    style="margin-top: 5px"
+                  ></dx-text-box>
                   <div class="triple-form">
-                    <dx-text-box name="projectCity" [(value)]="currentProject.project_city" placeholder="City" [showClearButton]="true"></dx-text-box>
-                    <dx-text-box name="projectState" [(value)]="currentProject.project_state" placeholder="State" [showClearButton]="true"></dx-text-box>
-                    <dx-text-box name="projectZip" [(value)]="currentProject.project_zip" placeholder="Zip" [showClearButton]="true"></dx-text-box>
+                    <dx-text-box
+                      name="projectCity"
+                      [(value)]="currentProject.project_city"
+                      placeholder="City"
+                      [showClearButton]="true"
+                    ></dx-text-box>
+                    <dx-text-box
+                      name="projectState"
+                      [(value)]="currentProject.project_state"
+                      placeholder="State"
+                      [showClearButton]="true"
+                    ></dx-text-box>
+                    <dx-text-box
+                      name="projectZip"
+                      [(value)]="currentProject.project_zip"
+                      placeholder="Zip"
+                      [showClearButton]="true"
+                    ></dx-text-box>
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <div class="project-form form-date" [ngClass]="{'active': viewMode === 'date'}">
+          <div
+            class="project-form form-date"
+            [ngClass]="{ active: viewMode === 'date' }"
+          >
             <div class="dx-field-set">
               <div class="dx-field">
                 <div class="dx-field-label">Pre Bid Meeting Date/Time</div>
                 <div class="dx-field-value">
-                  <app-custom-datetime name="preBidDateTime"
-                                       [value]="preBidDateTime.calendar_event_start_datetime"
-                                       (onValueChanged)="preBidDateTime.calendar_event_start_datetime = $event"
-                                       type="datetime"
-                                       [showClearButton]="true"
+                  <app-custom-datetime
+                    name="preBidDateTime"
+                    [value]="preBidDateTime.calendar_event_start_datetime"
+                    (onValueChanged)="
+                      preBidDateTime.calendar_event_start_datetime = $event
+                    "
+                    type="datetime"
+                    [showClearButton]="true"
                   ></app-custom-datetime>
                 </div>
               </div>
               <div class="dx-field">
                 <div class="dx-field-label">Project Start Date</div>
                 <div class="dx-field-value">
-                  <dx-date-box name="projectStartDateTime" [(value)]="projectStartDateTime.calendar_event_start_datetime" type="date" [showClearButton]="true"></dx-date-box>
+                  <dx-date-box
+                    name="projectStartDateTime"
+                    [(value)]="
+                      projectStartDateTime.calendar_event_start_datetime
+                    "
+                    type="date"
+                    [showClearButton]="true"
+                  ></dx-date-box>
                 </div>
               </div>
               <div class="dx-field">
                 <div class="dx-field-label">Project Finish Date</div>
                 <div class="dx-field-value">
-                  <dx-date-box name="projectFinishDateTime" [(value)]="projectFinishDateTime.calendar_event_start_datetime" type="date" [showClearButton]="true"></dx-date-box>
+                  <dx-date-box
+                    name="projectFinishDateTime"
+                    [(value)]="
+                      projectFinishDateTime.calendar_event_start_datetime
+                    "
+                    type="date"
+                    [showClearButton]="true"
+                  ></dx-date-box>
                 </div>
               </div>
               <div class="dx-field">
                 <div class="dx-field-label">Work Start Date</div>
                 <div class="dx-field-value">
-                  <dx-date-box name="workStartDateTime" [(value)]="workStartDateTime.calendar_event_start_datetime" type="date" [showClearButton]="true"></dx-date-box>
+                  <dx-date-box
+                    name="workStartDateTime"
+                    [(value)]="workStartDateTime.calendar_event_start_datetime"
+                    type="date"
+                    [showClearButton]="true"
+                  ></dx-date-box>
                 </div>
               </div>
               <div class="dx-field">
                 <div class="dx-field-label">Work Finish Date</div>
                 <div class="dx-field-value">
-                  <dx-date-box name="workFinishDateTime" [(value)]="workFinishDateTime.calendar_event_start_datetime" type="date" [showClearButton]="true"></dx-date-box>
+                  <dx-date-box
+                    name="workFinishDateTime"
+                    [(value)]="workFinishDateTime.calendar_event_start_datetime"
+                    type="date"
+                    [showClearButton]="true"
+                  ></dx-date-box>
                 </div>
               </div>
               <div class="dx-field">
                 <div class="dx-field-label">Expected Award Date</div>
                 <div class="dx-field-value">
-                  <dx-date-box name="expectedAwardDateTime" [(value)]="expectedAwardDateTime.calendar_event_start_datetime" type="date" [showClearButton]="true"></dx-date-box>
+                  <dx-date-box
+                    name="expectedAwardDateTime"
+                    [(value)]="
+                      expectedAwardDateTime.calendar_event_start_datetime
+                    "
+                    type="date"
+                    [showClearButton]="true"
+                  ></dx-date-box>
                 </div>
               </div>
               <div class="dx-field">
                 <div class="dx-field-label">Award Date</div>
                 <div class="dx-field-value">
-                  <dx-date-box name="awardDateTime" [(value)]="awardDateTime.calendar_event_start_datetime" type="date" [showClearButton]="true"></dx-date-box>
+                  <dx-date-box
+                    name="awardDateTime"
+                    [(value)]="awardDateTime.calendar_event_start_datetime"
+                    type="date"
+                    [showClearButton]="true"
+                  ></dx-date-box>
                 </div>
               </div>
               <div class="dx-field">
                 <div class="dx-field-label">Expected Contract Date</div>
                 <div class="dx-field-value">
-                  <dx-date-box name="expectedContractDateTime" [(value)]="expectedContractDateTime.calendar_event_start_datetime" type="date" [showClearButton]="true"></dx-date-box>
+                  <dx-date-box
+                    name="expectedContractDateTime"
+                    [(value)]="
+                      expectedContractDateTime.calendar_event_start_datetime
+                    "
+                    type="date"
+                    [showClearButton]="true"
+                  ></dx-date-box>
                 </div>
               </div>
               <div class="dx-field">
                 <div class="dx-field-label">Contract Date</div>
                 <div class="dx-field-value">
-                  <dx-date-box name="contractDateTime" [(value)]="contractDateTime.calendar_event_start_datetime" type="date" [showClearButton]="true"></dx-date-box>
+                  <dx-date-box
+                    name="contractDateTime"
+                    [(value)]="contractDateTime.calendar_event_start_datetime"
+                    type="date"
+                    [showClearButton]="true"
+                  ></dx-date-box>
                 </div>
               </div>
             </div>
           </div>
 
-          <div class="project-form form-detail" [ngClass]="{'active': viewMode === 'detail'}">
+          <div
+            class="project-form form-detail"
+            [ngClass]="{ active: viewMode === 'detail' }"
+          >
             <div class="dx-field-set">
               <div class="dx-field">
                 <div class="dx-field-label">Project Number</div>
                 <div class="dx-field-value">
-                  <dx-text-box name="projectNumber" [(value)]="currentProject.project_number"></dx-text-box>
+                  <dx-text-box
+                    name="projectNumber"
+                    [(value)]="currentProject.project_number"
+                  ></dx-text-box>
                 </div>
               </div>
               <div class="dx-field">
                 <div class="dx-field-label">Contract Type</div>
                 <div class="dx-field-value">
-                  <select [(ngModel)]='currentProject.project_contract_type' name='contractType'>
+                  <select
+                    [(ngModel)]="currentProject.project_contract_type"
+                    name="contractType"
+                  >
                     <option value="GMP Bid">GMP Bid</option>
                     <option value="Negotiated">Negotiated</option>
                     <option value="Design Build">Design Build</option>
-                    <option value="Time and Materials">Time and Materials</option>
+                    <option value="Time and Materials">
+                      Time and Materials
+                    </option>
                   </select>
                 </div>
               </div>
               <div class="dx-field">
                 <div class="dx-field-label">Project Stage</div>
                 <div class="dx-field-value">
-                  <select [(ngModel)]='currentProject.project_stage' name='projectStage'>
+                  <select
+                    [(ngModel)]="currentProject.project_stage"
+                    name="projectStage"
+                  >
                     <option value="Unassigned">Unassigned</option>
                     <option value="Prospect">Prospect</option>
                     <option value="Lead">Lead</option>
@@ -230,7 +419,10 @@
               <div class="dx-field">
                 <div class="dx-field-label">Project Segment</div>
                 <div class="dx-field-value">
-                  <select [(ngModel)]='currentProject.project_segment' name='projectSegment'>
+                  <select
+                    [(ngModel)]="currentProject.project_segment"
+                    name="projectSegment"
+                  >
                     <option value="Commercial">Commercial</option>
                     <option value="Industrial">Industrial</option>
                     <option value="Heavy Highway">Heavy Highway</option>
@@ -241,7 +433,10 @@
               <div class="dx-field">
                 <div class="dx-field-label">Building Type</div>
                 <div class="dx-field-value">
-                  <select [(ngModel)]='currentProject.project_building_type' name='buildingType'>
+                  <select
+                    [(ngModel)]="currentProject.project_building_type"
+                    name="buildingType"
+                  >
                     <option value="Healthcare">Healthcare</option>
                     <option value="Government">Government</option>
                     <option value="Retail">Retail</option>
@@ -252,7 +447,10 @@
               <div class="dx-field">
                 <div class="dx-field-label">Labor Requirement</div>
                 <div class="dx-field-value">
-                  <select [(ngModel)]='currentProject.project_labor_requirement' name='laborRequirement'>
+                  <select
+                    [(ngModel)]="currentProject.project_labor_requirement"
+                    name="laborRequirement"
+                  >
                     <option value="union">union</option>
                     <option value="open shop">open shop</option>
                     <option value="prevailing wage">prevailing wage</option>
@@ -262,30 +460,49 @@
               <div class="dx-field">
                 <div class="dx-field-label">Project Value $</div>
                 <div class="dx-field-value">
-                  <dx-number-box name="projectValue" [(value)]="currentProject.project_value" [showClearButton]="true" format="$ #,##0.##"></dx-number-box>
+                  <dx-number-box
+                    name="projectValue"
+                    [(value)]="currentProject.project_value"
+                    [showClearButton]="true"
+                    format="$ #,##0.##"
+                  ></dx-number-box>
                 </div>
               </div>
               <div class="dx-field">
                 <div class="dx-field-label">Project Size</div>
                 <div class="dx-field-value">
-                  <dx-text-box name="projectSize" [(value)]="currentProject.project_size" [showClearButton]="true"></dx-text-box>
+                  <dx-text-box
+                    name="projectSize"
+                    [(value)]="currentProject.project_size"
+                    [showClearButton]="true"
+                  ></dx-text-box>
                 </div>
               </div>
               <div class="dx-field">
                 <div class="dx-field-label">Construction Type</div>
                 <div class="dx-field-value">
-                  <select [(ngModel)]='currentProject.project_construction_type' name='constructionType'>
+                  <select
+                    [(ngModel)]="currentProject.project_construction_type"
+                    name="constructionType"
+                  >
                     <option value="new construction">new construction</option>
                     <option value="remodel">remodel</option>
-                    <option value="tenant improvements">tenant improvements</option>
+                    <option value="tenant improvements">
+                      tenant improvements
+                    </option>
                   </select>
                 </div>
               </div>
               <div class="dx-field">
                 <div class="dx-field-label">Source Award Status</div>
                 <div class="dx-field-value">
-                  <select [(ngModel)]='currentProject.project_award_status' name='awardStatus'>
-                    <option value="Preparing Proposal">Preparing Proposal</option>
+                  <select
+                    [(ngModel)]="currentProject.project_award_status"
+                    name="awardStatus"
+                  >
+                    <option value="Preparing Proposal">
+                      Preparing Proposal
+                    </option>
                     <option value="Bid Submitted">Bid Submitted</option>
                     <option value="Awarded">Awarded</option>
                     <option value="Lost">Lost</option>
@@ -295,117 +512,121 @@
               </div>
             </div>
           </div>
-          <div class='project-form form-detail' [ngClass]="{'active': viewMode === 'source'}">
+          <div
+            class="project-form form-detail"
+            [ngClass]="{ active: viewMode === 'source' }"
+          >
             <div class="dx-fieldset">
               <div class="dx-field">
                 <div class="dx-field-label">Source Company Name</div>
                 <div class="dx-field-value">
-                    <dx-select-box #sbxCompany [dataSource]="companyTypeList"
-                        displayExpr="company_name"  
-                        [acceptCustomValue]="true"         
-                        [searchMode]="searchModeOption"
-                        [searchExpr]="searchExprOption"                       
-                        [searchTimeout]="searchTimeoutOption"                      
-                        [minSearchLength]="minSearchLengthOption"
-                        [searchEnabled]="true"
-                        [value]="companyId"
-                        (onItemClick)="onCompanySelected($event)" 
-                        (onCustomItemCreating)="onNewCompanyEntry($event)"
-                        ></dx-select-box>
+                  <dx-select-box
+                    #sbxCompany
+                    [dataSource]="companyTypeList"
+                    displayExpr="company_name"
+                    [acceptCustomValue]="true"
+                    [searchMode]="searchModeOption"
+                    [searchExpr]="searchExprOption"
+                    [searchTimeout]="searchTimeoutOption"
+                    [minSearchLength]="minSearchLengthOption"
+                    [searchEnabled]="true"
+                    [value]="companyId"
+                    (onItemClick)="onCompanySelected($event)"
+                    (onCustomItemCreating)="onNewCompanyEntry($event)"
+                  ></dx-select-box>
                   <!-- <dx-text-box name="source_company_id" [(value)]="source_company_id" [showClearButton]="true"></dx-text-box> -->
                 </div>
               </div>
             </div>
-            <!-- <button class="btn" (click)="searchCompany()">Search</button> -->
+
             <div class="dx-fieldset">
               <div class="dx-field">
-                <div class="dx-field-label">Source Company Website</div>
+                <div class="dx-field-label">Source Contact</div>
                 <div class="dx-field-value">
-                  <dx-text-box name="source_company_website"  [(ngModel)]="company_website" [showClearButton]="true"></dx-text-box>
+                  <dx-select-box
+                    [dataSource]="contactTypeList"
+                    displayExpr="contact_email"
+                    [searchMode]="conSearchModeOption"
+                    [searchExpr]="conSearchExprOption"
+                    [searchTimeout]="conSearchTimeoutOption"
+                    [minSearchLength]="conMinSearchLengthOption"
+                    [searchEnabled]="true"
+                    [acceptCustomValue]="true"
+                    [value]="contactId"
+                    (onItemClick)="onContactSelected($event)"
+                    (onCustomItemCreating)="onNewContactEntry($event)"
+                  ></dx-select-box>
                 </div>
               </div>
             </div>
 
-            <div class="dx-fieldset">
-              <div class="dx-field">
-                <div class="dx-field-label">Source Contact Email</div>
-                <div class="dx-field-value">
-                  <dx-select-box [dataSource]="contactTypeList"
-                        displayExpr="contact_email"
-                        [searchMode]="conSearchModeOption"
-                        [searchExpr]="conSearchExprOption"
-                        [searchTimeout]="conSearchTimeoutOption"
-                        [minSearchLength]="conMinSearchLengthOption"
-                        [searchEnabled]="true"
-                        [acceptCustomValue]="true"
-                        [value]="contactId"
-                        (onItemClick)="onContactSelected($event)" 
-                        (onCustomItemCreating)="onNewContactEntry($event)"
-                        ></dx-select-box>
-                </div>
-              </div>
-            </div>
-          <div class="dx-fieldset">
-              <div class="dx-field">
-                <div class="dx-field-label">Source Contact First Name</div>
-                <div class="dx-field-value">
-                  <dx-text-box name="contactFirstName"   [(ngModel)]="contactFirstName" [showClearButton]="true"></dx-text-box>
-                </div>
-              </div>
-            </div>
-              
-            <div class="dx-fieldset">
-              <div class="dx-field">
-                <div class="dx-field-label">Source Contact Last Name</div>
-                <div class="dx-field-value">
-                  <dx-text-box name="contactSecondName"  [(ngModel)]="contactSecondName"  [showClearButton]="true"></dx-text-box>
-                </div>
-              </div>
-            </div>
-
-            <hr>
+            <hr />
             <div class="dx-fieldset">
               <div class="dx-field">
                 <div class="dx-field-label">Source System Type</div>
                 <div class="dx-field-value">
+                  <dx-select-box
+                    [dataSource]="sourceSystemTypes"
+                    displayExpr="source_type_name"
+                    valueExpr="source_sys_type_id"
+                    [searchEnabled]="true"
+                    [value]="source_sys_type_id"
+                    (onValueChanged)="onSourceSystemTypeChange($event)"
+                  ></dx-select-box>
                   <!-- <dx-text-box name="source_sys_type_id" [(value)]="source_sys_type_id" [showClearButton]="true"></dx-text-box> -->
-                  <select name='source_sys_type_id' [(value)]='source_sys_type_id' [(ngModel)]="source_sys_type_id">
+                  <!-- <select name='source_sys_type_id' [(value)]='source_sys_type_id' [(ngModel)]="source_sys_type_id">
                     <option *ngFor="let sourceSystemType of sourceSystemTypes" [ngValue]="sourceSystemType.source_sys_type_id">
                       {{ sourceSystemType.source_type_name }}
                     </option>
-                  </select>
+                  </select> -->
                 </div>
               </div>
             </div>
 
             <div class="dx-fieldset">
               <div class="dx-field">
-              <div class="dx-field-label">Submitter Email</div>
-              <div class="dx-field-value">
-                <dx-text-box name="submitterEmail" [readOnly]="true" [(value)]="currentProject.user_email" [showClearButton]="true">
-                  <dx-validator>
-                    <dxi-validation-rule type="required"></dxi-validation-rule>
-                    <dxi-validation-rule type="email" message="Email is invalid"></dxi-validation-rule>
-                  </dx-validator>
-                </dx-text-box>
-              </div>
+                <div class="dx-field-label">Submitter Email</div>
+                <div class="dx-field-value">
+                  <dx-text-box
+                    name="submitterEmail"
+                    [readOnly]="true"
+                    [(value)]="currentProject.user_email"
+                    [showClearButton]="true"
+                  >
+                    <dx-validator>
+                      <dxi-validation-rule
+                        type="required"
+                      ></dxi-validation-rule>
+                      <dxi-validation-rule
+                        type="email"
+                        message="Email is invalid"
+                      ></dxi-validation-rule>
+                    </dx-validator>
+                  </dx-text-box>
+                </div>
               </div>
             </div>
 
             <div class="dx-fieldset">
               <div class="dx-field">
-              <div class="dx-field-label">Source System URL</div>
-              <div class="dx-field-value">
-                <dx-text-box name="source_sys_url" [(value)]="currentProject.source_url" [showClearButton]="true"></dx-text-box>
+                <div class="dx-field-label">Source System URL</div>
+                <div class="dx-field-value">
+                  <dx-text-box
+                    name="source_sys_url"
+                    [(value)]="currentProject.source_url"
+                    [showClearButton]="true"
+                  ></dx-text-box>
+                </div>
               </div>
             </div>
-            </div>       
-          </div> 
+          </div>
         </div>
 
-        <div class='button-group'>
-          <button class='btn btn-light' (click)='onCancel($event)'>Cancel</button>
-          <button type='submit' class='btn btn-primary'>Save</button>
+        <div class="button-group">
+          <button class="btn btn-light" (click)="onCancel($event)">
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-primary">Save</button>
         </div>
       </form>
     </div>

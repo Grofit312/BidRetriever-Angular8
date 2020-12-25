@@ -1,109 +1,178 @@
-<div class='destination-system-settings-container'>
-  <div class='destination-system-setting'>
-    <div class='destination-system-setting-selector'>
+<div class="destination-system-settings-container">
+  <div class="destination-system-setting">
+    <div class="destination-system-setting-selector">
       <div>Destination Name</div>
-      <input type='text' [(ngModel)]='destinationSystemName' (change)='onChangeInput()'/>
+      <input
+        type="text"
+        [(ngModel)]="destinationSystemName"
+        (change)="onChangeInput()"
+      />
     </div>
-    <div class='destination-system-setting-description'>
-      The name of the destination where you would like your project files to be published.
+    <div class="destination-system-setting-description">
+      The name of the destination where you would like your project files to be
+      published.
     </div>
   </div>
 
-  <div class='destination-system-setting'>
-    <div class='destination-system-setting-selector'>
+  <div class="destination-system-setting">
+    <div class="destination-system-setting-selector">
       <div>Destination System Type</div>
-      <select name='destination_sys_type' [(ngModel)]='destinationSystemType' (change)='onChangeInput()'>
-        <option *ngFor="let type of destinationTypes" [value]="type.destination_type_id">{{ type.destination_type_name }}</option>
+      <select
+        name="destination_sys_type"
+        [(ngModel)]="destinationSystemType"
+        (change)="onChangeInput()"
+      >
+        <option
+          *ngFor="let type of destinationTypes"
+          [value]="type.destination_type_id"
+        >
+          {{ type.destination_type_name }}
+        </option>
       </select>
     </div>
-    <div class='destination-system-setting-description'>
-      The default destination type defines where you would like files processed by Bid Retriever to be published. Usually this is a file sharing service such as Dropbox, Box.net, Google Drive, etc.
+    <div class="destination-system-setting-description">
+      The default destination type defines where you would like files processed
+      by Bid Retriever to be published. Usually this is a file sharing service
+      such as Dropbox, Box.net, Google Drive, etc.
     </div>
   </div>
 
-
-  <div class='destination-system-setting' id="divSharePointURL">
-    <div class='destination-system-setting-selector'>
-      <div>SharePoint Site URL (including Tenant Prefix) </div>
-      <input type='text' [(ngModel)]='destinationURL' (change)='onChangeInput()'/>
+  <div class="destination-system-setting" id="divSharePointURL">
+    <div class="destination-system-setting-selector">
+      <div>SharePoint Site URL (including Tenant Prefix)</div>
+      <input
+        type="text"
+        [(ngModel)]="destinationURL"
+        (change)="onChangeInput()"
+      />
     </div>
-    <div class='destination-system-setting-description'>
-      The full URL that BidRetriever will use to access the sharepoint system. This should include the tenant prefix. Ex. "https://BidRetriever.sharepoint.com"
+    <div class="destination-system-setting-description">
+      The full URL that BidRetriever will use to access the sharepoint system.
+      This should include the tenant prefix. Ex.
+      "https://BidRetriever.sharepoint.com"
     </div>
   </div>
-  <div class='destination-system-setting' id="divSharePointSiteName">
-    <div class='destination-system-setting-selector'>
+  <div class="destination-system-setting" id="divSharePointSiteName">
+    <div class="destination-system-setting-selector">
       <div>SharePoint Site Name</div>
-      <input type='text' [(ngModel)]='destinationSiteName' (change)='onChangeInput()'/>
+      <input
+        type="text"
+        [(ngModel)]="destinationSiteName"
+        (change)="onChangeInput()"
+      />
     </div>
-    <div class='destination-system-setting-description'>
-      The name of the SharePoint Site that will contain all projects published by the Bid Retriever system.
+    <div class="destination-system-setting-description">
+      The name of the SharePoint Site that will contain all projects published
+      by the Bid Retriever system.
     </div>
   </div>
-  <div class='destination-system-setting' id="divSharePointLibraryName">
-    <div class='destination-system-setting-selector'>
+  <div class="destination-system-setting" id="divSharePointLibraryName">
+    <div class="destination-system-setting-selector">
       <div>SharePoint Library Name</div>
-      <input type='text' [(ngModel)]='destinationLibraryName' (change)='onChangeInput()'/>
+      <input
+        type="text"
+        [(ngModel)]="destinationLibraryName"
+        (change)="onChangeInput()"
+      />
     </div>
-    <div class='destination-system-setting-description'>
-      The SharePoint Library name where the projects folders will be created. Thelibrary must eist nder the SharePoint Site defined in the settings above.
+    <div class="destination-system-setting-description">
+      The SharePoint Library name where the projects folders will be created.
+      Thelibrary must eist nder the SharePoint Site defined in the settings
+      above.
     </div>
   </div>
-  <div class='destination-system-setting'>
-    <div class='destination-system-setting-selector'>
+  <div class="destination-system-setting">
+    <div class="destination-system-setting-selector">
       <div>Destination Root Path</div>
-      <input type='text' [(ngModel)]='destinationSystemPathPrefix' (change)='onChangeInput()'/>
+      <input
+        type="text"
+        [(ngModel)]="destinationSystemPathPrefix"
+        (change)="onChangeInput()"
+      />
     </div>
-    <div class='destination-system-setting-description'>
-      The destination system path prefix defines the folder structure that will be used as a prefix to each project folder when projects are published to the destination system.
+    <div class="destination-system-setting-description">
+      The destination system path prefix defines the folder structure that will
+      be used as a prefix to each project folder when projects are published to
+      the destination system.
     </div>
   </div>
 
-  <div class='destination-system-setting'>
-    <div class='destination-system-setting-selector'>
+  <div class="destination-system-setting">
+    <div class="destination-system-setting-selector">
       <div>Destination System Username</div>
-      <input type='text' [(ngModel)]='destinationSystemUsername' (change)='onChangeInput()'/>
+      <input
+        type="text"
+        [(ngModel)]="destinationSystemUsername"
+        (change)="onChangeInput()"
+      />
     </div>
-    <div class='destination-system-setting-description'>
+    <div class="destination-system-setting-description">
       The user name used to authenticate with the destination system.
     </div>
   </div>
 
-  <div class='destination-system-setting'>
-    <div class='destination-system-setting-selector'>
+  <div class="destination-system-setting">
+    <div class="destination-system-setting-selector">
       <div>Destination System Password</div>
-      <input type='text' [(ngModel)]='destinationSystemPassword' (change)='onChangeInput()'/>
+      <div class="d-flex">
+        <input
+          [type]="isPasswordVisible ? 'text' : 'password'"
+          [(ngModel)]="destinationSystemPassword"
+          (change)="onChangeInput()"
+        />
+        <button
+          class="btn btn-primary"
+          type="button"
+          (click)="togglePasswordVisible()"
+        >
+          {{ isPasswordVisible ? "Hide" : "Show" }}
+        </button>
+      </div>
     </div>
-    <div class='destination-system-setting-description'>
+    <div class="destination-system-setting-description">
       The password, used to authenticate the user.
     </div>
   </div>
 
-  <div class='destination-system-setting'>
-    <div class='destination-system-setting-selector'>
+  <div class="destination-system-setting">
+    <div class="destination-system-setting-selector">
       <div>Destination System Token</div>
-      <div><input type='text' [(ngModel)]='destinationSystemToken' (change)='onChangeInput()'/></div>
       <div>
-        <button class="btn btn-primary" (click)='onDropboxLogin()'>Login With {{this.getDestinationAbbrev()}}</button>
-        <button class="btn btn-info" (click)='onVerifyToken()'>Verify</button>
+        <input
+          type="text"
+          [(ngModel)]="destinationSystemToken"
+          (change)="onChangeInput()"
+        />
+      </div>
+      <div>
+        <button class="btn btn-primary" (click)="onDropboxLogin()">
+          Login With {{ this.getDestinationAbbrev() }}
+        </button>
+        <button class="btn btn-info" (click)="onVerifyToken()">Verify</button>
       </div>
     </div>
-    <div class='destination-system-setting-description'>
-      The token string required by some systems in order to publish files to the system.
+    <div class="destination-system-setting-description">
+      The token string required by some systems in order to publish files to the
+      system.
     </div>
   </div>
 </div>
 
 <!-- Dropbox Login Confirmation Modal -->
-<div #dropboxConfirmModal class='modal-container'>
-  <div class='modal-box'>
-    <div class='dropbox-confirm-modal'>
-      <div class='modal-title'>
-        {{ connectedDropboxAccount }} has been successfully connected. If this is the wrong account, press Select New Account otherwise press OK. 
+<div #dropboxConfirmModal class="modal-container">
+  <div class="modal-box">
+    <div class="dropbox-confirm-modal">
+      <div class="modal-title">
+        {{ connectedDropboxAccount }} has been successfully connected. If this
+        is the wrong account, press Select New Account otherwise press OK.
       </div>
-      <div class='button-group'>
-        <button class='btn btn-info' (click)='onSelectNewDropboxAccount()'>Select New Account</button>
-        <button class='btn btn-primary' (click)='onConfirmDropboxAccount()'>OK</button>
+      <div class="button-group">
+        <button class="btn btn-info" (click)="onSelectNewDropboxAccount()">
+          Select New Account
+        </button>
+        <button class="btn btn-primary" (click)="onConfirmDropboxAccount()">
+          OK
+        </button>
       </div>
     </div>
   </div>

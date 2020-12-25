@@ -4,6 +4,7 @@ import { ProjectsApi } from 'app/customer-portal/my-projects/my-projects.api.ser
 
 import { NotificationsService } from 'angular2-notifications';
 import { DataStore } from 'app/providers/datastore';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'document-detail-modal',
@@ -65,8 +66,22 @@ export class DocumentDetailModalComponent implements OnInit {
       sortable: true,
     },
     {
+      headerName: 'Doc Version',
+      field: 'doc_version',
+      minWidth: 100,
+      resizable: true,
+      sortable: true,
+    },
+    {
       headerName: 'Current Rev',
       field: 'current_rev',
+      minWidth: 150,
+      resizable: true,
+      sortable: true,
+    },
+    {
+      headerName: 'Doc ID',
+      field: 'doc_id',
       minWidth: 150,
       resizable: true,
       sortable: true,
@@ -77,6 +92,7 @@ export class DocumentDetailModalComponent implements OnInit {
     private apiService: ProjectsApi,
     private amazonService: AmazonService,
     private notificationService: NotificationsService,
+    private spinner: NgxSpinnerService,
     public dataStore: DataStore,
   ) { }
 
@@ -205,6 +221,39 @@ export class DocumentDetailModalComponent implements OnInit {
     }
 
     return false;
+  }
+
+  async onRegenComparison() {
+    this.spinner.show();
+
+    const { project_id, project_name, project_timezone: user_timezone } = this.currentProject;
+    
+    for (let index = 1; index < this.rowData.length; index++) {
+      const { doc_id: prev_doc_id } = this.rowData[index - 1];
+      const { doc_id, project_doc_original_filename: file_original_filename, submitter_email, submission_datetime_origin: submission_datetime, submission_id  } = this.rowData[index];
+      const params = {
+        doc_id,
+        prev_doc_id,
+        file_original_filename,
+        project_id,
+        project_name,
+        submitter_email,
+        submission_datetime,
+        submission_id,
+        process_status: 'queued',
+        process_attempts: 0,
+        user_timezone,
+      };
+
+      try {
+        await this.amazonService.createComparisonRecord(params);
+      } catch (err) {
+        this.notificationService.error('Comparison', 'Failed to create comparison', { timeOut: 3000, showProgressBar: false });
+      }
+    }
+
+    this.spinner.hide();
+    this.notificationService.success('Comparison', 'Successfully created comparisons', { timeOut: 3000, showProgressBar: false });
   }
 
   onRemoveDocument() {

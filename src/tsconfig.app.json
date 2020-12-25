@@ -11,7 +11,7 @@
     "outDir": "../out-tsc/app",
     "module": "esNext",
     "baseUrl": "",
-    "types": ["node"]
+    "types": ["node"],
   },
   "files": [
     "main.ts",

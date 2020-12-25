@@ -27,6 +27,8 @@ import CustomStore from "devextreme/data/custom_store";
 import DataSource from "devextreme/data/data_source";
 import { DxiItemComponent } from "devextreme-angular/ui/nested/item-dxi";
 import Swal from "sweetalert2";
+import { printArray } from "app/utils/print";
+
 const moment = require("moment-timezone");
 declare var jQuery: any;
 
@@ -290,8 +292,13 @@ export class MyCompaniesComponent implements OnInit, AfterViewInit {
 
     this.companyGridEditorTemplateSource = {
       company_type: [
-        { id: "owner", name: "owner" },
-        { id: "other", name: "other" },
+        { id: "Architect/Engineer", name: "Architect/Engineer" },
+        { id: "General Contractor", name: "General Contractor" },
+        { id: "Owner", name: "Owner" },
+        { id: "Product Manufacturer", name: "Product Manufacturer" },
+        { id: "Subcontractor", name: "Subcontractor" },
+        { id: "Supplier", name: "Supplier" },
+        { id: "Other", name: "Other" },
       ],
       status: [
         { id: "active", name: "active" },
@@ -591,6 +598,7 @@ export class MyCompaniesComponent implements OnInit, AfterViewInit {
 
   private getGridCompanyContentByLoadOption(loadOptions) {
     let companies = this.companyGridContent;
+
     if (loadOptions.sort && loadOptions.sort.length > 0) {
       companies = companies.sort((first, second) => {
         const sortColumnOption = this.companyGridColumns.find(
@@ -767,7 +775,7 @@ export class MyCompaniesComponent implements OnInit, AfterViewInit {
               },
               {
                 dataField: "company_employee_number",
-                caption: "Company Employee Number",
+                caption: "Number of Employees",
                 width: 250,
                 minWidth: 100,
                 allowEditing: true,
@@ -777,7 +785,7 @@ export class MyCompaniesComponent implements OnInit, AfterViewInit {
                 caption: "Record Source",
                 width: 150,
                 minWidth: 100,
-                allowEditing: false,
+                allowEditing: true,
               },
               {
                 dataField: "company_address1",
@@ -1177,7 +1185,7 @@ export class MyCompaniesComponent implements OnInit, AfterViewInit {
             .then((res) => {
               this.notificationService.success(
                 "Success",
-                "Company Employee Number has been updated",
+                "Number of Employees has been updated",
                 { timeOut: 3000, showProgressBar: false }
               );
               this.companyGridContent[updateIndex]["company_employee_number"] =
@@ -1699,7 +1707,12 @@ export class MyCompaniesComponent implements OnInit, AfterViewInit {
   }
 
   /* Print */
-  toolbarPrintCompanyListAction() {}
+  toolbarPrintCompanyListAction() {
+    printArray(
+      this.companyGridColumns.map((column) => column.dataField),
+      this.companyGrid.instance.getDataSource().items()
+    );
+  }
 
   /* Toolbar "Export Company List to Csv" Action */
   toolbarExportCompanyListToCsvAction() {

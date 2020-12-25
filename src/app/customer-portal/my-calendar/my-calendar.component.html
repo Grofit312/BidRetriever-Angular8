@@ -1,61 +1,109 @@
-<div class='my-calendar-content'>
-  <div class='my-calendar-header'>
-    <div>
-      <select class='my-calendar-view-mode' [(ngModel)]='calendarViewMode' (change)='onChangeCalendarViewMode()'>
-        <option value="my-active">My Events</option>
-        <option value="my-inactive">My Inactive Events</option>
-        <option *ngIf='currentOffice' value="office-active">{{ currentOffice.company_office_name }} Events</option>
-        <option *ngIf='currentOffice' value="office-inactive">{{ currentOffice.company_office_name }} Inactive Events</option>
-        <option value="all-active">All Events</option>
-        <option value="all-inactive">All Inactive Events</option>
-      </select>
-    </div>
-
-    <div class='buttons-group'>
-      <button class="btn btn-light" (click)='onViewProject()'>View Project</button>
-      <button class='btn btn-light' (click)='onAddEvent($event)'>Add Event</button>
-      <div class="btn-group">
-        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Other Actions
-        </button>
-        <div class="dropdown-menu">
-          <a class="dropdown-item" (click)='onViewProject()'>View project</a>
-          <a class="dropdown-item" (click)='onAddEvent($event)'>Add Event</a>
-          <div class="dropdown-divider orange"></div>
-          <a class="dropdown-item" (click)='onViewProjectDocuments()'>View project documents</a>
-          <a class="dropdown-item" (click)='onEditProject()'>Edit Project</a>
-          <a class="dropdown-item" (click)='onArchiveProject()'>Archive Project</a>
-          <a class="dropdown-item" (click)='onEditEvent(null)'>Edit Event</a>
-          <a class="dropdown-item" (click)='onDeleteEvent()'>Delete Event</a>
-          <div class="dropdown-divider orange"></div>
-          <a class="dropdown-item" (click)='onRefresh()'>Refresh Calendar</a>
-          <a class="dropdown-item orange" (click)='onHelp()'>Help</a>
-        </div>
+<div class="my-calendar-content">
+  <dx-toolbar class="header">
+    <dxi-item location="before">
+      <div *dxTemplate>
+        <dx-select-box
+          #eventToolbarViewType
+          [width]="toolbarConfig.eventViewType.width"
+          [items]="calendarViewModes"
+          displayExpr="label"
+          valueExpr="value"
+          [showClearButton]="toolbarConfig.eventViewType.showClearButton"
+          (onValueChanged)="toolbarConfig.eventViewType.onValueChanged($event)"
+        ></dx-select-box>
       </div>
-    </div>
-  </div>
+    </dxi-item>
 
-  <div class='my-calendar'>
+    <dxi-item
+      location="after"
+      widget="dxButton"
+      [options]="toolbarConfig.viewProject"
+    ></dxi-item>
+    <dxi-item
+      location="after"
+      widget="dxButton"
+      [options]="toolbarConfig.addEvent"
+    ></dxi-item>
+
+    <dxi-item
+      locateInMenu="always"
+      widget="dxButton"
+      [options]="toolbarConfig.others.viewProject"
+    ></dxi-item>
+    <dxi-item
+      locateInMenu="always"
+      widget="dxButton"
+      [options]="toolbarConfig.others.addEvent"
+    ></dxi-item>
+    <dxi-item locateInMenu="always" title="">
+      <div *dxTemplate>
+        <div class="separator"></div>
+      </div>
+    </dxi-item>
+    <dxi-item
+      locateInMenu="always"
+      widget="dxButton"
+      [options]="toolbarConfig.others.viewProjectDocuments"
+    ></dxi-item>
+    <dxi-item
+      locateInMenu="always"
+      widget="dxButton"
+      [options]="toolbarConfig.others.editProject"
+    ></dxi-item>
+    <dxi-item
+      locateInMenu="always"
+      widget="dxButton"
+      [options]="toolbarConfig.others.archiveProject"
+    ></dxi-item>
+    <dxi-item
+      locateInMenu="always"
+      widget="dxButton"
+      [options]="toolbarConfig.others.editEvent"
+    ></dxi-item>
+    <dxi-item
+      locateInMenu="always"
+      widget="dxButton"
+      [options]="toolbarConfig.others.deleteEvent"
+    ></dxi-item>
+
+    <dxi-item title="" locateInMenu="always">
+      <div *dxTemplate>
+        <div class="separator"></div>
+      </div>
+    </dxi-item>
+    <dxi-item
+      locateInMenu="always"
+      widget="dxButton"
+      [options]="toolbarConfig.others.refreshCalendar"
+    ></dxi-item>
+    <dxi-item
+      locateInMenu="always"
+      widget="dxButton"
+      [options]="toolbarConfig.others.help"
+    ></dxi-item>
+  </dx-toolbar>
+
+  <div class="my-calendar">
     <vertical-split-pane
-      primary-component-minsize='200'
-      local-storage-key='split-pane'
-      primary-component-initialratio='0.2'
-      (on-change)='onChangeSplit()'
+      primary-component-minsize="200"
+      local-storage-key="split-pane"
+      primary-component-initialratio="0.2"
+      (on-change)="onChangeSplit()"
     >
-      <div class='split-pane-content-primary'>
-        <div class='side-overview' *ngIf='showOverview'>
-          <div class='data' *ngFor='let data of overviewData'>
-            <div class='name'>{{ data.name }}</div>
-            <div class='value'>{{ data.value }}</div>
+      <div class="split-pane-content-primary">
+        <div class="side-overview" *ngIf="showOverview">
+          <div class="data" *ngFor="let data of overviewData">
+            <div class="name">{{ data.name }}</div>
+            <div class="value">{{ data.value }}</div>
           </div>
         </div>
       </div>
-      <div class='split-pane-content-secondary'>
-        <div class='calendar'>
+      <div class="split-pane-content-secondary">
+        <div class="calendar">
           <dx-scheduler
             #targetScheduler
             [dataSource]="events"
-            [views]='["agenda", "day", "week", "month"]'
+            [views]="['agenda', 'day', 'week', 'month']"
             currentView="month"
             [currentDate]="currentDate"
             (onCellClick)="onCellClick($event)"
@@ -65,27 +113,33 @@
             (onAppointmentClick)="onAppointmentClick($event)"
             (onOptionChanged)="onOptionChanged($event)"
           >
-          <dxo-editing #editingOptions
-            [allowAdding]="false"
-            [allowUpdating]="false"
-            [allowDeleting]="false"
-            [allowResizing]="false"
-            [allowDragging]="false"
-          ></dxo-editing>
+            <dxo-editing
+              #editingOptions
+              [allowAdding]="false"
+              [allowUpdating]="false"
+              [allowDeleting]="false"
+              [allowResizing]="false"
+              [allowDragging]="false"
+            ></dxo-editing>
           </dx-scheduler>
-          <dx-context-menu #contextMenu
+          <dx-context-menu
+            #contextMenu
             [dataSource]="dataSource"
             [disabled]="ctxdisabled"
             [target]="ctxtarget"
             (onItemClick)="onContextMenuItemClick($event)"
             [width]="200"
-            (onHiding)="onContextMenuHiding($event)">
+            (onHiding)="onContextMenuHiding($event)"
+          >
             <div *dxTemplate="let e of 'item'">
               <div *ngIf="e.color">
-                  <div class="item-badge" [ngStyle]="{ backgroundColor: e.color}"></div>
+                <div
+                  class="item-badge"
+                  [ngStyle]="{ backgroundColor: e.color }"
+                ></div>
               </div>
-              <div class="item-text">{{e.text}}</div>
-          </div>
+              <div class="item-text">{{ e.text }}</div>
+            </div>
           </dx-context-menu>
         </div>
       </div>

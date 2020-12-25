@@ -1,29 +1,24 @@
-.my-calendar-content {
-  padding: 30px 50px;
+::ng-deep .my-calendar-content {
+  padding: 10px;
   height: calc(100% - 40px);
   display: flex;
   flex-direction: column;
 
-  .my-calendar-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-shrink: 0;
+   .header {
+    margin-bottom: 10px;
 
-    .my-calendar-view-mode {
-      width: 200px;
-      height: 40px;
-      margin-right: 10px;
-    }
+    .dx-toolbar-menu-container .dx-dropdownmenu-button {
+      background-color: #007BFF;
+      border-color: #007BFF;
 
-    .buttons-group {
-      margin-bottom: unset;
+      .dx-icon {
+        color: #FFFFFF;
+      }
     }
   }
 
   .my-calendar {
     height: calc(100vh - 350px);
-    margin-top: 20px;
     margin-bottom: 40px;
 
     .split-pane-content-primary, .split-pane-content-secondary {

@@ -1,72 +1,141 @@
 <div class="my-projects">
-    <dx-toolbar class="header" #projectToolbar>
-      <dxi-item location="before">
-        <div *dxTemplate>
-         <dx-select-box #projectToolbarViewType [width]="toolbarConfig.projectViewType.width"
-            [items]="filterOptions"
-            [showClearButton]="toolbarConfig.projectViewType.showClearButton" [value]="projectViewTypeSelected"
-            [valueExpr]="toolbarConfig.projectViewType.valueExpr"
-            [displayExpr]="toolbarConfig.projectViewType.displayExpr"
-            (onValueChanged)="toolbarConfig.projectViewType.onValueChanged($event)">
-            <div *dxTemplate="let data of 'item'">
-              <div class="project-toolbar-view-type-item" *ngIf="data.view_id !== 'manage_project_views'">
-                {{ data.view_name }}</div>
-              <div class="project-toolbar-view-type-item manage-project-view"
-                *ngIf="data.view_id === 'manage_project_views'">{{ data.view_name }}</div>
+  <dx-toolbar class="header" #projectToolbar>
+    <dxi-item location="before">
+      <div *dxTemplate>
+        <dx-select-box
+          #projectToolbarViewType
+          [width]="toolbarConfig.projectViewType.width"
+          [items]="filterOptions"
+          [showClearButton]="toolbarConfig.projectViewType.showClearButton"
+          [value]="projectViewTypeSelected"
+          [valueExpr]="toolbarConfig.projectViewType.valueExpr"
+          [displayExpr]="toolbarConfig.projectViewType.displayExpr"
+          (onValueChanged)="
+            toolbarConfig.projectViewType.onValueChanged($event)
+          "
+        >
+          <div *dxTemplate="let data of 'item'">
+            <div
+              class="project-toolbar-view-type-item"
+              *ngIf="data.view_id !== 'manage_project_views'"
+            >
+              {{ data.view_name }}
             </div>
-          </dx-select-box>
-        </div>
-      </dxi-item>
-      
-  
-      <dxi-item location="center" widget="dxTextBox" [options]="toolbarConfig.search"></dxi-item>
-  
-      <dxi-item location="after" widget="dxButton" [options]="toolbarConfig.viewSharedProject"></dxi-item>
-      <dxi-item location="after" widget="dxButton" [options]="toolbarConfig.addToProject"></dxi-item>
-  
-      <dxi-item locateInMenu="always" widget="dxButton" [options]="toolbarConfig.others.viewSharedProject"></dxi-item>
-      <dxi-item locateInMenu="always" widget="dxButton" [options]="toolbarConfig.others.addToProject"></dxi-item>
-      <dxi-item locateInMenu="always" title="">
-        <div *dxTemplate>
-          <div class="separator"></div>
-        </div>
-      </dxi-item>
-      <dxi-item locateInMenu="always" widget="dxButton" [options]="toolbarConfig.others.viewSharedProjectFiles"></dxi-item>
-       
-        <dxi-item locateInMenu="always" widget="dxButton" [options]="toolbarConfig.others.archiveSharedProject"></dxi-item>
-        <dxi-item locateInMenu="always" widget="dxButton" [options]="toolbarConfig.others.deleteProject"></dxi-item>
-    
-     
-      <dxi-item locateInMenu="always" title="">
-        <div *dxTemplate>
-          <div class="separator"></div>
-        </div>
-      </dxi-item>
-      <dxi-item locateInMenu="always" widget="dxButton" [options]="toolbarConfig.others.viewTransactionLog"></dxi-item>
-      <dxi-item locateInMenu="always" widget="dxButton" [options]="toolbarConfig.others.refreshGrid"></dxi-item>
-      <dxi-item locateInMenu="always" widget="dxButton" [options]="toolbarConfig.others.help"></dxi-item>
-    </dx-toolbar>
-  
-  
+            <div
+              class="project-toolbar-view-type-item manage-project-view"
+              *ngIf="data.view_id === 'manage_project_views'"
+            >
+              {{ data.view_name }}
+            </div>
+          </div>
+        </dx-select-box>
+      </div>
+    </dxi-item>
+
+    <dxi-item
+      location="center"
+      widget="dxTextBox"
+      [options]="toolbarConfig.search"
+    ></dxi-item>
+
+    <dxi-item
+      location="after"
+      widget="dxButton"
+      [options]="toolbarConfig.viewSharedProject"
+    ></dxi-item>
+    <dxi-item
+      location="after"
+      widget="dxButton"
+      [options]="toolbarConfig.addToProject"
+    ></dxi-item>
+
+    <dxi-item
+      locateInMenu="always"
+      widget="dxButton"
+      [options]="toolbarConfig.others.viewSharedProject"
+    ></dxi-item>
+    <dxi-item
+      locateInMenu="always"
+      widget="dxButton"
+      [options]="toolbarConfig.others.addToProject"
+    ></dxi-item>
+    <dxi-item locateInMenu="always" title="">
+      <div *dxTemplate>
+        <div class="separator"></div>
+      </div>
+    </dxi-item>
+    <dxi-item
+      locateInMenu="always"
+      widget="dxButton"
+      [options]="toolbarConfig.others.viewSharedProjectFiles"
+    ></dxi-item>
+
+    <dxi-item
+      locateInMenu="always"
+      widget="dxButton"
+      [options]="toolbarConfig.others.archiveSharedProject"
+    ></dxi-item>
+    <dxi-item
+      locateInMenu="always"
+      widget="dxButton"
+      [options]="toolbarConfig.others.deleteProject"
+    ></dxi-item>
+
+    <dxi-item locateInMenu="always" title="">
+      <div *dxTemplate>
+        <div class="separator"></div>
+      </div>
+    </dxi-item>
+    <dxi-item
+      locateInMenu="always"
+      widget="dxButton"
+      [options]="toolbarConfig.others.viewTransactionLog"
+    ></dxi-item>
+    <dxi-item
+      locateInMenu="always"
+      widget="dxButton"
+      [options]="toolbarConfig.others.refreshGrid"
+    ></dxi-item>
+    <dxi-item
+      locateInMenu="always"
+      widget="dxButton"
+      [options]="toolbarConfig.others.help"
+    ></dxi-item>
+  </dx-toolbar>
 
   <div class="content" #projectContent>
-  
-    <dx-data-grid #projectGrid id="projectGrid" [allowColumnReordering]="true" [allowColumnResizing]="true"
-    columnResizingMode="widget" [columns]="projectGridColumns" [dataSource]="projectGridDataSource"
-    [showColumnLines]="true" [showRowLines]="true" hr
-    [showBorders]="true" [rowAlternationEnabled]="true" [columnAutoWidth]="true" [remoteOperations]="true"
-    width="100%" (onContextMenuPreparing)='addProjectGridMenuItems($event)' (onRowDblClick)='toolbarViewSharedProjectAction()' >
-    <dxo-column-fixing [enabled]="true"></dxo-column-fixing>
-    <dxo-header-filter [visible]="false"></dxo-header-filter>
-    <dxo-paging [enabled]="false"></dxo-paging>
-    <dxo-scrolling mode="vertical"></dxo-scrolling>
-    <dxo-selection mode="multiple"></dxo-selection>
-    <dxo-sorting mode="multiple"></dxo-sorting>
+    <dx-data-grid
+      #projectGrid
+      id="projectGrid"
+      [allowColumnReordering]="true"
+      [allowColumnResizing]="true"
+      columnResizingMode="widget"
+      [columns]="projectGridColumns"
+      [dataSource]="projectGridDataSource"
+      [showColumnLines]="true"
+      [showRowLines]="true"
+      hr
+      [showBorders]="true"
+      [rowAlternationEnabled]="true"
+      [columnAutoWidth]="true"
+      [remoteOperations]="true"
+      width="100%"
+      (onContextMenuPreparing)="addProjectGridMenuItems($event)"
+      (onRowDblClick)="toolbarViewSharedProjectAction()"
+    >
+      <dxo-column-fixing [enabled]="true"></dxo-column-fixing>
+      <dxo-header-filter [visible]="false"></dxo-header-filter>
+      <dxo-paging [enabled]="false"></dxo-paging>
+      <dxo-scrolling mode="vertical"></dxo-scrolling>
+      <dxo-selection mode="multiple"></dxo-selection>
+      <dxo-sorting mode="multiple"></dxo-sorting>
 
-    <div *dxTemplate="let cell of 'dateCell'">
-      {{ cell.value | moment: 'YYYY-MM-DD hh:mm a z' }}
-    </div>
+      <div *dxTemplate="let cell of 'dateCell'">
+        {{ cell.value | moment: "YYYY-MM-DD hh:mm a z" }}
+      </div>
     </dx-data-grid>
-    <div class="total-number-of-rows">Total: {{projectGridContent.length}} rows</div>
+    <div class="total-number-of-rows">
+      Total: {{ projectGridContent.length }} rows
+    </div>
   </div>
-</div> 
+</div>

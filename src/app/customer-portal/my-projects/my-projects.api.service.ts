@@ -367,6 +367,7 @@ export class ProjectsApi {
         .then(res => {
           if (res.status === 200) {
             res.data = res.data.map((revision) => {
+              revision['submission_datetime_origin'] = revision['submission_datetime'];
               revision['submission_datetime'] = this.convertToTimeZoneString(revision['submission_datetime'], timezone);
               revision['current_rev'] = revision['current_revision'] === true ? 'Yes' : 'No';
               return revision;
